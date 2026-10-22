@@ -4,9 +4,10 @@
 //   * Standard Wrapper + Closure Core
 //   * The red-black engine is created by a stateless generic lambda factory.
 //   * The engine is a local, unnamed (Voldemort) type.
-//   * All tree algorithms are generic lambdas stored in the engine aggregate.
-//   * Node fields are never touched directly by algorithms: node_access::wrap
-//     returns a message-dispatching lens closure.
+//   * All tree algorithms are generic lambdas stored in the engine tuple.
+//   * The closure declares no local structs or classes: the node and engine are
+//     standard tuples, and a message-dispatching lens closure is the only code
+//     that touches node fields.
 //   * The public containers are ordinary global class templates; the engine's
 //     exact local type is obtained with decltype(factory<...>) and stored as a
 //     private member of their implementation base.
@@ -31,6 +32,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -56,175 +58,154 @@ struct closure_key_first
 // allocator and supplies allocator-aware node lifetime operations.  This keeps
 // the engine stateless with respect to memory resources and lets node_type
 // carry the exact allocator required by the standard.
+//
+// The core is built exclusively from closures and standard-library aggregates;
+// it declares no local struct or class.  A node is a tuple whose link fields
+// are void* so that the tuple type does not need to name itself.  The engine is
+// a tuple of state and generic-lambda operations, addressed by index.
 // ---------------------------------------------------------------------------
 inline constexpr auto make_stl_toolkit =
     []<typename Key, typename Value, typename KeyOfValue, typename Compare,
        bool AllowDuplicates>(Compare comp = Compare{})
 {
-    struct node
-    {
-        node *parent = nullptr;
-        node *left = nullptr;
-        node *right = nullptr;
-        node *next = nullptr;
-        node *prev = nullptr;
-        bool red = false;
-        bool engaged = false;
-        union
-        {
-            Value value;
-        };
+    // Node layout: parent, left, right, next, prev, red, engaged, value.
+    // The value is raw, correctly aligned storage; the wrapper constructs and
+    // destroys it through the value allocator.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    using value_storage =
+        std::aligned_storage_t<sizeof(Value), alignof(Value)>;
+#pragma GCC diagnostic pop
+    using node =
+        std::tuple<void *, void *, void *, void *, void *, bool, bool,
+                   value_storage>;
 
-        node() noexcept
-            : parent(nullptr),
-              left(nullptr),
-              right(nullptr),
-              next(nullptr),
-              prev(nullptr),
-              red(false),
-              engaged(false) {}
-        node(const node &) = delete;
-        node(node &&) = delete;
-        node &operator=(const node &) = delete;
-        node &operator=(node &&) = delete;
-        ~node() noexcept {}
-    };
+    constexpr std::size_t n_parent = 0;
+    constexpr std::size_t n_left = 1;
+    constexpr std::size_t n_right = 2;
+    constexpr std::size_t n_next = 3;
+    constexpr std::size_t n_prev = 4;
+    constexpr std::size_t n_red = 5;
+    constexpr std::size_t n_engaged = 6;
+    constexpr std::size_t n_value = 7;
 
-    struct left_token final
-    {
-    };
-    struct right_token final
-    {
-    };
-    struct parent_token final
-    {
-    };
-    struct red_token final
-    {
-    };
-    struct engaged_token final
-    {
-    };
-    struct value_token final
-    {
-    };
-    struct next_token final
-    {
-    };
-    struct prev_token final
-    {
-    };
+    // Core layout: header, count, comparator, key extractor, lens function,
+    // successor function, predecessor function, then every algorithm closure.
+    constexpr std::size_t c_header = 0;
+    constexpr std::size_t c_count = 1;
+    constexpr std::size_t c_comp = 2;
+    constexpr std::size_t c_key_of = 3;
 
-    struct set_left_token final
-    {
-    };
-    struct set_right_token final
-    {
-    };
-    struct set_parent_token final
-    {
-    };
-    struct set_red_token final
-    {
-    };
-    struct set_engaged_token final
-    {
-    };
-    struct set_next_token final
-    {
-    };
-    struct set_prev_token final
-    {
-    };
+    // Message tags.  Aliases of std::integral_constant keep the dispatcher
+    // entirely closure-based without declaring local tag types.
+    using left_tag = std::integral_constant<int, 0>;
+    using right_tag = std::integral_constant<int, 1>;
+    using parent_tag = std::integral_constant<int, 2>;
+    using red_tag = std::integral_constant<int, 3>;
+    using engaged_tag = std::integral_constant<int, 4>;
+    using value_tag = std::integral_constant<int, 5>;
+    using next_tag = std::integral_constant<int, 6>;
+    using prev_tag = std::integral_constant<int, 7>;
+
+    using set_left_tag = std::integral_constant<int, 8>;
+    using set_right_tag = std::integral_constant<int, 9>;
+    using set_parent_tag = std::integral_constant<int, 10>;
+    using set_red_tag = std::integral_constant<int, 11>;
+    using set_engaged_tag = std::integral_constant<int, 12>;
+    using set_next_tag = std::integral_constant<int, 13>;
+    using set_prev_tag = std::integral_constant<int, 14>;
 
     // -------------------------------------------------------------------
-    // Functional lens.  The only code in the entire program which reads or
-    // writes node members is this dispatcher.  Algorithms ask for a message
-    // tag; they never see a field.  wrap(node) is a higher-order closure:
-    // it closes over only the node and returns another generic closure.
+    // Functional lens.  This is the only code in the entire program which
+    // reads or writes node fields.  Algorithms ask for a message tag; they
+    // never see a field.  wrap(node) is a higher-order closure: it closes
+    // over only the node and returns another generic closure.
     // -------------------------------------------------------------------
-    struct node_access
+    static constinit auto wrap_fn = [](node *p) noexcept
     {
-        static auto wrap(node *p) noexcept
+        return [p]<class Tag, class... Args>(Tag,
+                                             Args &&...args) noexcept
+                   -> decltype(auto)
         {
-            return [p]<class Tag, class... Args>(Tag,
-                                                 Args &&...args) noexcept
-                       -> decltype(auto)
+            using T = std::remove_cvref_t<Tag>;
+            if constexpr (std::same_as<T, left_tag>)
             {
-                using T = std::remove_cvref_t<Tag>;
-                if constexpr (std::same_as<T, left_token>)
-                {
-                    return static_cast<node *const &>(p->left);
-                }
-                else if constexpr (std::same_as<T, right_token>)
-                {
-                    return static_cast<node *const &>(p->right);
-                }
-                else if constexpr (std::same_as<T, parent_token>)
-                {
-                    return static_cast<node *const &>(p->parent);
-                }
-                else if constexpr (std::same_as<T, red_token>)
-                {
-                    return static_cast<bool const &>(p->red);
-                }
-                else if constexpr (std::same_as<T, engaged_token>)
-                {
-                    return static_cast<bool const &>(p->engaged);
-                }
-                else if constexpr (std::same_as<T, value_token>)
-                {
-                    return (p->value);
-                }
-                else if constexpr (std::same_as<T, next_token>)
-                {
-                    return static_cast<node *const &>(p->next);
-                }
-                else if constexpr (std::same_as<T, prev_token>)
-                {
-                    return static_cast<node *const &>(p->prev);
-                }
-                else if constexpr (std::same_as<T, set_left_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->left = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_right_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->right = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_parent_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->parent = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_red_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->red = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_engaged_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->engaged = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_next_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->next = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_prev_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->prev = (std::forward<Args>(args), ...);
-                }
-                else
-                {
-                    static_assert(!sizeof(Tag), "unknown node-lens message");
-                }
-            };
-        }
+                return static_cast<node *>(std::get<n_left>(*p));
+            }
+            else if constexpr (std::same_as<T, right_tag>)
+            {
+                return static_cast<node *>(std::get<n_right>(*p));
+            }
+            else if constexpr (std::same_as<T, parent_tag>)
+            {
+                return static_cast<node *>(std::get<n_parent>(*p));
+            }
+            else if constexpr (std::same_as<T, red_tag>)
+            {
+                return static_cast<bool>(std::get<n_red>(*p));
+            }
+            else if constexpr (std::same_as<T, engaged_tag>)
+            {
+                return static_cast<bool>(std::get<n_engaged>(*p));
+            }
+            else if constexpr (std::same_as<T, value_tag>)
+            {
+                return (*std::launder(reinterpret_cast<Value *>(
+                    std::addressof(std::get<n_value>(*p)))));
+            }
+            else if constexpr (std::same_as<T, next_tag>)
+            {
+                return static_cast<node *>(std::get<n_next>(*p));
+            }
+            else if constexpr (std::same_as<T, prev_tag>)
+            {
+                return static_cast<node *>(std::get<n_prev>(*p));
+            }
+            else if constexpr (std::same_as<T, set_left_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_left>(*p) =
+                    static_cast<void *>((std::forward<Args>(args), ...));
+            }
+            else if constexpr (std::same_as<T, set_right_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_right>(*p) =
+                    static_cast<void *>((std::forward<Args>(args), ...));
+            }
+            else if constexpr (std::same_as<T, set_parent_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_parent>(*p) =
+                    static_cast<void *>((std::forward<Args>(args), ...));
+            }
+            else if constexpr (std::same_as<T, set_red_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_red>(*p) = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, set_engaged_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_engaged>(*p) = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, set_next_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_next>(*p) =
+                    static_cast<void *>((std::forward<Args>(args), ...));
+            }
+            else if constexpr (std::same_as<T, set_prev_tag>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                std::get<n_prev>(*p) =
+                    static_cast<void *>((std::forward<Args>(args), ...));
+            }
+            else
+            {
+                static_assert(!sizeof(Tag), "unknown node-lens message");
+            }
+        };
     };
 
     // -------------------------------------------------------------------
@@ -233,88 +214,94 @@ inline constexpr auto make_stl_toolkit =
     // the lens and are stored in the engine as ordinary function pointers,
     // so iterator objects survive container moves and swaps.
     // -------------------------------------------------------------------
-    auto next_lambda_fn = [](node *p) noexcept -> node *
+    static constinit auto next_lambda_fn = [](node *p) noexcept -> node *
     {
-        return node_access::wrap(p)(next_token{});
+        return wrap_fn(p)(next_tag{});
     };
-    auto prev_lambda_fn = [](node *p) noexcept -> node *
+    static constinit auto prev_lambda_fn = [](node *p) noexcept -> node *
     {
-        return node_access::wrap(p)(prev_token{});
+        return wrap_fn(p)(prev_tag{});
     };
 
     // -------------------------------------------------------------------
     // Rotations (pure closures).
     // -------------------------------------------------------------------
-    auto left_rotate_fn = [](auto &self, node *x) noexcept
+    static constinit auto left_rotate_fn = [](auto &self,
+                                               node *x) noexcept
     {
-        auto L = self.lens;
-        node *y = L(x)(right_token{});
-        L(x)(set_right_token{}, L(y)(left_token{}));
-        if (L(y)(left_token{}))
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        node *y = L(x)(right_tag{});
+        L(x)(set_right_tag{}, L(y)(left_tag{}));
+        if (L(y)(left_tag{}))
         {
-            L(L(y)(left_token{}))(set_parent_token{}, x);
+            L(L(y)(left_tag{}))(set_parent_tag{}, x);
         }
-        node *xp = L(x)(parent_token{});
-        L(y)(set_parent_token{}, xp);
-        if (xp == &self.header)
+        node *xp = L(x)(parent_tag{});
+        L(y)(set_parent_tag{}, xp);
+        if (xp == &header)
         {
-            L (&self.header)(set_left_token{}, y);
+            L (&header)(set_left_tag{}, y);
         }
-        else if (x == L(xp)(left_token{}))
+        else if (x == L(xp)(left_tag{}))
         {
-            L(xp)(set_left_token{}, y);
+            L(xp)(set_left_tag{}, y);
         }
         else
         {
-            L(xp)(set_right_token{}, y);
+            L(xp)(set_right_tag{}, y);
         }
-        L(y)(set_left_token{}, x);
-        L(x)(set_parent_token{}, y);
+        L(y)(set_left_tag{}, x);
+        L(x)(set_parent_tag{}, y);
     };
 
-    auto right_rotate_fn = [](auto &self, node *x) noexcept
+    static constinit auto right_rotate_fn = [](auto &self,
+                                                node *x) noexcept
     {
-        auto L = self.lens;
-        node *y = L(x)(left_token{});
-        L(x)(set_left_token{}, L(y)(right_token{}));
-        if (L(y)(right_token{}))
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        node *y = L(x)(left_tag{});
+        L(x)(set_left_tag{}, L(y)(right_tag{}));
+        if (L(y)(right_tag{}))
         {
-            L(L(y)(right_token{}))(set_parent_token{}, x);
+            L(L(y)(right_tag{}))(set_parent_tag{}, x);
         }
-        node *xp = L(x)(parent_token{});
-        L(y)(set_parent_token{}, xp);
-        if (xp == &self.header)
+        node *xp = L(x)(parent_tag{});
+        L(y)(set_parent_tag{}, xp);
+        if (xp == &header)
         {
-            L (&self.header)(set_left_token{}, y);
+            L (&header)(set_left_tag{}, y);
         }
-        else if (x == L(xp)(right_token{}))
+        else if (x == L(xp)(right_tag{}))
         {
-            L(xp)(set_right_token{}, y);
+            L(xp)(set_right_tag{}, y);
         }
         else
         {
-            L(xp)(set_left_token{}, y);
+            L(xp)(set_left_tag{}, y);
         }
-        L(y)(set_right_token{}, x);
-        L(x)(set_parent_token{}, y);
+        L(y)(set_right_tag{}, x);
+        L(x)(set_parent_tag{}, y);
     };
 
-    auto minimum_fn = [](auto &self, node *x) noexcept -> node *
+    static constinit auto minimum_fn = [](auto &,
+                                           node *x) noexcept -> node *
     {
-        auto L = self.lens;
-        while (x && L(x)(left_token{}))
+        auto L = wrap_fn;
+        while (x && L(x)(left_tag{}))
         {
-            x = L(x)(left_token{});
+            x = L(x)(left_tag{});
         }
         return x;
     };
 
-    auto maximum_fn = [](auto &self, node *x) noexcept -> node *
+    static constinit auto maximum_fn = [](auto &,
+                                           node *x) noexcept -> node *
     {
-        auto L = self.lens;
-        while (x && L(x)(right_token{}))
+        auto L = wrap_fn;
+        while (x && L(x)(right_tag{}))
         {
-            x = L(x)(right_token{});
+            x = L(x)(right_tag{});
         }
         return x;
     };
@@ -322,211 +309,216 @@ inline constexpr auto make_stl_toolkit =
     // -------------------------------------------------------------------
     // Insertion fix-up (CLRS), expressed as a closure.
     // -------------------------------------------------------------------
-    auto insert_fix_fn = [](auto &self, node *z) noexcept
+    static constinit auto insert_fix_fn = [](auto &self, node *z) noexcept
     {
-        auto L = self.lens;
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
         auto root = [&]() noexcept
         {
-            return L(&self.header)(left_token{});
+            return L(&header)(left_tag{});
         };
         auto is_red = [&](node *n) noexcept
         {
-            return n != nullptr && L(n)(red_token{});
+            return n != nullptr && L(n)(red_tag{});
         };
 
-        while (z != root() && is_red(L(z)(parent_token{})))
+        while (z != root() && is_red(L(z)(parent_tag{})))
         {
-            node *p = L(z)(parent_token{});
-            node *g = L(p)(parent_token{});
-            if (p == L(g)(left_token{}))
+            node *p = L(z)(parent_tag{});
+            node *g = L(p)(parent_tag{});
+            if (p == L(g)(left_tag{}))
             {
-                node *u = L(g)(right_token{});
+                node *u = L(g)(right_tag{});
                 if (is_red(u))
                 {
-                    L(p)(set_red_token{}, false);
-                    L(u)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
+                    L(p)(set_red_tag{}, false);
+                    L(u)(set_red_tag{}, false);
+                    L(g)(set_red_tag{}, true);
                     z = g;
                 }
                 else
                 {
-                    if (z == L(p)(right_token{}))
+                    if (z == L(p)(right_tag{}))
                     {
                         z = p;
-                        self.left_rotate(self, z);
-                        p = L(z)(parent_token{});
-                        g = L(p)(parent_token{});
+                        left_rotate_fn(self, z);
+                        p = L(z)(parent_tag{});
+                        g = L(p)(parent_tag{});
                     }
-                    L(p)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
-                    self.right_rotate(self, g);
+                    L(p)(set_red_tag{}, false);
+                    L(g)(set_red_tag{}, true);
+                    right_rotate_fn(self, g);
                 }
             }
             else
             {
-                node *u = L(g)(left_token{});
+                node *u = L(g)(left_tag{});
                 if (is_red(u))
                 {
-                    L(p)(set_red_token{}, false);
-                    L(u)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
+                    L(p)(set_red_tag{}, false);
+                    L(u)(set_red_tag{}, false);
+                    L(g)(set_red_tag{}, true);
                     z = g;
                 }
                 else
                 {
-                    if (z == L(p)(left_token{}))
+                    if (z == L(p)(left_tag{}))
                     {
                         z = p;
-                        self.right_rotate(self, z);
-                        p = L(z)(parent_token{});
-                        g = L(p)(parent_token{});
+                        right_rotate_fn(self, z);
+                        p = L(z)(parent_tag{});
+                        g = L(p)(parent_tag{});
                     }
-                    L(p)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
-                    self.left_rotate(self, g);
+                    L(p)(set_red_tag{}, false);
+                    L(g)(set_red_tag{}, true);
+                    left_rotate_fn(self, g);
                 }
             }
         }
         if (root())
         {
-            L(root())(set_red_token{}, false);
+            L(root())(set_red_tag{}, false);
         }
     };
 
     // -------------------------------------------------------------------
     // Deletion fix-up.  x may be null, in which case xp is its parent.
     // -------------------------------------------------------------------
-    auto erase_fix_fn = [](auto &self, node *x, node *xp) noexcept
+    static constinit auto erase_fix_fn = [](auto &self, node *x,
+                                             node *xp) noexcept
     {
-        auto L = self.lens;
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
         auto is_red = [&](node *n) noexcept
         {
-            return n != nullptr && L(n)(red_token{});
+            return n != nullptr && L(n)(red_tag{});
         };
-        while (x != L(&self.header)(left_token{}) && !is_red(x))
+        while (x != L(&header)(left_tag{}) && !is_red(x))
         {
             if (xp == nullptr)
             {
                 break;
             }
-            if (x == L(xp)(left_token{}))
+            if (x == L(xp)(left_tag{}))
             {
-                node *w = L(xp)(right_token{});
+                node *w = L(xp)(right_tag{});
                 if (w == nullptr)
                 {
                     x = xp;
-                    xp = L(x)(parent_token{});
+                    xp = L(x)(parent_tag{});
                     continue;
                 }
                 if (is_red(w))
                 {
-                    L(w)(set_red_token{}, false);
-                    L(xp)(set_red_token{}, true);
-                    self.left_rotate(self, xp);
-                    w = L(xp)(right_token{});
+                    L(w)(set_red_tag{}, false);
+                    L(xp)(set_red_tag{}, true);
+                    left_rotate_fn(self, xp);
+                    w = L(xp)(right_tag{});
                 }
-                if (!is_red(L(w)(left_token{})) &&
-                    !is_red(L(w)(right_token{})))
+                if (!is_red(L(w)(left_tag{})) &&
+                    !is_red(L(w)(right_tag{})))
                 {
-                    L(w)(set_red_token{}, true);
+                    L(w)(set_red_tag{}, true);
                     x = xp;
-                    xp = L(x)(parent_token{});
+                    xp = L(x)(parent_tag{});
                 }
                 else
                 {
-                    if (!is_red(L(w)(right_token{})))
+                    if (!is_red(L(w)(right_tag{})))
                     {
-                        if (L(w)(left_token{}))
+                        if (L(w)(left_tag{}))
                         {
-                            L(L(w)(left_token{}))(set_red_token{}, false);
+                            L(L(w)(left_tag{}))(set_red_tag{}, false);
                         }
-                        L(w)(set_red_token{}, true);
-                        self.right_rotate(self, w);
-                        w = L(xp)(right_token{});
+                        L(w)(set_red_tag{}, true);
+                        right_rotate_fn(self, w);
+                        w = L(xp)(right_tag{});
                     }
-                    L(w)(set_red_token{}, L(xp)(red_token{}));
-                    L(xp)(set_red_token{}, false);
-                    if (L(w)(right_token{}))
+                    L(w)(set_red_tag{}, L(xp)(red_tag{}));
+                    L(xp)(set_red_tag{}, false);
+                    if (L(w)(right_tag{}))
                     {
-                        L(L(w)(right_token{}))(set_red_token{}, false);
+                        L(L(w)(right_tag{}))(set_red_tag{}, false);
                     }
-                    self.left_rotate(self, xp);
-                    x = L(&self.header)(left_token{});
+                    left_rotate_fn(self, xp);
+                    x = L(&header)(left_tag{});
                     xp = nullptr;
                 }
             }
             else
             {
-                node *w = L(xp)(left_token{});
+                node *w = L(xp)(left_tag{});
                 if (w == nullptr)
                 {
                     x = xp;
-                    xp = L(x)(parent_token{});
+                    xp = L(x)(parent_tag{});
                     continue;
                 }
                 if (is_red(w))
                 {
-                    L(w)(set_red_token{}, false);
-                    L(xp)(set_red_token{}, true);
-                    self.right_rotate(self, xp);
-                    w = L(xp)(left_token{});
+                    L(w)(set_red_tag{}, false);
+                    L(xp)(set_red_tag{}, true);
+                    right_rotate_fn(self, xp);
+                    w = L(xp)(left_tag{});
                 }
-                if (!is_red(L(w)(right_token{})) &&
-                    !is_red(L(w)(left_token{})))
+                if (!is_red(L(w)(right_tag{})) &&
+                    !is_red(L(w)(left_tag{})))
                 {
-                    L(w)(set_red_token{}, true);
+                    L(w)(set_red_tag{}, true);
                     x = xp;
-                    xp = L(x)(parent_token{});
+                    xp = L(x)(parent_tag{});
                 }
                 else
                 {
-                    if (!is_red(L(w)(left_token{})))
+                    if (!is_red(L(w)(left_tag{})))
                     {
-                        if (L(w)(right_token{}))
+                        if (L(w)(right_tag{}))
                         {
-                            L(L(w)(right_token{}))(set_red_token{}, false);
+                            L(L(w)(right_tag{}))(set_red_tag{}, false);
                         }
-                        L(w)(set_red_token{}, true);
-                        self.left_rotate(self, w);
-                        w = L(xp)(left_token{});
+                        L(w)(set_red_tag{}, true);
+                        left_rotate_fn(self, w);
+                        w = L(xp)(left_tag{});
                     }
-                    L(w)(set_red_token{}, L(xp)(red_token{}));
-                    L(xp)(set_red_token{}, false);
-                    if (L(w)(left_token{}))
+                    L(w)(set_red_tag{}, L(xp)(red_tag{}));
+                    L(xp)(set_red_tag{}, false);
+                    if (L(w)(left_tag{}))
                     {
-                        L(L(w)(left_token{}))(set_red_token{}, false);
+                        L(L(w)(left_tag{}))(set_red_tag{}, false);
                     }
-                    self.right_rotate(self, xp);
-                    x = L(&self.header)(left_token{});
+                    right_rotate_fn(self, xp);
+                    x = L(&header)(left_tag{});
                     xp = nullptr;
                 }
             }
         }
         if (x)
         {
-            L(x)(set_red_token{}, false);
+            L(x)(set_red_tag{}, false);
         }
     };
 
-    auto transplant_fn = [](auto &self, node *u, node *v) noexcept
+    static constinit auto transplant_fn = [](auto &self, node *u,
+                                              node *v) noexcept
     {
-        auto L = self.lens;
-        node *up = L(u)(parent_token{});
-        if (up == &self.header)
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        node *up = L(u)(parent_tag{});
+        if (up == &header)
         {
-            L (&self.header)(set_left_token{}, v);
+            L (&header)(set_left_tag{}, v);
         }
-        else if (u == L(up)(left_token{}))
+        else if (u == L(up)(left_tag{}))
         {
-            L(up)(set_left_token{}, v);
+            L(up)(set_left_tag{}, v);
         }
         else
         {
-            L(up)(set_right_token{}, v);
+            L(up)(set_right_tag{}, v);
         }
         if (v)
         {
-            L(v)(set_parent_token{}, up);
+            L(v)(set_parent_tag{}, up);
         }
     };
 
@@ -534,23 +526,27 @@ inline constexpr auto make_stl_toolkit =
     // Insertion.  Equivalent keys are linked after the existing equivalent
     // range, preserving stable order for multi containers.
     // -------------------------------------------------------------------
-    auto insert_node_fn = [](auto &self, node *z)
+    static constinit auto insert_node_fn = [](auto &self, node *z)
         -> std::pair<node *, bool>
     {
-        auto L = self.lens;
-        node *y = &self.header;
-        node *x = L(&self.header)(left_token{});
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        auto &comp = std::get<c_comp>(self);
+        auto &key_of = std::get<c_key_of>(self);
+        auto &count = std::get<c_count>(self);
+        node *y = &header;
+        node *x = L(&header)(left_tag{});
         bool went_left = false;
 
         while (x)
         {
             y = x;
-            const Key &zk = self.key_of(L(z)(value_token{}));
-            const Key &xk = self.key_of(L(x)(value_token{}));
-            const bool before = self.comp(zk, xk);
+            const Key &zk = key_of(L(z)(value_tag{}));
+            const Key &xk = key_of(L(x)(value_tag{}));
+            const bool before = comp(zk, xk);
             if constexpr (!AllowDuplicates)
             {
-                const bool after = self.comp(xk, zk);
+                const bool after = comp(xk, zk);
                 if (!before && !after)
                 {
                     return {x, false};
@@ -558,538 +554,537 @@ inline constexpr auto make_stl_toolkit =
             }
             if (before)
             {
-                x = L(x)(left_token{});
+                x = L(x)(left_tag{});
                 went_left = true;
             }
             else
             {
-                x = L(x)(right_token{});
+                x = L(x)(right_tag{});
                 went_left = false;
             }
         }
 
-        L(z)(set_parent_token{}, y);
-        L(z)(set_left_token{}, static_cast<node *>(nullptr));
-        L(z)(set_right_token{}, static_cast<node *>(nullptr));
-        L(z)(set_red_token{}, true);
+        L(z)(set_parent_tag{}, y);
+        L(z)(set_left_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_right_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_red_tag{}, true);
 
-        if (y == &self.header)
+        if (y == &header)
         {
-            L (&self.header)(set_left_token{}, z);
-            L (&self.header)(set_parent_token{}, z);
-            L(z)(set_next_token{}, &self.header);
-            L(z)(set_prev_token{}, &self.header);
-            L (&self.header)(set_next_token{}, z);
-            L (&self.header)(set_prev_token{}, z);
+            L (&header)(set_left_tag{}, z);
+            L (&header)(set_parent_tag{}, z);
+            L(z)(set_next_tag{}, &header);
+            L(z)(set_prev_tag{}, &header);
+            L (&header)(set_next_tag{}, z);
+            L (&header)(set_prev_tag{}, z);
         }
         else if (went_left)
         {
-            L(y)(set_left_token{}, z);
-            node *pv = L(y)(prev_token{});
-            L(z)(set_next_token{}, y);
-            L(z)(set_prev_token{}, pv);
-            L(pv)(set_next_token{}, z);
-            L(y)(set_prev_token{}, z);
+            L(y)(set_left_tag{}, z);
+            node *pv = L(y)(prev_tag{});
+            L(z)(set_next_tag{}, y);
+            L(z)(set_prev_tag{}, pv);
+            L(pv)(set_next_tag{}, z);
+            L(y)(set_prev_tag{}, z);
         }
         else
         {
-            L(y)(set_right_token{}, z);
-            node *nx = L(y)(next_token{});
-            L(z)(set_prev_token{}, y);
-            L(z)(set_next_token{}, nx);
-            L(nx)(set_prev_token{}, z);
-            L(y)(set_next_token{}, z);
+            L(y)(set_right_tag{}, z);
+            node *nx = L(y)(next_tag{});
+            L(z)(set_prev_tag{}, y);
+            L(z)(set_next_tag{}, nx);
+            L(nx)(set_prev_tag{}, z);
+            L(y)(set_next_tag{}, z);
         }
 
-        ++self.count;
-        self.insert_fix(self, z);
-        node *r = L(&self.header)(left_token{});
-        L (&self.header)(set_parent_token{}, r);
+        ++count;
+        insert_fix_fn(self, z);
+        node *r = L(&header)(left_tag{});
+        L (&header)(set_parent_tag{}, r);
         return {z, true};
     };
 
     // Hinted insertion: use the hint when it really describes a valid
     // neighbouring position (amortized constant), otherwise fall back to
     // the ordinary logarithmic search.
-    auto insert_node_hint_fn = [](auto &self, node *z, node *hint)
+    static constinit auto insert_node_hint_fn = [](auto &self, node *z,
+                                                    node *hint)
         -> std::pair<node *, bool>
     {
-        auto L = self.lens;
-        node *root = L(&self.header)(left_token{});
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        auto &comp = std::get<c_comp>(self);
+        auto &key_of = std::get<c_key_of>(self);
+        auto &count = std::get<c_count>(self);
+        node *root = L(&header)(left_tag{});
         if (!root)
         {
-            return self.insert_node(self, z);
+            return insert_node_fn(self, z);
         }
-        const Key &zk = self.key_of(L(z)(value_token{}));
+        const Key &zk = key_of(L(z)(value_tag{}));
 
-        if (hint == &self.header)
+        if (hint == &header)
         {
-            node *last = L(&self.header)(prev_token{});
-            const Key &lk = self.key_of(L(last)(value_token{}));
+            node *last = L(&header)(prev_tag{});
+            const Key &lk = key_of(L(last)(value_tag{}));
             const bool valid =
-                AllowDuplicates ? !self.comp(zk, lk) : self.comp(lk, zk);
+                AllowDuplicates ? !comp(zk, lk) : comp(lk, zk);
             if (!valid)
             {
-                return self.insert_node(self, z);
+                return insert_node_fn(self, z);
             }
-            L(z)(set_parent_token{}, last);
-            L(z)(set_left_token{}, static_cast<node *>(nullptr));
-            L(z)(set_right_token{}, static_cast<node *>(nullptr));
-            L(z)(set_red_token{}, true);
-            L(last)(set_right_token{}, z);
-            L(z)(set_prev_token{}, last);
-            L(z)(set_next_token{}, &self.header);
-            L(last)(set_next_token{}, z);
-            L (&self.header)(set_prev_token{}, z);
-            ++self.count;
-            self.insert_fix(self, z);
-            L (&self.header)(set_parent_token{},
-                             L (&self.header)(left_token{}));
+            L(z)(set_parent_tag{}, last);
+            L(z)(set_left_tag{}, static_cast<node *>(nullptr));
+            L(z)(set_right_tag{}, static_cast<node *>(nullptr));
+            L(z)(set_red_tag{}, true);
+            L(last)(set_right_tag{}, z);
+            L(z)(set_prev_tag{}, last);
+            L(z)(set_next_tag{}, &header);
+            L(last)(set_next_tag{}, z);
+            L (&header)(set_prev_tag{}, z);
+            ++count;
+            insert_fix_fn(self, z);
+            L (&header)(set_parent_tag{},
+                        L (&header)(left_tag{}));
             return {z, true};
         }
 
-        const Key &hk = self.key_of(L(hint)(value_token{}));
+        const Key &hk = key_of(L(hint)(value_tag{}));
         if constexpr (AllowDuplicates)
         {
-            if (self.comp(hk, zk))
+            if (comp(hk, zk))
             {
-                return self.insert_node(self, z);
+                return insert_node_fn(self, z);
             }
         }
         else
         {
-            if (!self.comp(zk, hk))
+            if (!comp(zk, hk))
             {
-                return self.insert_node(self, z);
+                return insert_node_fn(self, z);
             }
         }
 
-        node *pred = L(hint)(prev_token{});
-        if (pred != &self.header)
+        node *pred = L(hint)(prev_tag{});
+        if (pred != &header)
         {
-            const Key &pk = self.key_of(L(pred)(value_token{}));
+            const Key &pk = key_of(L(pred)(value_tag{}));
             if constexpr (AllowDuplicates)
             {
-                if (self.comp(zk, pk))
+                if (comp(zk, pk))
                 {
-                    return self.insert_node(self, z);
+                    return insert_node_fn(self, z);
                 }
             }
             else
             {
-                if (!self.comp(pk, zk))
+                if (!comp(pk, zk))
                 {
-                    return self.insert_node(self, z);
+                    return insert_node_fn(self, z);
                 }
             }
         }
 
         node *parent = nullptr;
-        if (L(hint)(left_token{}) == nullptr)
+        if (L(hint)(left_tag{}) == nullptr)
         {
             parent = hint;
-            L(hint)(set_left_token{}, z);
+            L(hint)(set_left_tag{}, z);
         }
         else
         {
-            parent = self.maximum(self, L(hint)(left_token{}));
-            L(parent)(set_right_token{}, z);
+            parent = maximum_fn(self, L(hint)(left_tag{}));
+            L(parent)(set_right_tag{}, z);
         }
-        L(z)(set_parent_token{}, parent);
-        L(z)(set_left_token{}, static_cast<node *>(nullptr));
-        L(z)(set_right_token{}, static_cast<node *>(nullptr));
-        L(z)(set_red_token{}, true);
-        L(z)(set_prev_token{}, pred);
-        L(z)(set_next_token{}, hint);
-        L(pred)(set_next_token{}, z);
-        L(hint)(set_prev_token{}, z);
-        ++self.count;
-        self.insert_fix(self, z);
-        L (&self.header)(set_parent_token{}, L (&self.header)(left_token{}));
+        L(z)(set_parent_tag{}, parent);
+        L(z)(set_left_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_right_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_red_tag{}, true);
+        L(z)(set_prev_tag{}, pred);
+        L(z)(set_next_tag{}, hint);
+        L(pred)(set_next_tag{}, z);
+        L(hint)(set_prev_tag{}, z);
+        ++count;
+        insert_fix_fn(self, z);
+        L (&header)(set_parent_tag{}, L (&header)(left_tag{}));
         return {z, true};
     };
 
     // -------------------------------------------------------------------
     // Deletion / extraction.  Thread links are repaired in O(1).
     // -------------------------------------------------------------------
-    auto detach_fn = [](auto &self, node *z) noexcept
+    static constinit auto detach_fn = [](auto &self, node *z) noexcept
     {
-        auto L = self.lens;
-        node *zn = L(z)(next_token{});
-        node *zp = L(z)(prev_token{});
-        L(zp)(set_next_token{}, zn);
-        L(zn)(set_prev_token{}, zp);
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        auto &count = std::get<c_count>(self);
+        node *zn = L(z)(next_tag{});
+        node *zp = L(z)(prev_tag{});
+        L(zp)(set_next_tag{}, zn);
+        L(zn)(set_prev_tag{}, zp);
 
         node *y = z;
-        bool y_was_red = L(y)(red_token{});
+        bool y_was_red = L(y)(red_tag{});
         node *x = nullptr;
         node *xp = nullptr;
 
-        if (L(z)(left_token{}) == nullptr)
+        if (L(z)(left_tag{}) == nullptr)
         {
-            x = L(z)(right_token{});
-            xp = L(z)(parent_token{});
-            self.transplant(self, z, x);
+            x = L(z)(right_tag{});
+            xp = L(z)(parent_tag{});
+            transplant_fn(self, z, x);
         }
-        else if (L(z)(right_token{}) == nullptr)
+        else if (L(z)(right_tag{}) == nullptr)
         {
-            x = L(z)(left_token{});
-            xp = L(z)(parent_token{});
-            self.transplant(self, z, x);
+            x = L(z)(left_tag{});
+            xp = L(z)(parent_tag{});
+            transplant_fn(self, z, x);
         }
         else
         {
-            y = self.minimum(self, L(z)(right_token{}));
-            y_was_red = L(y)(red_token{});
-            x = L(y)(right_token{});
-            if (L(y)(parent_token{}) == z)
+            y = minimum_fn(self, L(z)(right_tag{}));
+            y_was_red = L(y)(red_tag{});
+            x = L(y)(right_tag{});
+            if (L(y)(parent_tag{}) == z)
             {
                 xp = y;
                 if (x)
                 {
-                    L(x)(set_parent_token{}, y);
+                    L(x)(set_parent_tag{}, y);
                 }
             }
             else
             {
-                xp = L(y)(parent_token{});
-                self.transplant(self, y, x);
-                L(y)(set_right_token{}, L(z)(right_token{}));
-                L(L(y)(right_token{}))(set_parent_token{}, y);
+                xp = L(y)(parent_tag{});
+                transplant_fn(self, y, x);
+                L(y)(set_right_tag{}, L(z)(right_tag{}));
+                L(L(y)(right_tag{}))(set_parent_tag{}, y);
             }
-            self.transplant(self, z, y);
-            L(y)(set_left_token{}, L(z)(left_token{}));
-            L(L(y)(left_token{}))(set_parent_token{}, y);
-            L(y)(set_red_token{}, L(z)(red_token{}));
+            transplant_fn(self, z, y);
+            L(y)(set_left_tag{}, L(z)(left_tag{}));
+            L(L(y)(left_tag{}))(set_parent_tag{}, y);
+            L(y)(set_red_tag{}, L(z)(red_tag{}));
         }
 
-        --self.count;
+        --count;
         if (!y_was_red)
         {
-            self.erase_fix(self, x, xp);
+            erase_fix_fn(self, x, xp);
         }
 
-        node *r = L(&self.header)(left_token{});
+        node *r = L(&header)(left_tag{});
         if (r)
         {
-            L(r)(set_parent_token{}, &self.header);
+            L(r)(set_parent_tag{}, &header);
         }
-        L (&self.header)(set_parent_token{}, r);
+        L (&header)(set_parent_tag{}, r);
 
         // Make z a standalone node once again.
-        L(z)(set_left_token{}, static_cast<node *>(nullptr));
-        L(z)(set_right_token{}, static_cast<node *>(nullptr));
-        L(z)(set_parent_token{}, static_cast<node *>(nullptr));
-        L(z)(set_next_token{}, static_cast<node *>(nullptr));
-        L(z)(set_prev_token{}, static_cast<node *>(nullptr));
-        L(z)(set_red_token{}, false);
+        L(z)(set_left_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_right_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_parent_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_next_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_prev_tag{}, static_cast<node *>(nullptr));
+        L(z)(set_red_tag{}, false);
     };
 
     // -------------------------------------------------------------------
     // Lookup closures are templates through generic lambdas, enabling
     // heterogeneous lookup when Compare::is_transparent exists.
     // -------------------------------------------------------------------
-    auto lower_bound_fn = [](auto &self, const auto &key) -> node *
+    static constinit auto lower_bound_fn = [](auto &self,
+                                               const auto &key) -> node *
     {
-        auto L = self.lens;
-        node *x = L(&self.header)(left_token{});
-        node *y = &self.header;
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        auto &comp = std::get<c_comp>(self);
+        auto &key_of = std::get<c_key_of>(self);
+        node *x = L(&header)(left_tag{});
+        node *y = &header;
         while (x)
         {
-            const Key &xk = self.key_of(L(x)(value_token{}));
-            if (!self.comp(xk, key))
+            const Key &xk = key_of(L(x)(value_tag{}));
+            if (!comp(xk, key))
             {
                 y = x;
-                x = L(x)(left_token{});
+                x = L(x)(left_tag{});
             }
             else
             {
-                x = L(x)(right_token{});
+                x = L(x)(right_tag{});
             }
         }
         return y;
     };
 
-    auto upper_bound_fn = [](auto &self, const auto &key) -> node *
+    static constinit auto upper_bound_fn = [](auto &self,
+                                               const auto &key) -> node *
     {
-        auto L = self.lens;
-        node *x = L(&self.header)(left_token{});
-        node *y = &self.header;
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        auto &comp = std::get<c_comp>(self);
+        auto &key_of = std::get<c_key_of>(self);
+        node *x = L(&header)(left_tag{});
+        node *y = &header;
         while (x)
         {
-            const Key &xk = self.key_of(L(x)(value_token{}));
-            if (self.comp(key, xk))
+            const Key &xk = key_of(L(x)(value_tag{}));
+            if (comp(key, xk))
             {
                 y = x;
-                x = L(x)(left_token{});
+                x = L(x)(left_tag{});
             }
             else
             {
-                x = L(x)(right_token{});
+                x = L(x)(right_tag{});
             }
         }
         return y;
     };
 
-    auto find_node_fn = [](auto &self, const auto &key) -> node *
+    static constinit auto find_node_fn = [](auto &self,
+                                             const auto &key) -> node *
     {
-        node *n = self.lower_bound(self, key);
-        if (n != &self.header)
+        auto &header = std::get<c_header>(self);
+        auto &comp = std::get<c_comp>(self);
+        auto &key_of = std::get<c_key_of>(self);
+        node *n = lower_bound_fn(self, key);
+        if (n != &header)
         {
-            const Key &nk = self.key_of(self.lens(n)(value_token{}));
-            if (!self.comp(key, nk) && !self.comp(nk, key))
+            const Key &nk = key_of(wrap_fn(n)(value_tag{}));
+            if (!comp(key, nk) && !comp(nk, key))
             {
                 return n;
             }
         }
-        return &self.header;
+        return &header;
     };
 
     // -------------------------------------------------------------------
     // Structural utilities used by the wrapper (copying, clearing,
     // stealing, swapping).  They also use only the lens.
     // -------------------------------------------------------------------
-    auto rebuild_threads_fn = [](auto &self) noexcept
+    static constinit auto rebuild_threads_fn = [](auto &self) noexcept
     {
-        auto L = self.lens;
-        node *r = L(&self.header)(left_token{});
-        node *prev = &self.header;
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        node *r = L(&header)(left_tag{});
+        node *prev = &header;
         auto visit = [&](auto &&go, node *n) -> void
         {
             if (!n)
             {
                 return;
             }
-            go(go, L(n)(left_token{}));
-            L(prev)(set_next_token{}, n);
-            L(n)(set_prev_token{}, prev);
+            go(go, L(n)(left_tag{}));
+            L(prev)(set_next_tag{}, n);
+            L(n)(set_prev_tag{}, prev);
             prev = n;
-            go(go, L(n)(right_token{}));
+            go(go, L(n)(right_tag{}));
         };
         if (r)
         {
             visit(visit, r);
         }
-        L(prev)(set_next_token{}, &self.header);
-        L (&self.header)(set_prev_token{}, prev);
-        L (&self.header)(set_next_token{},
-                         r ? self.minimum(self, r) : &self.header);
-        L (&self.header)(set_parent_token{}, r);
+        L(prev)(set_next_tag{}, &header);
+        L (&header)(set_prev_tag{}, prev);
+        L (&header)(set_next_tag{},
+                    r ? minimum_fn(self, r) : &header);
+        L (&header)(set_parent_tag{}, r);
     };
 
-    auto clear_tree_fn = [](auto &self, node *n, auto &&destroy) -> void
+    static constinit auto clear_tree_fn = [](auto &, node *n,
+                                              auto &&destroy) -> void
     {
-        if (!n)
+        // A small Y-combinator through the first argument keeps the closure
+        // recursive without naming its own (not-yet-deduced) type.
+        auto visit = [](auto &&go, node *cur, auto &&d) -> void
         {
-            return;
-        }
-        auto L = self.lens;
-        node *l = L(n)(left_token{});
-        node *r = L(n)(right_token{});
-        self.clear_tree(self, l, destroy);
-        self.clear_tree(self, r, destroy);
-        destroy(n);
-    };
-
-    auto clone_tree_fn = [](auto &self, node *src, auto &&create,
-                            auto &&destroy) -> node *
-    {
-        if (!src)
-        {
-            return nullptr;
-        }
-        auto L = self.lens;
-        node *d = create(src);
-        try
-        {
-            node *l =
-                self.clone_tree(self, L(src)(left_token{}), create,
-                                destroy);
-            L(d)(set_left_token{}, l);
-            if (l)
+            if (!cur)
             {
-                L(l)(set_parent_token{}, d);
+                return;
             }
-            node *r =
-                self.clone_tree(self, L(src)(right_token{}), create,
-                                destroy);
-            L(d)(set_right_token{}, r);
-            if (r)
-            {
-                L(r)(set_parent_token{}, d);
-            }
-            L(d)(set_red_token{}, L(src)(red_token{}));
-            return d;
-        }
-        catch (...)
+            auto L = wrap_fn;
+            node *l = L(cur)(left_tag{});
+            node *r = L(cur)(right_tag{});
+            go(go, l, d);
+            go(go, r, d);
+            d(cur);
+        };
+        visit(visit, n, destroy);
+    };
+
+    static constinit auto clone_tree_fn = [](auto &self, node *src,
+                                              auto &&create,
+                                              auto &&destroy) -> node *
+    {
+        auto visit = [&](auto &&go, node *s, auto &&make,
+                         auto &&drop) -> node *
         {
-            self.clear_tree(self, d, destroy);
-            throw;
-        }
+            if (!s)
+            {
+                return nullptr;
+            }
+            auto L = wrap_fn;
+            node *d = make(s);
+            try
+            {
+                node *l = go(go, L(s)(left_tag{}), make, drop);
+                L(d)(set_left_tag{}, l);
+                if (l)
+                {
+                    L(l)(set_parent_tag{}, d);
+                }
+                node *r = go(go, L(s)(right_tag{}), make, drop);
+                L(d)(set_right_tag{}, r);
+                if (r)
+                {
+                    L(r)(set_parent_tag{}, d);
+                }
+                L(d)(set_red_tag{}, L(s)(red_tag{}));
+                return d;
+            }
+            catch (...)
+            {
+                clear_tree_fn(self, d, drop);
+                throw;
+            }
+        };
+        return visit(visit, src, create, destroy);
     };
 
-    auto reset_fn = [](auto &self) noexcept
+    static constinit auto reset_fn = [](auto &self) noexcept
     {
-        auto L = self.lens;
-        L (&self.header)(set_left_token{}, static_cast<node *>(nullptr));
-        L (&self.header)(set_right_token{}, static_cast<node *>(nullptr));
-        L (&self.header)(set_parent_token{}, static_cast<node *>(nullptr));
-        L (&self.header)(set_next_token{}, &self.header);
-        L (&self.header)(set_prev_token{}, &self.header);
-        self.count = 0;
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        L (&header)(set_left_tag{}, static_cast<node *>(nullptr));
+        L (&header)(set_right_tag{}, static_cast<node *>(nullptr));
+        L (&header)(set_parent_tag{}, static_cast<node *>(nullptr));
+        L (&header)(set_next_tag{}, &header);
+        L (&header)(set_prev_tag{}, &header);
+        std::get<c_count>(self) = 0;
     };
 
-    auto adopt_fn = [](auto &self, node *r, std::size_t n)
+    static constinit auto adopt_fn = [](auto &self, node *r, std::size_t n)
     {
-        auto L = self.lens;
-        L (&self.header)(set_left_token{}, r);
+        auto L = wrap_fn;
+        auto &header = std::get<c_header>(self);
+        L (&header)(set_left_tag{}, r);
         if (r)
         {
-            L(r)(set_parent_token{}, &self.header);
+            L(r)(set_parent_tag{}, &header);
         }
-        L (&self.header)(set_parent_token{}, r);
-        self.count = n;
-        self.rebuild_threads(self);
+        L (&header)(set_parent_tag{}, r);
+        std::get<c_count>(self) = n;
+        rebuild_threads_fn(self);
     };
 
-    auto take_from_fn = [](auto &dst, auto &src) noexcept
+    static constinit auto take_from_fn = [](auto &dst, auto &src) noexcept
     {
-        auto L = dst.lens;
-        node *r = L(&src.header)(left_token{});
-        node *first = L(&src.header)(next_token{});
-        node *last = L(&src.header)(prev_token{});
-        L (&dst.header)(set_left_token{}, r);
+        auto L = wrap_fn;
+        auto &dst_header = std::get<c_header>(dst);
+        auto &src_header = std::get<c_header>(src);
+        node *r = L(&src_header)(left_tag{});
+        node *first = L(&src_header)(next_tag{});
+        node *last = L(&src_header)(prev_tag{});
+        L (&dst_header)(set_left_tag{}, r);
         if (r)
         {
-            L(r)(set_parent_token{}, &dst.header);
-            L(first)(set_prev_token{}, &dst.header);
-            L(last)(set_next_token{}, &dst.header);
-            L (&dst.header)(set_next_token{}, first);
-            L (&dst.header)(set_prev_token{}, last);
+            L(r)(set_parent_tag{}, &dst_header);
+            L(first)(set_prev_tag{}, &dst_header);
+            L(last)(set_next_tag{}, &dst_header);
+            L (&dst_header)(set_next_tag{}, first);
+            L (&dst_header)(set_prev_tag{}, last);
         }
         else
         {
-            L (&dst.header)(set_next_token{}, &dst.header);
-            L (&dst.header)(set_prev_token{}, &dst.header);
+            L (&dst_header)(set_next_tag{}, &dst_header);
+            L (&dst_header)(set_prev_tag{}, &dst_header);
         }
-        L (&dst.header)(set_parent_token{}, r);
-        dst.count = src.count;
-        dst.reset(src);
+        L (&dst_header)(set_parent_tag{}, r);
+        std::get<c_count>(dst) = std::get<c_count>(src);
+        reset_fn(src);
     };
 
-    auto swap_trees_fn = [](auto &a, auto &b) noexcept
+    static constinit auto swap_trees_fn = [](auto &a, auto &b) noexcept
     {
-        auto L = a.lens;
-        node *ra = L(&a.header)(left_token{});
-        node *rb = L(&b.header)(left_token{});
-        node *af = L(&a.header)(next_token{});
-        node *al = L(&a.header)(prev_token{});
-        node *bf = L(&b.header)(next_token{});
-        node *bl = L(&b.header)(prev_token{});
+        auto L = wrap_fn;
+        auto &ah = std::get<c_header>(a);
+        auto &bh = std::get<c_header>(b);
+        node *ra = L(&ah)(left_tag{});
+        node *rb = L(&bh)(left_tag{});
+        node *af = L(&ah)(next_tag{});
+        node *al = L(&ah)(prev_tag{});
+        node *bf = L(&bh)(next_tag{});
+        node *bl = L(&bh)(prev_tag{});
 
-        L (&a.header)(set_left_token{}, rb);
-        L (&a.header)(set_parent_token{}, rb);
-        L (&a.header)(set_next_token{}, bf == &b.header ? &a.header : bf);
-        L (&a.header)(set_prev_token{}, bl == &b.header ? &a.header : bl);
+        L (&ah)(set_left_tag{}, rb);
+        L (&ah)(set_parent_tag{}, rb);
+        L (&ah)(set_next_tag{}, bf == &bh ? &ah : bf);
+        L (&ah)(set_prev_tag{}, bl == &bh ? &ah : bl);
 
-        L (&b.header)(set_left_token{}, ra);
-        L (&b.header)(set_parent_token{}, ra);
-        L (&b.header)(set_next_token{}, af == &a.header ? &b.header : af);
-        L (&b.header)(set_prev_token{}, al == &a.header ? &b.header : al);
+        L (&bh)(set_left_tag{}, ra);
+        L (&bh)(set_parent_tag{}, ra);
+        L (&bh)(set_next_tag{}, af == &ah ? &bh : af);
+        L (&bh)(set_prev_tag{}, al == &ah ? &bh : al);
 
         if (ra)
         {
-            L(ra)(set_parent_token{}, &b.header);
-            L(af)(set_prev_token{}, &b.header);
-            L(al)(set_next_token{}, &b.header);
+            L(ra)(set_parent_tag{}, &bh);
+            L(af)(set_prev_tag{}, &bh);
+            L(al)(set_next_tag{}, &bh);
         }
         if (rb)
         {
-            L(rb)(set_parent_token{}, &a.header);
-            L(bf)(set_prev_token{}, &a.header);
-            L(bl)(set_next_token{}, &a.header);
+            L(rb)(set_parent_tag{}, &ah);
+            L(bf)(set_prev_tag{}, &ah);
+            L(bl)(set_next_tag{}, &ah);
         }
-        std::swap(a.count, b.count);
+        std::swap(std::get<c_count>(a), std::get<c_count>(b));
     };
 
-    auto first_node_fn = [](auto &self) noexcept
+    static constinit auto first_node_fn = [](auto &self) noexcept
     {
-        return self.lens(&self.header)(next_token{});
+        auto &header = std::get<c_header>(self);
+        return wrap_fn(&header)(next_tag{});
     };
-    auto last_node_fn = [](auto &self) noexcept
+    static constinit auto last_node_fn = [](auto &self) noexcept
     {
-        return self.lens(&self.header)(prev_token{});
+        auto &header = std::get<c_header>(self);
+        return wrap_fn(&header)(prev_tag{});
     };
-    auto root_node_fn = [](auto &self) noexcept
+    static constinit auto root_node_fn = [](auto &self) noexcept
     {
-        return self.lens(&self.header)(left_token{});
+        auto &header = std::get<c_header>(self);
+        return wrap_fn(&header)(left_tag{});
     };
-    auto end_node_fn = [](auto &self) noexcept
+    static constinit auto end_node_fn = [](auto &self) noexcept
     {
-        return &self.header;
+        return &std::get<c_header>(self);
     };
 
-    struct core
-    {
-        using node_type = node;
-        static_assert(std::same_as<node_type, node>);
-        using next_fn = decltype(+next_lambda_fn);
-        using prev_fn = decltype(+prev_lambda_fn);
-        using lens_fn = decltype(&node_access::wrap);
-
-        node header;
-        std::size_t count;
-        Compare comp;
-        KeyOfValue key_of;
-        lens_fn lens;
-        next_fn next;
-        prev_fn prev;
-
-        decltype(left_rotate_fn) left_rotate;
-        decltype(right_rotate_fn) right_rotate;
-        decltype(minimum_fn) minimum;
-        decltype(maximum_fn) maximum;
-        decltype(insert_fix_fn) insert_fix;
-        decltype(erase_fix_fn) erase_fix;
-        decltype(transplant_fn) transplant;
-        decltype(insert_node_fn) insert_node;
-        decltype(insert_node_hint_fn) insert_node_hint;
-        decltype(detach_fn) detach;
-        decltype(lower_bound_fn) lower_bound;
-        decltype(upper_bound_fn) upper_bound;
-        decltype(find_node_fn) find_node;
-        decltype(rebuild_threads_fn) rebuild_threads;
-        decltype(clear_tree_fn) clear_tree;
-        decltype(clone_tree_fn) clone_tree;
-        decltype(reset_fn) reset;
-        decltype(adopt_fn) adopt;
-        decltype(take_from_fn) take_from;
-        decltype(swap_trees_fn) swap_trees;
-        decltype(first_node_fn) first_node;
-        decltype(last_node_fn) last_node;
-        decltype(root_node_fn) root_node;
-        decltype(end_node_fn) end_node;
-
-        static Value *value_ptr(node *p) noexcept
-        {
-            return std::addressof(node_access::wrap(p)(value_token{}));
-        }
-        static bool engaged(node *p) noexcept
-        {
-            return node_access::wrap(p)(engaged_token{});
-        }
-        static void set_engaged(node *p, bool v) noexcept
-        {
-            node_access::wrap(p)(set_engaged_token{}, v);
-        }
-    };
+    using core = std::tuple<
+        node, std::size_t, Compare, KeyOfValue,
+        decltype(+wrap_fn), decltype(+next_lambda_fn),
+        decltype(+prev_lambda_fn), decltype(left_rotate_fn),
+        decltype(right_rotate_fn), decltype(minimum_fn),
+        decltype(maximum_fn), decltype(insert_fix_fn),
+        decltype(erase_fix_fn), decltype(transplant_fn),
+        decltype(insert_node_fn), decltype(insert_node_hint_fn),
+        decltype(detach_fn), decltype(lower_bound_fn),
+        decltype(upper_bound_fn), decltype(find_node_fn),
+        decltype(rebuild_threads_fn), decltype(clear_tree_fn),
+        decltype(clone_tree_fn), decltype(reset_fn), decltype(adopt_fn),
+        decltype(take_from_fn), decltype(swap_trees_fn),
+        decltype(first_node_fn), decltype(last_node_fn),
+        decltype(root_node_fn), decltype(end_node_fn)>;
 
     return core{
         node{},
         0,
         comp,
         KeyOfValue{},
-        &node_access::wrap,
+        +wrap_fn,
         +next_lambda_fn,
         +prev_lambda_fn,
         left_rotate_fn,
@@ -1132,7 +1127,47 @@ class basic_ordered_tree
                             Key, Value, KeyOfValue, Compare, AllowDuplicates>(
         std::declval<Compare>()));
 
-    using node_t = typename core_t::node_type;
+    // Core tuple layout.  The engine is an aggregate of closures rather than
+    // a local class, so the wrapper addresses its fields by index.
+    static constexpr std::size_t core_header_i = 0;
+    static constexpr std::size_t core_count_i = 1;
+    static constexpr std::size_t core_comp_i = 2;
+    static constexpr std::size_t core_key_of_i = 3;
+    static constexpr std::size_t core_lens_i = 4;
+    static constexpr std::size_t core_next_i = 5;
+    static constexpr std::size_t core_prev_i = 6;
+    static constexpr std::size_t core_left_rotate_i = 7;
+    static constexpr std::size_t core_right_rotate_i = 8;
+    static constexpr std::size_t core_minimum_i = 9;
+    static constexpr std::size_t core_maximum_i = 10;
+    static constexpr std::size_t core_insert_fix_i = 11;
+    static constexpr std::size_t core_erase_fix_i = 12;
+    static constexpr std::size_t core_transplant_i = 13;
+    static constexpr std::size_t core_insert_node_i = 14;
+    static constexpr std::size_t core_insert_node_hint_i = 15;
+    static constexpr std::size_t core_detach_i = 16;
+    static constexpr std::size_t core_lower_bound_i = 17;
+    static constexpr std::size_t core_upper_bound_i = 18;
+    static constexpr std::size_t core_find_node_i = 19;
+    static constexpr std::size_t core_rebuild_threads_i = 20;
+    static constexpr std::size_t core_clear_tree_i = 21;
+    static constexpr std::size_t core_clone_tree_i = 22;
+    static constexpr std::size_t core_reset_i = 23;
+    static constexpr std::size_t core_adopt_i = 24;
+    static constexpr std::size_t core_take_from_i = 25;
+    static constexpr std::size_t core_swap_trees_i = 26;
+    static constexpr std::size_t core_first_node_i = 27;
+    static constexpr std::size_t core_last_node_i = 28;
+    static constexpr std::size_t core_root_node_i = 29;
+    static constexpr std::size_t core_end_node_i = 30;
+
+    // Node tuple layout.
+    static constexpr std::size_t node_engaged_i = 6;
+    static constexpr std::size_t node_value_i = 7;
+
+    using node_t = std::tuple_element_t<core_header_i, core_t>;
+    using next_fn = std::tuple_element_t<core_next_i, core_t>;
+    using prev_fn = std::tuple_element_t<core_prev_i, core_t>;
     using node_allocator_type =
         typename std::allocator_traits<Allocator>::template rebind_alloc<
             node_t>;
@@ -1141,6 +1176,48 @@ class basic_ordered_tree
         typename std::allocator_traits<Allocator>::template rebind_alloc<
             Value>;
     using value_alloc_traits = std::allocator_traits<value_allocator_type>;
+
+    static Value *value_ptr(node_t *p) noexcept
+    {
+        return std::launder(reinterpret_cast<Value *>(
+            std::addressof(std::get<node_value_i>(*p))));
+    }
+
+    static bool engaged(node_t *p) noexcept
+    {
+        return std::get<node_engaged_i>(*p);
+    }
+
+    static void set_engaged(node_t *p, bool v) noexcept
+    {
+        std::get<node_engaged_i>(*p) = v;
+    }
+
+    std::size_t &count_ref() noexcept
+    {
+        return std::get<core_count_i>(core_);
+    }
+    std::size_t count_ref() const noexcept
+    {
+        return std::get<core_count_i>(core_);
+    }
+    Compare &comp_ref() noexcept { return std::get<core_comp_i>(core_); }
+    const Compare &comp_ref() const noexcept
+    {
+        return std::get<core_comp_i>(core_);
+    }
+
+    template <std::size_t I, class... Args>
+    decltype(auto) engine(Args &&...args) const
+    {
+        return std::get<I>(core_)(core_, std::forward<Args>(args)...);
+    }
+
+    template <std::size_t I, class Core, class... Args>
+    static decltype(auto) engine_on(Core &c, Args &&...args)
+    {
+        return std::get<I>(c)(c, std::forward<Args>(args)...);
+    }
 
     template <class C, class = void>
     struct is_transparent : std::false_type
@@ -1205,11 +1282,11 @@ private:
         friend class basic_ordered_tree;
 
         node_t *p_ = nullptr;
-        typename core_t::next_fn next_ = nullptr;
-        typename core_t::prev_fn prev_ = nullptr;
+        next_fn next_ = nullptr;
+        prev_fn prev_ = nullptr;
 
-        constexpr iterator_impl(node_t *p, typename core_t::next_fn n,
-                                typename core_t::prev_fn pr) noexcept
+        constexpr iterator_impl(node_t *p, next_fn n,
+                                prev_fn pr) noexcept
             : p_(p), next_(n), prev_(pr) {}
 
     public:
@@ -1233,11 +1310,11 @@ private:
 
         constexpr reference operator*() const noexcept
         {
-            return *core_t::value_ptr(p_);
+            return *value_ptr(p_);
         }
         constexpr pointer operator->() const noexcept
         {
-            return core_t::value_ptr(p_);
+            return value_ptr(p_);
         }
 
         constexpr iterator_impl &operator++() noexcept
@@ -1309,10 +1386,10 @@ public:
 
         static void destroy_node_with(allocator_type &a, node_t *p) noexcept
         {
-            if (core_t::engaged(p))
+            if (engaged(p))
             {
                 value_allocator_type va(a);
-                value_alloc_traits::destroy(va, core_t::value_ptr(p));
+                value_alloc_traits::destroy(va, value_ptr(p));
             }
             node_allocator_type na(a);
             node_alloc_traits::destroy(na, p);
@@ -1361,19 +1438,19 @@ public:
 
         constexpr value_type &value() const noexcept
         {
-            return *core_t::value_ptr(p_);
+            return *value_ptr(p_);
         }
 
         constexpr key_type &key() const noexcept
             requires Mapped
         {
-            return const_cast<key_type &>(KeyOfValue{}(*core_t::value_ptr(p_)));
+            return const_cast<key_type &>(KeyOfValue{}(*value_ptr(p_)));
         }
 
         constexpr mapped_type &mapped() const noexcept
             requires Mapped
         {
-            return core_t::value_ptr(p_)->second;
+            return value_ptr(p_)->second;
         }
 
         constexpr void swap(node_type &other) noexcept(
@@ -1432,7 +1509,7 @@ private:
               std::move(comp))),
           alloc_(std::move(alloc))
     {
-        core_.reset(core_);
+        engine<core_reset_i>();
     }
 
     // --- allocator-aware physical node lifetime ---------------------------
@@ -1466,10 +1543,10 @@ private:
 
     static void destroy_node_with(allocator_type &a, node_t *p) noexcept
     {
-        if (core_t::engaged(p))
+        if (engaged(p))
         {
             value_allocator_type va(a);
-            value_alloc_traits::destroy(va, core_t::value_ptr(p));
+            value_alloc_traits::destroy(va, value_ptr(p));
         }
         node_allocator_type na(a);
         node_alloc_traits::destroy(na, p);
@@ -1490,8 +1567,8 @@ private:
         {
             value_allocator_type va(alloc_);
             value_alloc_traits::construct(
-                va, core_t::value_ptr(p), std::forward<Args>(args)...);
-            core_t::set_engaged(p, true);
+                va, value_ptr(p), std::forward<Args>(args)...);
+            set_engaged(p, true);
         }
         catch (...)
         {
@@ -1503,14 +1580,13 @@ private:
 
     void clear_nodes() noexcept
     {
-        if (core_.count != 0)
+        if (count_ref() != 0)
         {
-            node_t *r = core_.root_node(core_);
-            core_.clear_tree(core_, r,
-                             [this](node_t *p)
-                             { destroy_node(p); });
+            node_t *r = engine<core_root_node_i>();
+            engine<core_clear_tree_i>(r, [this](node_t *p)
+                                      { destroy_node(p); });
         }
-        core_.reset(core_);
+        engine<core_reset_i>();
     }
 
     template <bool Move>
@@ -1520,36 +1596,37 @@ private:
         {
             if constexpr (Move)
             {
-                return create_node(std::move(*core_t::value_ptr(src)));
+                return create_node(std::move(*value_ptr(src)));
             }
             else
             {
-                return create_node(*core_t::value_ptr(src));
+                return create_node(*value_ptr(src));
             }
         };
         auto destroy = [this](node_t *p)
         { destroy_node(p); };
-        node_t *r = core_.clone_tree(core_, other.core_.root_node(other.core_),
-                                     create, destroy);
-        core_.adopt(core_, r, other.core_.count);
+        node_t *r = engine<core_clone_tree_i>(
+            engine_on<core_root_node_i>(other.core_), create, destroy);
+        engine<core_adopt_i>(r, other.count_ref());
     }
 
     template <bool Const>
     constexpr iterator_impl<Const> iter_at(node_t *p) const noexcept
     {
-        return iterator_impl<Const>(p, core_.next, core_.prev);
+        return iterator_impl<Const>(
+            p, std::get<core_next_i>(core_), std::get<core_prev_i>(core_));
     }
 
     template <bool Const>
     constexpr iterator_impl<Const> begin_impl() const noexcept
     {
-        return iter_at<Const>(core_.first_node(core_));
+        return iter_at<Const>(engine<core_first_node_i>());
     }
 
     template <bool Const>
     constexpr iterator_impl<Const> end_impl() const noexcept
     {
-        return iter_at<Const>(core_.end_node(core_));
+        return iter_at<Const>(engine<core_end_node_i>());
     }
 
     template <class... Args>
@@ -1560,7 +1637,7 @@ private:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = engine<core_insert_node_i>(p);
             pos = result.first;
             inserted = result.second;
         }
@@ -1591,7 +1668,7 @@ private:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node_hint(core_, p, hint.p_);
+            auto result = engine<core_insert_node_hint_i>(p, hint.p_);
             pos = result.first;
             inserted = result.second;
         }
@@ -1610,39 +1687,39 @@ private:
     template <bool Const, class K>
     iterator_impl<Const> lower_bound_impl(const K &k) const
     {
-        return iter_at<Const>(core_.lower_bound(core_, k));
+        return iter_at<Const>(engine<core_lower_bound_i>(k));
     }
 
     template <bool Const, class K>
     iterator_impl<Const> upper_bound_impl(const K &k) const
     {
-        return iter_at<Const>(core_.upper_bound(core_, k));
+        return iter_at<Const>(engine<core_upper_bound_i>(k));
     }
 
     template <bool Const, class K>
     iterator_impl<Const> find_impl(const K &k) const
     {
-        return iter_at<Const>(core_.find_node(core_, k));
+        return iter_at<Const>(engine<core_find_node_i>(k));
     }
 
     template <bool Const, class K>
     std::pair<iterator_impl<Const>, iterator_impl<Const>>
     equal_range_impl(const K &k) const
     {
-        return {iter_at<Const>(core_.lower_bound(core_, k)),
-                iter_at<Const>(core_.upper_bound(core_, k))};
+        return {iter_at<Const>(engine<core_lower_bound_i>(k)),
+                iter_at<Const>(engine<core_upper_bound_i>(k))};
     }
 
     template <class K>
     size_type count_impl(const K &k) const
     {
-        node_t *first = core_.lower_bound(core_, k);
-        node_t *last = core_.upper_bound(core_, k);
+        node_t *first = engine<core_lower_bound_i>(k);
+        node_t *last = engine<core_upper_bound_i>(k);
         size_type n = 0;
         while (first != last)
         {
             ++n;
-            first = core_.next(first);
+            first = std::get<core_next_i>(core_)(first);
         }
         return n;
     }
@@ -1650,13 +1727,13 @@ private:
     template <class K>
     size_type erase_key_impl(const K &k)
     {
-        node_t *first = core_.lower_bound(core_, k);
-        node_t *last = core_.upper_bound(core_, k);
+        node_t *first = engine<core_lower_bound_i>(k);
+        node_t *last = engine<core_upper_bound_i>(k);
         size_type n = 0;
         while (first != last)
         {
-            node_t *next = core_.next(first);
-            core_.detach(core_, first);
+            node_t *next = std::get<core_next_i>(core_)(first);
+            engine<core_detach_i>(first);
             destroy_node(first);
             first = next;
             ++n;
@@ -1777,7 +1854,7 @@ public:
 
     basic_ordered_tree(const basic_ordered_tree &other)
         : basic_ordered_tree(
-              init_tag{}, other.core_.comp,
+              init_tag{}, other.comp_ref(),
               std::allocator_traits<
                   Allocator>::select_on_container_copy_construction(other.alloc_))
     {
@@ -1787,26 +1864,26 @@ public:
     basic_ordered_tree(basic_ordered_tree &&other) noexcept(
         std::allocator_traits<Allocator>::is_always_equal::value &&
         std::is_nothrow_move_constructible_v<Compare>)
-        : basic_ordered_tree(init_tag{}, std::move(other.core_.comp),
+        : basic_ordered_tree(init_tag{}, std::move(other.comp_ref()),
                              std::move(other.alloc_))
     {
-        core_.take_from(core_, other.core_);
+        engine<core_take_from_i>(other.core_);
     }
 
     basic_ordered_tree(const basic_ordered_tree &other,
                        const std::type_identity_t<Allocator> &alloc)
-        : basic_ordered_tree(init_tag{}, other.core_.comp, alloc)
+        : basic_ordered_tree(init_tag{}, other.comp_ref(), alloc)
     {
         clone_from<false>(const_cast<basic_ordered_tree &>(other));
     }
 
     basic_ordered_tree(basic_ordered_tree &&other,
                        const std::type_identity_t<Allocator> &alloc)
-        : basic_ordered_tree(init_tag{}, std::move(other.core_.comp), alloc)
+        : basic_ordered_tree(init_tag{}, std::move(other.comp_ref()), alloc)
     {
         if (alloc_ == other.alloc_)
         {
-            core_.take_from(core_, other.core_);
+            engine<core_take_from_i>(other.core_);
         }
         else
         {
@@ -1826,7 +1903,7 @@ public:
         }
         using pocca = typename std::allocator_traits<
             Allocator>::propagate_on_container_copy_assignment;
-        core_.comp = other.core_.comp;
+        comp_ref() = other.comp_ref();
         if constexpr (pocca::value)
         {
             if (!(alloc_ == other.alloc_))
@@ -1852,7 +1929,7 @@ public:
         }
         using pocma = typename std::allocator_traits<
             Allocator>::propagate_on_container_move_assignment;
-        core_.comp = std::move(other.core_.comp);
+        comp_ref() = std::move(other.comp_ref());
         if constexpr (pocma::value)
         {
             if (!(alloc_ == other.alloc_))
@@ -1864,14 +1941,14 @@ public:
                 clear_nodes();
             }
             alloc_ = std::move(other.alloc_);
-            core_.take_from(core_, other.core_);
+            engine<core_take_from_i>(other.core_);
         }
         else
         {
             if (alloc_ == other.alloc_)
             {
                 clear_nodes();
-                core_.take_from(core_, other.core_);
+                engine<core_take_from_i>(other.core_);
             }
             else
             {
@@ -1926,8 +2003,8 @@ public:
     }
 
     // --- capacity ----------------------------------------------------------
-    [[nodiscard]] bool empty() const noexcept { return core_.count == 0; }
-    [[nodiscard]] size_type size() const noexcept { return core_.count; }
+    [[nodiscard]] bool empty() const noexcept { return count_ref() == 0; }
+    [[nodiscard]] size_type size() const noexcept { return count_ref(); }
     size_type max_size() const noexcept
     {
         node_allocator_type na(alloc_);
@@ -2012,7 +2089,7 @@ public:
         }
         if constexpr (!AllowDuplicates)
         {
-            const key_type &k = KeyOfValue{}(*core_t::value_ptr(nh.p_));
+            const key_type &k = KeyOfValue{}(*value_ptr(nh.p_));
             auto it = find(k);
             if (it != end())
             {
@@ -2023,7 +2100,7 @@ public:
         if (alloc_ == nh.alloc_)
         {
             node_t *p = nh.p_;
-            auto [pos, inserted] = core_.insert_node(core_, p);
+            auto [pos, inserted] = engine<core_insert_node_i>(p);
             if (inserted)
             {
                 nh.p_ = nullptr;
@@ -2043,12 +2120,12 @@ public:
         }
         else
         {
-            node_t *p = create_node(std::move(*core_t::value_ptr(nh.p_)));
+            node_t *p = create_node(std::move(*value_ptr(nh.p_)));
             node_t *pos = nullptr;
             bool inserted = false;
             try
             {
-                auto result = core_.insert_node(core_, p);
+                auto result = engine<core_insert_node_i>(p);
                 pos = result.first;
                 inserted = result.second;
             }
@@ -2096,18 +2173,18 @@ public:
         }
         if constexpr (!AllowDuplicates)
         {
-            auto it = find(KeyOfValue{}(*core_t::value_ptr(nh.p_)));
+            auto it = find(KeyOfValue{}(*value_ptr(nh.p_)));
             if (it != end())
             {
                 return {it, false, node_type{}};
             }
         }
-        node_t *p = create_node(*core_t::value_ptr(nh.p_));
+        node_t *p = create_node(*value_ptr(nh.p_));
         node_t *pos = nullptr;
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = engine<core_insert_node_i>(p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2139,7 +2216,7 @@ public:
         if (alloc_ == nh.alloc_)
         {
             node_t *p = nh.p_;
-            auto result = core_.insert_node_hint(core_, p, hint.p_);
+            auto result = engine<core_insert_node_hint_i>(p, hint.p_);
             if (result.second)
             {
                 nh.p_ = nullptr;
@@ -2148,7 +2225,7 @@ public:
         }
         if constexpr (!AllowDuplicates)
         {
-            auto it = find(KeyOfValue{}(*core_t::value_ptr(nh.p_)));
+            auto it = find(KeyOfValue{}(*value_ptr(nh.p_)));
             if (it != end())
             {
                 return it;
@@ -2195,8 +2272,8 @@ public:
     iterator erase(const_iterator pos)
     {
         node_t *p = pos.p_;
-        node_t *n = core_.next(p);
-        core_.detach(core_, p);
+        node_t *n = std::get<core_next_i>(core_)(p);
+        engine<core_detach_i>(p);
         destroy_node(p);
         return iter_at<Mapped ? false : true>(n);
     }
@@ -2213,8 +2290,8 @@ public:
         node_t *cur = first.p_;
         while (cur != stop)
         {
-            node_t *n = core_.next(cur);
-            core_.detach(core_, cur);
+            node_t *n = std::get<core_next_i>(core_)(cur);
+            engine<core_detach_i>(cur);
             destroy_node(cur);
             cur = n;
         }
@@ -2243,8 +2320,8 @@ public:
             return;
         }
         using std::swap;
-        swap(core_.comp, other.core_.comp);
-        core_.swap_trees(core_, other.core_);
+        swap(comp_ref(), other.comp_ref());
+        engine<core_swap_trees_i>(other.core_);
         if constexpr (std::allocator_traits<
                           Allocator>::propagate_on_container_swap::value)
         {
@@ -2263,7 +2340,7 @@ public:
     {
         node_t *p = pos.p_;
         node_type result(alloc_);
-        core_.detach(core_, p);
+        engine<core_detach_i>(p);
         result.p_ = p;
         return result;
     }
@@ -2276,13 +2353,13 @@ public:
 
     node_type extract(const key_type &key)
     {
-        node_t *p = core_.find_node(core_, key);
-        if (p == core_.end_node(core_))
+        node_t *p = engine<core_find_node_i>(key);
+        if (p == engine<core_end_node_i>())
         {
             return node_type{};
         }
         node_type result(alloc_);
-        core_.detach(core_, p);
+        engine<core_detach_i>(p);
         result.p_ = p;
         return result;
     }
@@ -2293,13 +2370,13 @@ public:
                  !std::convertible_to<K, const_iterator>)
     node_type extract(K &&key)
     {
-        node_t *p = core_.find_node(core_, key);
-        if (p == core_.end_node(core_))
+        node_t *p = engine<core_find_node_i>(key);
+        if (p == engine<core_end_node_i>())
         {
             return node_type{};
         }
         node_type result(alloc_);
-        core_.detach(core_, p);
+        engine<core_detach_i>(p);
         result.p_ = p;
         return result;
     }
@@ -2437,17 +2514,17 @@ public:
     }
 
     // --- observers ---------------------------------------------------------
-    key_compare key_comp() const { return core_.comp; }
+    key_compare key_comp() const { return comp_ref(); }
 
     value_compare value_comp() const
     {
         if constexpr (Mapped)
         {
-            return value_compare(core_.comp);
+            return value_compare(comp_ref());
         }
         else
         {
-            return core_.comp;
+            return comp_ref();
         }
     }
 
@@ -2504,7 +2581,7 @@ public:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = engine<core_insert_node_i>(p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2537,7 +2614,7 @@ public:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = engine<core_insert_node_i>(p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2584,7 +2661,7 @@ public:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = engine<core_insert_node_i>(p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2614,7 +2691,7 @@ public:
             std::piecewise_construct,
             std::forward_as_tuple(std::move(key)),
             std::forward_as_tuple(std::forward<M>(obj)));
-        auto [pos, inserted] = core_.insert_node(core_, p);
+        auto [pos, inserted] = engine<core_insert_node_i>(p);
         if (!inserted)
         {
             destroy_node(p);
@@ -3524,8 +3601,12 @@ static void test_iterators_swap_and_embedding()
     holder h{local_factory.template operator()<int, int, std::identity,
                                                std::less<int>, false>(
         std::less<int>{})};
-    h.engine.reset(h.engine);
-    assert(h.engine.count == 0);
+    // The engine is a tuple: index 1 is the element count and index 23 is
+    // the reset closure.
+    constexpr std::size_t engine_count = 1;
+    constexpr std::size_t engine_reset = 23;
+    std::get<engine_reset>(h.engine)(h.engine);
+    assert(std::get<engine_count>(h.engine) == 0);
 }
 
 int main()
