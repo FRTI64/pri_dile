@@ -112,6 +112,13 @@ python3 -m ipd train rl --device auto --iterations 100 \
   --dist-weights 1,1,1,2 --bc-kl-coef 0.1
 ```
 
+训练文件也支持直接执行，例如：
+
+```bash
+python3 ipd/training/neural.py --device auto
+python3 ipd/training/search/multiobj.py --workers 24
+```
+
 ### 学习策略的四分布与盲测
 
 ```bash

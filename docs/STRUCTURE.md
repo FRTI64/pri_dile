@@ -140,6 +140,14 @@ python3 -m ipd train multiobj --workers 24
 python3 -m ipd train wide --workers 24
 ```
 
+训练文件也可以直接执行：
+
+```bash
+python3 ipd/training/neural.py --device auto
+python3 ipd/training/rl.py --device auto --iterations 100
+python3 ipd/training/search/multiobj.py --workers 24
+```
+
 所有训练任务：
 
 - 接受 `--seed`、`--workers`（适用时）、`--n`（适用时）、`--out`；

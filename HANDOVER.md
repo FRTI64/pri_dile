@@ -69,6 +69,9 @@ pip install -r requirements-train.txt
 python3 -m ipd train neural --device auto
 python3 -m ipd train gru --device auto
 python3 -m ipd train adversarial --arch mlp --seed 20261026
+# 也可以直接执行训练文件：
+# python3 ipd/training/neural.py --device auto
+# python3 ipd/training/search/multiobj.py --workers 24
 # RL 阶段 1：wide 加权 + BC KL
 python3 -m ipd train rl --device auto --iterations 100 \
   --dist-weights 1,1,1,2 --ent-coef 0.0001 --lr 2e-4 \

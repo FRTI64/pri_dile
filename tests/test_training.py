@@ -47,6 +47,19 @@ class TrainingInterfaceTests(unittest.TestCase):
             self.assertEqual(json.loads((Path(tmp) / "manifest.json").read_text(
                 encoding="utf-8"))["task"], "demo")
 
+    def test_direct_script_execution(self):
+        cases = [
+            ("ipd/training/neural.py", "--help"),
+            ("ipd/training/search/multiobj.py", "--help"),
+            ("ipd/training/__main__.py", "--list"),
+        ]
+        for script, flag in cases:
+            proc = subprocess.run(
+                [sys.executable, str(ROOT / script), flag],
+                cwd=ROOT, capture_output=True, text=True, timeout=60,
+            )
+            self.assertEqual(proc.returncode, 0, f"{script}: {proc.stderr}")
+
     def test_standard_flags_are_visible(self):
         for task in ("neural", "gru", "rl", "adversarial",
                      "multiobj", "bayes", "joint", "wide"):

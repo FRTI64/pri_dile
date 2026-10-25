@@ -2,6 +2,17 @@
 """Validation search for Triple fusion modes and confidence gates."""
 from __future__ import annotations
 
+if __package__ in (None, ""):  # allow: python ipd/training/<file>.py
+    import sys
+    from pathlib import Path
+
+    for _parent in Path(__file__).resolve().parents:
+        if (_parent / "pyproject.toml").is_file():
+            if str(_parent) not in sys.path:
+                sys.path.insert(0, str(_parent))
+            break
+
+
 import argparse
 import json
 import random

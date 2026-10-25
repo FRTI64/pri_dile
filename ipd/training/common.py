@@ -15,6 +15,17 @@ the names stay consistent.
 """
 from __future__ import annotations
 
+if __package__ in (None, ""):  # allow: python ipd/training/<file>.py
+    import sys
+    from pathlib import Path
+
+    for _parent in Path(__file__).resolve().parents:
+        if (_parent / "pyproject.toml").is_file():
+            if str(_parent) not in sys.path:
+                sys.path.insert(0, str(_parent))
+            break
+
+
 import json
 import os
 import random
@@ -23,7 +34,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol, Sequence, runtime_checkable
 
-from ..paths import ensure_parent
+from ipd.paths import ensure_parent
 
 
 def load_json(path: str | os.PathLike[str]) -> dict[str, Any]:
