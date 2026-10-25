@@ -1,0 +1,1268 @@
+{
+  "grim_weight": 20,
+  "train": [
+    {
+      "name": "cfg38",
+      "score": 546.0852842809364,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 3,
+        "MIN_D": 2,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg19",
+      "score": 545.6823857302118,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 6,
+        "MIN_D": 2,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg32",
+      "score": 545.5851727982163,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.3,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "Final",
+      "score": 545.4224080267558,
+      "cfg": {
+        "kind": "final"
+      }
+    },
+    {
+      "name": "cfg47",
+      "score": 545.37502787068,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg42",
+      "score": 545.3322185061315,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg22",
+      "score": 545.2018952062431,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg30",
+      "score": 544.8839464882943,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg7",
+      "score": 544.6765886287625,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg10",
+      "score": 544.6723522853957,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 6,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg35",
+      "score": 544.6479375696767,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "Harvest90",
+      "score": 535.3248606465997,
+      "cfg": {
+        "kind": "harvest",
+        "HARVEST_START": 90
+      }
+    },
+    {
+      "name": "EarlyProbe",
+      "score": 531.6643255295429,
+      "cfg": {
+        "kind": "early"
+      }
+    },
+    {
+      "name": "cfg1",
+      "score": 531.2882943143813,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.35,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 4,
+        "MIN_D": 4,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg14",
+      "score": 531.0624303232998,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 6,
+        "MIN_D": 2,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg25",
+      "score": 530.6991081382386,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 6,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg13",
+      "score": 530.6323299888518,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 6,
+        "MIN_D": 2,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg44",
+      "score": 530.5866220735786,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg11",
+      "score": 530.2285395763657,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "Harvest80",
+      "score": 530.1921962095876,
+      "cfg": {
+        "kind": "harvest",
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg4",
+      "score": 530.0177257525083,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg20",
+      "score": 529.9136008918617,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 5,
+        "MIN_D": 4,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg2",
+      "score": 529.7588628762542,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 80
+      }
+    },
+    {
+      "name": "cfg52",
+      "score": 529.233110367893,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 45
+      }
+    },
+    {
+      "name": "cfg53",
+      "score": 529.0405797101449,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 4,
+        "MIN_D": 2,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg54",
+      "score": 528.705016722408,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 50
+      }
+    },
+    {
+      "name": "cfg37",
+      "score": 528.591304347826,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.35,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 45
+      }
+    },
+    {
+      "name": "cfg26",
+      "score": 528.4944258639911,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 6,
+        "MIN_D": 2,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 40
+      }
+    },
+    {
+      "name": "cfg39",
+      "score": 528.4768115942029,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 5,
+        "MIN_D": 3,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 50
+      }
+    },
+    {
+      "name": "cfg27",
+      "score": 528.4422519509476,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 3,
+        "MIN_D": 2,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg41",
+      "score": 528.3528428093646,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 40
+      }
+    },
+    {
+      "name": "cfg3",
+      "score": 528.352508361204,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg34",
+      "score": 528.2180602006689,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 6,
+        "MIN_D": 3,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg5",
+      "score": 528.2022296544036,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 40
+      }
+    },
+    {
+      "name": "cfg50",
+      "score": 528.1833890746934,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.35,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 4,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg60",
+      "score": 528.1808249721294,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.35,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 7,
+        "MIN_D": 2,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg59",
+      "score": 528.1795986622074,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.35,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 5,
+        "MIN_D": 3,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg43",
+      "score": 528.1207357859532,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 6,
+        "MIN_D": 2,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg33",
+      "score": 528.1151616499442,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg17",
+      "score": 527.8659977703455,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.3,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 7,
+        "MIN_D": 2,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg58",
+      "score": 527.7189520624304,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 4,
+        "MIN_D": 2,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg12",
+      "score": 527.7108138238573,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 40
+      }
+    },
+    {
+      "name": "cfg24",
+      "score": 527.6714604236344,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 7,
+        "MIN_D": 2,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 70
+      }
+    },
+    {
+      "name": "cfg8",
+      "score": 527.6488294314381,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 40
+      }
+    },
+    {
+      "name": "cfg49",
+      "score": 527.6211817168339,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.35,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg55",
+      "score": 527.5591973244148,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg40",
+      "score": 527.5177257525083,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.3,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 50
+      }
+    },
+    {
+      "name": "cfg45",
+      "score": 527.3827201783723,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 4,
+        "MIN_D": 2,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg16",
+      "score": 527.268115942029,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 4,
+        "MIN_D": 2,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 45
+      }
+    },
+    {
+      "name": "cfg6",
+      "score": 527.2670011148273,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg51",
+      "score": 527.248717948718,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 7,
+        "MIN_D": 2,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 45
+      }
+    },
+    {
+      "name": "cfg18",
+      "score": 527.1792642140468,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.3,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 50
+      }
+    },
+    {
+      "name": "cfg28",
+      "score": 527.0746934225195,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 50
+      }
+    },
+    {
+      "name": "cfg21",
+      "score": 527.0680044593089,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 4,
+        "MIN_D": 4,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg29",
+      "score": 526.8954292084727,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.15,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg56",
+      "score": 526.752508361204,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 4,
+        "MIN_D": 3,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg57",
+      "score": 526.5888517279822,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 6,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg48",
+      "score": 526.5717948717949,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.45,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 7,
+        "MIN_D": 2,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.15,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 60
+      }
+    },
+    {
+      "name": "cfg46",
+      "score": 526.3665551839465,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg15",
+      "score": 526.2372352285395,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 7,
+        "MIN_D": 2,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg23",
+      "score": 526.1739130434783,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 6,
+        "MIN_D": 4,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 45
+      }
+    },
+    {
+      "name": "cfg31",
+      "score": 526.0927536231884,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg36",
+      "score": 525.75005574136,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": 55
+      }
+    },
+    {
+      "name": "cfg9",
+      "score": 525.1247491638795,
+      "cfg": {
+        "kind": "param_harvest",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 6,
+        "MIN_D": 4,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": 55
+      }
+    }
+  ],
+  "validation": [
+    {
+      "name": "cfg38",
+      "score": 545.5625418060201,
+      "train": 546.0852842809364,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 3,
+        "MIN_D": 2,
+        "RESP_GAP": 0.5,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg19",
+      "score": 545.1780379041248,
+      "train": 545.6823857302118,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 6,
+        "MIN_D": 2,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg32",
+      "score": 545.0583054626533,
+      "train": 545.5851727982163,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.25,
+        "P_MUTUAL": 0.3,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 10,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "Final",
+      "score": 544.8285395763656,
+      "train": 545.4224080267558,
+      "cfg": {
+        "kind": "final"
+      }
+    },
+    {
+      "name": "cfg47",
+      "score": 544.8224080267559,
+      "train": 545.37502787068,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 14,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg42",
+      "score": 544.7965440356744,
+      "train": 545.3322185061315,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.2,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.85,
+        "MIN_C": 7,
+        "MIN_D": 3,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 3,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg22",
+      "score": 544.6704570791528,
+      "train": 545.2018952062431,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 4,
+        "RESP_GAP": 0.44,
+        "DEFECT_RATE": 0.12,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg30",
+      "score": 544.2429208472687,
+      "train": 544.8839464882943,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 0.9,
+        "MIN_C": 3,
+        "MIN_D": 3,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg35",
+      "score": 544.23121516165,
+      "train": 544.6479375696767,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.5,
+        "P_MUTUAL": 0.2,
+        "P_RESPONSIVE": 0.95,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.38,
+        "DEFECT_RATE": 0.22,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 8,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg7",
+      "score": 544.2133779264213,
+      "train": 544.6765886287625,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.3,
+        "P_MUTUAL": 0.55,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 7,
+        "MIN_D": 4,
+        "RESP_GAP": 0.28,
+        "DEFECT_RATE": 0.26,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 6,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "cfg10",
+      "score": 544.1600891861762,
+      "train": 544.6723522853957,
+      "cfg": {
+        "kind": "param",
+        "P_UNPROVOKED": 0.4,
+        "P_MUTUAL": 0.65,
+        "P_RESPONSIVE": 1.0,
+        "MIN_C": 6,
+        "MIN_D": 3,
+        "RESP_GAP": 0.34,
+        "DEFECT_RATE": 0.18,
+        "PEACE_TESTS": 2,
+        "PEACE_COOLDOWN": 4,
+        "HARVEST_START": null
+      }
+    },
+    {
+      "name": "Harvest90",
+      "score": 534.5052396878484,
+      "train": 535.3248606465997,
+      "cfg": {
+        "kind": "harvest",
+        "HARVEST_START": 90
+      }
+    }
+  ],
+  "baselines": [
+    {
+      "name": "Final",
+      "score": 544.8285395763656
+    },
+    {
+      "name": "Harvest90",
+      "score": 534.5052396878484
+    },
+    {
+      "name": "EarlyProbe",
+      "score": 528.7251950947604
+    }
+  ]
+}

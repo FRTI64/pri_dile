@@ -1,15 +1,20 @@
 // A from-scratch, standard-conforming ordered associative container family.
 //
 // Architecture:
-//   * Standard Wrapper + Closure Core
-//   * The red-black engine is created by a stateless generic lambda factory.
-//   * The engine is a local, unnamed (Voldemort) type.
-//   * All tree algorithms are generic lambdas stored in the engine aggregate.
-//   * Node fields are never touched directly by algorithms: node_access::wrap
-//     returns a message-dispatching lens closure.
-//   * The public containers are ordinary global class templates; the engine's
-//     exact local type is obtained with decltype(factory<...>) and stored as a
-//     private member of their implementation base.
+//   * Standard Wrapper + Message-Passing Closure Core
+//   * The red-black tree is a *function*, not a struct of algorithms.  Calling
+//     it with a message tag selects one compile-time branch; recursive
+//     branches are given the function itself, in the style of a fixed point.
+//   * Iterators are functions too: they answer value/next/previous messages,
+//     and next/previous answer with the next iterator function.  This is the
+//     coinductive-stream view of iteration.
+//   * Node fields are never touched directly by algorithms: lens(node) returns
+//     a message-dispatching closure, and every algorithm speaks through it.
+//   * The public containers are ordinary global class templates; the tree
+//     function's exact local type is obtained with decltype and stored as a
+//     private member of their implementation base.  The wrappers and the
+//     standard node-handle/iterator adapters are the only named types, because
+//     the standard library requires them to be nameable and assignable.
 //
 // C++23 is required.
 
@@ -24,6 +29,7 @@
 #include <memory>
 #include <memory_resource>
 #include <map>
+#include <optional>
 #include <set>
 #include <new>
 #include <random>
@@ -31,13 +37,15 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
 // ---------------------------------------------------------------------------
 // Small, stateless key extractor for map-like containers.  It is deliberately
-// outside the closure core; the core itself has no namespace and no globals.
+// outside the closure core; the engine itself contains no globals, and the only
+// namespace-level declarations in the engine are message-tag aliases.
 // ---------------------------------------------------------------------------
 struct closure_key_first
 {
@@ -49,9 +57,88 @@ struct closure_key_first
 };
 
 // ---------------------------------------------------------------------------
+// Message tags.  They are ordinary empty values: a message is a type, and the
+// receiver's generic operator() dispatches on that type with `if constexpr`.
+// No algorithm is represented by a stored member or a named class.
+// ---------------------------------------------------------------------------
+namespace closure_msg
+{
+    // Node lens: reading and writing the physical cell through a closure.
+    using left = std::integral_constant<int, 0>;
+    using right = std::integral_constant<int, 1>;
+    using parent = std::integral_constant<int, 2>;
+    using red = std::integral_constant<int, 3>;
+    using engaged = std::integral_constant<int, 4>;
+    using value = std::integral_constant<int, 5>;
+    using next = std::integral_constant<int, 6>;
+    using prev = std::integral_constant<int, 7>;
+    using set_left = std::integral_constant<int, 8>;
+    using set_right = std::integral_constant<int, 9>;
+    using set_parent = std::integral_constant<int, 10>;
+    using set_red = std::integral_constant<int, 11>;
+    using set_engaged = std::integral_constant<int, 12>;
+    using set_next = std::integral_constant<int, 13>;
+    using set_prev = std::integral_constant<int, 14>;
+
+    // Tree messages.  Every one of them is a branch of the single tree
+    // function; recursive branches receive the function itself as `self`.
+    using tree_left_rotate = std::integral_constant<int, 15>;
+    using tree_right_rotate = std::integral_constant<int, 16>;
+    using tree_minimum = std::integral_constant<int, 17>;
+    using tree_maximum = std::integral_constant<int, 18>;
+    using tree_insert_fix = std::integral_constant<int, 19>;
+    using tree_erase_fix = std::integral_constant<int, 20>;
+    using tree_transplant = std::integral_constant<int, 21>;
+    using tree_insert_node = std::integral_constant<int, 22>;
+    using tree_insert_node_hint = std::integral_constant<int, 23>;
+    using tree_detach = std::integral_constant<int, 24>;
+    using tree_lower_bound = std::integral_constant<int, 25>;
+    using tree_upper_bound = std::integral_constant<int, 26>;
+    using tree_find_node = std::integral_constant<int, 27>;
+    using tree_rebuild_threads = std::integral_constant<int, 28>;
+    using tree_clear = std::integral_constant<int, 29>;
+    using tree_clone = std::integral_constant<int, 30>;
+    using tree_reset = std::integral_constant<int, 31>;
+    using tree_adopt = std::integral_constant<int, 32>;
+    using tree_take_from = std::integral_constant<int, 33>;
+    using tree_swap_trees = std::integral_constant<int, 34>;
+    using tree_first = std::integral_constant<int, 35>;
+    using tree_last = std::integral_constant<int, 36>;
+    using tree_root = std::integral_constant<int, 37>;
+    using tree_end = std::integral_constant<int, 38>;
+    using tree_next = std::integral_constant<int, 39>;
+    using tree_prev = std::integral_constant<int, 40>;
+    using tree_size = std::integral_constant<int, 41>;
+    using tree_comp_ref = std::integral_constant<int, 42>;
+    using tree_swap_comp = std::integral_constant<int, 43>;
+    using tree_set_comp = std::integral_constant<int, 44>;
+    using tree_link_header = std::integral_constant<int, 45>;
+    using tree_header = std::integral_constant<int, 46>;
+    using tree_make_iter = std::integral_constant<int, 47>;
+    using tree_make_citer = std::integral_constant<int, 48>;
+
+    // Iterator messages.  An iterator is a closure over one node; `iter_next`
+    // and `iter_prev` answer with the next closure, exactly like a coinductive
+    // stream whose tail is another stream.
+    using iter_value = std::integral_constant<int, 49>;
+    using iter_next = std::integral_constant<int, 50>;
+    using iter_prev = std::integral_constant<int, 51>;
+    using iter_equal = std::integral_constant<int, 52>;
+    using iter_node = std::integral_constant<int, 53>;
+    using iter_const = std::integral_constant<int, 54>;
+} // namespace closure_msg
+
+// ---------------------------------------------------------------------------
 // The closure-core factory.  Every invocation produces a *new local type*.
 // Five metadata parameters are the complete semantic configuration:
 //   Key, Value, KeyOfValue, Compare, AllowDuplicates.
+//
+// What the factory returns is a single function.  It has private state (the
+// header cell, the count, the comparator and the key extractor), and it
+// evaluates one compile-time-selected branch for each message.  Recursive
+// branches receive `self`, so the local type never has to be named inside
+// itself: this is the Y-combinator shape, not a vtable or a struct of methods.
+//
 // The allocator is intentionally not part of the engine: the wrapper owns the
 // allocator and supplies allocator-aware node lifetime operations.  This keeps
 // the engine stateless with respect to memory resources and lets node_type
@@ -61,6 +148,10 @@ inline constexpr auto make_stl_toolkit =
     []<typename Key, typename Value, typename KeyOfValue, typename Compare,
        bool AllowDuplicates>(Compare comp = Compare{})
 {
+    // The physical cell.  This is the only aggregate in the engine: it is the
+    // storage the allocator must be able to name and rebind, not a semantic
+    // object.  Algorithms never touch its fields directly; they send messages
+    // through the lens closure below.
     struct node
     {
         node *parent = nullptr;
@@ -83,1040 +174,1073 @@ inline constexpr auto make_stl_toolkit =
               prev(nullptr),
               red(false),
               engaged(false) {}
+
+        // Only the header is ever moved: its value member is not alive.
+        // Copying a live tree would alias its nodes, so the tree function is
+        // deliberately move-only.  The wrapper implements standard copy
+        // semantics by cloning through the tree_clone message.
         node(const node &) = delete;
-        node(node &&) = delete;
         node &operator=(const node &) = delete;
+
+        node(node &&other) noexcept
+            : parent(other.parent),
+              left(other.left),
+              right(other.right),
+              next(other.next),
+              prev(other.prev),
+              red(other.red),
+              engaged(other.engaged)
+        {
+            // The header has just changed address.  Redirect the root's
+            // parent link and the two thread endpoints at the new header.
+            if (!other.engaged)
+            {
+                if (left)
+                {
+                    left->parent = this;
+                }
+                if (next == &other)
+                {
+                    next = this;
+                }
+                else if (next)
+                {
+                    next->prev = this;
+                }
+                if (prev == &other)
+                {
+                    prev = this;
+                }
+                else if (prev)
+                {
+                    prev->next = this;
+                }
+                parent = left;
+            }
+        }
+
         node &operator=(node &&) = delete;
+
         ~node() noexcept {}
-    };
 
-    struct left_token final
-    {
-    };
-    struct right_token final
-    {
-    };
-    struct parent_token final
-    {
-    };
-    struct red_token final
-    {
-    };
-    struct engaged_token final
-    {
-    };
-    struct value_token final
-    {
-    };
-    struct next_token final
-    {
-    };
-    struct prev_token final
-    {
-    };
-
-    struct set_left_token final
-    {
-    };
-    struct set_right_token final
-    {
-    };
-    struct set_parent_token final
-    {
-    };
-    struct set_red_token final
-    {
-    };
-    struct set_engaged_token final
-    {
-    };
-    struct set_next_token final
-    {
-    };
-    struct set_prev_token final
-    {
+        Value *closure_value() noexcept { return std::addressof(value); }
+        bool closure_engaged() const noexcept { return engaged; }
+        void closure_set_engaged(bool v) noexcept { engaged = v; }
     };
 
     // -------------------------------------------------------------------
-    // Functional lens.  The only code in the entire program which reads or
-    // writes node members is this dispatcher.  Algorithms ask for a message
-    // tag; they never see a field.  wrap(node) is a higher-order closure:
-    // it closes over only the node and returns another generic closure.
+    // The lens.  `lens(node)` returns a closure that answers field messages.
+    // This is the only code in the engine that mentions a node member.
     // -------------------------------------------------------------------
-    struct node_access
+    auto lens = [](node *p) noexcept
     {
-        static auto wrap(node *p) noexcept
+        return [p]<class Tag, class... Args>(Tag,
+                                             Args &&...args) noexcept
+                   -> decltype(auto)
         {
-            return [p]<class Tag, class... Args>(Tag,
-                                                 Args &&...args) noexcept
-                       -> decltype(auto)
+            using T = std::remove_cvref_t<Tag>;
+            if constexpr (std::same_as<T, closure_msg::left>)
             {
-                using T = std::remove_cvref_t<Tag>;
-                if constexpr (std::same_as<T, left_token>)
-                {
-                    return static_cast<node *const &>(p->left);
-                }
-                else if constexpr (std::same_as<T, right_token>)
-                {
-                    return static_cast<node *const &>(p->right);
-                }
-                else if constexpr (std::same_as<T, parent_token>)
-                {
-                    return static_cast<node *const &>(p->parent);
-                }
-                else if constexpr (std::same_as<T, red_token>)
-                {
-                    return static_cast<bool const &>(p->red);
-                }
-                else if constexpr (std::same_as<T, engaged_token>)
-                {
-                    return static_cast<bool const &>(p->engaged);
-                }
-                else if constexpr (std::same_as<T, value_token>)
-                {
-                    return (p->value);
-                }
-                else if constexpr (std::same_as<T, next_token>)
-                {
-                    return static_cast<node *const &>(p->next);
-                }
-                else if constexpr (std::same_as<T, prev_token>)
-                {
-                    return static_cast<node *const &>(p->prev);
-                }
-                else if constexpr (std::same_as<T, set_left_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->left = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_right_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->right = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_parent_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->parent = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_red_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->red = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_engaged_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->engaged = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_next_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->next = (std::forward<Args>(args), ...);
-                }
-                else if constexpr (std::same_as<T, set_prev_token>)
-                {
-                    static_assert(sizeof...(Args) == 1);
-                    p->prev = (std::forward<Args>(args), ...);
-                }
-                else
-                {
-                    static_assert(!sizeof(Tag), "unknown node-lens message");
-                }
+                return static_cast<node *const &>(p->left);
+            }
+            else if constexpr (std::same_as<T, closure_msg::right>)
+            {
+                return static_cast<node *const &>(p->right);
+            }
+            else if constexpr (std::same_as<T, closure_msg::parent>)
+            {
+                return static_cast<node *const &>(p->parent);
+            }
+            else if constexpr (std::same_as<T, closure_msg::red>)
+            {
+                return static_cast<bool const &>(p->red);
+            }
+            else if constexpr (std::same_as<T, closure_msg::engaged>)
+            {
+                return static_cast<bool const &>(p->engaged);
+            }
+            else if constexpr (std::same_as<T, closure_msg::value>)
+            {
+                return (p->value);
+            }
+            else if constexpr (std::same_as<T, closure_msg::next>)
+            {
+                return static_cast<node *const &>(p->next);
+            }
+            else if constexpr (std::same_as<T, closure_msg::prev>)
+            {
+                return static_cast<node *const &>(p->prev);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_left>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->left = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_right>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->right = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_parent>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->parent = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_red>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->red = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_engaged>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->engaged = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_next>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->next = (std::forward<Args>(args), ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::set_prev>)
+            {
+                static_assert(sizeof...(Args) == 1);
+                p->prev = (std::forward<Args>(args), ...);
+            }
+            else
+            {
+                static_assert(!sizeof(Tag), "unknown node-lens message");
+            }
+        };
+    };
+
+    // -------------------------------------------------------------------
+    // Coinductive iterators.  There is no iterator struct here: an iterator
+    // is a function from messages to answers.  `iter_next` and `iter_prev`
+    // answer with the next iterator function, so advancing an iterator is
+    // applying it, not mutating a cursor field.
+    // -------------------------------------------------------------------
+    auto make_citer = [lens](auto self, node *p)
+    {
+        return [self, lens, p](auto tag, auto &&...args) -> decltype(auto)
+        {
+            using T = std::remove_cvref_t<decltype(tag)>;
+            if constexpr (std::same_as<T, closure_msg::iter_value>)
+            {
+                return std::as_const(lens(p)(closure_msg::value{}));
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_next>)
+            {
+                return self(self, lens(p)(closure_msg::next{}));
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_prev>)
+            {
+                return self(self, lens(p)(closure_msg::prev{}));
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_equal>)
+            {
+                return p == (std::forward<decltype(args)>(args)(
+                                 closure_msg::iter_node{}),
+                             ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_node>)
+            {
+                return p;
+            }
+            else
+            {
+                static_assert(!sizeof(T), "unknown iterator message");
+            }
+        };
+    };
+
+    auto make_iter = [lens](auto self, auto cself, node *p)
+    {
+        return [self, cself, lens, p](auto tag,
+                                      auto &&...args) -> decltype(auto)
+        {
+            using T = std::remove_cvref_t<decltype(tag)>;
+            if constexpr (std::same_as<T, closure_msg::iter_value>)
+            {
+                return lens(p)(closure_msg::value{});
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_next>)
+            {
+                return self(self, cself, lens(p)(closure_msg::next{}));
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_prev>)
+            {
+                return self(self, cself, lens(p)(closure_msg::prev{}));
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_equal>)
+            {
+                return p == (std::forward<decltype(args)>(args)(
+                                 closure_msg::iter_node{}),
+                             ...);
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_node>)
+            {
+                return p;
+            }
+            else if constexpr (std::same_as<T, closure_msg::iter_const>)
+            {
+                return cself(cself, p);
+            }
+            else
+            {
+                static_assert(!sizeof(T), "unknown iterator message");
+            }
+        };
+    };
+
+    // -------------------------------------------------------------------
+    // The tree.  One function, one dispatcher, no stored operation members.
+    // -------------------------------------------------------------------
+    auto tree = [header = node{}, count = std::size_t{0},
+                 comp = std::move(comp), key_of = KeyOfValue{},
+                 lens, make_iter, make_citer](auto &self, auto tag,
+                                              auto &&...args) mutable
+        -> decltype(auto)
+    {
+        using T = std::remove_cvref_t<decltype(tag)>;
+
+        // --- rotations -------------------------------------------------
+        if constexpr (std::same_as<T, closure_msg::tree_left_rotate>)
+        {
+            node *x = std::get<0>(std::forward_as_tuple(args...));
+            node *y = lens(x)(closure_msg::right{});
+            lens(x)(closure_msg::set_right{},
+                    lens(y)(closure_msg::left{}));
+            if (lens(y)(closure_msg::left{}))
+            {
+                lens(lens(y)(closure_msg::left{}))(
+                    closure_msg::set_parent{}, x);
+            }
+            node *xp = lens(x)(closure_msg::parent{});
+            lens(y)(closure_msg::set_parent{}, xp);
+            if (xp == &header)
+            {
+                lens(&header)(closure_msg::set_left{}, y);
+            }
+            else if (x == lens(xp)(closure_msg::left{}))
+            {
+                lens(xp)(closure_msg::set_left{}, y);
+            }
+            else
+            {
+                lens(xp)(closure_msg::set_right{}, y);
+            }
+            lens(y)(closure_msg::set_left{}, x);
+            lens(x)(closure_msg::set_parent{}, y);
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_right_rotate>)
+        {
+            node *x = std::get<0>(std::forward_as_tuple(args...));
+            node *y = lens(x)(closure_msg::left{});
+            lens(x)(closure_msg::set_left{},
+                    lens(y)(closure_msg::right{}));
+            if (lens(y)(closure_msg::right{}))
+            {
+                lens(lens(y)(closure_msg::right{}))(
+                    closure_msg::set_parent{}, x);
+            }
+            node *xp = lens(x)(closure_msg::parent{});
+            lens(y)(closure_msg::set_parent{}, xp);
+            if (xp == &header)
+            {
+                lens(&header)(closure_msg::set_left{}, y);
+            }
+            else if (x == lens(xp)(closure_msg::right{}))
+            {
+                lens(xp)(closure_msg::set_right{}, y);
+            }
+            else
+            {
+                lens(xp)(closure_msg::set_left{}, y);
+            }
+            lens(y)(closure_msg::set_right{}, x);
+            lens(x)(closure_msg::set_parent{}, y);
+        }
+        // --- structural search ----------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_minimum>)
+        {
+            node *x = std::get<0>(std::forward_as_tuple(args...));
+            while (x && lens(x)(closure_msg::left{}))
+            {
+                x = lens(x)(closure_msg::left{});
+            }
+            return x;
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_maximum>)
+        {
+            node *x = std::get<0>(std::forward_as_tuple(args...));
+            while (x && lens(x)(closure_msg::right{}))
+            {
+                x = lens(x)(closure_msg::right{});
+            }
+            return x;
+        }
+        // --- insertion fix-up (CLRS) -----------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_insert_fix>)
+        {
+            node *z = std::get<0>(std::forward_as_tuple(args...));
+            auto root = [&]() noexcept
+            {
+                return lens(&header)(closure_msg::left{});
             };
-        }
-    };
-
-    // -------------------------------------------------------------------
-    // Iteration is physically O(1): every node stores its in-order
-    // predecessor and successor.  These two lambdas expose those links via
-    // the lens and are stored in the engine as ordinary function pointers,
-    // so iterator objects survive container moves and swaps.
-    // -------------------------------------------------------------------
-    auto next_lambda_fn = [](node *p) noexcept -> node *
-    {
-        return node_access::wrap(p)(next_token{});
-    };
-    auto prev_lambda_fn = [](node *p) noexcept -> node *
-    {
-        return node_access::wrap(p)(prev_token{});
-    };
-
-    // -------------------------------------------------------------------
-    // Rotations (pure closures).
-    // -------------------------------------------------------------------
-    auto left_rotate_fn = [](auto &self, node *x) noexcept
-    {
-        auto L = self.lens;
-        node *y = L(x)(right_token{});
-        L(x)(set_right_token{}, L(y)(left_token{}));
-        if (L(y)(left_token{}))
-        {
-            L(L(y)(left_token{}))(set_parent_token{}, x);
-        }
-        node *xp = L(x)(parent_token{});
-        L(y)(set_parent_token{}, xp);
-        if (xp == &self.header)
-        {
-            L (&self.header)(set_left_token{}, y);
-        }
-        else if (x == L(xp)(left_token{}))
-        {
-            L(xp)(set_left_token{}, y);
-        }
-        else
-        {
-            L(xp)(set_right_token{}, y);
-        }
-        L(y)(set_left_token{}, x);
-        L(x)(set_parent_token{}, y);
-    };
-
-    auto right_rotate_fn = [](auto &self, node *x) noexcept
-    {
-        auto L = self.lens;
-        node *y = L(x)(left_token{});
-        L(x)(set_left_token{}, L(y)(right_token{}));
-        if (L(y)(right_token{}))
-        {
-            L(L(y)(right_token{}))(set_parent_token{}, x);
-        }
-        node *xp = L(x)(parent_token{});
-        L(y)(set_parent_token{}, xp);
-        if (xp == &self.header)
-        {
-            L (&self.header)(set_left_token{}, y);
-        }
-        else if (x == L(xp)(right_token{}))
-        {
-            L(xp)(set_right_token{}, y);
-        }
-        else
-        {
-            L(xp)(set_left_token{}, y);
-        }
-        L(y)(set_right_token{}, x);
-        L(x)(set_parent_token{}, y);
-    };
-
-    auto minimum_fn = [](auto &self, node *x) noexcept -> node *
-    {
-        auto L = self.lens;
-        while (x && L(x)(left_token{}))
-        {
-            x = L(x)(left_token{});
-        }
-        return x;
-    };
-
-    auto maximum_fn = [](auto &self, node *x) noexcept -> node *
-    {
-        auto L = self.lens;
-        while (x && L(x)(right_token{}))
-        {
-            x = L(x)(right_token{});
-        }
-        return x;
-    };
-
-    // -------------------------------------------------------------------
-    // Insertion fix-up (CLRS), expressed as a closure.
-    // -------------------------------------------------------------------
-    auto insert_fix_fn = [](auto &self, node *z) noexcept
-    {
-        auto L = self.lens;
-        auto root = [&]() noexcept
-        {
-            return L(&self.header)(left_token{});
-        };
-        auto is_red = [&](node *n) noexcept
-        {
-            return n != nullptr && L(n)(red_token{});
-        };
-
-        while (z != root() && is_red(L(z)(parent_token{})))
-        {
-            node *p = L(z)(parent_token{});
-            node *g = L(p)(parent_token{});
-            if (p == L(g)(left_token{}))
+            auto is_red = [&](node *n) noexcept
             {
-                node *u = L(g)(right_token{});
-                if (is_red(u))
+                return n != nullptr && lens(n)(closure_msg::red{});
+            };
+            while (z != root() && is_red(lens(z)(closure_msg::parent{})))
+            {
+                node *p = lens(z)(closure_msg::parent{});
+                node *g = lens(p)(closure_msg::parent{});
+                if (p == lens(g)(closure_msg::left{}))
                 {
-                    L(p)(set_red_token{}, false);
-                    L(u)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
-                    z = g;
-                }
-                else
-                {
-                    if (z == L(p)(right_token{}))
+                    node *u = lens(g)(closure_msg::right{});
+                    if (is_red(u))
                     {
-                        z = p;
-                        self.left_rotate(self, z);
-                        p = L(z)(parent_token{});
-                        g = L(p)(parent_token{});
+                        lens(p)(closure_msg::set_red{}, false);
+                        lens(u)(closure_msg::set_red{}, false);
+                        lens(g)(closure_msg::set_red{}, true);
+                        z = g;
                     }
-                    L(p)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
-                    self.right_rotate(self, g);
-                }
-            }
-            else
-            {
-                node *u = L(g)(left_token{});
-                if (is_red(u))
-                {
-                    L(p)(set_red_token{}, false);
-                    L(u)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
-                    z = g;
-                }
-                else
-                {
-                    if (z == L(p)(left_token{}))
+                    else
                     {
-                        z = p;
-                        self.right_rotate(self, z);
-                        p = L(z)(parent_token{});
-                        g = L(p)(parent_token{});
-                    }
-                    L(p)(set_red_token{}, false);
-                    L(g)(set_red_token{}, true);
-                    self.left_rotate(self, g);
-                }
-            }
-        }
-        if (root())
-        {
-            L(root())(set_red_token{}, false);
-        }
-    };
-
-    // -------------------------------------------------------------------
-    // Deletion fix-up.  x may be null, in which case xp is its parent.
-    // -------------------------------------------------------------------
-    auto erase_fix_fn = [](auto &self, node *x, node *xp) noexcept
-    {
-        auto L = self.lens;
-        auto is_red = [&](node *n) noexcept
-        {
-            return n != nullptr && L(n)(red_token{});
-        };
-        while (x != L(&self.header)(left_token{}) && !is_red(x))
-        {
-            if (xp == nullptr)
-            {
-                break;
-            }
-            if (x == L(xp)(left_token{}))
-            {
-                node *w = L(xp)(right_token{});
-                if (w == nullptr)
-                {
-                    x = xp;
-                    xp = L(x)(parent_token{});
-                    continue;
-                }
-                if (is_red(w))
-                {
-                    L(w)(set_red_token{}, false);
-                    L(xp)(set_red_token{}, true);
-                    self.left_rotate(self, xp);
-                    w = L(xp)(right_token{});
-                }
-                if (!is_red(L(w)(left_token{})) &&
-                    !is_red(L(w)(right_token{})))
-                {
-                    L(w)(set_red_token{}, true);
-                    x = xp;
-                    xp = L(x)(parent_token{});
-                }
-                else
-                {
-                    if (!is_red(L(w)(right_token{})))
-                    {
-                        if (L(w)(left_token{}))
+                        if (z == lens(p)(closure_msg::right{}))
                         {
-                            L(L(w)(left_token{}))(set_red_token{}, false);
+                            z = p;
+                            self(self, closure_msg::tree_left_rotate{}, z);
+                            p = lens(z)(closure_msg::parent{});
+                            g = lens(p)(closure_msg::parent{});
                         }
-                        L(w)(set_red_token{}, true);
-                        self.right_rotate(self, w);
-                        w = L(xp)(right_token{});
+                        lens(p)(closure_msg::set_red{}, false);
+                        lens(g)(closure_msg::set_red{}, true);
+                        self(self, closure_msg::tree_right_rotate{}, g);
                     }
-                    L(w)(set_red_token{}, L(xp)(red_token{}));
-                    L(xp)(set_red_token{}, false);
-                    if (L(w)(right_token{}))
-                    {
-                        L(L(w)(right_token{}))(set_red_token{}, false);
-                    }
-                    self.left_rotate(self, xp);
-                    x = L(&self.header)(left_token{});
-                    xp = nullptr;
-                }
-            }
-            else
-            {
-                node *w = L(xp)(left_token{});
-                if (w == nullptr)
-                {
-                    x = xp;
-                    xp = L(x)(parent_token{});
-                    continue;
-                }
-                if (is_red(w))
-                {
-                    L(w)(set_red_token{}, false);
-                    L(xp)(set_red_token{}, true);
-                    self.right_rotate(self, xp);
-                    w = L(xp)(left_token{});
-                }
-                if (!is_red(L(w)(right_token{})) &&
-                    !is_red(L(w)(left_token{})))
-                {
-                    L(w)(set_red_token{}, true);
-                    x = xp;
-                    xp = L(x)(parent_token{});
                 }
                 else
                 {
-                    if (!is_red(L(w)(left_token{})))
+                    node *u = lens(g)(closure_msg::left{});
+                    if (is_red(u))
                     {
-                        if (L(w)(right_token{}))
+                        lens(p)(closure_msg::set_red{}, false);
+                        lens(u)(closure_msg::set_red{}, false);
+                        lens(g)(closure_msg::set_red{}, true);
+                        z = g;
+                    }
+                    else
+                    {
+                        if (z == lens(p)(closure_msg::left{}))
                         {
-                            L(L(w)(right_token{}))(set_red_token{}, false);
+                            z = p;
+                            self(self, closure_msg::tree_right_rotate{}, z);
+                            p = lens(z)(closure_msg::parent{});
+                            g = lens(p)(closure_msg::parent{});
                         }
-                        L(w)(set_red_token{}, true);
-                        self.left_rotate(self, w);
-                        w = L(xp)(left_token{});
+                        lens(p)(closure_msg::set_red{}, false);
+                        lens(g)(closure_msg::set_red{}, true);
+                        self(self, closure_msg::tree_left_rotate{}, g);
                     }
-                    L(w)(set_red_token{}, L(xp)(red_token{}));
-                    L(xp)(set_red_token{}, false);
-                    if (L(w)(left_token{}))
-                    {
-                        L(L(w)(left_token{}))(set_red_token{}, false);
-                    }
-                    self.right_rotate(self, xp);
-                    x = L(&self.header)(left_token{});
-                    xp = nullptr;
                 }
             }
-        }
-        if (x)
-        {
-            L(x)(set_red_token{}, false);
-        }
-    };
-
-    auto transplant_fn = [](auto &self, node *u, node *v) noexcept
-    {
-        auto L = self.lens;
-        node *up = L(u)(parent_token{});
-        if (up == &self.header)
-        {
-            L (&self.header)(set_left_token{}, v);
-        }
-        else if (u == L(up)(left_token{}))
-        {
-            L(up)(set_left_token{}, v);
-        }
-        else
-        {
-            L(up)(set_right_token{}, v);
-        }
-        if (v)
-        {
-            L(v)(set_parent_token{}, up);
-        }
-    };
-
-    // -------------------------------------------------------------------
-    // Insertion.  Equivalent keys are linked after the existing equivalent
-    // range, preserving stable order for multi containers.
-    // -------------------------------------------------------------------
-    auto insert_node_fn = [](auto &self, node *z)
-        -> std::pair<node *, bool>
-    {
-        auto L = self.lens;
-        node *y = &self.header;
-        node *x = L(&self.header)(left_token{});
-        bool went_left = false;
-
-        while (x)
-        {
-            y = x;
-            const Key &zk = self.key_of(L(z)(value_token{}));
-            const Key &xk = self.key_of(L(x)(value_token{}));
-            const bool before = self.comp(zk, xk);
-            if constexpr (!AllowDuplicates)
+            if (root())
             {
-                const bool after = self.comp(xk, zk);
-                if (!before && !after)
+                lens(root())(closure_msg::set_red{}, false);
+            }
+        }
+        // --- deletion fix-up -------------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_erase_fix>)
+        {
+            auto &&x = std::get<0>(std::forward_as_tuple(args...));
+            auto &&xp = std::get<1>(std::forward_as_tuple(args...));
+            auto is_red = [&](node *n) noexcept
+            {
+                return n != nullptr && lens(n)(closure_msg::red{});
+            };
+            while (x != lens(&header)(closure_msg::left{}) && !is_red(x))
+            {
+                if (xp == nullptr)
                 {
-                    return {x, false};
+                    break;
+                }
+                if (x == lens(xp)(closure_msg::left{}))
+                {
+                    node *w = lens(xp)(closure_msg::right{});
+                    if (w == nullptr)
+                    {
+                        x = xp;
+                        xp = lens(x)(closure_msg::parent{});
+                        continue;
+                    }
+                    if (is_red(w))
+                    {
+                        lens(w)(closure_msg::set_red{}, false);
+                        lens(xp)(closure_msg::set_red{}, true);
+                        self(self, closure_msg::tree_left_rotate{}, xp);
+                        w = lens(xp)(closure_msg::right{});
+                    }
+                    if (!is_red(lens(w)(closure_msg::left{})) &&
+                        !is_red(lens(w)(closure_msg::right{})))
+                    {
+                        lens(w)(closure_msg::set_red{}, true);
+                        x = xp;
+                        xp = lens(x)(closure_msg::parent{});
+                    }
+                    else
+                    {
+                        if (!is_red(lens(w)(closure_msg::right{})))
+                        {
+                            if (lens(w)(closure_msg::left{}))
+                            {
+                                lens(lens(w)(closure_msg::left{}))(
+                                    closure_msg::set_red{}, false);
+                            }
+                            lens(w)(closure_msg::set_red{}, true);
+                            self(self, closure_msg::tree_right_rotate{}, w);
+                            w = lens(xp)(closure_msg::right{});
+                        }
+                        lens(w)(closure_msg::set_red{},
+                                lens(xp)(closure_msg::red{}));
+                        lens(xp)(closure_msg::set_red{}, false);
+                        if (lens(w)(closure_msg::right{}))
+                        {
+                            lens(lens(w)(closure_msg::right{}))(
+                                closure_msg::set_red{}, false);
+                        }
+                        self(self, closure_msg::tree_left_rotate{}, xp);
+                        x = lens(&header)(closure_msg::left{});
+                        xp = nullptr;
+                    }
+                }
+                else
+                {
+                    node *w = lens(xp)(closure_msg::left{});
+                    if (w == nullptr)
+                    {
+                        x = xp;
+                        xp = lens(x)(closure_msg::parent{});
+                        continue;
+                    }
+                    if (is_red(w))
+                    {
+                        lens(w)(closure_msg::set_red{}, false);
+                        lens(xp)(closure_msg::set_red{}, true);
+                        self(self, closure_msg::tree_right_rotate{}, xp);
+                        w = lens(xp)(closure_msg::left{});
+                    }
+                    if (!is_red(lens(w)(closure_msg::right{})) &&
+                        !is_red(lens(w)(closure_msg::left{})))
+                    {
+                        lens(w)(closure_msg::set_red{}, true);
+                        x = xp;
+                        xp = lens(x)(closure_msg::parent{});
+                    }
+                    else
+                    {
+                        if (!is_red(lens(w)(closure_msg::left{})))
+                        {
+                            if (lens(w)(closure_msg::right{}))
+                            {
+                                lens(lens(w)(closure_msg::right{}))(
+                                    closure_msg::set_red{}, false);
+                            }
+                            lens(w)(closure_msg::set_red{}, true);
+                            self(self, closure_msg::tree_left_rotate{}, w);
+                            w = lens(xp)(closure_msg::left{});
+                        }
+                        lens(w)(closure_msg::set_red{},
+                                lens(xp)(closure_msg::red{}));
+                        lens(xp)(closure_msg::set_red{}, false);
+                        if (lens(w)(closure_msg::left{}))
+                        {
+                            lens(lens(w)(closure_msg::left{}))(
+                                closure_msg::set_red{}, false);
+                        }
+                        self(self, closure_msg::tree_right_rotate{}, xp);
+                        x = lens(&header)(closure_msg::left{});
+                        xp = nullptr;
+                    }
                 }
             }
-            if (before)
+            if (x)
             {
-                x = L(x)(left_token{});
-                went_left = true;
+                lens(x)(closure_msg::set_red{}, false);
+            }
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_transplant>)
+        {
+            node *u = std::get<0>(std::forward_as_tuple(args...));
+            node *v = std::get<1>(std::forward_as_tuple(args...));
+            node *up = lens(u)(closure_msg::parent{});
+            if (up == &header)
+            {
+                lens(&header)(closure_msg::set_left{}, v);
+            }
+            else if (u == lens(up)(closure_msg::left{}))
+            {
+                lens(up)(closure_msg::set_left{}, v);
             }
             else
             {
-                x = L(x)(right_token{});
-                went_left = false;
+                lens(up)(closure_msg::set_right{}, v);
             }
-        }
-
-        L(z)(set_parent_token{}, y);
-        L(z)(set_left_token{}, static_cast<node *>(nullptr));
-        L(z)(set_right_token{}, static_cast<node *>(nullptr));
-        L(z)(set_red_token{}, true);
-
-        if (y == &self.header)
-        {
-            L (&self.header)(set_left_token{}, z);
-            L (&self.header)(set_parent_token{}, z);
-            L(z)(set_next_token{}, &self.header);
-            L(z)(set_prev_token{}, &self.header);
-            L (&self.header)(set_next_token{}, z);
-            L (&self.header)(set_prev_token{}, z);
-        }
-        else if (went_left)
-        {
-            L(y)(set_left_token{}, z);
-            node *pv = L(y)(prev_token{});
-            L(z)(set_next_token{}, y);
-            L(z)(set_prev_token{}, pv);
-            L(pv)(set_next_token{}, z);
-            L(y)(set_prev_token{}, z);
-        }
-        else
-        {
-            L(y)(set_right_token{}, z);
-            node *nx = L(y)(next_token{});
-            L(z)(set_prev_token{}, y);
-            L(z)(set_next_token{}, nx);
-            L(nx)(set_prev_token{}, z);
-            L(y)(set_next_token{}, z);
-        }
-
-        ++self.count;
-        self.insert_fix(self, z);
-        node *r = L(&self.header)(left_token{});
-        L (&self.header)(set_parent_token{}, r);
-        return {z, true};
-    };
-
-    // Hinted insertion: use the hint when it really describes a valid
-    // neighbouring position (amortized constant), otherwise fall back to
-    // the ordinary logarithmic search.
-    auto insert_node_hint_fn = [](auto &self, node *z, node *hint)
-        -> std::pair<node *, bool>
-    {
-        auto L = self.lens;
-        node *root = L(&self.header)(left_token{});
-        if (!root)
-        {
-            return self.insert_node(self, z);
-        }
-        const Key &zk = self.key_of(L(z)(value_token{}));
-
-        if (hint == &self.header)
-        {
-            node *last = L(&self.header)(prev_token{});
-            const Key &lk = self.key_of(L(last)(value_token{}));
-            const bool valid =
-                AllowDuplicates ? !self.comp(zk, lk) : self.comp(lk, zk);
-            if (!valid)
+            if (v)
             {
-                return self.insert_node(self, z);
+                lens(v)(closure_msg::set_parent{}, up);
             }
-            L(z)(set_parent_token{}, last);
-            L(z)(set_left_token{}, static_cast<node *>(nullptr));
-            L(z)(set_right_token{}, static_cast<node *>(nullptr));
-            L(z)(set_red_token{}, true);
-            L(last)(set_right_token{}, z);
-            L(z)(set_prev_token{}, last);
-            L(z)(set_next_token{}, &self.header);
-            L(last)(set_next_token{}, z);
-            L (&self.header)(set_prev_token{}, z);
-            ++self.count;
-            self.insert_fix(self, z);
-            L (&self.header)(set_parent_token{},
-                             L (&self.header)(left_token{}));
-            return {z, true};
         }
-
-        const Key &hk = self.key_of(L(hint)(value_token{}));
-        if constexpr (AllowDuplicates)
+        // --- insertion -------------------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_insert_node>)
         {
-            if (self.comp(hk, zk))
+            node *z = std::get<0>(std::forward_as_tuple(args...));
+            node *y = &header;
+            node *x = lens(&header)(closure_msg::left{});
+            bool went_left = false;
+            while (x)
             {
-                return self.insert_node(self, z);
+                y = x;
+                const Key &zk =
+                    key_of(lens(z)(closure_msg::value{}));
+                const Key &xk =
+                    key_of(lens(x)(closure_msg::value{}));
+                const bool before = comp(zk, xk);
+                if constexpr (!AllowDuplicates)
+                {
+                    const bool after = comp(xk, zk);
+                    if (!before && !after)
+                    {
+                        return std::pair<node *, bool>{x, false};
+                    }
+                }
+                if (before)
+                {
+                    x = lens(x)(closure_msg::left{});
+                    went_left = true;
+                }
+                else
+                {
+                    x = lens(x)(closure_msg::right{});
+                    went_left = false;
+                }
             }
-        }
-        else
-        {
-            if (!self.comp(zk, hk))
+            lens(z)(closure_msg::set_parent{}, y);
+            lens(z)(closure_msg::set_left{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_right{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_red{}, true);
+            if (y == &header)
             {
-                return self.insert_node(self, z);
+                lens(&header)(closure_msg::set_left{}, z);
+                lens(&header)(closure_msg::set_parent{}, z);
+                lens(z)(closure_msg::set_next{}, &header);
+                lens(z)(closure_msg::set_prev{}, &header);
+                lens(&header)(closure_msg::set_next{}, z);
+                lens(&header)(closure_msg::set_prev{}, z);
             }
+            else if (went_left)
+            {
+                lens(y)(closure_msg::set_left{}, z);
+                node *pv = lens(y)(closure_msg::prev{});
+                lens(z)(closure_msg::set_next{}, y);
+                lens(z)(closure_msg::set_prev{}, pv);
+                lens(pv)(closure_msg::set_next{}, z);
+                lens(y)(closure_msg::set_prev{}, z);
+            }
+            else
+            {
+                lens(y)(closure_msg::set_right{}, z);
+                node *nx = lens(y)(closure_msg::next{});
+                lens(z)(closure_msg::set_prev{}, y);
+                lens(z)(closure_msg::set_next{}, nx);
+                lens(nx)(closure_msg::set_prev{}, z);
+                lens(y)(closure_msg::set_next{}, z);
+            }
+            ++count;
+            self(self, closure_msg::tree_insert_fix{}, z);
+            node *r = lens(&header)(closure_msg::left{});
+            lens(&header)(closure_msg::set_parent{}, r);
+            return std::pair<node *, bool>{z, true};
         }
-
-        node *pred = L(hint)(prev_token{});
-        if (pred != &self.header)
+        else if constexpr (std::same_as<T,
+                                        closure_msg::tree_insert_node_hint>)
         {
-            const Key &pk = self.key_of(L(pred)(value_token{}));
+            node *z = std::get<0>(std::forward_as_tuple(args...));
+            node *hint = std::get<1>(std::forward_as_tuple(args...));
+            node *root = lens(&header)(closure_msg::left{});
+            if (!root)
+            {
+                return self(self, closure_msg::tree_insert_node{}, z);
+            }
+            const Key &zk = key_of(lens(z)(closure_msg::value{}));
+            if (hint == &header)
+            {
+                node *last = lens(&header)(closure_msg::prev{});
+                const Key &lk = key_of(lens(last)(closure_msg::value{}));
+                const bool valid =
+                    AllowDuplicates ? !comp(zk, lk) : comp(lk, zk);
+                if (!valid)
+                {
+                    return self(self, closure_msg::tree_insert_node{}, z);
+                }
+                lens(z)(closure_msg::set_parent{}, last);
+                lens(z)(closure_msg::set_left{},
+                        static_cast<node *>(nullptr));
+                lens(z)(closure_msg::set_right{},
+                        static_cast<node *>(nullptr));
+                lens(z)(closure_msg::set_red{}, true);
+                lens(last)(closure_msg::set_right{}, z);
+                lens(z)(closure_msg::set_prev{}, last);
+                lens(z)(closure_msg::set_next{}, &header);
+                lens(last)(closure_msg::set_next{}, z);
+                lens(&header)(closure_msg::set_prev{}, z);
+                ++count;
+                self(self, closure_msg::tree_insert_fix{}, z);
+                lens(&header)(closure_msg::set_parent{},
+                              lens(&header)(closure_msg::left{}));
+                return std::pair<node *, bool>{z, true};
+            }
+            const Key &hk = key_of(lens(hint)(closure_msg::value{}));
             if constexpr (AllowDuplicates)
             {
-                if (self.comp(zk, pk))
+                if (comp(hk, zk))
                 {
-                    return self.insert_node(self, z);
+                    return self(self, closure_msg::tree_insert_node{}, z);
                 }
             }
             else
             {
-                if (!self.comp(pk, zk))
+                if (!comp(zk, hk))
                 {
-                    return self.insert_node(self, z);
+                    return self(self, closure_msg::tree_insert_node{}, z);
                 }
             }
-        }
-
-        node *parent = nullptr;
-        if (L(hint)(left_token{}) == nullptr)
-        {
-            parent = hint;
-            L(hint)(set_left_token{}, z);
-        }
-        else
-        {
-            parent = self.maximum(self, L(hint)(left_token{}));
-            L(parent)(set_right_token{}, z);
-        }
-        L(z)(set_parent_token{}, parent);
-        L(z)(set_left_token{}, static_cast<node *>(nullptr));
-        L(z)(set_right_token{}, static_cast<node *>(nullptr));
-        L(z)(set_red_token{}, true);
-        L(z)(set_prev_token{}, pred);
-        L(z)(set_next_token{}, hint);
-        L(pred)(set_next_token{}, z);
-        L(hint)(set_prev_token{}, z);
-        ++self.count;
-        self.insert_fix(self, z);
-        L (&self.header)(set_parent_token{}, L (&self.header)(left_token{}));
-        return {z, true};
-    };
-
-    // -------------------------------------------------------------------
-    // Deletion / extraction.  Thread links are repaired in O(1).
-    // -------------------------------------------------------------------
-    auto detach_fn = [](auto &self, node *z) noexcept
-    {
-        auto L = self.lens;
-        node *zn = L(z)(next_token{});
-        node *zp = L(z)(prev_token{});
-        L(zp)(set_next_token{}, zn);
-        L(zn)(set_prev_token{}, zp);
-
-        node *y = z;
-        bool y_was_red = L(y)(red_token{});
-        node *x = nullptr;
-        node *xp = nullptr;
-
-        if (L(z)(left_token{}) == nullptr)
-        {
-            x = L(z)(right_token{});
-            xp = L(z)(parent_token{});
-            self.transplant(self, z, x);
-        }
-        else if (L(z)(right_token{}) == nullptr)
-        {
-            x = L(z)(left_token{});
-            xp = L(z)(parent_token{});
-            self.transplant(self, z, x);
-        }
-        else
-        {
-            y = self.minimum(self, L(z)(right_token{}));
-            y_was_red = L(y)(red_token{});
-            x = L(y)(right_token{});
-            if (L(y)(parent_token{}) == z)
+            node *pred = lens(hint)(closure_msg::prev{});
+            if (pred != &header)
             {
-                xp = y;
-                if (x)
+                const Key &pk =
+                    key_of(lens(pred)(closure_msg::value{}));
+                if constexpr (AllowDuplicates)
                 {
-                    L(x)(set_parent_token{}, y);
+                    if (comp(zk, pk))
+                    {
+                        return self(self, closure_msg::tree_insert_node{},
+                                    z);
+                    }
+                }
+                else
+                {
+                    if (!comp(pk, zk))
+                    {
+                        return self(self, closure_msg::tree_insert_node{},
+                                    z);
+                    }
                 }
             }
-            else
+            node *parent = nullptr;
+            if (lens(hint)(closure_msg::left{}) == nullptr)
             {
-                xp = L(y)(parent_token{});
-                self.transplant(self, y, x);
-                L(y)(set_right_token{}, L(z)(right_token{}));
-                L(L(y)(right_token{}))(set_parent_token{}, y);
-            }
-            self.transplant(self, z, y);
-            L(y)(set_left_token{}, L(z)(left_token{}));
-            L(L(y)(left_token{}))(set_parent_token{}, y);
-            L(y)(set_red_token{}, L(z)(red_token{}));
-        }
-
-        --self.count;
-        if (!y_was_red)
-        {
-            self.erase_fix(self, x, xp);
-        }
-
-        node *r = L(&self.header)(left_token{});
-        if (r)
-        {
-            L(r)(set_parent_token{}, &self.header);
-        }
-        L (&self.header)(set_parent_token{}, r);
-
-        // Make z a standalone node once again.
-        L(z)(set_left_token{}, static_cast<node *>(nullptr));
-        L(z)(set_right_token{}, static_cast<node *>(nullptr));
-        L(z)(set_parent_token{}, static_cast<node *>(nullptr));
-        L(z)(set_next_token{}, static_cast<node *>(nullptr));
-        L(z)(set_prev_token{}, static_cast<node *>(nullptr));
-        L(z)(set_red_token{}, false);
-    };
-
-    // -------------------------------------------------------------------
-    // Lookup closures are templates through generic lambdas, enabling
-    // heterogeneous lookup when Compare::is_transparent exists.
-    // -------------------------------------------------------------------
-    auto lower_bound_fn = [](auto &self, const auto &key) -> node *
-    {
-        auto L = self.lens;
-        node *x = L(&self.header)(left_token{});
-        node *y = &self.header;
-        while (x)
-        {
-            const Key &xk = self.key_of(L(x)(value_token{}));
-            if (!self.comp(xk, key))
-            {
-                y = x;
-                x = L(x)(left_token{});
+                parent = hint;
+                lens(hint)(closure_msg::set_left{}, z);
             }
             else
             {
-                x = L(x)(right_token{});
+                parent = self(self, closure_msg::tree_maximum{},
+                              lens(hint)(closure_msg::left{}));
+                lens(parent)(closure_msg::set_right{}, z);
             }
+            lens(z)(closure_msg::set_parent{}, parent);
+            lens(z)(closure_msg::set_left{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_right{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_red{}, true);
+            lens(z)(closure_msg::set_prev{}, pred);
+            lens(z)(closure_msg::set_next{}, hint);
+            lens(pred)(closure_msg::set_next{}, z);
+            lens(hint)(closure_msg::set_prev{}, z);
+            ++count;
+            self(self, closure_msg::tree_insert_fix{}, z);
+            lens(&header)(closure_msg::set_parent{},
+                          lens(&header)(closure_msg::left{}));
+            return std::pair<node *, bool>{z, true};
         }
-        return y;
-    };
-
-    auto upper_bound_fn = [](auto &self, const auto &key) -> node *
-    {
-        auto L = self.lens;
-        node *x = L(&self.header)(left_token{});
-        node *y = &self.header;
-        while (x)
+        // --- deletion --------------------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_detach>)
         {
-            const Key &xk = self.key_of(L(x)(value_token{}));
-            if (self.comp(key, xk))
+            node *z = std::get<0>(std::forward_as_tuple(args...));
+            node *zn = lens(z)(closure_msg::next{});
+            node *zp = lens(z)(closure_msg::prev{});
+            lens(zp)(closure_msg::set_next{}, zn);
+            lens(zn)(closure_msg::set_prev{}, zp);
+            node *y = z;
+            bool y_was_red = lens(y)(closure_msg::red{});
+            node *x = nullptr;
+            node *xp = nullptr;
+            if (lens(z)(closure_msg::left{}) == nullptr)
             {
-                y = x;
-                x = L(x)(left_token{});
+                x = lens(z)(closure_msg::right{});
+                xp = lens(z)(closure_msg::parent{});
+                self(self, closure_msg::tree_transplant{}, z, x);
+            }
+            else if (lens(z)(closure_msg::right{}) == nullptr)
+            {
+                x = lens(z)(closure_msg::left{});
+                xp = lens(z)(closure_msg::parent{});
+                self(self, closure_msg::tree_transplant{}, z, x);
             }
             else
             {
-                x = L(x)(right_token{});
+                y = self(self, closure_msg::tree_minimum{},
+                         lens(z)(closure_msg::right{}));
+                y_was_red = lens(y)(closure_msg::red{});
+                x = lens(y)(closure_msg::right{});
+                if (lens(y)(closure_msg::parent{}) == z)
+                {
+                    xp = y;
+                    if (x)
+                    {
+                        lens(x)(closure_msg::set_parent{}, y);
+                    }
+                }
+                else
+                {
+                    xp = lens(y)(closure_msg::parent{});
+                    self(self, closure_msg::tree_transplant{}, y, x);
+                    lens(y)(closure_msg::set_right{},
+                            lens(z)(closure_msg::right{}));
+                    lens(lens(y)(closure_msg::right{}))(
+                        closure_msg::set_parent{}, y);
+                }
+                self(self, closure_msg::tree_transplant{}, z, y);
+                lens(y)(closure_msg::set_left{},
+                        lens(z)(closure_msg::left{}));
+                lens(lens(y)(closure_msg::left{}))(
+                    closure_msg::set_parent{}, y);
+                lens(y)(closure_msg::set_red{},
+                        lens(z)(closure_msg::red{}));
             }
-        }
-        return y;
-    };
-
-    auto find_node_fn = [](auto &self, const auto &key) -> node *
-    {
-        node *n = self.lower_bound(self, key);
-        if (n != &self.header)
-        {
-            const Key &nk = self.key_of(self.lens(n)(value_token{}));
-            if (!self.comp(key, nk) && !self.comp(nk, key))
+            --count;
+            if (!y_was_red)
             {
-                return n;
+                self(self, closure_msg::tree_erase_fix{}, x, xp);
             }
+            node *r = lens(&header)(closure_msg::left{});
+            if (r)
+            {
+                lens(r)(closure_msg::set_parent{}, &header);
+            }
+            lens(&header)(closure_msg::set_parent{}, r);
+            lens(z)(closure_msg::set_left{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_right{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_parent{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_next{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_prev{},
+                    static_cast<node *>(nullptr));
+            lens(z)(closure_msg::set_red{}, false);
         }
-        return &self.header;
-    };
-
-    // -------------------------------------------------------------------
-    // Structural utilities used by the wrapper (copying, clearing,
-    // stealing, swapping).  They also use only the lens.
-    // -------------------------------------------------------------------
-    auto rebuild_threads_fn = [](auto &self) noexcept
-    {
-        auto L = self.lens;
-        node *r = L(&self.header)(left_token{});
-        node *prev = &self.header;
-        auto visit = [&](auto &&go, node *n) -> void
+        // --- lookup ----------------------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_lower_bound>)
         {
+            auto &&key = std::get<0>(std::forward_as_tuple(args...));
+            node *x = lens(&header)(closure_msg::left{});
+            node *y = &header;
+            while (x)
+            {
+                const Key &xk =
+                    key_of(lens(x)(closure_msg::value{}));
+                if (!comp(xk, key))
+                {
+                    y = x;
+                    x = lens(x)(closure_msg::left{});
+                }
+                else
+                {
+                    x = lens(x)(closure_msg::right{});
+                }
+            }
+            return y;
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_upper_bound>)
+        {
+            auto &&key = std::get<0>(std::forward_as_tuple(args...));
+            node *x = lens(&header)(closure_msg::left{});
+            node *y = &header;
+            while (x)
+            {
+                const Key &xk =
+                    key_of(lens(x)(closure_msg::value{}));
+                if (comp(key, xk))
+                {
+                    y = x;
+                    x = lens(x)(closure_msg::left{});
+                }
+                else
+                {
+                    x = lens(x)(closure_msg::right{});
+                }
+            }
+            return y;
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_find_node>)
+        {
+            auto &&key = std::get<0>(std::forward_as_tuple(args...));
+            node *n = self(self, closure_msg::tree_lower_bound{}, key);
+            if (n != &header)
+            {
+                const Key &nk =
+                    key_of(lens(n)(closure_msg::value{}));
+                if (!comp(key, nk) && !comp(nk, key))
+                {
+                    return n;
+                }
+            }
+            return static_cast<node *>(&header);
+        }
+        // --- structural utilities --------------------------------------
+        else if constexpr (std::same_as<T,
+                                        closure_msg::tree_rebuild_threads>)
+        {
+            node *r = lens(&header)(closure_msg::left{});
+            node *prev = &header;
+            auto visit = [&](auto &&go, node *n) -> void
+            {
+                if (!n)
+                {
+                    return;
+                }
+                go(go, lens(n)(closure_msg::left{}));
+                lens(prev)(closure_msg::set_next{}, n);
+                lens(n)(closure_msg::set_prev{}, prev);
+                prev = n;
+                go(go, lens(n)(closure_msg::right{}));
+            };
+            if (r)
+            {
+                visit(visit, r);
+            }
+            lens(prev)(closure_msg::set_next{}, &header);
+            lens(&header)(closure_msg::set_prev{}, prev);
+            lens(&header)(closure_msg::set_next{},
+                          r ? self(self, closure_msg::tree_minimum{}, r)
+                            : &header);
+            lens(&header)(closure_msg::set_parent{}, r);
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_clear>)
+        {
+            node *n = std::get<0>(std::forward_as_tuple(args...));
+            auto &&destroy =
+                std::get<1>(std::forward_as_tuple(args...));
             if (!n)
             {
                 return;
             }
-            go(go, L(n)(left_token{}));
-            L(prev)(set_next_token{}, n);
-            L(n)(set_prev_token{}, prev);
-            prev = n;
-            go(go, L(n)(right_token{}));
-        };
-        if (r)
-        {
-            visit(visit, r);
+            node *l = lens(n)(closure_msg::left{});
+            node *r = lens(n)(closure_msg::right{});
+            self(self, closure_msg::tree_clear{}, l, destroy);
+            self(self, closure_msg::tree_clear{}, r, destroy);
+            destroy(n);
         }
-        L(prev)(set_next_token{}, &self.header);
-        L (&self.header)(set_prev_token{}, prev);
-        L (&self.header)(set_next_token{},
-                         r ? self.minimum(self, r) : &self.header);
-        L (&self.header)(set_parent_token{}, r);
-    };
-
-    auto clear_tree_fn = [](auto &self, node *n, auto &&destroy) -> void
-    {
-        if (!n)
+        else if constexpr (std::same_as<T, closure_msg::tree_clone>)
         {
-            return;
-        }
-        auto L = self.lens;
-        node *l = L(n)(left_token{});
-        node *r = L(n)(right_token{});
-        self.clear_tree(self, l, destroy);
-        self.clear_tree(self, r, destroy);
-        destroy(n);
-    };
-
-    auto clone_tree_fn = [](auto &self, node *src, auto &&create,
-                            auto &&destroy) -> node *
-    {
-        if (!src)
-        {
-            return nullptr;
-        }
-        auto L = self.lens;
-        node *d = create(src);
-        try
-        {
-            node *l =
-                self.clone_tree(self, L(src)(left_token{}), create,
-                                destroy);
-            L(d)(set_left_token{}, l);
-            if (l)
+            node *src = std::get<0>(std::forward_as_tuple(args...));
+            auto &&create = std::get<1>(std::forward_as_tuple(args...));
+            auto &&destroy =
+                std::get<2>(std::forward_as_tuple(args...));
+            if (!src)
             {
-                L(l)(set_parent_token{}, d);
+                return static_cast<node *>(nullptr);
             }
-            node *r =
-                self.clone_tree(self, L(src)(right_token{}), create,
-                                destroy);
-            L(d)(set_right_token{}, r);
+            node *d = create(src);
+            try
+            {
+                node *l = self(self, closure_msg::tree_clone{},
+                               lens(src)(closure_msg::left{}), create,
+                               destroy);
+                lens(d)(closure_msg::set_left{}, l);
+                if (l)
+                {
+                    lens(l)(closure_msg::set_parent{}, d);
+                }
+                node *r = self(self, closure_msg::tree_clone{},
+                               lens(src)(closure_msg::right{}), create,
+                               destroy);
+                lens(d)(closure_msg::set_right{}, r);
+                if (r)
+                {
+                    lens(r)(closure_msg::set_parent{}, d);
+                }
+                lens(d)(closure_msg::set_red{},
+                        lens(src)(closure_msg::red{}));
+                return d;
+            }
+            catch (...)
+            {
+                self(self, closure_msg::tree_clear{}, d, destroy);
+                throw;
+            }
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_reset>)
+        {
+            lens(&header)(closure_msg::set_left{},
+                          static_cast<node *>(nullptr));
+            lens(&header)(closure_msg::set_right{},
+                          static_cast<node *>(nullptr));
+            lens(&header)(closure_msg::set_parent{},
+                          static_cast<node *>(nullptr));
+            lens(&header)(closure_msg::set_next{}, &header);
+            lens(&header)(closure_msg::set_prev{}, &header);
+            count = 0;
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_adopt>)
+        {
+            node *r = std::get<0>(std::forward_as_tuple(args...));
+            std::size_t n = std::get<1>(std::forward_as_tuple(args...));
+            lens(&header)(closure_msg::set_left{}, r);
             if (r)
             {
-                L(r)(set_parent_token{}, d);
+                lens(r)(closure_msg::set_parent{}, &header);
             }
-            L(d)(set_red_token{}, L(src)(red_token{}));
-            return d;
+            lens(&header)(closure_msg::set_parent{}, r);
+            count = n;
+            self(self, closure_msg::tree_rebuild_threads{});
         }
-        catch (...)
+        // Link a pre-existing tree, whose thread endpoints currently point at
+        // `foreign_header`, into this tree's header.  This is the primitive
+        // behind take_from and swap_trees.
+        else if constexpr (std::same_as<T,
+                                        closure_msg::tree_link_header>)
         {
-            self.clear_tree(self, d, destroy);
-            throw;
+            node *root = std::get<0>(std::forward_as_tuple(args...));
+            node *first = std::get<1>(std::forward_as_tuple(args...));
+            node *last = std::get<2>(std::forward_as_tuple(args...));
+            std::size_t n = std::get<3>(std::forward_as_tuple(args...));
+            node *foreign_header =
+                std::get<4>(std::forward_as_tuple(args...));
+            lens(&header)(closure_msg::set_left{}, root);
+            lens(&header)(closure_msg::set_parent{}, root);
+            lens(&header)(closure_msg::set_next{},
+                          first == foreign_header ? &header : first);
+            lens(&header)(closure_msg::set_prev{},
+                          last == foreign_header ? &header : last);
+            count = n;
+            if (root)
+            {
+                lens(root)(closure_msg::set_parent{}, &header);
+                if (first != foreign_header)
+                {
+                    lens(first)(closure_msg::set_prev{}, &header);
+                    lens(last)(closure_msg::set_next{}, &header);
+                }
+            }
         }
-    };
-
-    auto reset_fn = [](auto &self) noexcept
-    {
-        auto L = self.lens;
-        L (&self.header)(set_left_token{}, static_cast<node *>(nullptr));
-        L (&self.header)(set_right_token{}, static_cast<node *>(nullptr));
-        L (&self.header)(set_parent_token{}, static_cast<node *>(nullptr));
-        L (&self.header)(set_next_token{}, &self.header);
-        L (&self.header)(set_prev_token{}, &self.header);
-        self.count = 0;
-    };
-
-    auto adopt_fn = [](auto &self, node *r, std::size_t n)
-    {
-        auto L = self.lens;
-        L (&self.header)(set_left_token{}, r);
-        if (r)
+        else if constexpr (std::same_as<T, closure_msg::tree_take_from>)
         {
-            L(r)(set_parent_token{}, &self.header);
+            auto &src = std::get<0>(std::forward_as_tuple(args...));
+            node *src_header = src(src, closure_msg::tree_header{});
+            node *r = src(src, closure_msg::tree_root{});
+            node *first = src(src, closure_msg::tree_first{});
+            node *last = src(src, closure_msg::tree_last{});
+            std::size_t n = src(src, closure_msg::tree_size{});
+            self(self, closure_msg::tree_link_header{}, r, first, last, n,
+                 src_header);
+            src(src, closure_msg::tree_reset{});
         }
-        L (&self.header)(set_parent_token{}, r);
-        self.count = n;
-        self.rebuild_threads(self);
-    };
-
-    auto take_from_fn = [](auto &dst, auto &src) noexcept
-    {
-        auto L = dst.lens;
-        node *r = L(&src.header)(left_token{});
-        node *first = L(&src.header)(next_token{});
-        node *last = L(&src.header)(prev_token{});
-        L (&dst.header)(set_left_token{}, r);
-        if (r)
+        else if constexpr (std::same_as<T, closure_msg::tree_swap_trees>)
         {
-            L(r)(set_parent_token{}, &dst.header);
-            L(first)(set_prev_token{}, &dst.header);
-            L(last)(set_next_token{}, &dst.header);
-            L (&dst.header)(set_next_token{}, first);
-            L (&dst.header)(set_prev_token{}, last);
+            auto &other = std::get<0>(std::forward_as_tuple(args...));
+            node *ah = self(self, closure_msg::tree_header{});
+            node *bh = other(other, closure_msg::tree_header{});
+            node *ar = self(self, closure_msg::tree_root{});
+            node *br = other(other, closure_msg::tree_root{});
+            node *af = self(self, closure_msg::tree_first{});
+            node *al = self(self, closure_msg::tree_last{});
+            node *bf = other(other, closure_msg::tree_first{});
+            node *bl = other(other, closure_msg::tree_last{});
+            std::size_t an = self(self, closure_msg::tree_size{});
+            std::size_t bn = other(other, closure_msg::tree_size{});
+            self(self, closure_msg::tree_link_header{}, br, bf, bl, bn, bh);
+            other(other, closure_msg::tree_link_header{}, ar, af, al, an,
+                  ah);
+        }
+        // --- accessors -------------------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_first>)
+        {
+            return static_cast<node *>(
+                lens(&header)(closure_msg::next{}));
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_last>)
+        {
+            return static_cast<node *>(
+                lens(&header)(closure_msg::prev{}));
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_root>)
+        {
+            return static_cast<node *>(
+                lens(&header)(closure_msg::left{}));
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_end>)
+        {
+            return static_cast<node *>(&header);
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_header>)
+        {
+            return static_cast<node *>(&header);
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_next>)
+        {
+            node *p = std::get<0>(std::forward_as_tuple(args...));
+            return static_cast<node *>(lens(p)(closure_msg::next{}));
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_prev>)
+        {
+            node *p = std::get<0>(std::forward_as_tuple(args...));
+            return static_cast<node *>(lens(p)(closure_msg::prev{}));
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_size>)
+        {
+            return count;
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_comp_ref>)
+        {
+            return (comp);
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_swap_comp>)
+        {
+            auto &other = std::get<0>(std::forward_as_tuple(args...));
+            using std::swap;
+            swap(comp, other(other, closure_msg::tree_comp_ref{}));
+        }
+        else if constexpr (std::same_as<T, closure_msg::tree_set_comp>)
+        {
+            static_assert(sizeof...(args) == 1);
+            comp = std::get<0>(
+                std::forward_as_tuple(std::forward<decltype(args)>(args)...));
+        }
+        // --- iterator constructors ------------------------------------
+        else if constexpr (std::same_as<T, closure_msg::tree_make_iter>)
+        {
+            node *p = std::get<0>(std::forward_as_tuple(args...));
+            return make_iter(make_iter, make_citer, p);
+        }
+        else if constexpr (std::same_as<T,
+                                        closure_msg::tree_make_citer>)
+        {
+            node *p = std::get<0>(std::forward_as_tuple(args...));
+            return make_citer(make_citer, p);
         }
         else
         {
-            L (&dst.header)(set_next_token{}, &dst.header);
-            L (&dst.header)(set_prev_token{}, &dst.header);
-        }
-        L (&dst.header)(set_parent_token{}, r);
-        dst.count = src.count;
-        dst.reset(src);
-    };
-
-    auto swap_trees_fn = [](auto &a, auto &b) noexcept
-    {
-        auto L = a.lens;
-        node *ra = L(&a.header)(left_token{});
-        node *rb = L(&b.header)(left_token{});
-        node *af = L(&a.header)(next_token{});
-        node *al = L(&a.header)(prev_token{});
-        node *bf = L(&b.header)(next_token{});
-        node *bl = L(&b.header)(prev_token{});
-
-        L (&a.header)(set_left_token{}, rb);
-        L (&a.header)(set_parent_token{}, rb);
-        L (&a.header)(set_next_token{}, bf == &b.header ? &a.header : bf);
-        L (&a.header)(set_prev_token{}, bl == &b.header ? &a.header : bl);
-
-        L (&b.header)(set_left_token{}, ra);
-        L (&b.header)(set_parent_token{}, ra);
-        L (&b.header)(set_next_token{}, af == &a.header ? &b.header : af);
-        L (&b.header)(set_prev_token{}, al == &a.header ? &b.header : al);
-
-        if (ra)
-        {
-            L(ra)(set_parent_token{}, &b.header);
-            L(af)(set_prev_token{}, &b.header);
-            L(al)(set_next_token{}, &b.header);
-        }
-        if (rb)
-        {
-            L(rb)(set_parent_token{}, &a.header);
-            L(bf)(set_prev_token{}, &a.header);
-            L(bl)(set_next_token{}, &a.header);
-        }
-        std::swap(a.count, b.count);
-    };
-
-    auto first_node_fn = [](auto &self) noexcept
-    {
-        return self.lens(&self.header)(next_token{});
-    };
-    auto last_node_fn = [](auto &self) noexcept
-    {
-        return self.lens(&self.header)(prev_token{});
-    };
-    auto root_node_fn = [](auto &self) noexcept
-    {
-        return self.lens(&self.header)(left_token{});
-    };
-    auto end_node_fn = [](auto &self) noexcept
-    {
-        return &self.header;
-    };
-
-    struct core
-    {
-        using node_type = node;
-        static_assert(std::same_as<node_type, node>);
-        using next_fn = decltype(+next_lambda_fn);
-        using prev_fn = decltype(+prev_lambda_fn);
-        using lens_fn = decltype(&node_access::wrap);
-
-        node header;
-        std::size_t count;
-        Compare comp;
-        KeyOfValue key_of;
-        lens_fn lens;
-        next_fn next;
-        prev_fn prev;
-
-        decltype(left_rotate_fn) left_rotate;
-        decltype(right_rotate_fn) right_rotate;
-        decltype(minimum_fn) minimum;
-        decltype(maximum_fn) maximum;
-        decltype(insert_fix_fn) insert_fix;
-        decltype(erase_fix_fn) erase_fix;
-        decltype(transplant_fn) transplant;
-        decltype(insert_node_fn) insert_node;
-        decltype(insert_node_hint_fn) insert_node_hint;
-        decltype(detach_fn) detach;
-        decltype(lower_bound_fn) lower_bound;
-        decltype(upper_bound_fn) upper_bound;
-        decltype(find_node_fn) find_node;
-        decltype(rebuild_threads_fn) rebuild_threads;
-        decltype(clear_tree_fn) clear_tree;
-        decltype(clone_tree_fn) clone_tree;
-        decltype(reset_fn) reset;
-        decltype(adopt_fn) adopt;
-        decltype(take_from_fn) take_from;
-        decltype(swap_trees_fn) swap_trees;
-        decltype(first_node_fn) first_node;
-        decltype(last_node_fn) last_node;
-        decltype(root_node_fn) root_node;
-        decltype(end_node_fn) end_node;
-
-        static Value *value_ptr(node *p) noexcept
-        {
-            return std::addressof(node_access::wrap(p)(value_token{}));
-        }
-        static bool engaged(node *p) noexcept
-        {
-            return node_access::wrap(p)(engaged_token{});
-        }
-        static void set_engaged(node *p, bool v) noexcept
-        {
-            node_access::wrap(p)(set_engaged_token{}, v);
+            static_assert(!sizeof(T), "unknown tree message");
         }
     };
 
-    return core{
-        node{},
-        0,
-        comp,
-        KeyOfValue{},
-        &node_access::wrap,
-        +next_lambda_fn,
-        +prev_lambda_fn,
-        left_rotate_fn,
-        right_rotate_fn,
-        minimum_fn,
-        maximum_fn,
-        insert_fix_fn,
-        erase_fix_fn,
-        transplant_fn,
-        insert_node_fn,
-        insert_node_hint_fn,
-        detach_fn,
-        lower_bound_fn,
-        upper_bound_fn,
-        find_node_fn,
-        rebuild_threads_fn,
-        clear_tree_fn,
-        clone_tree_fn,
-        reset_fn,
-        adopt_fn,
-        take_from_fn,
-        swap_trees_fn,
-        first_node_fn,
-        last_node_fn,
-        root_node_fn,
-        end_node_fn,
-    };
+    return tree;
 };
 
 // ---------------------------------------------------------------------------
@@ -1132,7 +1256,15 @@ class basic_ordered_tree
                             Key, Value, KeyOfValue, Compare, AllowDuplicates>(
         std::declval<Compare>()));
 
-    using node_t = typename core_t::node_type;
+    using node_t = std::remove_pointer_t<decltype(
+        std::declval<core_t &>()(std::declval<core_t &>(),
+                                 closure_msg::tree_root{}))>;
+    using iter_fn = decltype(std::declval<core_t &>()(
+        std::declval<core_t &>(), closure_msg::tree_make_iter{},
+        std::declval<node_t *>()));
+    using citer_fn = decltype(std::declval<core_t &>()(
+        std::declval<core_t &>(), closure_msg::tree_make_citer{},
+        std::declval<node_t *>()));
     using node_allocator_type =
         typename std::allocator_traits<Allocator>::template rebind_alloc<
             node_t>;
@@ -1204,13 +1336,31 @@ private:
         friend class iterator_impl;
         friend class basic_ordered_tree;
 
-        node_t *p_ = nullptr;
-        typename core_t::next_fn next_ = nullptr;
-        typename core_t::prev_fn prev_ = nullptr;
+        using fn_type = std::conditional_t<Const, citer_fn, iter_fn>;
 
-        constexpr iterator_impl(node_t *p, typename core_t::next_fn n,
-                                typename core_t::prev_fn pr) noexcept
-            : p_(p), next_(n), prev_(pr) {}
+        // The iterator's entire position is the closure.  There is no cursor
+        // field: dereferencing, succeeding and preceding are messages sent to
+        // the function.  This class is only the standard adapter that supplies
+        // default construction and copy assignment required by the library;
+        // `optional` is storage for the closure, not tree state.
+        std::optional<fn_type> fn_{};
+
+        constexpr explicit iterator_impl(fn_type fn) noexcept
+            : fn_(std::move(fn)) {}
+
+        constexpr void assign_from(const std::optional<fn_type> &other)
+        {
+            fn_.reset();
+            if (other)
+            {
+                fn_.emplace(*other);
+            }
+        }
+
+        constexpr node_t *node_ptr() const noexcept
+        {
+            return fn_ ? (*fn_)(closure_msg::iter_node{}) : nullptr;
+        }
 
     public:
         using iterator_category = std::bidirectional_iterator_tag;
@@ -1223,26 +1373,63 @@ private:
             std::conditional_t<Const, const value_type &, value_type &>;
 
         constexpr iterator_impl() noexcept = default;
+        constexpr iterator_impl(const iterator_impl &) = default;
+        constexpr iterator_impl(iterator_impl &&) noexcept = default;
+
+        constexpr iterator_impl &operator=(const iterator_impl &other)
+        {
+            if (this != &other)
+            {
+                assign_from(other.fn_);
+            }
+            return *this;
+        }
+
+        constexpr iterator_impl &operator=(iterator_impl &&other)
+        {
+            if (this != &other)
+            {
+                fn_.reset();
+                if (other.fn_)
+                {
+                    fn_.emplace(std::move(*other.fn_));
+                }
+            }
+            return *this;
+        }
 
         template <bool C>
             requires(Const || !C)
-        constexpr iterator_impl(const iterator_impl<C> &other) noexcept
-            : p_(other.p_), next_(other.next_), prev_(other.prev_)
+        constexpr iterator_impl(const iterator_impl<C> &other)
         {
+            if (!other.fn_)
+            {
+                return;
+            }
+            if constexpr (C == Const)
+            {
+                fn_.emplace(*other.fn_);
+            }
+            else
+            {
+                // Turning an iterator into a const_iterator is itself an
+                // iterator message; the answer is another iterator function.
+                fn_.emplace((*other.fn_)(closure_msg::iter_const{}));
+            }
         }
 
         constexpr reference operator*() const noexcept
         {
-            return *core_t::value_ptr(p_);
+            return (*fn_)(closure_msg::iter_value{});
         }
         constexpr pointer operator->() const noexcept
         {
-            return core_t::value_ptr(p_);
+            return std::addressof(operator*());
         }
 
         constexpr iterator_impl &operator++() noexcept
         {
-            p_ = next_(p_);
+            fn_.emplace((*fn_)(closure_msg::iter_next{}));
             return *this;
         }
         constexpr iterator_impl operator++(int) noexcept
@@ -1253,7 +1440,7 @@ private:
         }
         constexpr iterator_impl &operator--() noexcept
         {
-            p_ = prev_(p_);
+            fn_.emplace((*fn_)(closure_msg::iter_prev{}));
             return *this;
         }
         constexpr iterator_impl operator--(int) noexcept
@@ -1266,7 +1453,11 @@ private:
         friend constexpr bool operator==(const iterator_impl &a,
                                          const iterator_impl &b) noexcept
         {
-            return a.p_ == b.p_;
+            if (!a.fn_ || !b.fn_)
+            {
+                return !a.fn_ && !b.fn_;
+            }
+            return (*a.fn_)(closure_msg::iter_equal{}, *b.fn_);
         }
     };
 
@@ -1309,10 +1500,10 @@ public:
 
         static void destroy_node_with(allocator_type &a, node_t *p) noexcept
         {
-            if (core_t::engaged(p))
+            if (p->closure_engaged())
             {
                 value_allocator_type va(a);
-                value_alloc_traits::destroy(va, core_t::value_ptr(p));
+                value_alloc_traits::destroy(va, p->closure_value());
             }
             node_allocator_type na(a);
             node_alloc_traits::destroy(na, p);
@@ -1361,19 +1552,19 @@ public:
 
         constexpr value_type &value() const noexcept
         {
-            return *core_t::value_ptr(p_);
+            return *p_->closure_value();
         }
 
         constexpr key_type &key() const noexcept
             requires Mapped
         {
-            return const_cast<key_type &>(KeyOfValue{}(*core_t::value_ptr(p_)));
+            return const_cast<key_type &>(KeyOfValue{}(*p_->closure_value()));
         }
 
         constexpr mapped_type &mapped() const noexcept
             requires Mapped
         {
-            return core_t::value_ptr(p_)->second;
+            return p_->closure_value()->second;
         }
 
         constexpr void swap(node_type &other) noexcept(
@@ -1432,7 +1623,15 @@ private:
               std::move(comp))),
           alloc_(std::move(alloc))
     {
-        core_.reset(core_);
+        send(closure_msg::tree_reset{});
+    }
+
+    // The wrapper is only an adapter: every operation is a message to the
+    // tree function.  The first argument makes the closure apply itself.
+    template <class Tag, class... Args>
+    constexpr decltype(auto) send(Tag tag, Args &&...args) const
+    {
+        return core_(core_, tag, std::forward<Args>(args)...);
     }
 
     // --- allocator-aware physical node lifetime ---------------------------
@@ -1466,10 +1665,10 @@ private:
 
     static void destroy_node_with(allocator_type &a, node_t *p) noexcept
     {
-        if (core_t::engaged(p))
+        if (p->closure_engaged())
         {
             value_allocator_type va(a);
-            value_alloc_traits::destroy(va, core_t::value_ptr(p));
+            value_alloc_traits::destroy(va, p->closure_value());
         }
         node_allocator_type na(a);
         node_alloc_traits::destroy(na, p);
@@ -1490,8 +1689,8 @@ private:
         {
             value_allocator_type va(alloc_);
             value_alloc_traits::construct(
-                va, core_t::value_ptr(p), std::forward<Args>(args)...);
-            core_t::set_engaged(p, true);
+                va, p->closure_value(), std::forward<Args>(args)...);
+            p->closure_set_engaged(true);
         }
         catch (...)
         {
@@ -1503,14 +1702,14 @@ private:
 
     void clear_nodes() noexcept
     {
-        if (core_.count != 0)
+        if (send(closure_msg::tree_size{}) != 0)
         {
-            node_t *r = core_.root_node(core_);
-            core_.clear_tree(core_, r,
-                             [this](node_t *p)
-                             { destroy_node(p); });
+            node_t *r = send(closure_msg::tree_root{});
+            send(closure_msg::tree_clear{}, r,
+                 [this](node_t *p)
+                 { destroy_node(p); });
         }
-        core_.reset(core_);
+        send(closure_msg::tree_reset{});
     }
 
     template <bool Move>
@@ -1520,36 +1719,47 @@ private:
         {
             if constexpr (Move)
             {
-                return create_node(std::move(*core_t::value_ptr(src)));
+                return create_node(std::move(*src->closure_value()));
             }
             else
             {
-                return create_node(*core_t::value_ptr(src));
+                return create_node(*src->closure_value());
             }
         };
         auto destroy = [this](node_t *p)
         { destroy_node(p); };
-        node_t *r = core_.clone_tree(core_, other.core_.root_node(other.core_),
-                                     create, destroy);
-        core_.adopt(core_, r, other.core_.count);
+        node_t *r = send(closure_msg::tree_clone{},
+                         other.send(closure_msg::tree_root{}), create,
+                         destroy);
+        send(closure_msg::tree_adopt{}, r,
+             other.send(closure_msg::tree_size{}));
     }
 
     template <bool Const>
     constexpr iterator_impl<Const> iter_at(node_t *p) const noexcept
     {
-        return iterator_impl<Const>(p, core_.next, core_.prev);
+        if constexpr (Const)
+        {
+            return iterator_impl<Const>(
+                send(closure_msg::tree_make_citer{}, p));
+        }
+        else
+        {
+            return iterator_impl<Const>(
+                send(closure_msg::tree_make_iter{}, p));
+        }
     }
 
     template <bool Const>
     constexpr iterator_impl<Const> begin_impl() const noexcept
     {
-        return iter_at<Const>(core_.first_node(core_));
+        return iter_at<Const>(send(closure_msg::tree_first{}));
     }
 
     template <bool Const>
     constexpr iterator_impl<Const> end_impl() const noexcept
     {
-        return iter_at<Const>(core_.end_node(core_));
+        return iter_at<Const>(send(closure_msg::tree_end{}));
     }
 
     template <class... Args>
@@ -1560,7 +1770,7 @@ private:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = send(closure_msg::tree_insert_node{}, p);
             pos = result.first;
             inserted = result.second;
         }
@@ -1591,7 +1801,8 @@ private:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node_hint(core_, p, hint.p_);
+            auto result = send(closure_msg::tree_insert_node_hint{}, p,
+                               hint.node_ptr());
             pos = result.first;
             inserted = result.second;
         }
@@ -1610,39 +1821,39 @@ private:
     template <bool Const, class K>
     iterator_impl<Const> lower_bound_impl(const K &k) const
     {
-        return iter_at<Const>(core_.lower_bound(core_, k));
+        return iter_at<Const>(send(closure_msg::tree_lower_bound{}, k));
     }
 
     template <bool Const, class K>
     iterator_impl<Const> upper_bound_impl(const K &k) const
     {
-        return iter_at<Const>(core_.upper_bound(core_, k));
+        return iter_at<Const>(send(closure_msg::tree_upper_bound{}, k));
     }
 
     template <bool Const, class K>
     iterator_impl<Const> find_impl(const K &k) const
     {
-        return iter_at<Const>(core_.find_node(core_, k));
+        return iter_at<Const>(send(closure_msg::tree_find_node{}, k));
     }
 
     template <bool Const, class K>
     std::pair<iterator_impl<Const>, iterator_impl<Const>>
     equal_range_impl(const K &k) const
     {
-        return {iter_at<Const>(core_.lower_bound(core_, k)),
-                iter_at<Const>(core_.upper_bound(core_, k))};
+        return {iter_at<Const>(send(closure_msg::tree_lower_bound{}, k)),
+                iter_at<Const>(send(closure_msg::tree_upper_bound{}, k))};
     }
 
     template <class K>
     size_type count_impl(const K &k) const
     {
-        node_t *first = core_.lower_bound(core_, k);
-        node_t *last = core_.upper_bound(core_, k);
+        node_t *first = send(closure_msg::tree_lower_bound{}, k);
+        node_t *last = send(closure_msg::tree_upper_bound{}, k);
         size_type n = 0;
         while (first != last)
         {
             ++n;
-            first = core_.next(first);
+            first = send(closure_msg::tree_next{}, first);
         }
         return n;
     }
@@ -1650,13 +1861,13 @@ private:
     template <class K>
     size_type erase_key_impl(const K &k)
     {
-        node_t *first = core_.lower_bound(core_, k);
-        node_t *last = core_.upper_bound(core_, k);
+        node_t *first = send(closure_msg::tree_lower_bound{}, k);
+        node_t *last = send(closure_msg::tree_upper_bound{}, k);
         size_type n = 0;
         while (first != last)
         {
-            node_t *next = core_.next(first);
-            core_.detach(core_, first);
+            node_t *next = send(closure_msg::tree_next{}, first);
+            send(closure_msg::tree_detach{}, first);
             destroy_node(first);
             first = next;
             ++n;
@@ -1777,7 +1988,7 @@ public:
 
     basic_ordered_tree(const basic_ordered_tree &other)
         : basic_ordered_tree(
-              init_tag{}, other.core_.comp,
+              init_tag{}, other.send(closure_msg::tree_comp_ref{}),
               std::allocator_traits<
                   Allocator>::select_on_container_copy_construction(other.alloc_))
     {
@@ -1787,26 +1998,31 @@ public:
     basic_ordered_tree(basic_ordered_tree &&other) noexcept(
         std::allocator_traits<Allocator>::is_always_equal::value &&
         std::is_nothrow_move_constructible_v<Compare>)
-        : basic_ordered_tree(init_tag{}, std::move(other.core_.comp),
-                             std::move(other.alloc_))
+        : basic_ordered_tree(
+              init_tag{},
+              std::move(other.send(closure_msg::tree_comp_ref{})),
+              std::move(other.alloc_))
     {
-        core_.take_from(core_, other.core_);
+        send(closure_msg::tree_take_from{}, other.core_);
     }
 
     basic_ordered_tree(const basic_ordered_tree &other,
                        const std::type_identity_t<Allocator> &alloc)
-        : basic_ordered_tree(init_tag{}, other.core_.comp, alloc)
+        : basic_ordered_tree(init_tag{},
+                             other.send(closure_msg::tree_comp_ref{}), alloc)
     {
         clone_from<false>(const_cast<basic_ordered_tree &>(other));
     }
 
     basic_ordered_tree(basic_ordered_tree &&other,
                        const std::type_identity_t<Allocator> &alloc)
-        : basic_ordered_tree(init_tag{}, std::move(other.core_.comp), alloc)
+        : basic_ordered_tree(
+              init_tag{},
+              std::move(other.send(closure_msg::tree_comp_ref{})), alloc)
     {
         if (alloc_ == other.alloc_)
         {
-            core_.take_from(core_, other.core_);
+            send(closure_msg::tree_take_from{}, other.core_);
         }
         else
         {
@@ -1826,7 +2042,8 @@ public:
         }
         using pocca = typename std::allocator_traits<
             Allocator>::propagate_on_container_copy_assignment;
-        core_.comp = other.core_.comp;
+        send(closure_msg::tree_comp_ref{}) =
+            other.send(closure_msg::tree_comp_ref{});
         if constexpr (pocca::value)
         {
             if (!(alloc_ == other.alloc_))
@@ -1852,7 +2069,8 @@ public:
         }
         using pocma = typename std::allocator_traits<
             Allocator>::propagate_on_container_move_assignment;
-        core_.comp = std::move(other.core_.comp);
+        send(closure_msg::tree_comp_ref{}) =
+            std::move(other.send(closure_msg::tree_comp_ref{}));
         if constexpr (pocma::value)
         {
             if (!(alloc_ == other.alloc_))
@@ -1864,14 +2082,14 @@ public:
                 clear_nodes();
             }
             alloc_ = std::move(other.alloc_);
-            core_.take_from(core_, other.core_);
+            send(closure_msg::tree_take_from{}, other.core_);
         }
         else
         {
             if (alloc_ == other.alloc_)
             {
                 clear_nodes();
-                core_.take_from(core_, other.core_);
+                send(closure_msg::tree_take_from{}, other.core_);
             }
             else
             {
@@ -1926,8 +2144,14 @@ public:
     }
 
     // --- capacity ----------------------------------------------------------
-    [[nodiscard]] bool empty() const noexcept { return core_.count == 0; }
-    [[nodiscard]] size_type size() const noexcept { return core_.count; }
+    [[nodiscard]] bool empty() const noexcept
+    {
+        return send(closure_msg::tree_size{}) == 0;
+    }
+    [[nodiscard]] size_type size() const noexcept
+    {
+        return send(closure_msg::tree_size{});
+    }
     size_type max_size() const noexcept
     {
         node_allocator_type na(alloc_);
@@ -2012,7 +2236,7 @@ public:
         }
         if constexpr (!AllowDuplicates)
         {
-            const key_type &k = KeyOfValue{}(*core_t::value_ptr(nh.p_));
+            const key_type &k = KeyOfValue{}(nh.value());
             auto it = find(k);
             if (it != end())
             {
@@ -2023,7 +2247,7 @@ public:
         if (alloc_ == nh.alloc_)
         {
             node_t *p = nh.p_;
-            auto [pos, inserted] = core_.insert_node(core_, p);
+            auto [pos, inserted] = send(closure_msg::tree_insert_node{}, p);
             if (inserted)
             {
                 nh.p_ = nullptr;
@@ -2043,12 +2267,12 @@ public:
         }
         else
         {
-            node_t *p = create_node(std::move(*core_t::value_ptr(nh.p_)));
+            node_t *p = create_node(std::move(nh.value()));
             node_t *pos = nullptr;
             bool inserted = false;
             try
             {
-                auto result = core_.insert_node(core_, p);
+                auto result = send(closure_msg::tree_insert_node{}, p);
                 pos = result.first;
                 inserted = result.second;
             }
@@ -2096,18 +2320,18 @@ public:
         }
         if constexpr (!AllowDuplicates)
         {
-            auto it = find(KeyOfValue{}(*core_t::value_ptr(nh.p_)));
+            auto it = find(KeyOfValue{}(nh.value()));
             if (it != end())
             {
                 return {it, false, node_type{}};
             }
         }
-        node_t *p = create_node(*core_t::value_ptr(nh.p_));
+        node_t *p = create_node(nh.value());
         node_t *pos = nullptr;
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = send(closure_msg::tree_insert_node{}, p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2139,7 +2363,7 @@ public:
         if (alloc_ == nh.alloc_)
         {
             node_t *p = nh.p_;
-            auto result = core_.insert_node_hint(core_, p, hint.p_);
+            auto result = send(closure_msg::tree_insert_node_hint{}, p, hint.node_ptr());
             if (result.second)
             {
                 nh.p_ = nullptr;
@@ -2148,7 +2372,7 @@ public:
         }
         if constexpr (!AllowDuplicates)
         {
-            auto it = find(KeyOfValue{}(*core_t::value_ptr(nh.p_)));
+            auto it = find(KeyOfValue{}(nh.value()));
             if (it != end())
             {
                 return it;
@@ -2194,9 +2418,9 @@ public:
 
     iterator erase(const_iterator pos)
     {
-        node_t *p = pos.p_;
-        node_t *n = core_.next(p);
-        core_.detach(core_, p);
+        node_t *p = pos.node_ptr();
+        node_t *n = send(closure_msg::tree_next{}, p);
+        send(closure_msg::tree_detach{}, p);
         destroy_node(p);
         return iter_at<Mapped ? false : true>(n);
     }
@@ -2209,12 +2433,12 @@ public:
 
     iterator erase(const_iterator first, const_iterator last)
     {
-        node_t *stop = last.p_;
-        node_t *cur = first.p_;
+        node_t *stop = last.node_ptr();
+        node_t *cur = first.node_ptr();
         while (cur != stop)
         {
-            node_t *n = core_.next(cur);
-            core_.detach(core_, cur);
+            node_t *n = send(closure_msg::tree_next{}, cur);
+            send(closure_msg::tree_detach{}, cur);
             destroy_node(cur);
             cur = n;
         }
@@ -2243,8 +2467,8 @@ public:
             return;
         }
         using std::swap;
-        swap(core_.comp, other.core_.comp);
-        core_.swap_trees(core_, other.core_);
+        send(closure_msg::tree_swap_comp{}, other.core_);
+        send(closure_msg::tree_swap_trees{}, other.core_);
         if constexpr (std::allocator_traits<
                           Allocator>::propagate_on_container_swap::value)
         {
@@ -2261,9 +2485,9 @@ public:
     // --- extraction / merge ------------------------------------------------
     node_type extract(const_iterator pos)
     {
-        node_t *p = pos.p_;
+        node_t *p = pos.node_ptr();
         node_type result(alloc_);
-        core_.detach(core_, p);
+        send(closure_msg::tree_detach{}, p);
         result.p_ = p;
         return result;
     }
@@ -2276,13 +2500,13 @@ public:
 
     node_type extract(const key_type &key)
     {
-        node_t *p = core_.find_node(core_, key);
-        if (p == core_.end_node(core_))
+        node_t *p = send(closure_msg::tree_find_node{}, key);
+        if (p == send(closure_msg::tree_end{}))
         {
             return node_type{};
         }
         node_type result(alloc_);
-        core_.detach(core_, p);
+        send(closure_msg::tree_detach{}, p);
         result.p_ = p;
         return result;
     }
@@ -2293,13 +2517,13 @@ public:
                  !std::convertible_to<K, const_iterator>)
     node_type extract(K &&key)
     {
-        node_t *p = core_.find_node(core_, key);
-        if (p == core_.end_node(core_))
+        node_t *p = send(closure_msg::tree_find_node{}, key);
+        if (p == send(closure_msg::tree_end{}))
         {
             return node_type{};
         }
         node_type result(alloc_);
-        core_.detach(core_, p);
+        send(closure_msg::tree_detach{}, p);
         result.p_ = p;
         return result;
     }
@@ -2437,17 +2661,20 @@ public:
     }
 
     // --- observers ---------------------------------------------------------
-    key_compare key_comp() const { return core_.comp; }
+    key_compare key_comp() const
+    {
+        return send(closure_msg::tree_comp_ref{});
+    }
 
     value_compare value_comp() const
     {
         if constexpr (Mapped)
         {
-            return value_compare(core_.comp);
+            return value_compare(send(closure_msg::tree_comp_ref{}));
         }
         else
         {
-            return core_.comp;
+            return send(closure_msg::tree_comp_ref{});
         }
     }
 
@@ -2504,7 +2731,7 @@ public:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = send(closure_msg::tree_insert_node{}, p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2537,7 +2764,7 @@ public:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = send(closure_msg::tree_insert_node{}, p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2584,7 +2811,7 @@ public:
         bool inserted = false;
         try
         {
-            auto result = core_.insert_node(core_, p);
+            auto result = send(closure_msg::tree_insert_node{}, p);
             pos = result.first;
             inserted = result.second;
         }
@@ -2614,7 +2841,7 @@ public:
             std::piecewise_construct,
             std::forward_as_tuple(std::move(key)),
             std::forward_as_tuple(std::forward<M>(obj)));
-        auto [pos, inserted] = core_.insert_node(core_, p);
+        auto [pos, inserted] = send(closure_msg::tree_insert_node{}, p);
         if (!inserted)
         {
             destroy_node(p);
@@ -3511,12 +3738,14 @@ static void test_iterators_swap_and_embedding()
         assert(p.first % 2 != 0);
     }
 
-    // The local engine type is a Voldemort type, yet it can be persisted as a
-    // field of a local class thanks to decltype.
+    // The local engine type is a Voldemort function type, yet it can be
+    // persisted as a field of a local class thanks to decltype.
     auto local_factory = make_stl_toolkit;
     using local_core_t = decltype(local_factory.template operator()<int, int, std::identity,
                                                                     std::less<int>, false>(
         std::less<int>{}));
+    static_assert(!std::is_copy_constructible_v<local_core_t>);
+    static_assert(std::is_move_constructible_v<local_core_t>);
     struct holder
     {
         local_core_t engine;
@@ -3524,8 +3753,8 @@ static void test_iterators_swap_and_embedding()
     holder h{local_factory.template operator()<int, int, std::identity,
                                                std::less<int>, false>(
         std::less<int>{})};
-    h.engine.reset(h.engine);
-    assert(h.engine.count == 0);
+    h.engine(h.engine, closure_msg::tree_reset{});
+    assert(h.engine(h.engine, closure_msg::tree_size{}) == 0);
 }
 
 int main()
