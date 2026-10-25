@@ -15,8 +15,9 @@
 - `ipd/core/ema_forgive.py`：EMA 动态原谅概率 + 永久交替检测实验版。
 - `ipd/core/bayes.py`：无额外探测的贝叶斯类型推断版。
 - `ipd/core/simulator.py`：计分、对局和常用基线策略。
-- `ipd/core/opponents.py`：38 类基础对手和实验用变体。
-- `ipd/core/opponents_extended.py`：85 类对手、9 种群先验、Dirichlet 随机配比采样器。
+- `ipd/core/opponents/basic.py`：基础对手。
+- `ipd/core/opponents/reciprocal.py`：38 类基础对手中的响应/原谅/自适应变体。
+- `ipd/core/opponents/bank.py`：85 类对手、9 种群先验、Dirichlet 随机配比采样器。
 - `ipd/training/search/common.py`：P0 多进程批量评估器。
 - `ipd/training/search/p1_parameter.py`：P1 参数搜索与留出验证。
 - `ipd/training/search/p2_gp.py`：P2 遗传规划决策树搜索（均值适应度）。
@@ -28,7 +29,7 @@
 - `ipd/training/search/multiobj.py`：Final/Harvest/Gap/Responsive3/BayesPlus 多目标训练。
 - `ipd/training/search/joint.py`：Final + Responsive3 联合训练。
 - `ipd/training/search/bayes_priors.py`：BayesPlus 模型先验参数化训练。
-- `ipd/policies/rules.py`：Final + Responsive3 + BayesPlus 多数投票融合。
+- `ipd/policies/candidates/triple_majority.py`：Final + Responsive3 + BayesPlus 多数投票融合。
 - `ipd/training/neural.py`：GPU/NPU 训练的 MLP 神经策略（PyTorch + DAgger）。
 - `ipd/policies/neural.py`：MLP 策略的纯 Python 推理实现（无需 PyTorch）。
 - `cpp/neural_policy.cpp`：MLP 策略的 C++17 推理实现（含 demo）。
@@ -53,10 +54,10 @@
 - `docs/ADVERSARIAL_POLICY.md`：对抗性剥削规则、调参、结果与风险。
 - `HANDOVER.md`：交接文档（推荐方案、参数、文件、风险、检查清单）。
 - `docs/FINAL_COMPARISON.md`：各测试集完整对照表。
-- `ipd/core/opponents_plus.py`：额外 67 类复杂/细粒度对手。
+- `ipd/core/opponents/plus.py`：额外 67 类复杂/细粒度对手。
 - `ipd/evaluation/suite.py`：9 个测试集的统一对比。
 - `docs/SUITE_RESULTS.md`：新测试集结果。
-- `cpp/bayesplus_responsive3.cpp`：BayesPlus / Responsive3 的无依赖 C++17 实现。
+- `cpp/policies/bayes_plus_policy.hpp` / `cpp/policies/responsive3_policy.hpp`：BayesPlus / Responsive3 的无依赖 C++17 实现。
 - `docs/BAYES_RESPONSIVE_FLOW.md`：两者的 Mermaid 流程图和参数说明。
 - `docs/ADVANCED_RESULTS.md`：P0/P1/P2 的完整结果。
 - `tests/`：目录、核心、策略、评估、训练分层测试。

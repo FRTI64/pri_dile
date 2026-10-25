@@ -2,7 +2,7 @@
 
 ## 新增对手类型
 
-`ipd/core/opponents_plus.py` 新增 67 个类型：
+`ipd/core/opponents/plus.py` 新增 67 个类型：
 
 - 8 个固定随机 memory-one；
 - 8 个固定随机 reactive；
@@ -54,3 +54,13 @@
 - **Harvest45**：late 最强，但 grim/punitive 很差；
 - **Resp3**：在新增的 complex/smart 测试集中没有超过 Final/Triple；
 - 新增的复杂对手并没有推翻“Final 稳健、Triple 综合最好”的结论，但让 Bayes 的弱点更加明显。
+
+## 2026-10-26 全策略更新
+
+已对全部 17 个注册策略 × 158 类对手跑逐类型对阵，并按 9 个测试集的家族
+分布做精确加权。结果文件：
+
+- `results/matchup_all_README.md`
+- `results/matchup_all.csv`
+- `results/matchup_all_suite_weighted.csv`
+- `results/matchup_all.json`

@@ -284,7 +284,8 @@ max_tests = 3
 cooldown = 14
 ```
 
-实现：`ipd/core/opponents.py` 的 `Responsive3`，通过 `ipd.policies.rules.ParamResp` 设置参数。
+实现：`ipd/core/opponents/reciprocal.py` 的 `Responsive3`；候选入口在
+`ipd/policies/candidates/resp3_tuned.py`。
 
 ### 3.3 BayesPlus-tuned
 
@@ -300,13 +301,13 @@ NONRESP_THRESHOLD = 0.27974873408266854
 PUNITIVE_THRESHOLD = 0.7531347429866336
 ```
 
-实现：`ipd.policies.rules.ParamBayesPrior`。
+实现：`ipd/policies/candidates/bayes_tuned.py`。
 
 **注意：** Bayes 对 Grim/punitive 很强，但在宽+聪明和盲测中明显掉队；不适合单独提交。
 
 ### 3.4 Triple-majority
 
-实现：`ipd/policies/rules.py`。
+实现：`ipd/policies/candidates/triple_majority.py`。
 
 三个子策略：
 
@@ -327,7 +328,7 @@ PUNITIVE_THRESHOLD = 0.7531347429866336
 
 ### 3.5 Final+Resp3
 
-实现：`ipd.policies.rules.Hybrid`。
+实现：`ipd/policies/candidates/hybrid.py`。
 
 最佳配置：
 
@@ -516,10 +517,16 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 |---|---|
 | `ipd/core/machine.py` | Final 机制（默认参数不是 tuned） |
 | `cpp/ipd_strategy.cpp` | Final 的 C++ 版本（默认参数不是 tuned） |
-| `ipd/core/opponents.py` | 基础对手、Responsive3、GTFT 等 |
-| `ipd/core/opponents_extended.py` | 85 类扩展对手、采样器 |
+| `ipd/core/opponents/basic.py` | 基础对手（AllC/TFT/Grim/GTFT/...） |
+| `ipd/core/opponents/reciprocal.py` | Responsive3、ProbeBot、GTFT 等 |
+| `ipd/core/opponents/bank.py` | 85 类扩展对手、采样器 |
 | `ipd/core/bayes.py` / `ipd/core/bayes_plus.py` | Bayes/BayesPlus |
-| `ipd/policies/rules.py` | Triple-majority |
+| `ipd/policies/candidates/triple_majority.py` | Triple-majority |
+| `ipd/policies/candidates/` | 每个参赛/评估候选一个独立文件，互不 import |
+| `ipd/evaluation/split.py` | 按候选/对手拆分的评估驱动 |
+| `configs/eval/*.json` | 每个候选独立参数的评估配置 |
+| `cpp/policies/*.hpp` | 按策略/模型拆分的 C++ 头文件 |
+| `cpp/opponents/*.hpp` | 按对手拆分的 C++ 头文件 |
 | `ipd/training/neural.py` | GPU/NPU 神经策略训练（PyTorch + DAgger） |
 | `requirements-train.txt` | 神经策略训练依赖（仅 PyTorch） |
 | `ipd/policies/neural.py` | 神经策略纯 Python 推理（无需 PyTorch） |
@@ -704,8 +711,13 @@ mine/theirs = 到此日之前的动作
 
 ### C++ 现状
 
-- `cpp/ipd_strategy.cpp`：Final，但需要把参数改成 Final-tuned；
-- `cpp/bayesplus_responsive3.cpp`：Responsive3 + BayesPlus，无外部依赖；
+- `cpp/policies/final_policy.hpp`：Final（`FinalParams` 可切换 base/tuned），
+  `cpp/ipd_strategy.cpp` 保留为演示入口；
+- `cpp/policies/responsive3_policy.hpp` / `bayes_plus_policy.hpp`：
+  Responsive3 + BayesPlus，无外部依赖；
+- `cpp/policies/neural_policy.hpp` / `gru_policy.hpp` / `adversarial_rl_policy.hpp`：
+  学习策略和 Adv-RL；
+- `cpp/opponents/*.hpp`：演示/测试用对手，每个对手独立头文件；
 - **目前没有 C++ 版 Triple-majority**。  
   如果比赛要求 C++ 且想提交 Triple，需要：
   1. 把 Final-tuned 也移植到 C++；
@@ -762,7 +774,8 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
    所有候选策略都应在最后一天选择 D；如果移植时漏掉，会损失最后一天收益。
 
 7. **Base Final 与 Final-tuned 不同**  
-   `ipd/core/machine.py` / `cpp/ipd_strategy.cpp` 默认参数仍是旧版；提交前必须改为 tuned 参数，或明确选择默认版。
+   `ipd/core/machine.py` / `cpp/policies/final_policy.hpp` 的默认参数仍是旧版；
+   提交前使用 `FinalParams::tuned()` / `DEFAULT_FINAL_TUNED`，或明确选择默认版。
 
 8. **Neural 依赖权重文件与训练数据分布**
    `NeuralPolicy` 必须加载 `weights/neural_policy_weights.json`；如果比赛只允许单文件，需要把权重内嵌。

@@ -1,0 +1,55 @@
+{
+  "schema": "ipd-split-blind-v1",
+  "created": "2026-10-26T00:31:12",
+  "seconds": 68.29,
+  "candidate": {
+    "kind": "gru",
+    "name": "GRU-retrain",
+    "params": {
+      "weights": "/home/frti64/pri_dile/weights/retrain_20261025/gru_policy_weights.json",
+      "mode": "sample"
+    }
+  },
+  "params": {
+    "fields": 10,
+    "n": 299,
+    "seed": 20261025,
+    "workers": 10,
+    "rounds": 100,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ]
+  },
+  "score": 555.1943143812709,
+  "mean_rank": 8.3,
+  "rank1": 7,
+  "top10": 7,
+  "worst": 27,
+  "scores": [
+    559.4080267558528,
+    552.5117056856187,
+    550.4046822742475,
+    544.6622073578595,
+    533.9966555183946,
+    573.0033444816054,
+    570.7157190635452,
+    553.2909698996656,
+    566.5016722408027,
+    547.448160535117
+  ],
+  "ranks": [
+    24,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    27,
+    1,
+    25
+  ]
+}

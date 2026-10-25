@@ -1,0 +1,217 @@
+{
+  "schema": "ipd-opponent-v1",
+  "created": "2026-10-26T00:31:12",
+  "opponent": "Random.fine0.4",
+  "family": "unknown",
+  "candidates": {
+    "Neural-retrain": {
+      "kind": "neural",
+      "benchmark": {
+        "wide": {
+          "mean": 447.9375,
+          "min": 343.0,
+          "max": 584.0,
+          "p05": 364.0,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 457.4,
+        "min": 407.0,
+        "max": 493.0,
+        "p05": 414.0,
+        "count": 5
+      }
+    },
+    "GRU-retrain": {
+      "kind": "gru",
+      "benchmark": {
+        "wide": {
+          "mean": 448.75,
+          "min": 362.0,
+          "max": 566.0,
+          "p05": 371.0,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 463.4,
+        "min": 419.0,
+        "max": 493.0,
+        "p05": 427.20000000000005,
+        "count": 5
+      }
+    },
+    "Adv-MLP-retrain": {
+      "kind": "adv-mlp",
+      "benchmark": {
+        "wide": {
+          "mean": 450.25,
+          "min": 374.0,
+          "max": 574.0,
+          "p05": 387.5,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 448.2,
+        "min": 395.0,
+        "max": 497.0,
+        "p05": 396.8,
+        "count": 5
+      }
+    },
+    "Adv-GRU-retrain": {
+      "kind": "adv-gru",
+      "benchmark": {
+        "wide": {
+          "mean": 453.9375,
+          "min": 374.0,
+          "max": 583.0,
+          "p05": 389.75,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 451.4,
+        "min": 403.0,
+        "max": 497.0,
+        "p05": 405.40000000000003,
+        "count": 5
+      }
+    },
+    "RL-final-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "wide": {
+          "mean": 414.5625,
+          "min": 338.0,
+          "max": 534.0,
+          "p05": 351.5,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 451.8,
+        "min": 410.0,
+        "max": 490.0,
+        "p05": 415.2,
+        "count": 5
+      }
+    },
+    "RL-BC-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "wide": {
+          "mean": 437.5625,
+          "min": 371.0,
+          "max": 506.0,
+          "p05": 379.25,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 467.6,
+        "min": 418.0,
+        "max": 493.0,
+        "p05": 425.6,
+        "count": 5
+      }
+    },
+    "RL-scratch-base-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "wide": {
+          "mean": 423.875,
+          "min": 355.0,
+          "max": 535.0,
+          "p05": 361.75,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 453.6,
+        "min": 417.0,
+        "max": 491.0,
+        "p05": 418.20000000000005,
+        "count": 5
+      }
+    },
+    "RL-stage1-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "wide": {
+          "mean": 453.3125,
+          "min": 371.0,
+          "max": 578.0,
+          "p05": 389.0,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 460.8,
+        "min": 431.0,
+        "max": 493.0,
+        "p05": 432.40000000000003,
+        "count": 5
+      }
+    },
+    "Adv-RL-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "wide": {
+          "mean": 440.0625,
+          "min": 374.0,
+          "max": 517.0,
+          "p05": 383.0,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 455.8,
+        "min": 416.0,
+        "max": 490.0,
+        "p05": 420.8,
+        "count": 5
+      }
+    },
+    "Adv-RL-conservative-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "wide": {
+          "mean": 438.75,
+          "min": 370.0,
+          "max": 513.0,
+          "p05": 384.25,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 457.4,
+        "min": 422.0,
+        "max": 490.0,
+        "p05": 423.8,
+        "count": 5
+      }
+    },
+    "Adv-RL-final-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "wide": {
+          "mean": 419.125,
+          "min": 354.0,
+          "max": 487.0,
+          "p05": 367.5,
+          "count": 16
+        }
+      },
+      "blind": {
+        "mean": 442.4,
+        "min": 379.0,
+        "max": 493.0,
+        "p05": 389.2,
+        "count": 5
+      }
+    }
+  }
+}

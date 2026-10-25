@@ -115,25 +115,41 @@ def main(argv: Sequence[str] | None = None) -> int:
         out = result_path(_ARCH_OUT.get(arch, "benchmark.json"))
 
     seeds = seed_map(args.seed, dists, args.fields)
+    # One task per field, not per (candidate, distribution).  The latter caps
+    # parallelism at 4 * len(specs) and leaves most cores idle for a single
+    # candidate; field-sized tasks also load-balance the slow recurrent
+    # policies across workers.
     tasks = [
         {
             "spec": spec.to_dict(),
             "name": spec.name,
             "dist": dist,
-            "seeds": seeds[dist],
+            "seeds": [seed],
             "n": args.n,
             "rounds": args.rounds,
         }
         for spec in specs
         for dist in dists
+        for seed in seeds[dist]
     ]
 
     started = time.time()
-    results: dict[str, dict[str, list[float]]] = {spec.name: {} for spec in specs}
+    results: dict[str, dict[str, list[float]]] = {
+        spec.name: {dist: [] for dist in dists} for spec in specs
+    }
+    total = len(tasks)
+    progress_every = max(1, total // 20)
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
-        for name, dist, values in ex.map(eval_task, tasks, chunksize=1):
-            results[name][dist] = values
-            print(f"{name:18} {dist:9} "
+        for done, (name, dist, values) in enumerate(
+                ex.map(eval_task, tasks, chunksize=1), 1):
+            results[name][dist].extend(values)
+            if done % progress_every == 0 or done == total:
+                print(f"progress {done}/{total} field tasks", flush=True)
+
+    for spec in specs:
+        for dist in dists:
+            values = results[spec.name][dist]
+            print(f"{spec.name:18} {dist:9} "
                   f"mean={statistics.fmean(values):7.2f} "
                   f"min={min(values):7.2f}", flush=True)
 

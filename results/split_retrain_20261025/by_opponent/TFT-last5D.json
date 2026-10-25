@@ -1,0 +1,371 @@
+{
+  "schema": "ipd-opponent-v1",
+  "created": "2026-10-26T00:31:12",
+  "opponent": "TFT-last5D",
+  "family": "nice",
+  "candidates": {
+    "Neural-retrain": {
+      "kind": "neural",
+      "benchmark": {
+        "original": {
+          "mean": 573.64,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.6444444444444,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.5909090909091,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.75,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "GRU-retrain": {
+      "kind": "gru",
+      "benchmark": {
+        "original": {
+          "mean": 573.52,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.6666666666666,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.5909090909091,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.625,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "Adv-MLP-retrain": {
+      "kind": "adv-mlp",
+      "benchmark": {
+        "original": {
+          "mean": 573.92,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.2,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.9111111111112,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.9090909090909,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0500000000001,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 574.0,
+        "min": 574.0,
+        "max": 574.0,
+        "p05": 574.0,
+        "count": 16
+      }
+    },
+    "Adv-GRU-retrain": {
+      "kind": "adv-gru",
+      "benchmark": {
+        "original": {
+          "mean": 573.8,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.8222222222222,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.8636363636364,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.875,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "RL-final-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 573.24,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.3111111111111,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.4545454545455,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.125,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "RL-BC-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 573.72,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.7111111111111,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.8636363636364,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.75,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "RL-scratch-base-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 573.16,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.2222222222222,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 572.2,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.3181818181819,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.125,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "RL-stage1-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 573.64,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 572.2,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.6222222222223,
+          "min": 572.0,
+          "max": 574.0,
+          "p05": 572.2,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.8181818181819,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.5,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "Adv-RL-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "original": {
+          "mean": 573.88,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.8888888888889,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 574.0,
+          "min": 574.0,
+          "max": 574.0,
+          "p05": 574.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 574.0,
+        "min": 574.0,
+        "max": 574.0,
+        "p05": 574.0,
+        "count": 16
+      }
+    },
+    "Adv-RL-conservative-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "original": {
+          "mean": 573.96,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 574.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 573.8666666666667,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 573.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 573.9545454545455,
+          "min": 573.0,
+          "max": 574.0,
+          "p05": 574.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 573.8125,
+        "min": 573.0,
+        "max": 574.0,
+        "p05": 573.0,
+        "count": 16
+      }
+    },
+    "Adv-RL-final-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "original": {
+          "mean": 574.0,
+          "min": 574.0,
+          "max": 574.0,
+          "p05": 574.0,
+          "count": 25
+        },
+        "late": {
+          "mean": 574.0,
+          "min": 574.0,
+          "max": 574.0,
+          "p05": 574.0,
+          "count": 45
+        },
+        "wide": {
+          "mean": 574.0,
+          "min": 574.0,
+          "max": 574.0,
+          "p05": 574.0,
+          "count": 22
+        }
+      },
+      "blind": {
+        "mean": 574.0,
+        "min": 574.0,
+        "max": 574.0,
+        "p05": 574.0,
+        "count": 16
+      }
+    }
+  }
+}

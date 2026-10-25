@@ -18,13 +18,15 @@ from .opponents import (
     Responsive3, TFT2LastD, TFTForgiveOnce, TFTNoisyForgive, TFTProbe,
     TwoStrike, make_field, score_against,
 )
-from .opponents_extended import (
+from .opponents.bank import (
     SCENARIOS, TYPE_BANK, TYPE_BY_NAME,
-    ExtortZD, GenerousZD, MemoryOne, RandomFSM, Reactive, TypeSpec,
     effective_weights, sample_mixed_population, sample_mixture,
     sample_population, random_scenario,
 )
-from .opponents_plus import ALL_SPECS as EXTENDED_SPECS
+from .opponents import (
+    ExtortZD, GenerousZD, MemoryOne, RandomFSM, Reactive, TypeSpec,
+)
+from .opponents.plus import ALL_SPECS as EXTENDED_SPECS
 from .bayes import BayesMachine
 from .bayes_plus import BayesPlusMachine
 from .ema import EMAMachine

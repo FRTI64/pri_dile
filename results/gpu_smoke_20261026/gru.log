@@ -1,0 +1,35 @@
+/home/frti64/pri_dile/.venv/lib/python3.14/site-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+teacher=triple dists=original,late,grim30,wide fields=1/dist n=20
+generating teacher data...
+  teacher-train: 1/4 fields (0.1s)
+  teacher-train: 2/4 fields (0.1s)
+  teacher-train: 3/4 fields (0.1s)
+  teacher-train: 4/4 fields (0.1s)
+  teacher-train: 8000 samples, 4 fields, mean score/opponent 554.14
+  teacher-val: 1/4 fields (0.1s)
+  teacher-val: 2/4 fields (0.1s)
+  teacher-val: 3/4 fields (0.1s)
+  teacher-val: 4/4 fields (0.1s)
+  teacher-val: 8000 samples, 4 fields, mean score/opponent 559.21
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+training bc...
+  training GRU-Net on cuda (NVIDIA GeForce RTX 5090 Laptop GPU): 80 train / 80 val matches, 12513 parameters, masked steps=1659/8000
+  epoch   1 train=0.6269 val=0.4658 acc=0.871 P(D)=0.849 R(D)=0.985 *
+  epoch   2 train=0.5245 val=0.4180 acc=0.897 P(D)=0.884 R(D)=0.976 *
+  best val: loss=0.4180 acc=0.897 temperature=0.500
+generating DAgger data (round 1)...
+  dagger-1: 1/4 fields (0.7s)
+  dagger-1: 2/4 fields (0.7s)
+  dagger-1: 3/4 fields (0.7s)
+  dagger-1: 4/4 fields (0.7s)
+  dagger-1: 8000 samples, 4 fields, mean score/opponent 469.41
+  aggregate dataset: 16000 samples
+training dagger-1...
+  training GRU-Net on cuda (NVIDIA GeForce RTX 5090 Laptop GPU): 160 train / 80 val matches, 12513 parameters, masked steps=5658/16000
+  epoch   1 train=0.6121 val=0.5522 acc=0.873 P(D)=0.961 R(D)=0.847 *
+  epoch   2 train=0.5284 val=0.4728 acc=0.904 P(D)=0.963 R(D)=0.893 *
+  best val: loss=0.4728 acc=0.904 temperature=0.500
+written /tmp/opencode/gpu_smoke/gru_weights.json (404974 bytes)
+written /tmp/opencode/gpu_smoke/gru_history.json
+  vs AllC-until-90 -> actions C=99 D=1 score=541

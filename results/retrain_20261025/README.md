@@ -10,6 +10,8 @@ DAgger、三类约束对抗调参、PPO（BC + hard、从零、从零 + hard）�
 - Python 3.14 + PyTorch 2.11.0+cu128
 - 本机 CUDA 不可用，所有训练在 CPU 上完成
 - 训练时缺少 NumPy，仅触发 PyTorch 警告，不影响训练/推理
+- 之后 GPU 恢复可用，三条训练路径的 CUDA 冒烟测试见
+  `results/gpu_smoke_20261026/README.md`
 
 ## 1. 现有规则策略作为教师
 
@@ -165,6 +167,33 @@ gap=0.05, min_c=12, min_d=2, late_day=50, repair=false
 | RL-stage1-retrain | 557.95 | 8.30 | 7/10 | 7/10 | 27 | 557.95 |
 | GRU-retrain | 555.19 | 8.30 | 7/10 | 7/10 | 27 | 555.22 |
 | Neural-retrain | 554.00 | 8.30 | 7/10 | 7/10 | 27 | 555.10 |
+
+### 4.3 按候选/对手拆分
+
+`evaluate.py` 仍保留为历史的一次性合并评估脚本。需要每个策略/模型独立文件、
+每个对手独立文件，或给不同候选不同 `fields`/`n`/`seed` 时，使用新的拆分评估：
+
+```bash
+python3 -m ipd eval-split --config configs/eval/retrain_20261025.json
+# 慢模型使用更少赛场：
+python3 -m ipd eval-split --config configs/eval/retrain_20261025_fast.json
+```
+
+输出目录 `results/split_<name>/`：
+
+```text
+by_candidate/<candidate>/benchmark.json
+by_candidate/<candidate>/blind.json
+by_candidate/<candidate>/opponents.json
+by_opponent/<opponent>.json
+summary.json
+```
+
+`by_candidate/*/opponents.json` 保存该候选在所有对手类型上的均值/最小值/
+分位数；`by_opponent/*.json` 汇总所有候选对同一对手类型的成绩。
+
+本目录已用统一配置生成一份拆分结果：`results/split_retrain_20261025/`
+（11 个候选、20 场 × 299 对手、10 个盲测赛场；逐候选和逐对手文件均齐全）。
 
 ## 5. 结论
 

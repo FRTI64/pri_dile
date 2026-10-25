@@ -1,0 +1,15 @@
+/home/frti64/pri_dile/.venv/lib/python3.14/site-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide val_dists=original,late,grim30,wide fields/iter/dist=1 n=20 iterations=2 safe=True
+initialised from /home/frti64/pri_dile/weights/neural_policy_weights.json
+initial val avg=539.34 worst=521.55 original=533.95 late=566.10 grim30=535.75 wide=521.55
+iter   1 reward= 548.65 pi=-0.0013 v=1.4420 H=0.1149 kl=0.0005 bckl=0.0000 clip=0.006 ev=+0.001 (0.6s+12.2s)
+iter   2 reward= 555.42 pi=-0.0003 v=1.4505 H=0.1081 kl=0.0000 bckl=0.0000 clip=0.000 ev=+0.002 (0.6s+0.0s)
+      train original=579.95 late=532.90 grim30=562.65 wide=546.20 | val avg=539.23 worst=521.30 original=533.95 late=565.90 grim30=535.75 wide=521.30
+  saved checkpoint (best iter 0, val avg=539.34)
+best iteration 0 val={'by_dist': {'original': 533.95, 'late': 566.1, 'grim30': 535.75, 'wide': 521.55}, 'avg': 539.3375, 'worst': 521.55, 'selection': 534.890625}
+written /tmp/opencode/gpu_smoke/rl_checkpoint.json
+written /tmp/opencode/gpu_smoke/rl_weights.json (248182 bytes)
+written /tmp/opencode/gpu_smoke/rl_history.json
+vs AllC-until-90: C=96 D=4 score=544

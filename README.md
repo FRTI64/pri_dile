@@ -13,13 +13,14 @@
 .
 ├── ipd/                  规范 Python 包
 │   ├── core/             模拟内核、对手库、规则状态机、特征
-│   ├── policies/         参赛策略 + 统一 Policy 接口 + 候选注册表
-│   ├── evaluation/       四分布/盲测/9 测试集/逐类型对阵
+│   ├── policies/         参赛策略（每候选独立文件）+ 统一接口 + 注册表
+│   ├── evaluation/       四分布/盲测/拆分评估/9 测试集/逐类型对阵
 │   ├── training/         MLP/GRU/RL/对抗训练与规则参数搜索
 │   ├── tools/            C++ 权重导出
 │   └── cli.py            `python3 -m ipd ...` 统一入口
 ├── cpp/                  C++17 推理实现、共用特征头文件和生成的权重头文件
 ├── configs/              对抗策略配置（需与 weights/ 中的权重配对使用）
+│   └── eval/             按候选拆分参数的评估配置
 ├── weights/              训练好的 MLP / GRU / RL 权重（JSON）
 ├── results/              基准测试、盲测、训练曲线和搜索记录（JSON / CSV）
 ├── docs/                 方法说明、结果表、流程图、结构规范
@@ -86,6 +87,8 @@ python3 -m ipd benchmark --candidates core --fields 20 --workers 24
 python3 -m ipd blind --candidates core --fields 10 --workers 12
 python3 -m ipd suite --fields 12 --workers 24
 python3 -m ipd matchup --candidates base --reps 16
+python3 -m ipd matchup --candidates all --opponent-set all --reps 16
+# 全策略 × 158 对手 + 9 个测试集加权
 ```
 
 ### 神经策略推理（不需要 PyTorch）
@@ -138,8 +141,21 @@ python3 -m ipd blind --candidates core,adv-rl \
   --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
+按策略/模型拆分参数并输出独立结果文件：
+
+```bash
+python3 -m ipd eval-split --config configs/eval/retrain_20261025.json
+python3 -m ipd eval-split --config configs/eval/retrain_20261025_fast.json
+```
+
+每次运行会生成 `results/split_<name>/`，其中每个候选有独立的
+`benchmark.json`、`blind.json`、`opponents.json`，另有一个
+`by_opponent/<opponent>.json` 汇总所有候选对单个对手类型的成绩。配置格式见
+[docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md)。
+
 旧的平铺入口已移除；所有评估统一使用上面的
-`python3 -m ipd benchmark|blind|suite|matchup` 命令。
+`python3 -m ipd benchmark|blind|eval-split|suite|matchup` 命令。拆分评估的
+配置格式和输出布局见 [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md)。
 
 ### C++ 推理
 
@@ -181,6 +197,12 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
   --out cpp/rl_policy_weights_bc.hpp  # Adv-RL base
 ```
 
+策略实现已按模型拆到 `cpp/policies/`，对手拆到 `cpp/opponents/`。每个策略的
+构造函数都接受参数结构体，例如 `ipd::FinalParams::tuned()`、
+`ipd::Responsive3Params::tuned()`、`ipd::BayesPlusParams::tuned()`；顶层的
+`cpp/neural_policy.hpp` / `cpp/gru_policy.hpp` 仍保留为兼容入口。详见
+[docs/STRUCTURE.md](docs/STRUCTURE.md#11-按策略模型对手拆分)。
+
 ## 结果摘要
 
 统一四分布测试（20 个赛场 × 299 人）：
@@ -200,7 +222,9 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | Final-tuned | 546.35 | 549.39 / 10.40 |
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
-历史快照与 tuned 参数来源仍保留在 `results/`。详细说明见 `HANDOVER.md`。
+按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
+逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`。历史快照与
+tuned 参数来源仍保留在 `results/`。详细说明见 `HANDOVER.md`。
 
 ## 文档索引
 
@@ -208,6 +232,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 |---|---|
 | [HANDOVER.md](HANDOVER.md) | 交接总览、推荐方案、参数、风险、检查清单 |
 | [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口 |
+| [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md) | 按策略/模型/对手拆分评估 |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |
@@ -222,6 +247,8 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 
 ## 注意事项
 
+- 参赛/评估候选现在位于 `ipd/policies/candidates/`，每个候选一个独立文件；
+  候选文件之间不要互相 import，`ipd/policies/rules/` 仅供训练/搜索复用。
 - `ipd/core/machine.py` / `cpp/ipd_strategy.cpp` 的默认参数是早期版本，不是 Final-tuned。
 - GRU 是有状态策略：每场必须 `reset()`，同一时间步只调用一次 `act()`。
 - 所有候选策略都应在第 100 天选择背叛。

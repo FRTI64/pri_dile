@@ -1,5 +1,8 @@
 # 面对不同对手的表现
 
+> 最新全策略 × 158 类对手结果见 `results/matchup_all_README.md`；
+> 本页保留早期的 85 类代表性结果。
+
 数据来自 `results/matchup_triple_results.csv`；每类 16 个实例，分数为我方得分。
 
 ## 按对手族

@@ -24,6 +24,7 @@ from .policies.registry import ALL_NAMES, DISPLAY, SET_ALIASES
 COMMANDS = {
     "benchmark": "four-distribution benchmark",
     "blind": "blind ranking on unseen fields",
+    "eval-split": "per-candidate parameters + per-opponent result files",
     "suite": "nine family-weighted suites",
     "matchup": "per-opponent-type matchup matrix",
     "train": "train a learned policy or search rule parameters",
@@ -82,6 +83,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         from .evaluation.benchmark import main as run
     elif command == "blind":
         from .evaluation.blind import main as run
+    elif command in ("eval-split", "split-eval"):
+        from .evaluation.split import main as run
     elif command == "suite":
         from .evaluation.suite import main as run
     elif command == "matchup":

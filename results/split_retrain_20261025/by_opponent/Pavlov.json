@@ -1,0 +1,448 @@
+{
+  "schema": "ipd-opponent-v1",
+  "created": "2026-10-26T00:31:12",
+  "opponent": "Pavlov",
+  "family": "nice",
+  "candidates": {
+    "Neural-retrain": {
+      "kind": "neural",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "GRU-retrain": {
+      "kind": "gru",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "Adv-MLP-retrain": {
+      "kind": "adv-mlp",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "Adv-GRU-retrain": {
+      "kind": "adv-gru",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "RL-final-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "RL-BC-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "RL-scratch-base-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "RL-stage1-retrain": {
+      "kind": "rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "Adv-RL-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "Adv-RL-conservative-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    },
+    "Adv-RL-final-retrain": {
+      "kind": "adv-rl",
+      "benchmark": {
+        "original": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 166
+        },
+        "late": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 230
+        },
+        "grim30": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 227
+        },
+        "wide": {
+          "mean": 604.0,
+          "min": 604.0,
+          "max": 604.0,
+          "p05": 604.0,
+          "count": 140
+        }
+      },
+      "blind": {
+        "mean": 604.0,
+        "min": 604.0,
+        "max": 604.0,
+        "p05": 604.0,
+        "count": 68
+      }
+    }
+  }
+}

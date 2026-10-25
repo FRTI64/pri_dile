@@ -1,0 +1,36 @@
+/home/frti64/pri_dile/.venv/lib/python3.14/site-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+teacher=triple dists=original,late,grim30,wide fields=1/dist n=20
+generating teacher data...
+  teacher-train: 1/4 fields (0.9s)
+  teacher-train: 2/4 fields (0.9s)
+  teacher-train: 3/4 fields (0.9s)
+  teacher-train: 4/4 fields (0.9s)
+  teacher-train: 8000 samples, 4 fields, mean score/opponent 554.14
+  teacher-val: 1/4 fields (0.1s)
+  teacher-val: 2/4 fields (0.1s)
+  teacher-val: 3/4 fields (0.1s)
+  teacher-val: 4/4 fields (0.1s)
+  teacher-val: 8000 samples, 4 fields, mean score/opponent 559.21
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+training bc...
+  training on cuda (NVIDIA GeForce RTX 5090 Laptop GPU): 8000 train / 8000 val samples, 7617 parameters
+  epoch   1 train=0.6821 val=0.5527 acc=0.895 P(D)=0.617 R(D)=1.000 *
+  epoch   2 train=0.5637 val=0.4923 acc=0.897 P(D)=0.628 R(D)=0.964 *
+  best val: loss=0.4923 acc=0.897 temperature=0.500
+generating DAgger data (round 1)...
+  dagger-1: 1/4 fields (0.3s)
+  dagger-1: 2/4 fields (0.3s)
+  dagger-1: 3/4 fields (0.3s)
+  dagger-1: 4/4 fields (0.4s)
+  dagger-1: 8000 samples, 4 fields, mean score/opponent 433.27
+  aggregate dataset: 16000 samples
+training dagger-1...
+  training on cuda (NVIDIA GeForce RTX 5090 Laptop GPU): 16000 train / 8000 val samples, 7617 parameters
+  epoch   1 train=0.5660 val=0.3421 acc=0.963 P(D)=0.856 R(D)=0.938 *
+  epoch   2 train=0.4768 val=0.2775 acc=0.962 P(D)=0.851 R(D)=0.938 *
+  best val: loss=0.2775 acc=0.962 temperature=0.500
+written /tmp/opencode/gpu_smoke/neural_weights.json (249655 bytes)
+written /tmp/opencode/gpu_smoke/neural_history.json
+quick check:
+  vs AllC-until-90 -> actions C=94 D=6 score=546

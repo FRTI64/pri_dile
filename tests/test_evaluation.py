@@ -15,7 +15,10 @@ from ipd.core.simulator import AllC, C, D, TFT
 from ipd.evaluation import common
 from ipd.evaluation.benchmark import main as benchmark_main
 from ipd.evaluation.blind import main as blind_main
+from ipd.evaluation.matchup import main as matchup_main
 from ipd.evaluation.matchup import type_task
+from ipd.evaluation.split import main as split_main
+from ipd.evaluation.split_config import load_split_config
 from ipd.evaluation.suite import main as suite_main
 from ipd.policies.registry import candidate_specs
 
@@ -36,6 +39,26 @@ class MatchTests(unittest.TestCase):
         self.assertEqual(result.total, sum(result.scores))
         self.assertEqual(result.names, ["AllC", "TFT"])
 
+    def test_evaluate_field_details(self):
+        policy = candidate_specs(["final-tuned"])[0].build()
+        result, by_opponent = common.evaluate_field_details(
+            policy, [AllC(), AllC(), TFT()])
+        self.assertEqual(result.n, 3)
+        self.assertEqual(sorted(by_opponent), ["AllC", "TFT"])
+        self.assertEqual(len(by_opponent["AllC"]), 2)
+        self.assertEqual(len(by_opponent["TFT"]), 1)
+        self.assertEqual(sum(len(v) for v in by_opponent.values()), 3)
+
+    def test_eval_task_details(self):
+        spec = candidate_specs(["final-tuned"])[0]
+        task = {"spec": spec.to_dict(), "name": spec.name,
+                "dist": "original", "seeds": [1], "n": 8}
+        name, dist, values, details = common.eval_task_details(task)
+        self.assertEqual((name, dist), ("Final-tuned", "original"))
+        self.assertEqual(len(values), 1)
+        self.assertTrue(details)
+        self.assertEqual(sum(len(v) for v in details.values()), 8)
+
     def test_eval_task(self):
         spec = candidate_specs(["final-tuned"])[0]
         task = {"spec": spec.to_dict(), "name": spec.name,
@@ -54,6 +77,26 @@ class MatchTests(unittest.TestCase):
         cand, typ, family, our, opp, diff, n = rows[0]
         self.assertEqual((cand, typ, family, n),
                          ("Final-tuned", "TFT", "nice", 1))
+
+    def test_matchup_suite_weighted_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "matchup.csv"
+            code = matchup_main([
+                "--candidates", "final-tuned",
+                "--opponent-set", "core",
+                "--reps", "1", "--workers", "4",
+                "--out", str(out),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(
+                out.with_suffix(".json").read_text(encoding="utf-8"))
+            self.assertEqual(payload["schema"], "ipd-matchup-v2")
+            self.assertEqual(payload["opponent_set"], "core")
+            self.assertEqual(len(payload["suite_scores"]["Final-tuned"]), 9)
+            suite_csv = out.with_name(
+                out.stem + "_suite_weighted.csv")
+            self.assertTrue(suite_csv.is_file())
+            self.assertIn("original", suite_csv.read_text(encoding="utf-8"))
 
 
 class CliIntegrationTests(unittest.TestCase):
@@ -97,6 +140,52 @@ class CliIntegrationTests(unittest.TestCase):
             payload = json.loads(out.read_text(encoding="utf-8"))
             self.assertEqual(payload["schema"], "ipd-blind-v1")
             self.assertIn("Final-tuned", payload["results"])
+
+    def test_split_config_and_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_path = root / "config.json"
+            config_path.write_text(json.dumps({
+                "name": "smoke",
+                "defaults": {
+                    "benchmark": {"fields": 1, "n": 8, "seed": 1,
+                                  "workers": 1},
+                    "blind": {"fields": 1, "n": 8, "seed": 1,
+                              "workers": 1},
+                },
+                "candidates": [
+                    {"name": "Final-tuned", "kind": "final-tuned"},
+                    {"name": "Resp3-tuned", "kind": "resp3-tuned",
+                     "benchmark": {"fields": 2}},
+                ],
+            }), encoding="utf-8")
+            config = load_split_config(config_path)
+            self.assertEqual(len(config.candidates), 2)
+            self.assertEqual(config.candidates[0].benchmark.fields, 1)
+            self.assertEqual(config.candidates[1].benchmark.fields, 2)
+
+            out_dir = root / "out"
+            code = split_main([
+                "--config", str(config_path),
+                "--out-dir", str(out_dir),
+                "--only", "Final-tuned",
+                "--workers", "1", "--blind-workers", "1",
+                "--force",
+            ])
+            self.assertEqual(code, 0)
+            self.assertTrue(
+                (out_dir / "by_candidate" / "Final-tuned"
+                 / "benchmark.json").is_file())
+            self.assertTrue(
+                (out_dir / "by_candidate" / "Final-tuned"
+                 / "blind.json").is_file())
+            self.assertTrue(
+                (out_dir / "by_candidate" / "Final-tuned"
+                 / "opponents.json").is_file())
+            self.assertTrue(any((out_dir / "by_opponent").glob("*.json")))
+            summary = json.loads(
+                (out_dir / "summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["schema"], "ipd-eval-split-v1")
 
 
 if __name__ == "__main__":

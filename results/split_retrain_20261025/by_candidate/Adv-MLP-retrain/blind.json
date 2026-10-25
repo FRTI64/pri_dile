@@ -1,0 +1,56 @@
+{
+  "schema": "ipd-split-blind-v1",
+  "created": "2026-10-26T00:31:12",
+  "seconds": 68.29,
+  "candidate": {
+    "kind": "adv-mlp",
+    "name": "Adv-MLP-retrain",
+    "params": {
+      "weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json",
+      "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_policy_aggressive.json",
+      "mode": "sample"
+    }
+  },
+  "params": {
+    "fields": 10,
+    "n": 299,
+    "seed": 20261025,
+    "workers": 10,
+    "rounds": 100,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ]
+  },
+  "score": 558.5668896321071,
+  "mean_rank": 8.2,
+  "rank1": 7,
+  "top10": 7,
+  "worst": 26,
+  "scores": [
+    562.8060200668897,
+    547.3177257525084,
+    556.190635451505,
+    548.8060200668897,
+    538.85618729097,
+    575.113712374582,
+    575.6086956521739,
+    559.123745819398,
+    571.2173913043479,
+    550.628762541806
+  ],
+  "ranks": [
+    24,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    26,
+    1,
+    25
+  ]
+}

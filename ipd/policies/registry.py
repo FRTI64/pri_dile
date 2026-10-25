@@ -8,34 +8,12 @@ training scripts decoupled.
 from __future__ import annotations
 
 import json
-import os
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Mapping
 
-from ..paths import config_path, weights_path
-from .adversarial import AdversarialPolicy
 from .base import PolicyAdapter, ensure_policy
-from .gru import GRUPolicy
-from .neural import NeuralPolicy
-from .rl import RLPolicy
-from .rules import (
-    GapStartPolicy, Hybrid, ParamBayesPrior, ParamHarvest, ParamPolicy,
-    ParamResp, Triple,
-)
-from .tuned import DEFAULT_BAYES_BASE, TunedConfigs, load_tuned_configs
-
-DEFAULT_WEIGHTS = {
-    "neural": "neural_policy_weights.json",
-    "gru": "gru_policy_weights.json",
-    "rl": "rl_policy_checkpoint.json",
-    "adv-mlp": "neural_policy_weights.json",
-    "adv-gru": "gru_policy_weights.json",
-}
-DEFAULT_CONFIG = {
-    "adv-mlp": "adversarial_policy_config.json",
-    "adv-gru": "adversarial_gru_policy_config.json",
-    "adv-rl": "adversarial_rl_policy_config_aggressive.json",
-}
+from .candidates import build_candidate
+from .tuned import TunedConfigs
 
 DISPLAY = {
     "final-base": "Final-base",
@@ -133,28 +111,6 @@ def canonical_name(value: str) -> str:
     return key
 
 
-def _load_rl_base(weights: str, seed: int, mode: str, name: str):
-    """Accept either an actor-critic checkpoint or a deployable MLP export."""
-    with open(weights, encoding="utf-8") as fh:
-        fmt = json.load(fh).get("format")
-    cls = NeuralPolicy if fmt == "ipd-neural-policy-v1" else RLPolicy
-    return cls(weights, seed=seed, mode=mode, name=name)
-
-
-def _adv_params(config: str) -> tuple[dict[str, Any], str]:
-    with open(config, encoding="utf-8") as fh:
-        cfg = json.load(fh)
-    params = {
-        "gap": cfg.get("gap"),
-        "min_c": cfg.get("min_c", 8),
-        "min_d": cfg.get("min_d", 3),
-        "late_day": cfg.get("late_day"),
-        "repair": cfg.get("repair", False),
-    }
-    base = cfg.get("base_weights", "")
-    return params, base
-
-
 def make_policy(
     kind: str,
     *,
@@ -167,75 +123,25 @@ def make_policy(
 ) -> PolicyAdapter:
     """Construct one policy by canonical kind.
 
-    ``kind`` is one of the names in :data:`DISPLAY`.  Rule policies read tuned
-    thresholds from :func:`load_tuned_configs` unless explicit weights/config
-    paths are supplied for a learned policy.
+    Each candidate is implemented in its own module under
+    :mod:`ipd.policies.candidates`.  Candidate modules do not import each other;
+    they only use core simulation/model code and their own constants.  ``tuned``
+    is accepted for backwards compatibility but candidate files embed the
+    selected parameter values directly.
     """
     kind = canonical_name(kind)
-    tuned = tuned or load_tuned_configs()
     label = name or DISPLAY[kind]
-
-    if kind == "final-base":
-        policy = ParamPolicy(seed=seed)
-    elif kind == "final-tuned":
-        policy = ParamPolicy(seed=seed, **tuned.final)
-    elif kind == "resp3-base":
-        policy = ParamResp(seed=seed)
-    elif kind == "resp3-tuned":
-        policy = ParamResp(seed=seed, **tuned.resp)
-    elif kind == "bayes-base":
-        policy = ParamBayesPrior(DEFAULT_BAYES_BASE)
-    elif kind == "bayes-tuned":
-        policy = ParamBayesPrior(tuned.bayes)
-    elif kind == "harvest45":
-        policy = ParamHarvest(seed=seed, HARVEST_START=45)
-    elif kind == "harvest-tuned":
-        policy = ParamHarvest(seed=seed, **tuned.harvest)
-    elif kind == "hybrid":
-        policy = Hybrid(
-            tuned.hybrid.get("final", tuned.final),
-            tuned.hybrid.get("resp", {}),
-            tuned.hybrid.get("p", 0.0),
-        )
-    elif kind in ("triple-majority", "triple-or", "triple-and"):
-        policy = Triple(
-            tuned.final, tuned.resp, tuned.bayes,
-            mode=kind.removeprefix("triple-"),
-        )
-    elif kind == "gap-start":
-        policy = GapStartPolicy(1, 0.5)
-    elif kind == "neural":
-        policy = NeuralPolicy(
-            weights or weights_path(DEFAULT_WEIGHTS["neural"]),
-            seed=seed, mode=mode,
-        )
-    elif kind == "gru":
-        policy = GRUPolicy(
-            weights or weights_path(DEFAULT_WEIGHTS["gru"]),
-            seed=seed, mode=mode,
-        )
-    elif kind == "rl":
-        policy = _load_rl_base(
-            weights or weights_path(DEFAULT_WEIGHTS["rl"]),
-            seed=seed, mode=mode, name="RL-PPO",
-        )
-    elif kind in ("adv-mlp", "adv-gru"):
-        config = config or config_path(DEFAULT_CONFIG[kind])
-        policy = AdversarialPolicy.from_config(
-            config, seed=seed, mode=mode, name=label,
-        )
-    elif kind == "adv-rl":
-        config = config or config_path(DEFAULT_CONFIG["adv-rl"])
-        params, base_weights = _adv_params(config)
-        if weights is None:
-            base_weights = base_weights or DEFAULT_WEIGHTS["rl"]
-            weights = (base_weights if os.path.isabs(base_weights)
-                       else weights_path(base_weights))
-        base = _load_rl_base(weights, seed=seed, mode=mode, name=label)
-        policy = AdversarialPolicy(base, name=label, **params)
-    else:  # pragma: no cover - canonical_name already validates
-        raise ValueError(kind)
-
+    kwargs: dict[str, Any] = {
+        "seed": seed,
+        "weights": weights,
+        "config": config,
+        "mode": mode,
+        "name": label,
+        "tuned": tuned,
+    }
+    if kind.startswith("triple-"):
+        kwargs["voting"] = kind.removeprefix("triple-")
+    policy = build_candidate(kind, **kwargs)
     policy.name = label
     return ensure_policy(policy, name=label)
 

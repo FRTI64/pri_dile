@@ -21,7 +21,8 @@ class LayoutTests(unittest.TestCase):
 
     def test_package_layers_exist(self):
         package = paths.ROOT / "ipd"
-        for name in ("core", "policies", "evaluation", "training", "tools"):
+        for name in ("core", "policies", "policies/candidates", "policies/rules",
+                     "policies/opponents", "evaluation", "training", "tools"):
             self.assertTrue((package / name / "__init__.py").is_file(), name)
 
     def test_path_helpers_are_absolute(self):
@@ -55,6 +56,12 @@ class LayoutTests(unittest.TestCase):
             paths.cpp_path("neural_policy.hpp"),
             paths.cpp_path("neural_policy.cpp"),
             paths.cpp_path("adversarial_rl.cpp"),
+            paths.cpp_path("policies/final_policy.hpp"),
+            paths.cpp_path("policies/responsive3_policy.hpp"),
+            paths.cpp_path("policies/bayes_plus_policy.hpp"),
+            paths.cpp_path("policies/adversarial_rl_policy.hpp"),
+            paths.cpp_path("opponents/demo.hpp"),
+            paths.config_path("eval/retrain_20261025.json"),
         ]
         for path in expected:
             self.assertTrue(Path(path).is_file(), path)

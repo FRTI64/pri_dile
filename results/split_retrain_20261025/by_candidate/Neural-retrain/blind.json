@@ -1,0 +1,55 @@
+{
+  "schema": "ipd-split-blind-v1",
+  "created": "2026-10-26T00:31:12",
+  "seconds": 68.29,
+  "candidate": {
+    "kind": "neural",
+    "name": "Neural-retrain",
+    "params": {
+      "weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json",
+      "mode": "sample"
+    }
+  },
+  "params": {
+    "fields": 10,
+    "n": 299,
+    "seed": 20261025,
+    "workers": 10,
+    "rounds": 100,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ]
+  },
+  "score": 554.0010033444817,
+  "mean_rank": 8.3,
+  "rank1": 7,
+  "top10": 7,
+  "worst": 27,
+  "scores": [
+    554.7290969899666,
+    545.180602006689,
+    552.4849498327759,
+    545.9030100334448,
+    533.5250836120401,
+    571.1505016722408,
+    571.9565217391304,
+    553.6622073578595,
+    567.3645484949833,
+    544.0535117056857
+  ],
+  "ranks": [
+    24,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    27,
+    1,
+    25
+  ]
+}

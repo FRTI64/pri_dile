@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """Evaluate every retrained candidate in one benchmark + one blind run.
 
+For per-candidate parameter sets and per-opponent result files, use the newer
+split driver instead::
+
+    python3 -m ipd eval-split --config configs/eval/retrain_20261025.json
+
+This script is kept as the historical combined-output workflow.
+
 The repository CLIs accept a single ``--weights`` / ``--config`` override, so
 they cannot score several freshly trained checkpoints side by side.  This
 script builds one ``CandidateSpec`` per checkpoint and reuses the same worker
@@ -89,19 +96,29 @@ def specs() -> list[CandidateSpec]:
 
 
 def run_benchmark(rows: list[CandidateSpec], fields: int, n: int,
-                  workers: int, seed: int) -> dict:
+                  workers: int, seed: int, out_path: Path) -> dict:
     seeds = seed_map(seed, DISTS, fields)
     tasks = [
         {"spec": spec.to_dict(), "name": spec.name, "dist": dist,
-         "seeds": seeds[dist], "n": n, "rounds": 100}
-        for spec in rows for dist in DISTS
+         "seeds": [seed], "n": n, "rounds": 100}
+        for spec in rows for dist in DISTS for seed in seeds[dist]
     ]
     started = time.time()
-    results: dict[str, dict[str, list[float]]] = {spec.name: {} for spec in rows}
+    results: dict[str, dict[str, list[float]]] = {
+        spec.name: {dist: [] for dist in DISTS} for spec in rows
+    }
+    total = len(tasks)
+    progress_every = max(1, total // 20)
     with ProcessPoolExecutor(max_workers=workers) as ex:
-        for name, dist, values in ex.map(eval_task, tasks, chunksize=1):
-            results[name][dist] = values
-            print(f"{name:26} {dist:9} mean={statistics.fmean(values):7.2f}",
+        for done, (name, dist, values) in enumerate(
+                ex.map(eval_task, tasks, chunksize=1), 1):
+            results[name][dist].extend(values)
+            if done % progress_every == 0 or done == total:
+                print(f"progress {done}/{total} field tasks", flush=True)
+    for spec in rows:
+        for dist in DISTS:
+            print(f"{spec.name:26} {dist:9} "
+                  f"mean={statistics.fmean(results[spec.name][dist]):7.2f}",
                   flush=True)
     summary = {}
     for spec in rows:
@@ -127,15 +144,15 @@ def run_benchmark(rows: list[CandidateSpec], fields: int, n: int,
         "candidates": [spec.to_dict() for spec in rows],
         "summary": summary,
     }
-    path = OUT / "benchmark_all.json"
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
-                    encoding="utf-8")
-    print(f"\nwritten {path}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
+                        encoding="utf-8")
+    print(f"\nwritten {out_path}")
     return summary
 
 
 def run_blind(rows: list[CandidateSpec], fields: int, n: int,
-              workers: int, seed: int) -> dict:
+              workers: int, seed: int, out_path: Path) -> dict:
     seeds = [seed + i * 7919 for i in range(fields)]
     tasks = [
         {"seed": s, "n": n, "specs": [spec.to_dict() for spec in rows]}
@@ -172,10 +189,10 @@ def run_blind(rows: list[CandidateSpec], fields: int, n: int,
         "candidates": [spec.to_dict() for spec in rows],
         "results": summary,
     }
-    path = OUT / "blind_all.json"
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
-                    encoding="utf-8")
-    print(f"\nwritten {path}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
+                        encoding="utf-8")
+    print(f"\nwritten {out_path}")
     return summary
 
 
@@ -190,6 +207,8 @@ def main() -> None:
     ap.add_argument("--blind-seed", type=int, default=20261025)
     ap.add_argument("--skip-benchmark", action="store_true")
     ap.add_argument("--skip-blind", action="store_true")
+    ap.add_argument("--benchmark-out", default=str(OUT / "benchmark_all.json"))
+    ap.add_argument("--blind-out", default=str(OUT / "blind_all.json"))
     args = ap.parse_args()
 
     rows = specs()
@@ -197,10 +216,12 @@ def main() -> None:
         raise SystemExit("no retrained candidates found")
     if not args.skip_benchmark:
         run_benchmark(rows, args.benchmark_fields, args.n,
-                      args.benchmark_workers, args.seed)
+                      args.benchmark_workers, args.seed,
+                      Path(args.benchmark_out))
     if not args.skip_blind:
         run_blind(rows, args.blind_fields, args.n,
-                  args.blind_workers, args.blind_seed)
+                  args.blind_workers, args.blind_seed,
+                  Path(args.blind_out))
 
 
 if __name__ == "__main__":

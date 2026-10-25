@@ -14,7 +14,7 @@ import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Sequence
 
 from ..core.simulator import payoff, play_match
 from ..paths import result_path
@@ -37,7 +37,7 @@ _ARCH_OUT = {
 }
 
 
-def field_task(task: dict) -> tuple[int, dict[str, dict[str, float]]]:
+def _run_field(task: dict, detail: bool = False):
     """Evaluate every candidate on one unseen field with shared opponents."""
     from ..policies.registry import CandidateSpec
 
@@ -62,6 +62,8 @@ def field_task(task: dict) -> tuple[int, dict[str, dict[str, float]]]:
         cand_score = 0
         boosted = list(opp_scores)
         field = copy.deepcopy(base_field)
+        per_opponent_scores: list[int] = []
+        per_opponent_names: list[str] = []
         for i, opponent in enumerate(field):
             candidate.reset()
             opponent.reset()
@@ -77,9 +79,27 @@ def field_task(task: dict) -> tuple[int, dict[str, dict[str, float]]]:
                 other += payoff(y, x)
             cand_score += own
             boosted[i] += other
+            if detail:
+                per_opponent_names.append(getattr(opponent, "name",
+                                                  type(opponent).__name__))
+                per_opponent_scores.append(own)
         rank = 1 + sum(score > cand_score for score in boosted)
-        out[spec.name] = {"rank": rank, "score": cand_score}
+        row = {"rank": rank, "score": cand_score}
+        if detail:
+            row["opponents"] = per_opponent_names
+            row["opponent_scores"] = per_opponent_scores
+        out[spec.name] = row
     return seed, out
+
+
+def field_task(task: dict) -> tuple[int, dict[str, dict[str, float]]]:
+    """Evaluate every candidate on one unseen field with shared opponents."""
+    return _run_field(task, detail=False)
+
+
+def field_task_details(task: dict) -> tuple[int, dict[str, dict[str, Any]]]:
+    """Like :func:`field_task`, but includes per-opponent score arrays."""
+    return _run_field(task, detail=True)
 
 
 def build_parser() -> argparse.ArgumentParser:

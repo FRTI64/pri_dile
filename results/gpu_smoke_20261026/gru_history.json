@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "teacher": "triple",
+    "teacher_cfgs": {
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "bayes": {
+        "coop_scale": 1.8369823500713045,
+        "punitive_scale": 2.4705958305576154,
+        "late_scale": 0.5216017158776368,
+        "noise_scale": 0.5817914534720606,
+        "probe_scale": 3.315461421931959,
+        "nonresp": 0.27974873408266854,
+        "punitive_thr": 0.7531347429866336
+      }
+    },
+    "rounds": 2,
+    "seed": 20261025,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ],
+    "fields_per_dist": 1,
+    "val_fields_per_dist": 1,
+    "dagger_fields_per_dist": 1,
+    "n": 20,
+    "val_n": 20,
+    "hidden": 32,
+    "layers": 1,
+    "samples": 16000,
+    "val_samples": 8000,
+    "device": "cuda (NVIDIA GeForce RTX 5090 Laptop GPU)",
+    "torch": "2.11.0+cu128",
+    "metrics": {
+      "val_loss": 0.4728168845176697,
+      "val_acc": 0.9044078588485718,
+      "val_precision_d": 0.9627749576988156,
+      "val_recall_d": 0.8932496075353218
+    },
+    "temperature": 0.5
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6269067263948119,
+      "val_loss": 0.46580973267555237,
+      "val_acc": 0.8709505796432495,
+      "val_precision_d": 0.8485463150777552,
+      "val_recall_d": 0.9850863422291993,
+      "round": "bc"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.5244575898607069,
+      "val_loss": 0.4179871082305908,
+      "val_acc": 0.8969728946685791,
+      "val_precision_d": 0.884068278805121,
+      "val_recall_d": 0.9756671899529042,
+      "round": "bc"
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.6120738304832791,
+      "val_loss": 0.5522367358207703,
+      "val_acc": 0.8730748295783997,
+      "val_precision_d": 0.9608192341941229,
+      "val_recall_d": 0.8469387755102041,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.5284074319097928,
+      "val_loss": 0.4728168845176697,
+      "val_acc": 0.9044078588485718,
+      "val_precision_d": 0.9627749576988156,
+      "val_recall_d": 0.8932496075353218,
+      "round": "dagger-1"
+    }
+  ]
+}

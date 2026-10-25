@@ -1,0 +1,56 @@
+{
+  "schema": "ipd-split-blind-v1",
+  "created": "2026-10-26T00:31:12",
+  "seconds": 68.29,
+  "candidate": {
+    "kind": "adv-rl",
+    "name": "Adv-RL-final-retrain",
+    "params": {
+      "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights.json",
+      "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+      "mode": "sample"
+    }
+  },
+  "params": {
+    "fields": 10,
+    "n": 299,
+    "seed": 20261025,
+    "workers": 10,
+    "rounds": 100,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ]
+  },
+  "score": 560.671237458194,
+  "mean_rank": 8.1,
+  "rank1": 7,
+  "top10": 7,
+  "worst": 25,
+  "scores": [
+    563.8160535117057,
+    554.3210702341137,
+    560.7257525083612,
+    548.0735785953177,
+    543.4782608695652,
+    574.5317725752508,
+    582.5384615384615,
+    560.1605351170568,
+    571.3745819397993,
+    547.6923076923077
+  ],
+  "ranks": [
+    24,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    25,
+    1,
+    25
+  ]
+}

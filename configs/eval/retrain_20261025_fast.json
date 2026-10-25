@@ -1,0 +1,121 @@
+{
+  "schema": "ipd-eval-split-config-v1",
+  "name": "retrain_20261025_fast",
+  "note": "Quick-iteration config: slow recurrent candidates use fewer fields. Do not compare absolute scores with the uniform config.",
+  "defaults": {
+    "benchmark": {
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026,
+      "workers": 20,
+      "rounds": 100
+    },
+    "blind": {
+      "fields": 10,
+      "n": 299,
+      "seed": 20261025,
+      "workers": 10,
+      "rounds": 100
+    }
+  },
+  "candidates": [
+    {
+      "name": "Neural-retrain",
+      "kind": "neural",
+      "params": {
+        "weights": "weights/retrain_20261025/neural_policy_weights.json",
+        "mode": "sample"
+      },
+      "blind": {"workers": 10}
+    },
+    {
+      "name": "GRU-retrain",
+      "kind": "gru",
+      "params": {
+        "weights": "weights/retrain_20261025/gru_policy_weights.json",
+        "mode": "sample"
+      },
+      "benchmark": {"fields": 12, "workers": 12},
+      "blind": {"fields": 6, "workers": 6}
+    },
+    {
+      "name": "Adv-MLP-retrain",
+      "kind": "adv-mlp",
+      "params": {
+        "weights": "weights/retrain_20261025/neural_policy_weights.json",
+        "config": "configs/retrain_20261025/adversarial_policy_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-GRU-retrain",
+      "kind": "adv-gru",
+      "params": {
+        "weights": "weights/retrain_20261025/gru_policy_weights.json",
+        "config": "configs/retrain_20261025/adversarial_gru_policy_aggressive.json",
+        "mode": "sample"
+      },
+      "benchmark": {"fields": 12, "workers": 12},
+      "blind": {"fields": 6, "workers": 6}
+    },
+    {
+      "name": "RL-final-retrain",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-BC-retrain",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights_bc.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-scratch-base-retrain",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights_scratch_base.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-stage1-retrain",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights_stage1.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL-retrain",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights_bc.json",
+        "config": "configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL-conservative-retrain",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights_bc.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL-final-retrain",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/retrain_20261025/rl_policy_weights.json",
+        "config": "configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

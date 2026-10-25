@@ -10,10 +10,11 @@ from typing import Sequence
 
 from ..core.opponents import DelayedTFT, GenerousTFT, Joss, LateDefector
 from ..core.opponents import NoisyTFT, RandomP
-from ..core.opponents_extended import (
-    TYPE_BANK, TYPE_BY_NAME, TypeSpec, effective_weights,
-    sample_mixed_population, sample_mixture, sample_population,
+from ..core.opponents.bank import (
+    TYPE_BANK, TYPE_BY_NAME, effective_weights, sample_mixed_population,
+    sample_mixture, sample_population,
 )
+from ..core.opponents.spec import TypeSpec
 from ..policies.opponents import ALL_SPECS, SMART, TUNED_SMART
 
 N_PLAYERS = 299

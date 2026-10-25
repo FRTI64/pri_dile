@@ -1,0 +1,458 @@
+{
+  "schema": "ipd-eval-split-config-v1",
+  "name": "retrain_20261025",
+  "note": "Uniform statistical parameters for fair comparison. Each candidate still gets its own output files.",
+  "defaults": {
+    "benchmark": {
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026,
+      "workers": 20,
+      "rounds": 100,
+      "dists": [
+        "original",
+        "late",
+        "grim30",
+        "wide"
+      ]
+    },
+    "blind": {
+      "fields": 10,
+      "n": 299,
+      "seed": 20261025,
+      "workers": 10,
+      "rounds": 100,
+      "dists": [
+        "original",
+        "late",
+        "grim30",
+        "wide"
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "candidate": {
+        "kind": "neural",
+        "name": "Neural-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "gru",
+        "name": "GRU-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/gru_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "adv-mlp",
+        "name": "Adv-MLP-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json",
+          "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_policy_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "adv-gru",
+        "name": "Adv-GRU-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/gru_policy_weights.json",
+          "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_gru_policy_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "rl",
+        "name": "RL-final-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "rl",
+        "name": "RL-BC-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "rl",
+        "name": "RL-scratch-base-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_scratch_base.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "rl",
+        "name": "RL-stage1-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_stage1.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "adv-rl",
+        "name": "Adv-RL-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json",
+          "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "adv-rl",
+        "name": "Adv-RL-conservative-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json",
+          "config": "/home/frti64/pri_dile/configs/adversarial_rl_policy_config.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    },
+    {
+      "candidate": {
+        "kind": "adv-rl",
+        "name": "Adv-RL-final-retrain",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights.json",
+          "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "benchmark": {
+        "fields": 20,
+        "n": 299,
+        "seed": 20261026,
+        "workers": 20,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "blind": {
+        "fields": 10,
+        "n": 299,
+        "seed": 20261025,
+        "workers": 10,
+        "rounds": 100,
+        "dists": [
+          "original",
+          "late",
+          "grim30",
+          "wide"
+        ]
+      },
+      "tags": [],
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema": "ipd-split-blind-v1",
+  "created": "2026-10-26T00:31:12",
+  "seconds": 68.29,
+  "candidate": {
+    "kind": "adv-gru",
+    "name": "Adv-GRU-retrain",
+    "params": {
+      "weights": "/home/frti64/pri_dile/weights/retrain_20261025/gru_policy_weights.json",
+      "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_gru_policy_aggressive.json",
+      "mode": "sample"
+    }
+  },
+  "params": {
+    "fields": 10,
+    "n": 299,
+    "seed": 20261025,
+    "workers": 10,
+    "rounds": 100,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ]
+  },
+  "score": 559.176923076923,
+  "mean_rank": 8.1,
+  "rank1": 7,
+  "top10": 7,
+  "worst": 25,
+  "scores": [
+    560.9197324414715,
+    546.6321070234113,
+    558.6488294314381,
+    548.8394648829432,
+    538.190635451505,
+    574.9163879598663,
+    577.7257525083612,
+    559.2006688963211,
+    573.5351170568562,
+    553.1605351170568
+  ],
+  "ranks": [
+    24,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    25,
+    1,
+    25
+  ]
+}

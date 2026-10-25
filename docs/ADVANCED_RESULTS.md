@@ -678,7 +678,7 @@ PUNITIVE_THRESHOLD = 0.7531
 
 ## 三者融合：Final + Responsive3 + BayesPlus
 
-实现文件：`ipd/policies/rules.py`
+实现文件：`ipd/policies/candidates/triple_majority.py`
 
 三个子策略同时运行：
 
