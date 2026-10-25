@@ -1,7 +1,7 @@
 // Adaptive strategy for the 100-round iterated prisoner's dilemma.
 //
 // Moves are represented as 0 = cooperate, 1 = defect, matching the Python
-// reference in ipd_strategy.py.  `day` is 1-based.  Call reset() before every
+// reference in ipd/core/machine.py.  `day` is 1-based.  Call reset() before every
 // match.
 //
 // Usage:

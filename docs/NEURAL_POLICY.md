@@ -90,7 +90,7 @@ D 类 recall = 0.9825
 
 ## 3. 设备支持
 
-`src/train_neural_policy.py --device auto` 按以下顺序选择：
+`ipd/training/neural.py --device auto` 按以下顺序选择：
 
 1. Ascend NPU（安装 `torch_npu` 后）；
 2. NVIDIA CUDA；
@@ -117,15 +117,15 @@ pip install -r requirements-train.txt
 # pip install torch_npu
 
 # CUDA / NPU / CPU 自动选择
-python3 src/train_neural_policy.py --device auto \
+python3 -m ipd train neural --device auto \
     --fields-per-dist 12 --dagger-fields-per-dist 6 \
     --n 60 --epochs 40 --workers 20
 
 # 指定 NPU
-python3 src/train_neural_policy.py --device npu
+python3 -m ipd train neural --device npu
 
 # 指定 CPU
-python3 src/train_neural_policy.py --device cpu --epochs 10
+python3 -m ipd train neural --device cpu --epochs 10
 ```
 
 训练脚本读取：
@@ -144,7 +144,7 @@ python3 src/train_neural_policy.py --device cpu --epochs 10
 
 ### 4.1 四分布统一测试
 
-与 `src/final_benchmark.py` 相同的 20 个赛场 × 299 人、相同种子
+与 `ipd/evaluation/benchmark.py` 相同的 20 个赛场 × 299 人、相同种子
 （`20261026`），每格是每对手平均分：
 
 | 策略 | 原始混合 | 末期收割 | 高 Grim | 宽+聪明 | 四分布均值 | 最差分布 |
@@ -164,7 +164,7 @@ Triple 547.35，Final 551.08。Neural 最弱的类型与 Triple 基本一致
 
 ### 4.2 盲测
 
-`src/blind_test_neural.py` 使用 10 个全新种子、未参与训练/调参的 299 人赛场，
+`ipd/evaluation/blind.py` 使用 10 个全新种子、未参与训练/调参的 299 人赛场，
 并复用对手之间的循环赛结果以降低计算量：
 
 | 策略 | 均分 | 平均排名 | 第 1 名 | 前 10 | 最差 |
@@ -176,21 +176,20 @@ Triple 547.35，Final 551.08。Neural 最弱的类型与 Triple 基本一致
 | **Neural-sample** | **555.10** | **8.30** | **7/10** | **7/10** | **27** |
 
 注意：这里的基线数字与 `HANDOVER.md` 中旧盲测（Triple 554.99 / 8.30）略有
-差异，因为 `src/blind_test_neural.py` 复用了对手循环赛，并对每个候选使用深拷贝的
+差异，因为 `ipd/evaluation/blind.py` 复用了对手循环赛，并对每个候选使用深拷贝的
 同一初始赛场；这是为了在同等计算量下比较多个候选。跨脚本的绝对分数不要直接
 混用，趋势和相对差距可以参考。
 
-原始盲测脚本 `src/blind_test.py` 仍然保留，未改动其默认行为。
+统一盲测入口为 `python3 -m ipd blind`；该入口复用了对手循环赛，因此绝对分数不能与更早的独立盲测结果直接混用。
 
 ---
 
 ## 5. 推理接口
 
-> 源码在 `src/`。在仓库根目录使用以下片段时，先设置 `PYTHONPATH=src`
-> （或先 `cd src`）。
+> 源码在 `ipd/`。在仓库根目录直接运行，或先执行 `pip install -e .`。
 
 ```python
-from neural_policy import NeuralPolicy
+from ipd.policies.neural import NeuralPolicy
 
 p = NeuralPolicy("weights/neural_policy_weights.json", seed=20261024)
 p.reset()                               # 每场开始调用
@@ -207,19 +206,19 @@ action = p.act(t, mine, theirs)
 快速自检：
 
 ```bash
-python3 src/neural_policy.py weights/neural_policy_weights.json
+python3 -m ipd self-test --candidates neural --weights weights/neural_policy_weights.json
 ```
 
 如果比赛必须提交 C++，已经提供无依赖的 C++17 版本：
 
 - `cpp/neural_policy.cpp`：MLP 推理 + 可选 demo；
 - `cpp/ipd_features.hpp`：与 GRU-Net 共用的 85 维特征提取；
-- `cpp/neural_policy_weights.hpp`：由 `src/export_neural_cpp.py` 从 JSON 生成；
+- `cpp/neural_policy_weights.hpp`：由 `ipd/tools/export_cpp.py` 从 JSON 生成；
 - 动作接口：`act(t, mine, theirs)` 或 `move(day, mine, theirs)`；
 - 构造函数第二个参数为 `false` 时使用 argmax，不再按概率采样。
 
 ```bash
-python3 src/export_neural_cpp.py     # 重新训练后刷新权重头文件
+python3 -m ipd export --arch mlp     # 重新训练后刷新权重头文件
 g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 ./neural_demo
 ```
@@ -238,25 +237,25 @@ C++ 实现已与 Python 版做过 200 组随机历史的特征/概率对齐检�
 ```bash
 # 训练（需要 PyTorch）
 . .venv/bin/activate
-python3 src/train_neural_policy.py --device auto --seed 20261025
+python3 -m ipd train neural --device auto --seed 20261025
 
 # 四分布统一测试（不需要 PyTorch）
-python3 src/benchmark_neural_policy.py --fields 20 --n 299 --workers 20
+python3 -m ipd benchmark --fields 20 --n 299 --workers 20
 
 # 也可以直接把 Neural 加进现有统一测试
-python3 src/final_benchmark.py --fields 20 --workers 24 --neural
+python3 -m ipd benchmark --candidates base --fields 20 --workers 24 --neural
 
 # 盲测排名（不需要 PyTorch）
-python3 src/blind_test_neural.py --fields 10 --n 299 --workers 12
+python3 -m ipd blind --fields 10 --n 299 --workers 12
 
-# 或把 Neural 加进原版 src/blind_test.py（会跑完整 300 人循环赛，较慢）
-python3 src/blind_test.py --fields 10 --neural
+# 或把 Neural 加进原版 ipd/evaluation/blind.py（会跑完整 300 人循环赛，较慢）
+python3 -m ipd blind --candidates classic --fields 10 --neural
 
 # argmax 对照
-python3 src/benchmark_neural_policy.py --fields 8 --neural-mode argmax
+python3 -m ipd benchmark --fields 8 --neural-mode argmax
 
 # 生成 C++ 权重头文件并编译 demo
-python3 src/export_neural_cpp.py
+python3 -m ipd export --arch mlp
 g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 ./neural_demo
 ```
@@ -269,7 +268,7 @@ g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 | `weights/neural_policy_weights.json` | 可直接加载的权重 |
 | `cpp/neural_policy.cpp` | C++17 推理实现（含 demo） |
 | `cpp/neural_policy_weights.hpp` | 由 JSON 生成的 C++ 权重 |
-| `src/export_neural_cpp.py` | 权重 JSON → C++ 头文件 |
+| `ipd/tools/export_cpp.py` | 权重 JSON → C++ 头文件 |
 | `results/neural_training_history.json` | 训练/验证曲线与元数据 |
 | `results/neural_benchmark.json` | 四分布对比结果 |
 | `results/neural_blind_results.json` | 盲测排名结果 |
@@ -304,6 +303,6 @@ g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 
 ## 8. 后续：完整强化学习
 
-BC + DAgger 只能复制教师。`src/train_rl_policy.py` 用 PPO 直接优化比赛收益，
+BC + DAgger 只能复制教师。`ipd/training/rl.py` 用 PPO 直接优化比赛收益，
 最终从零 + hard 的单独 RL 盲测 563.23 / 8.00；加 `AdversarialPolicy` 后四分布
 554.29、盲测 562.91。详见 `docs/RL_POLICY.md`。

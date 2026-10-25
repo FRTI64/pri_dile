@@ -1,10 +1,9 @@
 """Filesystem layout for the 100-day IPD project.
 
-All paths are resolved relative to the repository root, so code can be run from
-any working directory::
+All paths are resolved relative to the repository root::
 
     python3 -m ipd --help
-    python3 src/blind_test.py --fields 10
+    python3 -m ipd blind --fields 10
 
 Keeping the layout in one module avoids scattering ``"../results/..."``
 literals across the scripts.
@@ -15,7 +14,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-SRC_DIR = ROOT / "src"
 PACKAGE_DIR = ROOT / "ipd"
 DOCS_DIR = ROOT / "docs"
 CPP_DIR = ROOT / "cpp"

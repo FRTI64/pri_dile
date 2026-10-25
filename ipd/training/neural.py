@@ -8,7 +8,7 @@ trained on CUDA, Ascend NPU (``torch_npu``), Apple MPS or CPU.  Device selection
 is automatic: NPU -> CUDA -> MPS -> CPU.
 
 The exported ``neural_policy_weights.json`` is consumed by
-``neural_policy.NeuralPolicy``, which has no third-party dependencies.
+``ipd.policies.neural.NeuralPolicy``, which has no third-party dependencies.
 
 Setup (PyTorch is optional for the rest of the repository)::
 

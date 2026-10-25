@@ -1,15 +1,15 @@
 // Dependency-free C++17 inference for the GPU/NPU-trained neural IPD policy.
 //
 // The network weights are generated from neural_policy_weights.json by
-// export_neural_cpp.py:
+// ipd/tools/export_cpp.py:
 //
-//     python3 export_neural_cpp.py
+//     python3 -m ipd export --arch mlp
 //     g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO neural_policy.cpp -o neural_demo
 //     ./neural_demo
 //
 // For the reward-trained PPO weights:
 //
-//     python3 export_neural_cpp.py --weights weights/rl_policy_weights.json \
+//     python3 -m ipd export --weights weights/rl_policy_weights.json \
 //         --out cpp/rl_policy_weights.hpp
 //     g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
 //         -DNEURAL_POLICY_DEMO neural_policy.cpp -o rl_demo

@@ -17,7 +17,7 @@ opponent pool:
 
 Both rules only trigger *after the opponent has already defected*, so they
 cannot trip a Grim trigger.  The parameters are selected by
-``train_adversarial_policy.py`` under the constraint that no validation
+``ipd/training/adversarial.py`` under the constraint that no validation
 distribution may lose score.
 
 Usage::

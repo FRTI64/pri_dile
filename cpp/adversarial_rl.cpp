@@ -1,6 +1,6 @@
 // Constrained exploitation wrapper around the reward-trained RL policy.
 //
-// This is the C++ counterpart of src/adversarial_policy.py for
+// This is the C++ counterpart of ipd/policies/adversarial.py for
 // base_arch="rl".  It uses the aggressive configuration:
 //
 //     gap=0.2, min_c=12, min_d=2, late_day=40, repair=true
@@ -9,7 +9,7 @@
 // cannot trip a Grim-style unconditional retaliator.
 //
 // Build:
-//     python3 src/export_neural_cpp.py --weights weights/rl_policy_weights.json \
+//     python3 -m ipd export --arch mlp --weights weights/rl_policy_weights.json \
 //         --out cpp/rl_policy_weights.hpp
 //     g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
 //         -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_demo

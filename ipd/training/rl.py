@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Train the IPD policy with full reinforcement learning (PPO).
 
-Unlike ``train_neural_policy.py`` (behaviour cloning + DAgger), this script
+Unlike ``ipd/training/neural.py`` (behaviour cloning + DAgger), this script
 optimises the actual tournament objective: the sum of the 100 daily payoffs.
 The agent observes the same 85 history features as the other neural policies,
 samples cooperate/defect from a Bernoulli policy, and is trained with PPO

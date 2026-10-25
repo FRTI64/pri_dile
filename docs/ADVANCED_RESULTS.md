@@ -2,7 +2,7 @@
 
 ## P0：多进程模拟器
 
-`src/search_common.py` 提供：
+`ipd/training/search/common.py` 提供：
 
 - 固定种子的赛场生成；
 - 原始混合场 / 末期收割场；
@@ -27,7 +27,7 @@ speedup:          12.47x
 
 ## P1：参数搜索 + 留出验证
 
-`src/p1_parameter_search.py` 随机搜索 60 组参数，训练集为：
+`ipd/training/search/p1_parameter.py` 随机搜索 60 组参数，训练集为：
 
 - 20 个原始混合场；
 - 20 个末期收割场。
@@ -67,7 +67,7 @@ PEACE_COOLDOWN = 10
 
 ## P2：Genetic Programming
 
-`src/p2_gp_search.py` 使用：
+`ipd/training/search/p2_gp.py` 使用：
 
 - 22 个特征：天数、剩余天数、pC/pD、近期 pC/pD、连续合作/背叛、交替性、首次 D 时间等；
 - 决策树，最大约 45 节点；
@@ -192,7 +192,7 @@ GP-FSM 学到的最好基因组实际上退化成：
 
 ### P2d：把 FSM 状态上限解除到 100
 
-运行 `src/p2_fsm_gp.py --max-states 100` 的探索版本。虽然允许更多状态，训练中最好的验证策略仍然退化成 **2 状态 gap 规则**：
+运行 `ipd/training/search/p2_fsm.py --max-states 100` 的探索版本。虽然允许更多状态，训练中最好的验证策略仍然退化成 **2 状态 gap 规则**：
 
 ```text
 状态 0：合作；gap <= 0.55 时转到状态 1，否则留在状态 0
@@ -277,7 +277,7 @@ threshold = 0.50
 
 ## P1c：固定提高 Grim 比例
 
-`src/run_grim_experiment.py` 使用固定结构的高 Grim 种群，晚期收割型仍约占 18%–20%。下表是不同 Grim 权重下的每对手平均分：
+早期实验使用固定结构的高 Grim 种群，晚期收割型仍约占 18%–20%。下表是不同 Grim 权重下的每对手平均分：
 
 | Grim 权重 | 实际 Grim 约 | Final | Harvest40 | Harvest90 | EarlyProbe |
 |---:|---:|---:|---:|---:|---:|
@@ -288,7 +288,7 @@ threshold = 0.50
 | 50 | 33% | **555.2** | 480.2 | 536.1 | 445.2 |
 | 60 | 38% | **560.1** | 465.4 | 538.2 | 417.3 |
 
-`src/p1_grim_search.py` 在固定 Grim 种群上重新做参数搜索：
+`ipd/training/search/p1_grim.py` 在固定 Grim 种群上重新做参数搜索：
 
 ### Grim 权重 10（实际约 9%）
 
@@ -347,7 +347,7 @@ PEACE_COOLDOWN = 8
 
 ## 对手决策树都很简单时
 
-`src/run_simple_experiment.py` 使用一个“简单对手库”：
+早期实验使用一个“简单对手库”：
 
 - AllC / AllD / TFT 系列 / TFT2 / GTFT / Joss / NoisyTFT；
 - Grim / Grudger / Mistrust / Pavlov / WSLS；
@@ -383,7 +383,7 @@ PEACE_COOLDOWN = 8
 - 如果简单对手里 Grim/Mistrust 比例高，Final 仍然明显最好；
 - 简单对手的最大影响是：类型更容易被历史统计区分，但“第一次背叛前”的信息限制仍然存在。
 
-## 宽模型库、细参数、分布训练（`src/train_wide.py`）
+## 宽模型库、细参数、分布训练（`ipd/training/search/wide.py`）
 
 在原有 85 类对手上继续增加：
 
@@ -471,7 +471,7 @@ threshold = 0.6181
 
 ## 多目标细粒度训练：Final / Harvest / Gap / Responsive3 / BayesPlus
 
-`src/train_multiobj.py` 在四个分布上同时评估：
+`ipd/training/search/multiobj.py` 在四个分布上同时评估：
 
 1. `original`：原始混合；
 2. `late`：末期收割；
@@ -579,7 +579,7 @@ PUNITIVE_THRESHOLD = 0.6217
 
 ## 联合训练：Final + Responsive3
 
-`src/train_joint_final_resp.py` 同时运行 Final 和 Responsive3 两个子策略：
+`ipd/training/search/joint.py` 同时运行 Final 和 Responsive3 两个子策略：
 
 - 两者的动作一致：采用该动作；
 - 两者动作不一致：按参数 `p` 选择合作，`p=0` 表示直接背叛；
@@ -619,7 +619,7 @@ Responsive3:
 
 ## BayesPlus 模型先验参数化
 
-`src/train_bayes_priors.py` 对 BayesPlus 的模型先验做分组缩放：
+`ipd/training/search/bayes_priors.py` 对 BayesPlus 的模型先验做分组缩放：
 
 - `coop_scale`：合作/互惠模型；
 - `punitive_scale`：Grim/Grudger/Mistrust；
@@ -651,7 +651,7 @@ PUNITIVE_THRESHOLD = 0.7531
 
 ## 最终盲测
 
-`src/blind_test.py` 使用完全未参与训练的种子（`20261025` 起），生成 10 个独立的 300 人赛场：
+`ipd/evaluation/blind.py` 使用完全未参与训练的种子（`20261025` 起），生成 10 个独立的 300 人赛场：
 
 - 对手池包含宽模型库、复杂策略和 15% 左右的我方聪明策略；
 - 每个候选与同一 299 个对手做完整循环赛；
@@ -678,7 +678,7 @@ PUNITIVE_THRESHOLD = 0.7531
 
 ## 三者融合：Final + Responsive3 + BayesPlus
 
-实现文件：`src/triple_hybrid.py`
+实现文件：`ipd/policies/rules.py`
 
 三个子策略同时运行：
 

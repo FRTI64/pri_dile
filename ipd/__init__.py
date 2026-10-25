@@ -15,8 +15,7 @@ The package is deliberately split by responsibility:
 ``ipd.tools``
     Deployment helpers such as C++ weight exporters.
 
-Legacy flat modules under ``src/`` remain as thin compatibility shims so old
-commands keep working, but all new code should import from ``ipd``.
+All code and command-line entry points live in this package.
 """
 from __future__ import annotations
 

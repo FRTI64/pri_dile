@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Dependency-free inference for the GPU/NPU-trained GRU-Net IPD policy.
 
-The GRU-Net consumes the same 85 history features as ``neural_policy.py`` but
+The GRU-Net consumes the same 85 history features as ``ipd/policies/neural.py`` but
 maintains a recurrent hidden state instead of being stateless.  Training lives
-in ``train_gru_policy.py`` and requires PyTorch; inference only uses the Python
+in ``ipd/training/gru.py`` and requires PyTorch; inference only uses the Python
 standard library.
 
 Usage::

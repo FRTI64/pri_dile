@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Unified four-distribution benchmark.
 
-This replaces the old ``final_benchmark.py`` / ``benchmark_neural_policy.py``
-split.  Every candidate is referenced by a registry name, so adding a policy
-does not require changing this file.
+This unifies the legacy four-distribution benchmark scripts.  Every candidate
+is referenced by a registry name, so adding a policy does not require changing
+this file.
 
 Examples::
 

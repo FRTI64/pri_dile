@@ -75,7 +75,7 @@ public:
 
     int act(int t, const std::vector<int>& mine,
             const std::vector<int>& theirs) {
-        // Boundary and safety rules, matching neural_policy.py.
+        // Boundary and safety rules, matching ipd/policies/neural.py.
         if (t >= 99) return D;
         if (neural_policy_weights::SAFE
                 && (t == 0 || !ipd::contains(theirs, D))) return C;

@@ -2,7 +2,7 @@
 
 ## 新增对手类型
 
-`src/opponent_plus.py` 新增 67 个类型：
+`ipd/core/opponents_plus.py` 新增 67 个类型：
 
 - 8 个固定随机 memory-one；
 - 8 个固定随机 reactive；
@@ -31,7 +31,7 @@
 8. `random`：Random/周期型；
 9. `wide`：综合宽分布。
 
-`src/run_suite_benchmark.py` 负责生成并评估。
+`ipd/evaluation/suite.py` 负责生成并评估。
 
 ## 结果
 

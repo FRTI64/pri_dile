@@ -79,7 +79,7 @@ DAgger 时学生会以自己的隐藏状态走棋，教师在同一历史上给�
 
 ### 3.1 四分布统一测试
 
-与 `src/final_benchmark.py` 相同的 20 个赛场 × 299 人、种子 `20261026`：
+与 `ipd/evaluation/benchmark.py` 相同的 20 个赛场 × 299 人、种子 `20261026`：
 
 | 策略 | 原始混合 | 末期收割 | 高 Grim | 宽+聪明 | 均值 | 最差分布 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -92,7 +92,7 @@ GRU 与 MLP 都在 547.5–548.2 区间，差距小于 0.4 分，属于噪声范
 
 ### 3.2 盲测
 
-`src/blind_test_neural.py --arch gru`，10 个未参与训练/调参的 299 人赛场：
+`ipd/evaluation/blind.py --arch gru`，10 个未参与训练/调参的 299 人赛场：
 
 | 策略 | 均分 | 平均排名 | 第 1 名 | 前 10 | 最差 |
 |---|---:|---:|---:|---:|---:|
@@ -109,11 +109,10 @@ GRU 与 MLP 都在 547.5–548.2 区间，差距小于 0.4 分，属于噪声范
 
 ### 4.1 Python 推理
 
-> 源码在 `src/`。在仓库根目录使用以下片段时，先设置 `PYTHONPATH=src`
-> （或先 `cd src`）。
+> 源码在 `ipd/`。在仓库根目录直接运行，或先执行 `pip install -e .`。
 
 ```python
-from gru_policy import GRUPolicy
+from ipd.policies.gru import GRUPolicy
 
 p = GRUPolicy("weights/gru_policy_weights.json", seed=20261024)
 p.reset()                               # 每场开始必须调用
@@ -126,7 +125,7 @@ action = p.act(t, mine, theirs)         # t = 0..99
 自检：
 
 ```bash
-python3 src/gru_policy.py weights/gru_policy_weights.json
+python3 -m ipd self-test --candidates gru --weights weights/gru_policy_weights.json
 ```
 
 **重要：GRUPolicy 是有状态的。** 每场比赛必须调用 `reset()`；同一时间步不要
@@ -139,7 +138,7 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements-train.txt
 
-python3 src/train_gru_policy.py --device auto \
+python3 -m ipd train gru --device auto \
     --fields-per-dist 12 --dagger-fields-per-dist 6 \
     --n 60 --epochs 40 --hidden 32 --layers 1
 ```
@@ -153,20 +152,20 @@ python3 src/train_gru_policy.py --device auto \
 
 ```bash
 # 四分布
-python3 src/benchmark_neural_policy.py --arch gru --fields 20 --workers 20
+python3 -m ipd benchmark --arch gru --fields 20 --workers 20
 
 # 盲测
-python3 src/blind_test_neural.py --arch gru --fields 10 --workers 12
+python3 -m ipd blind --arch gru --fields 10 --workers 12
 
 # 也可以把 GRU 加进原版脚本
-python3 src/final_benchmark.py --neural --neural-arch gru --fields 20
-python3 src/blind_test.py --neural --neural-arch gru --fields 10
+python3 -m ipd benchmark --candidates base --neural --neural-arch gru --fields 20
+python3 -m ipd blind --candidates classic --neural --neural-arch gru --fields 10
 ```
 
 ### 4.4 C++ 推理
 
 ```bash
-python3 src/export_gru_cpp.py
+python3 -m ipd export --arch gru
 g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 ./gru_demo
 ```
@@ -194,12 +193,12 @@ C++ 与 Python 版做过 60 组随机历史的逐步概率对齐，最大差异�
 
 | 文件 | 内容 |
 |---|---|
-| `src/train_gru_policy.py` | GPU/NPU 训练（GRU + DAgger） |
-| `src/gru_policy.py` | 纯 Python 推理 |
+| `ipd/training/gru.py` | GPU/NPU 训练（GRU + DAgger） |
+| `ipd/policies/gru.py` | 纯 Python 推理 |
 | `cpp/gru_policy.cpp` | C++17 推理（含 demo） |
 | `weights/gru_policy_weights.json` | 训练好的权重（约 395 KB） |
 | `cpp/gru_policy_weights.hpp` | C++ 权重（约 192 KB） |
-| `src/export_gru_cpp.py` | 权重 JSON → C++ 头文件 |
+| `ipd/tools/export_cpp.py` | 权重 JSON → C++ 头文件 |
 | `results/gru_benchmark.json` | 四分布结果 |
 | `results/blind_gru_results.json` | 盲测结果 |
 | `results/gru_training_history.json` | 训练/验证曲线 |

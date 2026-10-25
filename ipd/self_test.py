@@ -25,8 +25,10 @@ def _play(policy, opponent_factory, rounds: int = 100):
     return mine, score
 
 
-def run(candidate: str, rounds: int = 100) -> dict:
-    spec = candidate_specs([candidate])[0]
+def run(candidate: str, rounds: int = 100, weights: str | None = None,
+        config: str | None = None, mode: str = "sample") -> dict:
+    spec = candidate_specs([candidate], weights=weights, config=config,
+                           mode=mode)[0]
     policy = spec.build()
     mine_tft, score_tft = _play(policy, TFT, rounds)
     mine_grim, score_grim = _play(policy, Grim, rounds)
@@ -51,6 +53,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--candidates", default="core",
                     help="comma-separated names or core|base|suite|learned|all")
     ap.add_argument("--rounds", type=int, default=100)
+    ap.add_argument("--weights", default=None)
+    ap.add_argument("--config", default=None)
+    ap.add_argument("--mode", default="sample", choices=("sample", "argmax"))
     args = ap.parse_args(argv)
 
     from .policies.registry import resolve_names
@@ -59,7 +64,8 @@ def main(argv: Sequence[str] | None = None) -> int:
           f"{'vs TFT':>8}{'vs Grim':>9}{'ok':>5}")
     failed = False
     for name in names:
-        row = run(name, args.rounds)
+        row = run(name, args.rounds, weights=args.weights,
+                  config=args.config, mode=args.mode)
         failed |= not row["ok"]
         print(f"{row['name']:20}{row['first']:6d}{row['last']:6d}"
               f"{row['defections_vs_tft']:10d}{row['score_vs_tft']:8d}"

@@ -1,95 +1,87 @@
 # 100 天囚徒困境策略
 
 > 项目总览与快速开始见根目录 [README.md](../README.md)。
-> 规范 Python 源码位于 `ipd/`，C++ 实现位于 `cpp/`。下文列出的 `src/*.py`
-> 是兼容入口，实际实现已迁移到对应 `ipd.*` 模块；完整对照见
+> 规范 Python 源码位于 `ipd/`，C++ 实现位于 `cpp/`。分层与接口见
 > [STRUCTURE.md](STRUCTURE.md)。
 
 ## 文件
 
-- `src/paths.py`：统一解析 `configs/`、`weights/`、`results/`、`cpp/` 路径。
-- `src/ipd_strategy.py`：稳健版最终策略，类 `Machine`；第 1 天合作，避免触发 Grim。
+- `ipd/paths.py`：统一解析 `configs/`、`weights/`、`results/`、`cpp/` 路径。
+- `ipd/core/machine.py`：稳健版最终策略，类 `Machine`；第 1 天合作，避免触发 Grim。
 - `cpp/ipd_strategy.cpp`：稳健版的 C++ 实现。
-- `src/ipd_early.py`：早期探测/剥削版 `EarlyProbeMachine`；第 1 天背叛。
-- `src/ipd_harvest.py`：末日收割反制版 `HarvestMachine`；默认第 45 天开始探测。
-- `src/ipd_ema.py`：EMA + 末段动态阈值版本。
-- `src/ipd_ema_forgive.py`：EMA 动态原谅概率 + 永久交替检测实验版。
-- `src/ipd_bayes.py`：无额外探测的贝叶斯类型推断版。
-- `src/ipd_sim.py`：计分、对局和常用基线策略。
-- `src/ipd_field.py`：38 类基础对手和实验用变体。
-- `src/ipd_extended.py`：85 类对手、9 种群先验、Dirichlet 随机配比采样器。
-- `src/run_experiments.py`：38 类基础对手的快速对比。
-- `src/run_large_experiments.py`：85 类对手、500 个随机赛场的实验。
-- `src/search_common.py`：P0 多进程批量评估器。
-- `src/p1_parameter_search.py`：P1 参数搜索与留出验证。
-- `src/p2_gp_search.py`：P2 遗传规划决策树搜索（均值适应度）。
-- `src/p2_gp_robust.py`：P2b 鲁棒多目标 GP。
-- `src/p2_fsm_gp.py`：P2c 有状态 FSM GP，可用 `--max-states` 解除状态上限。
-- `src/p2_skeleton_search.py`：P2e 参数化 GapStart 骨架搜索。
-- `src/run_grim_experiment.py`：固定高 Grim 比例的对比。
-- `src/p1_grim_search.py`：高 Grim 训练集上的参数搜索。
-- `src/run_simple_experiment.py`：简单决策树对手库实验。
-- `src/train_wide.py`：宽模型库、细参数、分布训练。
-- `src/train_multiobj.py`：Final/Harvest/Gap/Responsive3/BayesPlus 多目标训练。
-- `src/train_joint_final_resp.py`：Final + Responsive3 联合训练。
-- `src/train_bayes_priors.py`：BayesPlus 模型先验参数化训练。
-- `src/triple_hybrid.py`：Final + Responsive3 + BayesPlus 多数投票融合。
-- `src/train_neural_policy.py`：GPU/NPU 训练的 MLP 神经策略（PyTorch + DAgger）。
-- `src/neural_policy.py`：MLP 策略的纯 Python 推理实现（无需 PyTorch）。
+- `ipd/core/early.py`：早期探测/剥削版 `EarlyProbeMachine`；第 1 天背叛。
+- `ipd/core/harvest.py`：末日收割反制版 `HarvestMachine`；默认第 45 天开始探测。
+- `ipd/core/ema.py`：EMA + 末段动态阈值版本。
+- `ipd/core/ema_forgive.py`：EMA 动态原谅概率 + 永久交替检测实验版。
+- `ipd/core/bayes.py`：无额外探测的贝叶斯类型推断版。
+- `ipd/core/simulator.py`：计分、对局和常用基线策略。
+- `ipd/core/opponents.py`：38 类基础对手和实验用变体。
+- `ipd/core/opponents_extended.py`：85 类对手、9 种群先验、Dirichlet 随机配比采样器。
+- `ipd/training/search/common.py`：P0 多进程批量评估器。
+- `ipd/training/search/p1_parameter.py`：P1 参数搜索与留出验证。
+- `ipd/training/search/p2_gp.py`：P2 遗传规划决策树搜索（均值适应度）。
+- `ipd/training/search/p2_robust.py`：P2b 鲁棒多目标 GP。
+- `ipd/training/search/p2_fsm.py`：P2c 有状态 FSM GP，可用 `--max-states` 解除状态上限。
+- `ipd/training/search/p2_skeleton.py`：P2e 参数化 GapStart 骨架搜索。
+- `ipd/training/search/p1_grim.py`：高 Grim 训练集上的参数搜索。
+- `ipd/training/search/wide.py`：宽模型库、细参数、分布训练。
+- `ipd/training/search/multiobj.py`：Final/Harvest/Gap/Responsive3/BayesPlus 多目标训练。
+- `ipd/training/search/joint.py`：Final + Responsive3 联合训练。
+- `ipd/training/search/bayes_priors.py`：BayesPlus 模型先验参数化训练。
+- `ipd/policies/rules.py`：Final + Responsive3 + BayesPlus 多数投票融合。
+- `ipd/training/neural.py`：GPU/NPU 训练的 MLP 神经策略（PyTorch + DAgger）。
+- `ipd/policies/neural.py`：MLP 策略的纯 Python 推理实现（无需 PyTorch）。
 - `cpp/neural_policy.cpp`：MLP 策略的 C++17 推理实现（含 demo）。
-- `src/train_gru_policy.py`：GPU/NPU 训练的 GRU-Net 策略。
-- `src/gru_policy.py`：GRU-Net 的纯 Python 推理实现。
+- `ipd/training/gru.py`：GPU/NPU 训练的 GRU-Net 策略。
+- `ipd/policies/gru.py`：GRU-Net 的纯 Python 推理实现。
 - `cpp/gru_policy.cpp`：GRU-Net 的 C++17 推理实现（含 demo）。
-- `src/export_neural_cpp.py` / `src/export_gru_cpp.py`：权重 JSON → C++ 头文件。
+- `ipd/tools/export_cpp.py`：权重 JSON → C++ 头文件。
 - `cpp/neural_policy_weights.hpp` / `cpp/gru_policy_weights.hpp`：生成的 C++ 权重。
-- `src/adversarial_policy.py`：在 MLP/GRU/RL 之上的约束剥削 wrapper。
-- `src/train_adversarial_policy.py`：四分布不掉分约束下的对抗调参。
+- `ipd/policies/adversarial.py`：在 MLP/GRU/RL 之上的约束剥削 wrapper。
+- `ipd/training/adversarial.py`：四分布不掉分约束下的对抗调参。
 - `configs/adversarial_policy_config*.json`：MLP 保守/激进剥削配置。
 - `configs/adversarial_gru_policy_config*.json`：GRU 保守/激进剥削配置。
 - `configs/adversarial_rl_policy_config*.json`：RL 保守/激进剥削配置。
-- `src/train_rl_policy.py`：完整 PPO 强化学习训练（奖励驱动，24 worker rollout）。
-- `src/rl_policy.py`：RL actor-critic 的纯 Python 推理与部署导出。
+- `ipd/training/rl.py`：完整 PPO 强化学习训练（奖励驱动，24 worker rollout）。
+- `ipd/policies/rl.py`：RL actor-critic 的纯 Python 推理与部署导出。
 - `cpp/rl_policy_weights.hpp`：RL 部署权重的 C++ 头文件。
-- `src/benchmark_neural_policy.py`：神经/RL/对抗策略与现有策略的四分布统一对比。
-- `src/blind_test_neural.py`：包含 MLP/GRU/RL/对抗策略的 300 人盲测排名。
+- `ipd/evaluation/benchmark.py`：规则/神经/RL/对抗策略的四分布统一对比。
+- `ipd/evaluation/blind.py`：规则/神经/RL/对抗策略的 300 人盲测排名。
 - `docs/NEURAL_POLICY.md`：MLP 策略的方法、训练、接口、结果与风险。
 - `docs/GRU_POLICY.md`：GRU-Net 的方法、训练、接口、结果与风险。
 - `docs/RL_POLICY.md`：完整 PPO 强化学习的方法、训练、结果与风险。
 - `docs/ADVERSARIAL_POLICY.md`：对抗性剥削规则、调参、结果与风险。
-- `src/blind_test.py`：完全未参与训练的 300 人盲测。
-- `src/final_benchmark.py`：Final/Resp3/BayesPlus/联合策略的统一对比。
 - `HANDOVER.md`：交接文档（推荐方案、参数、文件、风险、检查清单）。
 - `docs/FINAL_COMPARISON.md`：各测试集完整对照表。
-- `src/opponent_plus.py`：额外 67 类复杂/细粒度对手。
-- `src/run_suite_benchmark.py`：9 个测试集的统一对比。
+- `ipd/core/opponents_plus.py`：额外 67 类复杂/细粒度对手。
+- `ipd/evaluation/suite.py`：9 个测试集的统一对比。
 - `docs/SUITE_RESULTS.md`：新测试集结果。
 - `cpp/bayesplus_responsive3.cpp`：BayesPlus / Responsive3 的无依赖 C++17 实现。
 - `docs/BAYES_RESPONSIVE_FLOW.md`：两者的 Mermaid 流程图和参数说明。
 - `docs/ADVANCED_RESULTS.md`：P0/P1/P2 的完整结果。
-- `tests/test_smoke.py`：目录结构、配置解析和策略接口的冒烟测试。
+- `tests/`：目录、核心、策略、评估、训练分层测试。
+- 早期 `run_*` 研究实验脚本已移除；历史结果仍保存在 `results/` 和 `docs/`。
 
 ## 运行
 
 ```bash
-python3 src/ipd_strategy.py
-python3 src/ipd_early.py
-python3 src/run_large_experiments.py --fields 500 --rank-fields 120 --seed 2026
+python3 -m ipd self-test --candidates core
 g++ -std=c++17 -O2 -DIPD_STRATEGY_DEMO cpp/ipd_strategy.cpp -o ipd_demo
 ./ipd_demo
 
 # 神经策略：训练需要 PyTorch，推理不需要
 python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements-train.txt
-python3 src/train_neural_policy.py --device auto
-python3 src/train_gru_policy.py --device auto
-python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
-python3 src/benchmark_neural_policy.py --fields 20 --workers 20
-python3 src/benchmark_neural_policy.py --arch gru --fields 20 --workers 20
-python3 src/benchmark_neural_policy.py --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
-python3 src/blind_test_neural.py --fields 10 --workers 12
-python3 src/blind_test_neural.py --arch gru --fields 10 --workers 12
-python3 src/blind_test_neural.py --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
-python3 src/export_neural_cpp.py
-python3 src/export_gru_cpp.py
+python3 -m ipd train neural --device auto
+python3 -m ipd train gru --device auto
+python3 -m ipd train adversarial --arch mlp --seed 20261026
+python3 -m ipd benchmark --fields 20 --workers 20
+python3 -m ipd benchmark --arch gru --fields 20 --workers 20
+python3 -m ipd benchmark --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 -m ipd blind --fields 10 --workers 12
+python3 -m ipd blind --arch gru --fields 10 --workers 12
+python3 -m ipd blind --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 -m ipd export --arch mlp
+python3 -m ipd export --arch gru
 g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 ./neural_demo
@@ -150,7 +142,7 @@ g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 | AllC | 514.57 | 521.50 | 444.59 | 564.68 | 402.12 |
 | AllD | 351.38 | 341.66 | 281.28 | 451.33 | 217.84 |
 
-注：表中 `EarlyProbe` 与 `src/ipd_early.py` 的 `EarlyProbeMachine` 逻辑相同，只是随机种子不同；对均值影响可忽略。
+注：表中 `EarlyProbe` 与 `ipd/core/early.py` 的 `EarlyProbeMachine` 逻辑相同，只是随机种子不同；对均值影响可忽略。
 
 一般混合赛场中 `EarlyProbe` 均值最高，但方差也最大。是否使用它，取决于 Grim 的比例。
 
@@ -201,7 +193,7 @@ g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 
 ## 单纯 EMA + 终局动态阈值的效果
 
-`src/ipd_ema.py` 实现了只依赖统计反应、不做提前探测的版本：
+`ipd/core/ema.py` 实现了只依赖统计反应、不做提前探测的版本：
 
 - 对历史观测做半衰期 12 天的时间衰减；
 - 末段自动降低“非响应型”的背叛率阈值（0.18 → 0.14 → 0.10 → 0.07）；
@@ -231,7 +223,7 @@ g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 
 ## 更多因子 + 贝叶斯类型推断（不增加主动探测）
 
-`src/ipd_bayes.py` 维护一个对手模型库：
+`ipd/core/bayes.py` 维护一个对手模型库：
 
 - AllC / AllD / TFT / sTFT / Grim / TFT2；
 - GTFT 两档 / Joss 两档 / Random 三档；
@@ -259,7 +251,7 @@ g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 
 结论：更多因子和贝叶斯推断能更快识别“它已经切换”，把晚期收割的损失减少约 20–35 分；但它仍然无法在第一次 D 之前区分 AllC、TFT、Grim 和 LateD。要提前拿到那部分分数，只能引入基于先验的定时探测/收割。
 
-### 进一步增加因子：`src/ipd_bayes_plus.py`
+### 进一步增加因子：`ipd/core/bayes_plus.py`
 
 在贝叶斯模型库上继续加入：
 
@@ -287,7 +279,7 @@ g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 
 ## 回到原始混合样本（不强调末期收割）
 
-`src/run_original_experiment.py` 使用 85 类对手，但去掉 `late_harvest` 强先验，恢复原来的 8 种混合先验。300 个赛场结果：
+早期实验使用 85 类对手，但去掉 `late_harvest` 强先验，恢复原来的 8 种混合先验。300 个赛场结果：
 
 | 策略 | 每对手平均 | 中位数 | 5% 分位 | 95% 分位 | 最差 |
 |---|---:|---:|---:|---:|---:|

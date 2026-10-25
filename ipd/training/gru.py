@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Train a GRU-Net IPD policy on GPU/NPU.
 
-Same teacher and DAgger data pipeline as ``train_neural_policy.py``, but the
+Same teacher and DAgger data pipeline as ``ipd/training/neural.py``, but the
 policy is a recurrent network:
 
     85 features per day -> GRU(hidden) -> MLP head -> P(defect)

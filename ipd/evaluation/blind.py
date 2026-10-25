@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Unified blind ranking test on unseen 300-player fields.
 
-Replaces ``blind_test.py`` and ``blind_test_neural.py``.  The opponent-vs-
-opponent round robin is computed once per field and reused by every candidate,
-so adding candidates is cheap.
+The opponent-vs-opponent round robin is computed once per field and reused by
+every candidate, so adding candidates is cheap.
 """
 from __future__ import annotations
 

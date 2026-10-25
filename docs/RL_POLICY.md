@@ -1,6 +1,6 @@
 # 完整强化学习策略（PPO）
 
-本文记录 `src/train_rl_policy.py` 的完整 RL 训练流程。它不是行为克隆，也不是
+本文记录 `ipd/training/rl.py` 的完整 RL 训练流程。它不是行为克隆，也不是
 DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过 PPO 更新。
 
 当前结果：最终单独 RL（从零 + hard 微调）四分布 **553.33**、盲测
@@ -139,7 +139,7 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements-train.txt
 
-python3 src/train_rl_policy.py \
+python3 -m ipd train rl \
   --device auto --workers 24 \
   --iterations 100 --val-every 5 \
   --fields-per-dist 6 --n 80 \
@@ -156,7 +156,7 @@ python3 src/train_rl_policy.py \
 ### 4.2 hard 对手微调
 
 ```bash
-python3 src/train_rl_policy.py \
+python3 -m ipd train rl \
   --device auto --workers 24 \
   --iterations 60 --val-every 5 \
   --fields-per-dist 5 --n 80 \
@@ -182,7 +182,7 @@ python3 src/train_rl_policy.py \
 阶段 1：从随机策略训练 base（实际用 30 iter、CPU）：
 
 ```bash
-python3 src/train_rl_policy.py \
+python3 -m ipd train rl \
   --device cpu --workers 16 \
   --from-scratch --iterations 30 \
   --fields-per-dist 5 --n 80 \
@@ -197,7 +197,7 @@ python3 src/train_rl_policy.py \
 阶段 2：hard 对手微调（实际用 40 iter、CPU）：
 
 ```bash
-python3 src/train_rl_policy.py \
+python3 -m ipd train rl \
   --device cpu --workers 16 \
   --iterations 40 --val-every 5 \
   --fields-per-dist 5 --n 80 \
@@ -216,7 +216,7 @@ python3 src/train_rl_policy.py \
 ### 4.4 允许主动探测
 
 ```bash
-python3 src/train_rl_policy.py \
+python3 -m ipd train rl \
   --device auto --workers 24 \
   --allow-probe --iterations 100 \
   --dist-weights 1,1,1,2 \
@@ -263,7 +263,7 @@ python3 src/train_rl_policy.py \
 
 ### 5.3 Adv-RL：RL + 约束剥削
 
-Adv-RL 直接复用 `src/adversarial_policy.py` 的两条规则，base 使用
+Adv-RL 直接复用 `ipd/policies/adversarial.py` 的两条规则，base 使用
 `weights/rl_policy_weights_bc.json`（run4 BC 初始化 + hard 微调）：
 
 - 对手首次 D 在 `late_day` 之后，且下一回合继续 D → 永久 D；
@@ -351,17 +351,17 @@ BC 权重（只复用固定特征标准化）。两个阶段：
 部署 MLP 与 `NeuralPolicy` 完全兼容：
 
 ```bash
-python3 src/neural_policy.py weights/rl_policy_weights.json
+python3 -m ipd self-test --candidates rl --weights weights/rl_policy_weights.json
 ```
 
 生成 C++ 头文件：
 
 ```bash
-python3 src/export_neural_cpp.py \
+python3 -m ipd export --arch mlp \
   --weights weights/rl_policy_weights.json \
   --out cpp/rl_policy_weights.hpp
 
-python3 src/export_neural_cpp.py \
+python3 -m ipd export --arch mlp \
   --weights weights/rl_policy_weights_bc.json \
   --out cpp/rl_policy_weights_bc.hpp
 
@@ -397,25 +397,25 @@ g++ -std=c++17 -O2 \
 
 ```bash
 # 四分布，20 个赛场
-python3 src/benchmark_neural_policy.py --arch rl \
+python3 -m ipd benchmark --arch rl \
   --weights weights/rl_policy_checkpoint.json \
   --fields 20 --workers 20
 
 # 正式盲测
-python3 src/blind_test_neural.py --arch rl \
+python3 -m ipd blind --arch rl \
   --weights weights/rl_policy_checkpoint.json \
   --fields 10 --workers 12
 
 # argmax 对照
-python3 src/benchmark_neural_policy.py --arch rl \
+python3 -m ipd benchmark --arch rl \
   --weights weights/rl_policy_checkpoint.json \
   --neural-mode argmax --fields 20 --workers 20
 
 # Adv-RL 激进（config 的 base_weights 会解析到 rl_policy_weights_bc.json）
-python3 src/benchmark_neural_policy.py --arch adv-rl \
+python3 -m ipd benchmark --arch adv-rl \
   --config configs/adversarial_rl_policy_config_aggressive.json \
   --fields 20 --workers 20
-python3 src/blind_test_neural.py --arch adv-rl \
+python3 -m ipd blind --arch adv-rl \
   --config configs/adversarial_rl_policy_config_aggressive.json \
   --fields 10 --workers 12
 ```
@@ -453,11 +453,11 @@ python3 src/blind_test_neural.py --arch adv-rl \
 
 | 文件 | 内容 |
 |---|---|
-| `src/train_rl_policy.py` | PPO 训练、rollout、验证、导出 |
-| `src/rl_policy.py` | 纯 Python actor-critic 推理与部署格式导出 |
-| `src/neural_policy.py` | 部署 MLP 推理（支持 `safe` 字段） |
-| `src/benchmark_neural_policy.py` | 四分布 benchmark，`--arch rl` |
-| `src/blind_test_neural.py` | 盲测，`--arch rl` |
+| `ipd/training/rl.py` | PPO 训练、rollout、验证、导出 |
+| `ipd/policies/rl.py` | 纯 Python actor-critic 推理与部署格式导出 |
+| `ipd/policies/neural.py` | 部署 MLP 推理（支持 `safe` 字段） |
+| `ipd/evaluation/benchmark.py` | 四分布 benchmark，`--arch rl` |
+| `ipd/evaluation/blind.py` | 盲测，`--arch rl` |
 | `weights/rl_policy_checkpoint.json` | 最终（从零 + hard）actor-critic checkpoint |
 | `weights/rl_policy_weights.json` | 最终（从零 + hard）部署 MLP |
 | `weights/rl_policy_checkpoint_bc.json` / `weights/rl_policy_weights_bc.json` | run4 BC 初始化 + hard（Adv-RL base） |

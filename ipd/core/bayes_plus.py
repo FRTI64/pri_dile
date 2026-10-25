@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bayesian inference with an expanded model bank and richer features.
 
-Adds, relative to ipd_bayes.py:
+Adds, relative to ipd/core/bayes.py:
 - all possible onset days for a late harvester (LateD k=1..99);
 - TFT with 1/2/3-day delays and last-day defection;
 - several GTFT and NoisyTFT noise levels;

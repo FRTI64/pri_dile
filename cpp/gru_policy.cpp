@@ -1,8 +1,8 @@
 // Dependency-free C++17 inference for the GPU/NPU-trained GRU-Net IPD policy.
 //
-// Weights are generated from gru_policy_weights.json by export_gru_cpp.py:
+// Weights are generated from gru_policy_weights.json by ipd/tools/export_cpp.py:
 //
-//     python3 export_gru_cpp.py
+//     python3 -m ipd export --arch gru
 //     g++ -std=c++17 -O2 -DGRU_POLICY_DEMO gru_policy.cpp -o gru_demo
 //     ./gru_demo
 //

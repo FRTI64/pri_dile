@@ -1,6 +1,6 @@
 # 策略 vs 85 类对手的完整对阵结果
 
-生成方式：`src/run_matchup_experiment.py --reps 16`。
+生成方式：`python3 -m ipd matchup --candidates base --reps 16`。
 
 - 85 类对手全部参与，包括复杂类型：随机 memory-one、随机 reactive、随机 FSM、Responsive、响应式探测、Extort/GenZD 等。
 - 每类对手 16 个随机实例。
@@ -244,7 +244,7 @@
 
 ## 把我方聪明策略加入对手池
 
-`src/run_smart_opponents.py` 在原有 85 类对手之外加入：
+早期实验在原有 85 类对手之外加入：
 
 | 聪明对手 | 权重 |
 |---|---:|

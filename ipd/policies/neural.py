@@ -2,7 +2,7 @@
 """Dependency-free inference for the GPU/NPU-trained neural IPD policy.
 
 The policy is a small MLP over hand-built history features.  Training lives in
-``train_neural_policy.py`` and requires PyTorch; this file only uses the Python
+``ipd/training/neural.py`` and requires PyTorch; this file only uses the Python
 standard library, so the exported strategy can be dropped into a contest
 harness without installing a deep-learning stack.
 

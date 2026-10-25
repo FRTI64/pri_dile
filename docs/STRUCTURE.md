@@ -1,7 +1,7 @@
 # 项目结构与接口规范
 
-本项目按“核心模拟 → 参赛策略 → 评估 → 训练”分层。所有新代码只依赖
-`ipd` 包；`src/` 下保留同名旧模块作为兼容入口，保证历史命令仍可运行。
+本项目按“核心模拟 → 参赛策略 → 评估 → 训练”分层，所有代码都位于
+`ipd/` 包内，仓库根目录不再保留旧的平铺源码或兼容 shim。
 
 ## 1. 目录结构
 
@@ -47,10 +47,8 @@ ipd/
 │   ├── rl.py              PPO
 │   ├── adversarial.py     约束剥削规则搜索
 │   └── search/            multiobj / bayes / joint / wide / triple / p1 / p2...
-├── tools/                 部署工具（C++ 权重导出）
-└── experiments/           历史研究脚本（run_* 系列）
+└── tools/                 部署工具（C++ 权重导出）
 
-src/                       旧路径兼容层（import 仍可用，命令仍可执行）
 tests/                     分层测试
 configs/ weights/ results/ cpp/ docs/
 ```
@@ -60,7 +58,7 @@ configs/ weights/ results/ cpp/ docs/
 ```text
 core  ←  policies  ←  evaluation
                   ←  training
-tools / experiments 只依赖 public API
+tools 只依赖 public API
 ```
 
 必须遵守：
@@ -72,7 +70,6 @@ tools / experiments 只依赖 public API
   `policies.base.ensure_policy` 调用策略。
 - `training` 不定义参赛策略；它复用 `policies.rules` 与
   `evaluation.distributions`。
-- `src/*.py` 只能是兼容 shim，不再放实现。
 
 ## 3. 参赛策略接口
 
@@ -150,25 +147,7 @@ python3 -m ipd train wide --workers 24
 - 暴露 `main(argv=None)`，因此可以被 `ipd.training.cli` 调度；
 - 产物写 JSON，路径仍由 `ipd.paths` 解析。
 
-## 6. 兼容层
-
-旧命令仍然可用，例如：
-
-```bash
-python3 src/blind_test.py --fields 10
-python3 src/train_rl_policy.py --device auto
-python3 src/neural_policy.py weights/neural_policy_weights.json
-```
-
-这些文件现在只是 shim：
-
-- 库导入（`from neural_policy import NeuralPolicy`）转发到新模块；
-- 命令执行（`python3 src/blind_test.py ...`）转发到对应 `ipd` CLI，
-  并保留旧默认候选集合。
-
-迁移新代码时请优先使用 `ipd.*`，不要在 `src/` 中新增实现。
-
-## 7. 测试布局
+## 6. 测试布局
 
 ```text
 tests/test_layout.py       目录、路径、必需产物
@@ -176,7 +155,6 @@ tests/test_core.py         模拟器、对手库、分布
 tests/test_policies.py     PolicyAdapter、registry、边界、RL 导出一致性
 tests/test_evaluation.py   run_match、并行任务、三个评估 CLI
 tests/test_training.py     训练任务可导入、统一参数、JSON 工具
-tests/test_compat.py       旧 src 模块与规范对象一致性
 ```
 
 运行：

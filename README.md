@@ -17,15 +17,13 @@
 │   ├── evaluation/       四分布/盲测/9 测试集/逐类型对阵
 │   ├── training/         MLP/GRU/RL/对抗训练与规则参数搜索
 │   ├── tools/            C++ 权重导出
-│   ├── experiments/      历史研究脚本（run_*）
 │   └── cli.py            `python3 -m ipd ...` 统一入口
-├── src/                  旧路径兼容层（仅转发到 ipd，保留旧命令）
 ├── cpp/                  C++17 推理实现、共用特征头文件和生成的权重头文件
 ├── configs/              对抗策略配置（需与 weights/ 中的权重配对使用）
 ├── weights/              训练好的 MLP / GRU / RL 权重（JSON）
 ├── results/              基准测试、盲测、训练曲线和搜索记录（JSON / CSV）
 ├── docs/                 方法说明、结果表、流程图、结构规范
-├── tests/                分层测试（core/policies/evaluation/training/compat）
+├── tests/                分层测试（core/policies/evaluation/training）
 ├── HANDOVER.md           交接文档：推荐方案、参数、风险、检查清单
 └── requirements-train.txt
 ```
@@ -35,14 +33,13 @@
 - `core` 不依赖策略、评估或训练；
 - `policies` 是唯一放参赛策略的目录，统一实现 `reset()` + `act(t, mine, theirs)`；
 - `evaluation` 只通过候选注册表取策略，不再直接 import 具体策略类；
-- `training` 不定义参赛策略，训练入口统一为 `python3 -m ipd train <task>`；
-- `src/*.py` 只是兼容 shim，新代码请使用 `ipd.*`。
+- `training` 不定义参赛策略，训练入口统一为 `python3 -m ipd train <task>`。
 
-路径由 `ipd.paths` 解析，因此既可以在仓库根目录运行，也可以从其他目录运行：
+请在仓库根目录运行；路径由 `ipd.paths` 统一解析。如需从其他目录运行，先执行 `pip install -e .`：
 
 ```bash
 python3 -m ipd benchmark --candidates core --fields 8
-python3 src/blind_test.py --fields 10 --seed 20261025   # 旧命令仍可用
+python3 -m ipd blind --candidates core --fields 10 --seed 20261025
 ```
 
 ## 统一接口
@@ -77,7 +74,7 @@ python3 -m ipd benchmark --candidates final-tuned,my-policy
 ```bash
 python3 -m ipd test
 python3 -m ipd self-test --candidates all
-# 等价旧命令
+# 等价命令
 python3 -m unittest discover -s tests -v
 ```
 
@@ -94,10 +91,12 @@ python3 -m ipd matchup --candidates base --reps 16
 ### 神经策略推理（不需要 PyTorch）
 
 ```bash
-python3 -m ipd self-test --candidates neural,gru,rl,adv-mlp,adv-gru,adv-rl
-python3 src/neural_policy.py weights/neural_policy_weights.json
-python3 src/gru_policy.py weights/gru_policy_weights.json
-python3 src/adversarial_policy.py configs/adversarial_policy_config.json
+python3 -m ipd self-test --candidates neural \
+  --weights weights/neural_policy_weights.json
+python3 -m ipd self-test --candidates gru \
+  --weights weights/gru_policy_weights.json
+python3 -m ipd self-test --candidates adv-mlp \
+  --config configs/adversarial_policy_config.json
 ```
 
 ### 训练（需要 PyTorch）
@@ -132,8 +131,8 @@ python3 -m ipd blind --candidates core,adv-rl \
   --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
-旧命令（`python3 src/benchmark_neural_policy.py --arch rl ...` 等）仍然可用，
-并会转发到同一套评估实现。
+旧的平铺入口已移除；所有评估统一使用上面的
+`python3 -m ipd benchmark|blind|suite|matchup` 命令。
 
 ### C++ 推理
 
@@ -175,8 +174,6 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
   --out cpp/rl_policy_weights_bc.hpp  # Adv-RL base
 ```
 
-旧的 `src/export_neural_cpp.py` / `src/export_gru_cpp.py` 仍可用。
-
 ## 结果摘要
 
 统一四分布测试（20 个赛场 × 299 人）：
@@ -202,8 +199,8 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | 文档 | 内容 |
 |---|---|
 | [HANDOVER.md](HANDOVER.md) | 交接总览、推荐方案、参数、风险、检查清单 |
-| [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口、兼容层 |
-| [docs/IPD_README.md](docs/IPD_README.md) | 全部模块和实验脚本清单 |
+| [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口 |
+| [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |
 | [docs/RL_POLICY.md](docs/RL_POLICY.md) | 完整 PPO 强化学习策略：MDP、训练、结果、风险 |
@@ -217,7 +214,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 
 ## 注意事项
 
-- `src/ipd_strategy.py` / `cpp/ipd_strategy.cpp` 的默认参数是早期版本，不是 Final-tuned。
+- `ipd/core/machine.py` / `cpp/ipd_strategy.cpp` 的默认参数是早期版本，不是 Final-tuned。
 - GRU 是有状态策略：每场必须 `reset()`，同一时间步只调用一次 `act()`。
 - 所有候选策略都应在第 100 天选择背叛。
-- 对抗策略目前只有 Python 版；C++ 版需要在外层补充两条剥削规则。
+- Adv-MLP / Adv-GRU 目前只有 Python 版；Adv-RL 另有 `cpp/adversarial_rl.cpp`。

@@ -2,7 +2,7 @@
 """Early-probe / exploit strategy for fields full of naive late harvesters.
 
 This wraps the `ProbeBot` policy in a 1-based `move(day, mine, theirs)`
-interface so it can be used like `Machine` in `ipd_strategy.py`.
+interface so it can be used like `Machine` in `ipd/core/machine.py`.
 
 Warning: it defects on day 1 to test the opponent.  This is excellent against
 AllC, TFT2-like and "cooperate then harvest late" opponents, but it is very

@@ -3,7 +3,7 @@
 
 This is a black-box adversarial training step, not another supervised network
 fit.  It searches the parameters of the late-harvester / non-responsive
-exploitation rules in ``adversarial_policy.py`` against the opponent
+exploitation rules in ``ipd/policies/adversarial.py`` against the opponent
 distribution and keeps only candidates that do **not** lower the mean score of
 any of the four validation distributions.
 

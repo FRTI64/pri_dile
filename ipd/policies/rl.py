@@ -2,8 +2,8 @@
 """Dependency-free inference for the reward-trained (PPO) IPD policy.
 
 The policy uses the same 85 history features and MLP shape as
-``neural_policy.py``, but it was trained with a policy-gradient objective
-instead of behavioural cloning.  Training lives in ``train_rl_policy.py`` and
+``ipd/policies/neural.py``, but it was trained with a policy-gradient objective
+instead of behavioural cloning.  Training lives in ``ipd/training/rl.py`` and
 requires PyTorch; this module only uses the Python standard library so the
 exported policy can run in a contest harness without a deep-learning stack.
 

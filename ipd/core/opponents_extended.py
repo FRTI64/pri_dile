@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Extended opponent bank and mixture sampler for robustness tests.
 
-The original `ipd_field.py` has 38 hand-written archetypes.  This module adds
+The original `ipd/core/opponents.py` has 38 hand-written archetypes.  This module adds
 parameterised variants, random memory-one/reactive/FSM opponents, zero-
 determinant (extortion / generous) opponents, and a sampler that randomises
 both the type weights and the number of copies of each type.

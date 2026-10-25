@@ -104,7 +104,7 @@ pD = P(对手 D | 我上回合 D)
 
 ## 4. 约束对抗调参
 
-`src/train_adversarial_policy.py` 是黑盒对抗训练/调参，不是再训练网络权重：
+`ipd/training/adversarial.py` 是黑盒对抗训练/调参，不是再训练网络权重：
 
 1. 固定 base 神经策略，在搜索赛场上评估四分布；
 2. 随机采样剥削参数 `(gap, min_c, min_d, late_day, repair)`；
@@ -113,8 +113,8 @@ pD = P(对手 D | 我上回合 D)
 5. 输出最佳配置。
 
 ```bash
-python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
-python3 src/train_adversarial_policy.py --arch gru --seed 20261026
+python3 -m ipd train adversarial --arch mlp --seed 20261026
+python3 -m ipd train adversarial --arch gru --seed 20261026
 ```
 
 搜索空间包含：
@@ -169,11 +169,10 @@ repair    : True / False
 
 ### 6.1 Python
 
-> 源码在 `src/`。在仓库根目录使用以下片段时，先设置 `PYTHONPATH=src`
-> （或先 `cd src`）。
+> 源码在 `ipd/`。在仓库根目录直接运行，或先执行 `pip install -e .`。
 
 ```python
-from adversarial_policy import AdversarialPolicy
+from ipd.policies.adversarial import AdversarialPolicy
 
 p = AdversarialPolicy.from_config(
     "configs/adversarial_policy_config_aggressive.json",
@@ -187,24 +186,24 @@ action = p.move(day, mine, theirs)
 自检：
 
 ```bash
-python3 src/adversarial_policy.py configs/adversarial_policy_config.json
+python3 -m ipd self-test --candidates adv-mlp --config configs/adversarial_policy_config.json
 ```
 
 ### 6.2 测试
 
 ```bash
 # 四分布
-python3 src/benchmark_neural_policy.py --arch adversarial \
+python3 -m ipd benchmark --arch adversarial \
     --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
 
 # 盲测
-python3 src/blind_test_neural.py --arch adversarial \
+python3 -m ipd blind --arch adversarial \
     --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
 
 # 也可以接入原版脚本
-python3 src/final_benchmark.py --neural --neural-arch adversarial \
+python3 -m ipd benchmark --candidates base --neural --neural-arch adversarial \
     --neural-config configs/adversarial_policy_config_aggressive.json --fields 20
-python3 src/blind_test.py --neural --neural-arch adversarial \
+python3 -m ipd blind --candidates classic --neural --neural-arch adversarial \
     --neural-config configs/adversarial_policy_config_aggressive.json --fields 10
 ```
 
@@ -223,8 +222,8 @@ python3 src/blind_test.py --neural --neural-arch adversarial \
 
 | 文件 | 内容 |
 |---|---|
-| `src/adversarial_policy.py` | 剥削 wrapper，支持 MLP/GRU base |
-| `src/train_adversarial_policy.py` | 约束对抗调参 |
+| `ipd/policies/adversarial.py` | 剥削 wrapper，支持 MLP/GRU base |
+| `ipd/training/adversarial.py` | 约束对抗调参 |
 | `configs/adversarial_policy_config*.json` | MLP 配置 |
 | `configs/adversarial_gru_policy_config*.json` | GRU 配置 |
 | `results/adversarial_search_results.json` | 约束对抗调参的搜索/验证记录 |

@@ -14,7 +14,7 @@ import ipd.paths as paths
 
 class LayoutTests(unittest.TestCase):
     def test_top_level_directories(self):
-        for name in ("ipd", "src", "cpp", "configs", "weights", "results",
+        for name in ("ipd", "cpp", "configs", "weights", "results",
                      "docs", "tests"):
             self.assertTrue((paths.ROOT / name).is_dir(), name)
         self.assertEqual(paths.ROOT, ROOT)
