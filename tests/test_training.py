@@ -34,6 +34,18 @@ class TrainingInterfaceTests(unittest.TestCase):
     def test_unknown_task(self):
         self.assertEqual(training_main(["does-not-exist"]), 2)
 
+    def test_adversarial_supports_rl_base(self):
+        from ipd.training.adversarial import make_base
+
+        deploy = make_base(
+            "rl", str(ROOT / "weights" / "rl_policy_weights_bc.json"),
+            seed=1, mode="sample")
+        self.assertTrue(callable(getattr(deploy, "act", None)))
+        checkpoint = make_base(
+            "rl", str(ROOT / "weights" / "rl_policy_checkpoint_bc.json"),
+            seed=1, mode="sample")
+        self.assertTrue(callable(getattr(checkpoint, "act", None)))
+
     def test_common_json_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "nested" / "data.json"

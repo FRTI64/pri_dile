@@ -1,0 +1,39 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "rl",
+  "base_weights": "retrain_20261025/rl_policy_weights_bc.json",
+  "gap": 0.05,
+  "min_c": 12,
+  "min_d": 2,
+  "late_day": 50,
+  "repair": false,
+  "meta": {
+    "method": "constrained black-box adversarial tuning",
+    "constraint": "validation mean may not decrease in any distribution",
+    "seed": 20261026,
+    "search_fields": 4,
+    "search_n": 100,
+    "val_fields": 12,
+    "val_n": 299,
+    "base_scores": {
+      "original": 563.2845596432553,
+      "late": 544.2867892976589,
+      "grim30": 550.3068561872909,
+      "wide": 556.5312151616499
+    },
+    "selected_scores": {
+      "original": 565.75,
+      "late": 549.1134336677815,
+      "grim30": 553.2806577480491,
+      "wide": 560.1741917502787
+    },
+    "selected_delta": {
+      "original": 2.4654403567446934,
+      "late": 4.826644370122608,
+      "grim30": 2.9738015607581474,
+      "wide": 3.6429765886288124
+    },
+    "candidates": 48,
+    "source_weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json"
+  }
+}

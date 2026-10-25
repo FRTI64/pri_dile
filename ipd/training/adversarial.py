@@ -19,6 +19,8 @@ Example::
 
     python3 -m ipd train adversarial --arch mlp --seed 20261026
     python3 -m ipd train adversarial --arch gru --weights weights/gru_policy_weights.json
+    python3 -m ipd train adversarial --arch rl \
+        --weights weights/rl_policy_weights_bc.json
 """
 from __future__ import annotations
 
@@ -37,6 +39,7 @@ from ipd.paths import config_path, result_path, weights_path
 
 import argparse
 import json
+import os
 import random
 import statistics
 from concurrent.futures import ProcessPoolExecutor
@@ -51,6 +54,13 @@ def make_base(arch: str, weights: str, seed: int, mode: str):
     if arch == "gru":
         from ipd.policies.gru import GRUPolicy
         return GRUPolicy(weights, seed=seed, mode=mode)
+    if arch == "rl":
+        from ipd.policies.neural import NeuralPolicy
+        from ipd.policies.rl import RLPolicy
+        with open(weights, encoding="utf-8") as fh:
+            fmt = json.load(fh).get("format")
+        cls = NeuralPolicy if fmt == "ipd-neural-policy-v1" else RLPolicy
+        return cls(weights, seed=seed, mode=mode)
     from ipd.policies.neural import NeuralPolicy
     return NeuralPolicy(weights, seed=seed, mode=mode)
 
@@ -141,7 +151,7 @@ def deltas(scores: dict[str, float], base: dict[str, float]):
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(
         description="Constrained adversarial tuning of exploitation rules.")
-    ap.add_argument("--arch", default="mlp", choices=("mlp", "gru"))
+    ap.add_argument("--arch", default="mlp", choices=("mlp", "gru", "rl"))
     ap.add_argument("--weights", default=None)
     ap.add_argument("--mode", default="sample", choices=("sample", "argmax"))
     ap.add_argument("--candidates", type=int, default=48)
@@ -159,12 +169,20 @@ def main(argv=None) -> None:
     args = ap.parse_args(argv)
 
     if args.weights is None:
-        args.weights = (weights_path("gru_policy_weights.json") if args.arch == "gru"
-                        else weights_path("neural_policy_weights.json"))
+        default_weights = {
+            "gru": "gru_policy_weights.json",
+            "rl": "rl_policy_weights_bc.json",
+        }.get(args.arch, "neural_policy_weights.json")
+        args.weights = weights_path(default_weights)
+    # Worker processes may not inherit the caller's current directory, so pass
+    # an absolute pathspec into ProcessPoolExecutor tasks.
+    args.weights = os.path.abspath(args.weights)
     if args.out is None:
-        args.out = (config_path("adversarial_gru_policy_tuned_config.json")
-                    if args.arch == "gru"
-                    else config_path("adversarial_policy_tuned_config.json"))
+        default_config = {
+            "gru": "adversarial_gru_policy_tuned_config.json",
+            "rl": "adversarial_rl_policy_tuned_config.json",
+        }.get(args.arch, "adversarial_policy_tuned_config.json")
+        args.out = config_path(default_config)
 
     rng = random.Random(args.seed)
     search_seeds = {d: [rng.randrange(1 << 30)

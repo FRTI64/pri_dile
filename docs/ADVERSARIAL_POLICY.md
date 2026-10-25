@@ -115,6 +115,9 @@ pD = P(对手 D | 我上回合 D)
 ```bash
 python3 -m ipd train adversarial --arch mlp --seed 20261026
 python3 -m ipd train adversarial --arch gru --seed 20261026
+# RL base (Adv-RL): deployable MLP export or actor-critic checkpoint
+python3 -m ipd train adversarial --arch rl \
+    --weights weights/rl_policy_weights_bc.json --seed 20261026
 ```
 
 搜索空间包含：

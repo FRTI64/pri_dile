@@ -1,0 +1,39 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "mlp",
+  "base_weights": "retrain_20261025/neural_policy_weights.json",
+  "gap": 0.05,
+  "min_c": 12,
+  "min_d": 2,
+  "late_day": 50,
+  "repair": false,
+  "meta": {
+    "method": "constrained black-box adversarial tuning",
+    "constraint": "validation mean may not decrease in any distribution",
+    "seed": 20261026,
+    "search_fields": 4,
+    "search_n": 100,
+    "val_fields": 12,
+    "val_n": 299,
+    "base_scores": {
+      "original": 559.0125418060201,
+      "late": 543.0370680044593,
+      "grim30": 550.0128205128204,
+      "wide": 551.9916387959867
+    },
+    "selected_scores": {
+      "original": 562.5858416945374,
+      "late": 548.2012263099219,
+      "grim30": 553.2115384615385,
+      "wide": 557.5510033444816
+    },
+    "selected_delta": {
+      "original": 3.57329988851734,
+      "late": 5.164158305462593,
+      "grim30": 3.198717948718013,
+      "wide": 5.559364548494955
+    },
+    "candidates": 48,
+    "source_weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json"
+  }
+}

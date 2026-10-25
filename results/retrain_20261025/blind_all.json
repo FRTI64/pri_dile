@@ -1,0 +1,457 @@
+{
+  "schema": "ipd-retrain-blind-v1",
+  "created": "2026-10-25T23:46:10",
+  "seconds": 58.55,
+  "seed": 20261025,
+  "fields": 10,
+  "n": 299,
+  "candidates": [
+    {
+      "kind": "neural",
+      "name": "Neural-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "gru",
+      "name": "GRU-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/gru_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-mlp",
+      "name": "Adv-MLP-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/neural_policy_weights.json",
+        "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_policy_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-gru",
+      "name": "Adv-GRU-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/gru_policy_weights.json",
+        "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_gru_policy_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "RL-final-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "RL-BC-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "RL-scratch-base-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_scratch_base.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "RL-stage1-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_stage1.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json",
+        "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL-conservative-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights_bc.json",
+        "config": "/home/frti64/pri_dile/configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL-final-retrain",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/retrain_20261025/rl_policy_weights.json",
+        "config": "/home/frti64/pri_dile/configs/retrain_20261025/adversarial_rl_policy_aggressive.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "results": {
+    "Neural-retrain": {
+      "kind": "neural",
+      "score": 554.0010033444817,
+      "mean_rank": 8.3,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 27,
+      "scores": [
+        554.7290969899666,
+        545.180602006689,
+        552.4849498327759,
+        545.9030100334448,
+        533.5250836120401,
+        571.1505016722408,
+        571.9565217391304,
+        553.6622073578595,
+        567.3645484949833,
+        544.0535117056857
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        27,
+        1,
+        25
+      ]
+    },
+    "GRU-retrain": {
+      "kind": "gru",
+      "score": 555.1943143812709,
+      "mean_rank": 8.3,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 27,
+      "scores": [
+        559.4080267558528,
+        552.5117056856187,
+        550.4046822742475,
+        544.6622073578595,
+        533.9966555183946,
+        573.0033444816054,
+        570.7157190635452,
+        553.2909698996656,
+        566.5016722408027,
+        547.448160535117
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        27,
+        1,
+        25
+      ]
+    },
+    "Adv-MLP-retrain": {
+      "kind": "adv-mlp",
+      "score": 558.5668896321071,
+      "mean_rank": 8.2,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 26,
+      "scores": [
+        562.8060200668897,
+        547.3177257525084,
+        556.190635451505,
+        548.8060200668897,
+        538.85618729097,
+        575.113712374582,
+        575.6086956521739,
+        559.123745819398,
+        571.2173913043479,
+        550.628762541806
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        26,
+        1,
+        25
+      ]
+    },
+    "Adv-GRU-retrain": {
+      "kind": "adv-gru",
+      "score": 559.176923076923,
+      "mean_rank": 8.1,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 25,
+      "scores": [
+        560.9197324414715,
+        546.6321070234113,
+        558.6488294314381,
+        548.8394648829432,
+        538.190635451505,
+        574.9163879598663,
+        577.7257525083612,
+        559.2006688963211,
+        573.5351170568562,
+        553.1605351170568
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        25,
+        1,
+        25
+      ]
+    },
+    "RL-final-retrain": {
+      "kind": "rl",
+      "score": 562.2227424749165,
+      "mean_rank": 8.1,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 25,
+      "scores": [
+        566.0133779264214,
+        557.1571906354515,
+        559.3979933110368,
+        548.5785953177258,
+        543.5217391304348,
+        575.6521739130435,
+        583.8595317725752,
+        559.2207357859531,
+        573.9732441471572,
+        554.8528428093646
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        25,
+        1,
+        25
+      ]
+    },
+    "RL-BC-retrain": {
+      "kind": "rl",
+      "score": 558.9341137123745,
+      "mean_rank": 8.3,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 27,
+      "scores": [
+        558.5953177257525,
+        552.9364548494983,
+        558.2408026755853,
+        549.6254180602007,
+        539.2909698996656,
+        576.1070234113712,
+        578.5217391304348,
+        554.4080267558528,
+        573.9966555183946,
+        547.61872909699
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        27,
+        1,
+        25
+      ]
+    },
+    "RL-scratch-base-retrain": {
+      "kind": "rl",
+      "score": 559.1675585284281,
+      "mean_rank": 8.3,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 27,
+      "scores": [
+        565.4648829431438,
+        549.7959866220735,
+        560.819397993311,
+        547.0702341137123,
+        537.1036789297659,
+        577.6655518394649,
+        574.6722408026756,
+        554.7357859531772,
+        572.1036789297659,
+        552.2441471571906
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        27,
+        1,
+        25
+      ]
+    },
+    "RL-stage1-retrain": {
+      "kind": "rl",
+      "score": 557.947491638796,
+      "mean_rank": 8.3,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 27,
+      "scores": [
+        559.5351170568562,
+        552.9665551839465,
+        557.3311036789298,
+        547.5451505016722,
+        537.7591973244147,
+        573.2541806020067,
+        573.3444816053511,
+        555.2307692307693,
+        575.438127090301,
+        547.0702341137123
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        27,
+        1,
+        25
+      ]
+    },
+    "Adv-RL-retrain": {
+      "kind": "adv-rl",
+      "score": 561.4598662207358,
+      "mean_rank": 8.1,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 25,
+      "scores": [
+        561.1638795986622,
+        555.6688963210702,
+        558.5785953177258,
+        552.257525083612,
+        542.180602006689,
+        576.0936454849499,
+        581.0,
+        560.2675585284281,
+        574.5050167224081,
+        552.8829431438127
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        25,
+        1,
+        25
+      ]
+    },
+    "Adv-RL-conservative-retrain": {
+      "kind": "adv-rl",
+      "score": 560.5575250836121,
+      "mean_rank": 8.2,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 26,
+      "scores": [
+        562.9397993311037,
+        553.561872909699,
+        560.2107023411371,
+        547.6454849498327,
+        541.4347826086956,
+        575.38127090301,
+        579.4013377926422,
+        558.3779264214047,
+        575.8963210702341,
+        550.7257525083612
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        26,
+        1,
+        25
+      ]
+    },
+    "Adv-RL-final-retrain": {
+      "kind": "adv-rl",
+      "score": 560.671237458194,
+      "mean_rank": 8.1,
+      "rank1": 7,
+      "top10": 7,
+      "worst": 25,
+      "scores": [
+        563.8160535117057,
+        554.3210702341137,
+        560.7257525083612,
+        548.0735785953177,
+        543.4782608695652,
+        574.5317725752508,
+        582.5384615384615,
+        560.1605351170568,
+        571.3745819397993,
+        547.6923076923077
+      ],
+      "ranks": [
+        24,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        25,
+        1,
+        25
+      ]
+    }
+  }
+}
