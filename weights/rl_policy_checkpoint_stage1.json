@@ -15874,7 +15874,7 @@
     "center_rewards": false,
     "center_advantages": true,
     "safe": true,
-    "init_weights": "/home/frti64/std_associative_containers/weights/neural_policy_weights.json",
+    "init_weights": "/home/frti64/pri_dile/weights/neural_policy_weights.json",
     "feature_version": "ipd-neural-features-v1"
   }
 }
