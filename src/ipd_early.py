@@ -1,34 +1,28 @@
-#!/usr/bin/env python3
-"""Early-probe / exploit strategy for fields full of naive late harvesters.
+"""Backward-compatible entry point.
 
-This wraps the `ProbeBot` policy in a 1-based `move(day, mine, theirs)`
-interface so it can be used like `Machine` in `ipd_strategy.py`.
-
-Warning: it defects on day 1 to test the opponent.  This is excellent against
-AllC, TFT2-like and "cooperate then harvest late" opponents, but it is very
-bad against Grim/Mistrust-style permanent punishers.
+Canonical implementation: :mod:`ipd.core.early`.
 """
 from __future__ import annotations
 
-import random
+import runpy
+import sys
+import warnings
+from pathlib import Path
 
-from ipd_field import ProbeBot
+_ROOT = Path(__file__).resolve().parents[1]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+from ipd.core.early import *  # noqa: F401,F403
 
 
-class EarlyProbeMachine(ProbeBot):
-    name = "EarlyProbe"
-
-    def __init__(self, seed: int = 20261024, rng: random.Random | None = None):
-        super().__init__(rng=rng if rng is not None else random.Random(seed))
-
-    def move(self, day: int, mine: list[int], theirs: list[int]) -> int:
-        return super().act(day - 1, mine, theirs)
+def _run(argv=None) -> None:
+    warnings.filterwarnings(
+        "ignore", message=".*found in sys.modules.*", category=RuntimeWarning)
+    if argv is not None:
+        sys.argv = [sys.argv[0], *map(str, argv)]
+    runpy.run_module("ipd.core.early", run_name="__main__")
 
 
 if __name__ == "__main__":
-    from ipd_sim import AllC, AllD, Grim, TFT, play_match
-
-    for opponent in (AllC, AllD, Grim, TFT):
-        m = EarlyProbeMachine()
-        r = play_match(m, opponent())
-        print(opponent().name, r.score_a, r.score_b)
+    _run()

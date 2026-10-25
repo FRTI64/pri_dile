@@ -1,5 +1,5 @@
-# Optional: only needed by src/train_neural_policy.py, src/train_gru_policy.py
-# and src/train_rl_policy.py.
-# Inference (src/neural_policy.py / src/rl_policy.py / C++) has no third-party deps.
+# Optional: only needed by the learned-policy trainers:
+#   python3 -m ipd train neural|gru|rl
+# Inference (ipd.policies.neural / ipd.policies.rl / C++) has no third-party deps.
 # On Ascend NPU install the matching torch_npu adapter as well.
 torch>=2.7

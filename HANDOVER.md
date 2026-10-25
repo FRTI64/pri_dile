@@ -3,19 +3,29 @@
 ## 目录结构
 
 ```text
-src/         Python 源码（策略、对手库、训练、评估、C++ 导出）
+ipd/         规范 Python 包：core / policies / evaluation / training / tools
+src/         旧路径兼容 shim（保留历史命令与 import）
 cpp/         C++17 推理实现与生成的头文件
 configs/     对抗策略配置（与 weights/ 配对）
-weights/     训练好的 MLP/GRU 权重 JSON
+weights/     训练好的 MLP/GRU/RL 权重 JSON
 results/     基准、盲测、训练曲线、搜索记录（JSON/CSV）
-docs/        方法、结果与流程图文档
-tests/       结构与策略接口冒烟测试
+docs/        方法、结果、流程图与结构规范
+tests/       分层测试（core / policies / evaluation / training / compat）
 README.md    项目总览与快速开始
 ```
 
-所有命令默认在仓库根目录执行。需要读写项目文件的 Python 脚本通过 `src/paths.py`
-解析数据目录，因此从其他目录运行也能找到配置、权重和结果。若在自己的代码中
-`import` 这些模块，需要设置 `PYTHONPATH=src` 或先 `cd src`。
+分层与接口规范见 `docs/STRUCTURE.md`。新命令：
+
+```bash
+python3 -m ipd benchmark --candidates core --fields 20
+python3 -m ipd blind --candidates core --fields 10
+python3 -m ipd train rl --device auto
+python3 -m ipd self-test --candidates all
+```
+
+所有命令默认在仓库根目录执行。路径由 `ipd.paths` 解析，因此从其他目录运行也能
+找到配置、权重和结果。旧命令（`python3 src/train_rl_policy.py ...` 等）仍然可用；
+新代码请直接 `import ipd`，不需要设置 `PYTHONPATH=src`。
 
 ## 0. 本次新增工作摘要
 
@@ -601,7 +611,8 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 ### 快速自测
 
 ```bash
-python3 -m unittest discover -s tests -v
+python3 -m ipd test
+python3 -m ipd self-test --candidates all
 python3 src/ipd_strategy.py
 python3 src/ipd_early.py
 python3 src/blind_test.py --fields 10 --seed 20261025

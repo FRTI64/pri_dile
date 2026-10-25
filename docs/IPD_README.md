@@ -1,7 +1,9 @@
 # 100 天囚徒困境策略
 
 > 项目总览与快速开始见根目录 [README.md](../README.md)。
-> Python 源码位于 `src/`，C++ 实现位于 `cpp/`。
+> 规范 Python 源码位于 `ipd/`，C++ 实现位于 `cpp/`。下文列出的 `src/*.py`
+> 是兼容入口，实际实现已迁移到对应 `ipd.*` 模块；完整对照见
+> [STRUCTURE.md](STRUCTURE.md)。
 
 ## 文件
 
