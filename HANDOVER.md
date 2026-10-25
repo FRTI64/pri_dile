@@ -1,25 +1,41 @@
 # 100 天囚徒困境项目交接文档
 
+## 目录结构
+
+```text
+src/         Python 源码（策略、对手库、训练、评估、C++ 导出）
+cpp/         C++17 推理实现与生成的头文件
+configs/     对抗策略配置（与 weights/ 配对）
+weights/     训练好的 MLP/GRU 权重 JSON
+results/     基准、盲测、训练曲线、搜索记录（JSON/CSV）
+docs/        方法、结果与流程图文档
+tests/       结构与策略接口冒烟测试
+README.md    项目总览与快速开始
+```
+
+所有命令默认在仓库根目录执行。需要读写项目文件的 Python 脚本通过 `src/paths.py`
+解析数据目录，因此从其他目录运行也能找到配置、权重和结果。若在自己的代码中
+`import` 这些模块，需要设置 `PYTHONPATH=src` 或先 `cd src`。
+
 ## 0. 本次新增工作摘要
 
 本轮在原有规则策略之外，新增了三类神经/对抗策略，并补齐了 C++ 推理、测试和文档。
 
 | 工作 | 主要文件 | 四分布均值 | 盲测均分 / 排名 |
 |---|---|---:|---:|
-| MLP 神经策略（BC + DAgger） | `train_neural_policy.py` / `neural_policy.py` | 548.15 | 555.10 / 8.30 |
-| GRU-Net 版本 | `train_gru_policy.py` / `gru_policy.py` | 547.81 | 555.22 / 8.30 |
-| 约束对抗剥削（MLP 激进） | `adversarial_policy.py` / `adversarial_policy_config_aggressive.json` | **552.24** | **559.51 / 8.10** |
-| 约束对抗剥削（GRU 激进） | `adversarial_gru_policy_config_aggressive.json` | 551.69 | 559.05 / 8.10 |
+| MLP 神经策略（BC + DAgger） | `src/train_neural_policy.py` / `src/neural_policy.py` | 548.15 | 555.10 / 8.30 |
+| GRU-Net 版本 | `src/train_gru_policy.py` / `src/gru_policy.py` | 547.81 | 555.22 / 8.30 |
+| 约束对抗剥削（MLP 激进） | `src/adversarial_policy.py` / `configs/adversarial_policy_config_aggressive.json` | **552.24** | **559.51 / 8.10** |
+| 约束对抗剥削（GRU 激进） | `configs/adversarial_gru_policy_config_aggressive.json` | 551.69 | 559.05 / 8.10 |
 
 关键点：
 
 - 训练使用 PyTorch，自动选择 NPU → CUDA → MPS → CPU；推理不需要 PyTorch。
-- MLP/GRU 都提供纯 Python 和 C++17 推理；C++ 共用 `ipd_features.hpp`。
+- MLP/GRU 都提供纯 Python 和 C++17 推理；C++ 共用 `cpp/ipd_features.hpp`。
 - 对抗模块只做“对手先背叛之后”的事后剥削，不主动探测，因此不会触发 Grim。
 - 对抗版的约束是“四个验证分布均分不下降”，不是“每个对手类型都不下降”。
-  激进版在少量 wild 类型上可能掉几分，保守版更稳；详见 `ADVERSARIAL_POLICY.md`。
+  激进版在少量 wild 类型上可能掉几分，保守版更稳；详见 `docs/ADVERSARIAL_POLICY.md`。
 - 本轮所有测试都在 24 核 CPU + RTX 5090 Laptop 上完成；NPU 代码路径已实现但未实机验证。
-- `assoc_containers.cpp` 与本项目无关，未修改、未提交。
 
 复现入口：
 
@@ -27,14 +43,14 @@
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements-train.txt
 
-python3 train_neural_policy.py --device auto
-python3 train_gru_policy.py --device auto
-python3 train_adversarial_policy.py --arch mlp --seed 20261026
+python3 src/train_neural_policy.py --device auto
+python3 src/train_gru_policy.py --device auto
+python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
 
-python3 benchmark_neural_policy.py --arch adversarial \
-  --config adversarial_policy_config_aggressive.json --fields 20 --workers 20
-python3 blind_test_neural.py --arch adversarial \
-  --config adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 src/benchmark_neural_policy.py --arch adversarial \
+  --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 src/blind_test_neural.py --arch adversarial \
+  --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
 ---
@@ -64,12 +80,12 @@ python3 blind_test_neural.py --arch adversarial \
 - 如果只能提交纯规则/无权重：**Final-tuned** 或 **Triple-majority**；
 - 如果不希望三重策略复杂，但想要联合收益：用 **Final+Resp3**。
 
-> 神经/对抗版本的盲测来自新的 `blind_test_neural.py`；该脚本复用了对手循环赛，
-> 与旧 `blind_test.py` 的绝对分数不能直接混用。同一脚本内 Adv > Neural/GRU > Triple。
+> 神经/对抗版本的盲测来自新的 `src/blind_test_neural.py`；该脚本复用了对手循环赛，
+> 与旧 `src/blind_test.py` 的绝对分数不能直接混用。同一脚本内 Adv > Neural/GRU > Triple。
 > 对抗版本的约束是“四个分布均不下降”，不是“每个对手类型都不下降”。详见
-> `NEURAL_POLICY.md`、`GRU_POLICY.md`、`ADVERSARIAL_POLICY.md`。
+> `docs/NEURAL_POLICY.md`、`docs/GRU_POLICY.md`、`docs/ADVERSARIAL_POLICY.md`。
 
-不要直接使用 `ipd_strategy.py` 中的默认参数当作 Final-tuned；默认是早期版本。Final-tuned 的参数在下文和 JSON 中。
+不要直接使用 `src/ipd_strategy.py` 中的默认参数当作 Final-tuned；默认是早期版本。Final-tuned 的参数在下文和 JSON 中。
 
 ---
 
@@ -91,7 +107,7 @@ python3 blind_test_neural.py --arch adversarial \
 | Bayes-tuned | **550.19** | **546.23** | **554.16** | 526.24 | 544.21 |
 
 Adv 比 Neural/GRU 高约 3.5–4 分；Neural/GRU 与 Triple 同档。对抗版的约束是
-四个分布均不下降，逐类型风险见 `ADVERSARIAL_POLICY.md`。
+四个分布均不下降，逐类型风险见 `docs/ADVERSARIAL_POLICY.md`。
 
 ### 2.2 盲测（10 个未见过的 300 人赛场）
 
@@ -103,7 +119,7 @@ Adv 比 Neural/GRU 高约 3.5–4 分；Neural/GRU 与 Triple 同档。对抗版
 | Resp3-tuned | 547.84 | 11.40 | 4/10 | 7/10 |
 | Bayes-tuned | 527.67 | 64.40 | 0/10 | 0/10 |
 
-Neural/GRU/Adv 的盲测用 `blind_test_neural.py` 单独跑（复用对手循环赛、每个候选深拷贝同一赛场）：
+Neural/GRU/Adv 的盲测用 `src/blind_test_neural.py` 单独跑（复用对手循环赛、每个候选深拷贝同一赛场）：
 
 | 策略 | 均分 | 平均排名 | 第 1 名 | 前 10 | 最差 |
 |---|---:|---:|---:|---:|---:|
@@ -121,12 +137,12 @@ Neural/GRU/Adv 的盲测用 `blind_test_neural.py` 单独跑（复用对手循�
 
 完整结果：
 
-- `FINAL_COMPARISON.md`
-- `final_benchmark.json`
-- `SUITE_RESULTS.md`
-- `OPPONENT_PERFORMANCE.md`
-- `ADVANCED_RESULTS.md`
-- `NEURAL_POLICY.md` / `neural_benchmark.json` / `neural_blind_results.json`
+- `docs/FINAL_COMPARISON.md`
+- `results/final_benchmark.json`
+- `docs/SUITE_RESULTS.md`
+- `docs/OPPONENT_PERFORMANCE.md`
+- `docs/ADVANCED_RESULTS.md`
+- `docs/NEURAL_POLICY.md` / `results/neural_benchmark.json` / `results/neural_blind_results.json`
 
 ---
 
@@ -134,7 +150,7 @@ Neural/GRU/Adv 的盲测用 `blind_test_neural.py` 单独跑（复用对手循�
 
 ### 3.1 Final-tuned（推荐单策略）
 
-机制：`ipd_strategy.py` 中的 `Machine`，但使用以下参数：
+机制：`src/ipd_strategy.py` 中的 `Machine`，但使用以下参数：
 
 ```text
 P_UNPROVOKED = 0.2395699546614404
@@ -175,11 +191,11 @@ max_tests = 3
 cooldown = 14
 ```
 
-实现：`ipd_field.py` 的 `Responsive3`，通过 `train_multiobj.ParamResp` 设置参数。
+实现：`src/ipd_field.py` 的 `Responsive3`，通过 `train_multiobj.ParamResp` 设置参数。
 
 ### 3.3 BayesPlus-tuned
 
-使用 `ipd_bayes_plus.py` 的模型库，参数先验倍率：
+使用 `src/ipd_bayes_plus.py` 的模型库，参数先验倍率：
 
 ```text
 coop_scale = 1.8369823500713045
@@ -197,7 +213,7 @@ PUNITIVE_THRESHOLD = 0.7531347429866336
 
 ### 3.4 Triple-majority
 
-实现：`triple_hybrid.py`。
+实现：`src/triple_hybrid.py`。
 
 三个子策略：
 
@@ -231,9 +247,9 @@ PUNITIVE_THRESHOLD = 0.7531347429866336
 
 实现：
 
-- `train_neural_policy.py`：PyTorch 训练，自动选择 CUDA / NPU / MPS / CPU；
-- `neural_policy.py`：纯 Python 推理，类 `NeuralPolicy`；
-- `neural_policy_weights.json`：已训练好的权重（约 243 KB）。
+- `src/train_neural_policy.py`：PyTorch 训练，自动选择 CUDA / NPU / MPS / CPU；
+- `src/neural_policy.py`：纯 Python 推理，类 `NeuralPolicy`；
+- `weights/neural_policy_weights.json`：已训练好的权重（约 243 KB）。
 
 机制：
 
@@ -258,10 +274,10 @@ PUNITIVE_THRESHOLD = 0.7531347429866336
 
 实现：
 
-- `train_gru_policy.py`：PyTorch 训练，自动选择 CUDA / NPU / MPS / CPU；
-- `gru_policy.py`：纯 Python 推理，类 `GRUPolicy`；
-- `gru_policy.cpp` / `gru_policy_weights.hpp`：C++17 推理；
-- `gru_policy_weights.json`：已训练权重（约 395 KB）。
+- `src/train_gru_policy.py`：PyTorch 训练，自动选择 CUDA / NPU / MPS / CPU；
+- `src/gru_policy.py`：纯 Python 推理，类 `GRUPolicy`；
+- `cpp/gru_policy.cpp` / `cpp/gru_policy_weights.hpp`：C++17 推理；
+- `weights/gru_policy_weights.json`：已训练权重（约 395 KB）。
 
 机制：
 
@@ -287,10 +303,10 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 
 实现：
 
-- `adversarial_policy.py`：包装 MLP/GRU，加入两条事后剥削规则；
-- `train_adversarial_policy.py`：四分布不掉分约束下的黑盒对抗调参；
-- `adversarial_policy_config*.json`：MLP 保守/激进配置；
-- `adversarial_gru_policy_config*.json`：GRU 保守/激进配置。
+- `src/adversarial_policy.py`：包装 MLP/GRU，加入两条事后剥削规则；
+- `src/train_adversarial_policy.py`：四分布不掉分约束下的黑盒对抗调参；
+- `configs/adversarial_policy_config*.json`：MLP 保守/激进配置；
+- `configs/adversarial_gru_policy_config*.json`：GRU 保守/激进配置。
 
 两条规则：
 
@@ -311,7 +327,7 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 `MemOne-rand`、`Extort3`、`NoisyTFT.10/20` 等 wild 类型上可能掉几分；
 保守版（gap=0.1, late_day=50, repair=false）逐类型风险更小。
 
-详见 `ADVERSARIAL_POLICY.md`。
+详见 `docs/ADVERSARIAL_POLICY.md`。
 
 ---
 
@@ -321,72 +337,68 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 
 | 文件 | 内容 |
 |---|---|
-| `ipd_strategy.py` | Final 机制（默认参数不是 tuned） |
-| `ipd_strategy.cpp` | Final 的 C++ 版本（默认参数不是 tuned） |
-| `ipd_field.py` | 基础对手、Responsive3、GTFT 等 |
-| `ipd_extended.py` | 85 类扩展对手、采样器 |
-| `ipd_bayes.py` / `ipd_bayes_plus.py` | Bayes/BayesPlus |
-| `triple_hybrid.py` | Triple-majority |
-| `train_neural_policy.py` | GPU/NPU 神经策略训练（PyTorch + DAgger） |
+| `src/ipd_strategy.py` | Final 机制（默认参数不是 tuned） |
+| `cpp/ipd_strategy.cpp` | Final 的 C++ 版本（默认参数不是 tuned） |
+| `src/ipd_field.py` | 基础对手、Responsive3、GTFT 等 |
+| `src/ipd_extended.py` | 85 类扩展对手、采样器 |
+| `src/ipd_bayes.py` / `src/ipd_bayes_plus.py` | Bayes/BayesPlus |
+| `src/triple_hybrid.py` | Triple-majority |
+| `src/train_neural_policy.py` | GPU/NPU 神经策略训练（PyTorch + DAgger） |
 | `requirements-train.txt` | 神经策略训练依赖（仅 PyTorch） |
-| `neural_policy.py` | 神经策略纯 Python 推理（无需 PyTorch） |
-| `neural_policy.cpp` | MLP 策略 C++17 推理（无外部依赖） |
-| `ipd_features.hpp` | MLP/GRU 共用的 C++ 特征提取 |
-| `neural_policy_weights.json` | 已训练的 MLP 策略权重 |
-| `neural_policy_weights.hpp` | 自动生成的 C++ 权重 |
-| `export_neural_cpp.py` | MLP 权重 JSON → C++ 头文件 |
-| `train_gru_policy.py` | GRU-Net 训练（PyTorch + DAgger） |
-| `gru_policy.py` | GRU-Net 纯 Python 推理 |
-| `gru_policy.cpp` | GRU-Net C++17 推理 |
-| `gru_policy_weights.json` / `.hpp` | GRU-Net 权重 / C++ 权重 |
-| `export_gru_cpp.py` | GRU 权重 JSON → C++ 头文件 |
-| `adversarial_policy.py` | 约束剥削 wrapper（MLP/GRU） |
-| `train_adversarial_policy.py` | 四分布不掉分约束下的对抗调参 |
-| `adversarial_policy_config*.json` | MLP 保守/激进配置 |
-| `adversarial_gru_policy_config*.json` | GRU 保守/激进配置 |
-| `NEURAL_POLICY.md` / `GRU_POLICY.md` / `ADVERSARIAL_POLICY.md` | 三种策略族的方法、接口、结果、风险 |
-| `train_joint_final_resp.py` | Final+Resp3 联合策略 |
-| `train_multiobj.py` | 多目标训练与参数配置 |
-| `train_bayes_priors.py` | Bayes 先验参数化 |
-| `bayesplus_responsive3.cpp` | BayesPlus / Responsive3 的 C++17 实现 |
-| `BAYES_RESPONSIVE_FLOW.md` | 两套 C++ 策略的流程图 |
+| `src/neural_policy.py` | 神经策略纯 Python 推理（无需 PyTorch） |
+| `cpp/neural_policy.cpp` | MLP 策略 C++17 推理（无外部依赖） |
+| `cpp/ipd_features.hpp` | MLP/GRU 共用的 C++ 特征提取 |
+| `weights/neural_policy_weights.json` | 已训练的 MLP 策略权重 |
+| `cpp/neural_policy_weights.hpp` | 自动生成的 C++ 权重 |
+| `src/export_neural_cpp.py` | MLP 权重 JSON → C++ 头文件 |
+| `src/train_gru_policy.py` | GRU-Net 训练（PyTorch + DAgger） |
+| `src/gru_policy.py` | GRU-Net 纯 Python 推理 |
+| `cpp/gru_policy.cpp` | GRU-Net C++17 推理 |
+| `weights/gru_policy_weights.json` / `.hpp` | GRU-Net 权重 / C++ 权重 |
+| `src/export_gru_cpp.py` | GRU 权重 JSON → C++ 头文件 |
+| `src/adversarial_policy.py` | 约束剥削 wrapper（MLP/GRU） |
+| `src/train_adversarial_policy.py` | 四分布不掉分约束下的对抗调参 |
+| `configs/adversarial_policy_config*.json` | MLP 保守/激进配置 |
+| `configs/adversarial_gru_policy_config*.json` | GRU 保守/激进配置 |
+| `docs/NEURAL_POLICY.md` / `docs/GRU_POLICY.md` / `docs/ADVERSARIAL_POLICY.md` | 三种策略族的方法、接口、结果、风险 |
+| `src/train_joint_final_resp.py` | Final+Resp3 联合策略 |
+| `src/train_multiobj.py` | 多目标训练与参数配置 |
+| `src/train_bayes_priors.py` | Bayes 先验参数化 |
+| `cpp/bayesplus_responsive3.cpp` | BayesPlus / Responsive3 的 C++17 实现 |
+| `docs/BAYES_RESPONSIVE_FLOW.md` | 两套 C++ 策略的流程图 |
 
 ### 实验结果
 
 | 文件 | 内容 |
 |---|---|
-| `FINAL_COMPARISON.md` | 各测试集主表 |
-| `SUITE_RESULTS.md` | 9 个测试集结果 |
-| `OPPONENT_PERFORMANCE.md` | 85 类对手逐类型表现 |
-| `MATCHUP_RESULTS.md` | 早期策略对阵汇总 |
-| `ADVANCED_RESULTS.md` | 训练/优化/盲测全过程 |
-| `matchup_triple_results.csv` | 主策略逐类型原始数据 |
-| `final_benchmark.json` | 统一四分布数据 |
-| `neural_benchmark.json` | MLP 策略四分布对比数据 |
-| `neural_blind_results.json` | MLP 策略盲测排名数据 |
-| `neural_training_history.json` | MLP 策略训练/验证曲线 |
-| `gru_benchmark.json` | GRU-Net 四分布对比数据 |
-| `blind_gru_results.json` | GRU-Net 盲测排名数据 |
-| `gru_training_history.json` | GRU-Net 训练/验证曲线 |
-| `adversarial_search_results.json` | 对抗调参搜索/验证记录 |
-| `adversarial_benchmark.json` | Adv-MLP 保守版四分布 |
-| `adversarial_aggressive_benchmark.json` | Adv-MLP 激进版四分布 |
-| `adversarial_gru_benchmark.json` | Adv-GRU 保守版四分布 |
-| `adversarial_gru_aggressive_benchmark.json` | Adv-GRU 激进版四分布 |
-| `blind_adversarial_results.json` | Adv-MLP 保守版盲测 |
-| `blind_adversarial_aggressive_results.json` | Adv-MLP 激进版盲测 |
-| `blind_adversarial_gru_results.json` | Adv-GRU 保守版盲测 |
-| `blind_adversarial_gru_aggressive_results.json` | Adv-GRU 激进版盲测 |
-| `suite_results.json` | 新测试集数据 |
-| `blind_test.py` | 盲测代码 |
-| `blind_test_neural.py` | 包含神经策略的盲测代码 |
-| `final_benchmark.py` | 四分布统一测试代码 |
-| `benchmark_neural_policy.py` | 神经策略四分布对比代码 |
-| `run_suite_benchmark.py` | 9 个测试集代码 |
-
-### 注意
-
-`assoc_containers.cpp` 与本项目无关，是原有工作区文件，不要提交或修改。
+| `docs/FINAL_COMPARISON.md` | 各测试集主表 |
+| `docs/SUITE_RESULTS.md` | 9 个测试集结果 |
+| `docs/OPPONENT_PERFORMANCE.md` | 85 类对手逐类型表现 |
+| `docs/MATCHUP_RESULTS.md` | 早期策略对阵汇总 |
+| `docs/ADVANCED_RESULTS.md` | 训练/优化/盲测全过程 |
+| `results/matchup_triple_results.csv` | 主策略逐类型原始数据 |
+| `results/final_benchmark.json` | 统一四分布数据 |
+| `results/neural_benchmark.json` | MLP 策略四分布对比数据 |
+| `results/neural_blind_results.json` | MLP 策略盲测排名数据 |
+| `results/neural_training_history.json` | MLP 策略训练/验证曲线 |
+| `results/gru_benchmark.json` | GRU-Net 四分布对比数据 |
+| `results/blind_gru_results.json` | GRU-Net 盲测排名数据 |
+| `results/gru_training_history.json` | GRU-Net 训练/验证曲线 |
+| `results/adversarial_search_results.json` | 对抗调参搜索/验证记录 |
+| `results/adversarial_benchmark.json` | Adv-MLP 保守版四分布 |
+| `results/adversarial_aggressive_benchmark.json` | Adv-MLP 激进版四分布 |
+| `results/adversarial_gru_benchmark.json` | Adv-GRU 保守版四分布 |
+| `results/adversarial_gru_aggressive_benchmark.json` | Adv-GRU 激进版四分布 |
+| `results/blind_adversarial_results.json` | Adv-MLP 保守版盲测 |
+| `results/blind_adversarial_aggressive_results.json` | Adv-MLP 激进版盲测 |
+| `results/blind_adversarial_gru_results.json` | Adv-GRU 保守版盲测 |
+| `results/blind_adversarial_gru_aggressive_results.json` | Adv-GRU 激进版盲测 |
+| `results/suite_results.json` | 新测试集数据 |
+| `src/blind_test.py` | 盲测代码 |
+| `src/blind_test_neural.py` | 包含神经策略的盲测代码 |
+| `src/final_benchmark.py` | 四分布统一测试代码 |
+| `src/benchmark_neural_policy.py` | 神经策略四分布对比代码 |
+| `src/run_suite_benchmark.py` | 9 个测试集代码 |
 
 ---
 
@@ -395,15 +407,16 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 ### 快速自测
 
 ```bash
-python3 ipd_strategy.py
-python3 ipd_early.py
-python3 blind_test.py --fields 10 --seed 20261025
+python3 -m unittest discover -s tests -v
+python3 src/ipd_strategy.py
+python3 src/ipd_early.py
+python3 src/blind_test.py --fields 10 --seed 20261025
 ```
 
 ### 统一四分布
 
 ```bash
-python3 final_benchmark.py --fields 20 --workers 24
+python3 src/final_benchmark.py --fields 20 --workers 24
 ```
 
 ### 神经策略
@@ -411,40 +424,40 @@ python3 final_benchmark.py --fields 20 --workers 24
 ```bash
 # 训练（需要 PyTorch；CPU 也能跑，但 GPU/NPU 更快）
 python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements-train.txt
-python3 train_neural_policy.py --device auto --seed 20261025
-python3 train_gru_policy.py --device auto --seed 20261025
-python3 train_adversarial_policy.py --arch mlp --seed 20261026
+python3 src/train_neural_policy.py --device auto --seed 20261025
+python3 src/train_gru_policy.py --device auto --seed 20261025
+python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
 
 # 推理自检（不需要 PyTorch）
-python3 neural_policy.py neural_policy_weights.json
-python3 gru_policy.py gru_policy_weights.json
-python3 adversarial_policy.py adversarial_policy_config.json
+python3 src/neural_policy.py weights/neural_policy_weights.json
+python3 src/gru_policy.py weights/gru_policy_weights.json
+python3 src/adversarial_policy.py configs/adversarial_policy_config.json
 
 # 四分布与盲测（不需要 PyTorch）
-python3 benchmark_neural_policy.py --fields 20 --workers 20
-python3 benchmark_neural_policy.py --arch gru --fields 20 --workers 20
-python3 benchmark_neural_policy.py --arch adversarial --config adversarial_policy_config_aggressive.json --fields 20 --workers 20
-python3 blind_test_neural.py --fields 10 --workers 12
-python3 blind_test_neural.py --arch gru --fields 10 --workers 12
-python3 blind_test_neural.py --arch adversarial --config adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 src/benchmark_neural_policy.py --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch gru --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 src/blind_test_neural.py --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch gru --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
 ### 9 个测试集
 
 ```bash
-python3 run_suite_benchmark.py --fields 12 --workers 24
+python3 src/run_suite_benchmark.py --fields 12 --workers 24
 ```
 
 ### 逐类型对阵
 
 ```bash
-python3 matchup_triple.py
+python3 src/matchup_triple.py
 ```
 
 ### C++ 编译
 
 ```bash
-g++ -std=c++17 -O2 -DRESP_BAYES_DEMO bayesplus_responsive3.cpp -o demo
+g++ -std=c++17 -O2 -DRESP_BAYES_DEMO cpp/bayesplus_responsive3.cpp -o demo
 ./demo
 ```
 
@@ -465,22 +478,22 @@ mine/theirs = 到此日之前的动作
 
 ### C++ 现状
 
-- `ipd_strategy.cpp`：Final，但需要把参数改成 Final-tuned；
-- `bayesplus_responsive3.cpp`：Responsive3 + BayesPlus，无外部依赖；
+- `cpp/ipd_strategy.cpp`：Final，但需要把参数改成 Final-tuned；
+- `cpp/bayesplus_responsive3.cpp`：Responsive3 + BayesPlus，无外部依赖；
 - **目前没有 C++ 版 Triple-majority**。  
   如果比赛要求 C++ 且想提交 Triple，需要：
   1. 把 Final-tuned 也移植到 C++；
   2. 把 Final、Responsive3、BayesPlus 三个动作做多数投票；
   3. 保持三者各自独立状态。
-- **C++ 版 NeuralPolicy 已提供**：`neural_policy.cpp` + `neural_policy_weights.hpp`。
-  重新训练权重后先运行 `python3 export_neural_cpp.py` 刷新头文件，再编译：
-  `g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO neural_policy.cpp -o neural_demo`。
+- **C++ 版 NeuralPolicy 已提供**：`cpp/neural_policy.cpp` + `cpp/neural_policy_weights.hpp`。
+  重新训练权重后先运行 `python3 src/export_neural_cpp.py` 刷新头文件，再编译：
+  `g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo`。
   C++ 与 Python 版做过 200 组随机历史的特征/概率对齐检查，最大差异约 `5e-10`。
-- **C++ 版 GRU-Net 已提供**：`gru_policy.cpp` + `gru_policy_weights.hpp`。
-  编译前运行 `python3 export_gru_cpp.py`；命令：
-  `g++ -std=c++17 -O2 -DGRU_POLICY_DEMO gru_policy.cpp -o gru_demo`。
+- **C++ 版 GRU-Net 已提供**：`cpp/gru_policy.cpp` + `cpp/gru_policy_weights.hpp`。
+  编译前运行 `python3 src/export_gru_cpp.py`；命令：
+  `g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo`。
   与 Python 版做过 60 组随机历史的逐步概率对齐，最大差异约 `5e-10`。
-- 两种 C++ 策略共用 `ipd_features.hpp` 的 85 维特征提取。
+- 两种 C++ 策略共用 `cpp/ipd_features.hpp` 的 85 维特征提取。
 - **AdversarialPolicy 目前只有 Python 版本**。如果比赛要求 C++，需要在
   `NeuralPolicy`/`GRUPolicy` 外层再加同样的两条剥削规则。
 
@@ -513,10 +526,10 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
    所有候选策略都应在最后一天选择 D；如果移植时漏掉，会损失最后一天收益。
 
 7. **Base Final 与 Final-tuned 不同**  
-   `ipd_strategy.py` / `ipd_strategy.cpp` 默认参数仍是旧版；提交前必须改为 tuned 参数，或明确选择默认版。
+   `src/ipd_strategy.py` / `cpp/ipd_strategy.cpp` 默认参数仍是旧版；提交前必须改为 tuned 参数，或明确选择默认版。
 
 8. **Neural 依赖权重文件与训练数据分布**
-   `NeuralPolicy` 必须加载 `neural_policy_weights.json`；如果比赛只允许单文件，需要把权重内嵌。
+   `NeuralPolicy` 必须加载 `weights/neural_policy_weights.json`；如果比赛只允许单文件，需要把权重内嵌。
    它是 Triple 的蒸馏学生，真实对手分布偏离训练分布时不保证超过 Triple。
    推理本身不需要 PyTorch，但训练需要。
 
@@ -528,7 +541,7 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
     它的优势相对 MLP 不显著，但纯 Python 推理更慢，C++ 权重也更大（约 192 KB）。
 
 11. **两种神经策略都需要权重文件**
-    `neural_policy_weights.json` 或 `gru_policy_weights.json`。单文件提交时需要内嵌。
+    `weights/neural_policy_weights.json` 或 `weights/gru_policy_weights.json`。单文件提交时需要内嵌。
 
 12. **对抗版本的约束是分布级别，不是逐类型级别**
     Adv 激进版在 `MemOne-rand`、`Extort3`、`NoisyTFT.10/20` 等 wild 类型上可能
@@ -544,14 +557,13 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
 - [ ] 确认是否允许提交权重文件；如果只允许单文件，决定是否把 Neural/GRU 权重内嵌。
 - [ ] 确定提交版本：Adv / Neural / GRU-Net / Triple / Final-tuned / Final+Resp3。
 - [ ] 如果提交 Neural/GRU/Adv，先做无 PyTorch 自检：
-      `python3 neural_policy.py neural_policy_weights.json`、
-      `python3 gru_policy.py gru_policy_weights.json` 或
-      `python3 adversarial_policy.py adversarial_policy_config.json`。
+      `python3 src/neural_policy.py weights/neural_policy_weights.json`、
+      `python3 src/gru_policy.py weights/gru_policy_weights.json` 或
+      `python3 src/adversarial_policy.py configs/adversarial_policy_config.json`。
 - [ ] 如果提交 GRU/Adv-GRU，确认每场调用 `reset()`，且同一时间步只调用一次 `act()`。
 - [ ] 如果提交 Adv，确认权重和对应 `adversarial_*_config.json` 一起提交。
 - [ ] 如果提交 C++，完成 Final-tuned 和 Triple 的 C++ 合并，或使用现有 Neural/GRU C++ 版本。
 - [ ] 固定随机种子。
-- [ ] 用最终版本重新跑一次 `blind_test.py` 或 `blind_test_neural.py`，确认没有配置遗漏。
+- [ ] 用最终版本重新跑一次 `src/blind_test.py` 或 `src/blind_test_neural.py`，确认没有配置遗漏。
 - [ ] 检查第 1 天和第 100 天行为。
 - [ ] 保存最终提交文件、配置 JSON 和运行日志。
-- [ ] 不要提交无关的 `assoc_containers.cpp`。
