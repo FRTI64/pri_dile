@@ -382,3 +382,343 @@ PEACE_COOLDOWN = 8
 - 如果简单对手以合作/末期收割为主，GapStart 非常强；
 - 如果简单对手里 Grim/Mistrust 比例高，Final 仍然明显最好；
 - 简单对手的最大影响是：类型更容易被历史统计区分，但“第一次背叛前”的信息限制仍然存在。
+
+## 宽模型库、细参数、分布训练（`train_wide.py`）
+
+在原有 85 类对手上继续增加：
+
+- GTFT 细网格：0.01/0.03/0.08/0.12/0.18/0.25/0.35/0.50/0.70；
+- Joss 细网格：0.01/0.03/0.08/0.12/0.18/0.25/0.35；
+- NoisyTFT 同网格；
+- Random：0.05/0.10/0.15/0.20/0.30/0.40/0.60；
+- 额外 LateD 起点：1/2/3/6/8/12/18/22/28/35/45/55/60/65/70/75/80；
+- TFT-delay 3/4/5；
+- 我方 7 种聪明策略：Final、Harvest40、Harvest45、EarlyProbe、GapStart、BayesPlus、Responsive3。
+
+训练分布：
+
+- 8 种原始场景先验；
+- 25% 概率强制使用 late_harvest 场景；
+- 聪明对手比例随机取 0%、3%、8%、13%、20%、30%；
+- 训练 100 个赛场，每场 60 个对手；
+- 独立验证 100 个赛场，每场 299 个对手。
+
+训练参数：
+
+- Final：9 个连续/离散参数，100 组；
+- Harvest：10 个参数（含收割起点），100 组；
+- GapStart：2 个参数，80 组；
+- 概率和阈值使用连续均匀采样，而不是粗网格。
+
+### 验证结果
+
+| 策略 | 验证均值 | 最差赛场 |
+|---|---:|---:|
+| 基线 Final | 541.96 | 495.18 |
+| 基线 Harvest45 | 549.44 | 493.16 |
+| 基线 GapStart(1,.5) | 537.51 | 445.85 |
+| **训练后 Harvest21** | **562.86** | 491.86 |
+| 训练后 Final | 546.39 | 495.81 |
+| 训练后 GapStart | 515.59 | 456.44 |
+
+最佳 Harvest 参数：
+
+```text
+HARVEST_START = 21
+P_UNPROVOKED = 0.2079
+P_MUTUAL = 0.5202
+P_RESPONSIVE = 0.9286
+MIN_C = 4
+MIN_D = 2
+RESP_GAP = 0.3571
+DEFECT_RATE = 0.2116
+PEACE_TESTS = 3
+PEACE_COOLDOWN = 8
+```
+
+最佳 Final 参数：
+
+```text
+P_UNPROVOKED = 0.1133
+P_MUTUAL = 0.3851
+P_RESPONSIVE = 0.8336
+MIN_C = 5
+MIN_D = 2
+RESP_GAP = 0.5416
+DEFECT_RATE = 0.2198
+PEACE_TESTS = 1
+PEACE_COOLDOWN = 13
+```
+
+最佳 GapStart：
+
+```text
+start = 4
+threshold = 0.6181
+```
+
+### 重要限制
+
+在宽分布（包含末期收割 + 聪明对手）上，Harvest21 明显最好；但在其他分布上：
+
+| 分布 | Final | Harvest45 | Harvest21 |
+|---|---:|---:|---:|
+| 原始混合（30 场） | **550.4** | 545.6 | 547.1 |
+| Grim30（30 场） | **551.2** | 507.5 | 496.2 |
+
+因此训练结果高度依赖先验分布：  
+**Harvest21 是针对“末期收割 + 聪明对手”宽分布的过拟合候选，不是通用最优。**
+
+## 多目标细粒度训练：Final / Harvest / Gap / Responsive3 / BayesPlus
+
+`train_multiobj.py` 在四个分布上同时评估：
+
+1. `original`：原始混合；
+2. `late`：末期收割；
+3. `grim30`：高 Grim；
+4. `wide`：宽模型库 + 聪明对手。
+
+目标函数：
+
+```text
+0.45 × 总均值
++ 0.25 × 最差分布均值
++ 0.20 × 5% 分位
++ 0.10 × 最差单场
+```
+
+训练与验证：
+
+- 每类分布 32 个训练赛场；
+- 每类分布 32 个独立验证赛场；
+- 训练每场 50 个对手；
+- 验证每场 299 个对手；
+- 连续/细粒度参数，共 152 组配置。
+
+### 验证结果
+
+| 策略 | 验证均值 | 最差分布均值 | 综合 fit |
+|---|---:|---:|---:|
+| 基线 Final | 548.90 | 541.36 | 537.95 |
+| 基线 Harvest45 | 548.78 | 507.36 | 521.79 |
+| 基线 GapStart | 550.48 | 486.80 | 507.92 |
+| 基线 Responsive3 | 547.35 | 537.70 | 535.09 |
+| 基线 BayesPlus | 546.30 | 526.23 | 527.87 |
+| **训练后 Final** | **549.84** | **544.18** | **539.50** |
+| **训练后 Responsive3** | 549.38 | 544.62 | 539.40 |
+| 训练后 Harvest | 543.64 | 523.89 | 528.04 |
+| 训练后 GapStart | 537.50 | 508.54 | 514.09 |
+| 训练后 BayesPlus | 546.45 | 526.66 | 528.66 |
+
+### 训练后最佳参数
+
+#### Final
+
+```text
+P_UNPROVOKED = 0.2396
+P_MUTUAL = 0.6399
+P_RESPONSIVE = 0.9544
+MIN_C = 5
+MIN_D = 2
+RESP_GAP = 0.3871
+DEFECT_RATE = 0.1170
+PEACE_TESTS = 1
+PEACE_COOLDOWN = 9
+```
+
+#### Responsive3
+
+```text
+g_unprov = 0.3171
+g_mutual = 0.2617
+g_resp = 0.9804
+min_c = 5
+min_d = 2
+resp_gap = 0.4679
+defect_rate = 0.1971
+max_tests = 3
+cooldown = 14
+```
+
+#### Harvest
+
+```text
+HARVEST_START = 75
+P_UNPROVOKED = 0.1003
+P_MUTUAL = 0.6374
+P_RESPONSIVE = 0.9319
+MIN_C = 3
+MIN_D = 2
+RESP_GAP = 0.5198
+DEFECT_RATE = 0.2141
+PEACE_TESTS = 1
+PEACE_COOLDOWN = 4
+```
+
+#### GapStart
+
+```text
+start = 3
+threshold = 0.6371
+```
+
+#### BayesPlus
+
+```text
+NONRESP_THRESHOLD = 0.2930
+PUNITIVE_THRESHOLD = 0.6217
+```
+
+### 结论
+
+- 多目标训练后，Final 和 Responsive3 的综合 fit 很接近，Final 略高；
+- Harvest 的“平均分”下降，但最差分布从约 507 提高到约 524，说明它变得更稳；
+- GapStart 仍不适合跨分布稳健优化；
+- BayesPlus 只调两个阈值，提升很小；
+- 如果只能选一个跨分布策略，仍是 **Final**；如果特别看重 adaptive 对手，可用训练后的 Responsive3。
+
+## 联合训练：Final + Responsive3
+
+`train_joint_final_resp.py` 同时运行 Final 和 Responsive3 两个子策略：
+
+- 两者的动作一致：采用该动作；
+- 两者动作不一致：按参数 `p` 选择合作，`p=0` 表示直接背叛；
+- 两个子策略仍然根据同一历史独立更新内部状态。
+
+训练分布仍为 original / late / grim30 / wide 四类。
+
+验证结果：
+
+| 组合 | 验证均值 | 最差分布 | 综合 fit |
+|---|---:|---:|---:|
+| 基线 Final | 545.29 | 537.63 | 533.12 |
+| 训练后 Final | 546.55 | 540.79 | 535.96 |
+| 训练后 Responsive3 | 545.59 | 539.38 | 533.91 |
+| **Final-tuned + Resp-base，分歧时D** | **547.15** | **543.82** | **537.45** |
+
+最佳联合参数：
+
+```text
+Final:
+  P_UNPROVOKED = 0.2396
+  P_MUTUAL = 0.6399
+  P_RESPONSIVE = 0.9544
+  MIN_C = 5
+  MIN_D = 2
+  RESP_GAP = 0.3871
+  DEFECT_RATE = 0.1170
+  PEACE_TESTS = 1
+  PEACE_COOLDOWN = 9
+
+Responsive3:
+  使用默认参数
+
+分歧处理:
+  p = 0.0，即两个策略不一致时选择背叛
+```
+
+## BayesPlus 模型先验参数化
+
+`train_bayes_priors.py` 对 BayesPlus 的模型先验做分组缩放：
+
+- `coop_scale`：合作/互惠模型；
+- `punitive_scale`：Grim/Grudger/Mistrust；
+- `late_scale`：所有 LateD；
+- `noise_scale`：Joss/NoisyTFT/Random；
+- `probe_scale`：Tester/Prober/Remorseful；
+- 另外训练 `NONRESP_THRESHOLD` 和 `PUNITIVE_THRESHOLD`。
+
+30 组先验配置，4 个分布的留出验证：
+
+| 模型 | 验证均值 | 最差分布 | fit |
+|---|---:|---:|---:|
+| BayesPlus 基线 | 546.12 | 523.92 | 526.72 |
+| BayesPlus 调先验 | **546.41** | **524.48** | **527.13** |
+
+最佳先验：
+
+```text
+coop_scale = 1.8370
+punitive_scale = 2.4706
+late_scale = 0.5216
+noise_scale = 0.5818
+probe_scale = 3.3155
+NONRESP_THRESHOLD = 0.2797
+PUNITIVE_THRESHOLD = 0.7531
+```
+
+结论：先验参数化只带来约 **0.4 分/对手** 的提升，BayesPlus 的主要瓶颈不是先验，而是它无法在第一次 D 之前提前收割，以及模型库对某些状态机的误判。
+
+## 最终盲测
+
+`blind_test.py` 使用完全未参与训练的种子（`20261025` 起），生成 10 个独立的 300 人赛场：
+
+- 对手池包含宽模型库、复杂策略和 15% 左右的我方聪明策略；
+- 每个候选与同一 299 个对手做完整循环赛；
+- 指标为每对手均分和 300 人排名。
+
+| 策略 | 盲测均分 | 平均排名 | 第1名 | 前10 | 最差 |
+|---|---:|---:|---:|---:|---:|
+| **Final-tuned + Resp 联合** | **551.75** | **8.90** | 7/10 | 7/10 | 30 |
+| Final-tuned | 549.39 | 10.40 | 5/10 | 6/10 | 34 |
+| Responsive3-tuned | 547.84 | 11.40 | 4/10 | 7/10 | 38 |
+| Harvest45 | 551.02 | 18.90 | 0/10 | 3/10 | 57 |
+| Harvest-tuned | 546.57 | 15.60 | 0/10 | 3/10 | 27 |
+| Final-base | 544.90 | 16.80 | 0/10 | 4/10 | 31 |
+| GapStart | 530.13 | 79.20 | 0/10 | 2/10 | 199 |
+| Bayes-base | 527.43 | 66.60 | 0/10 | 0/10 | 114 |
+| Bayes-tuned | 527.67 | 64.40 | 0/10 | 0/10 | 98 |
+
+盲测结论：
+
+- 联合策略的均分和排名最好；
+- Final-tuned 和 Responsive3-tuned 很接近；
+- Harvest45 的均分不低，但平均排名差，说明它的胜利集中、稳定性不足；
+- GapStart/BayesPlus 在这套含聪明对手的盲测池中明显掉队。
+
+## 三者融合：Final + Responsive3 + BayesPlus
+
+实现文件：`triple_hybrid.py`
+
+三个子策略同时运行：
+
+- Final-tuned；
+- Responsive3-tuned；
+- BayesPlus（调过先验）。
+
+每天三者独立给出 C/D，然后：
+
+```text
+3 个 C → C
+2 个 C、1 个 D → C
+1 个 C、2 个 D → D
+3 个 D → D
+```
+
+即简单多数投票。
+
+### 同一验证集（12 场/分布）
+
+| 策略 | 综合 fit | 均值 | 原始 | 末期 | 高Grim | 宽+聪明 |
+|---|---:|---:|---:|---:|---:|---:|
+| **Triple-majority** | **538.21** | **549.97** | 549.8 | 543.5 | 552.2 | **554.4** |
+| Final+Resp3 | 536.52 | 549.78 | 549.0 | 543.4 | 552.4 | 554.2 |
+| Final-tuned | 537.51 | 549.45 | 549.9 | 543.7 | 551.9 | 552.3 |
+| Resp3-tuned | 534.61 | 548.61 | 547.6 | 543.4 | 552.1 | 551.4 |
+| BayesPlus | 534.04 | 547.88 | 551.8 | 548.0 | 556.3 | 535.5 |
+
+### 盲测（10 个完全未参与训练的 300 人赛场）
+
+| 策略 | 盲测均分 | 平均排名 | 第1名 | 前10 | 最差 |
+|---|---:|---:|---:|---:|---:|
+| **Triple-majority** | **554.99** | **8.30** | 7/10 | 7/10 | **27** |
+| Final+Resp3 | 551.75 | 8.90 | 7/10 | 7/10 | 30 |
+| Final-tuned | 549.39 | 10.40 | 5/10 | 6/10 | 34 |
+| Resp3-tuned | 547.84 | 11.40 | 4/10 | 7/10 | 38 |
+
+结论：
+
+- 三者多数投票比 Final+Resp3 略好；
+- 它保留了 Final 的稳健、Resp3 的自适应和 BayesPlus 对惩罚/随机型的判断；
+- 多数投票自动抑制 BayesPlus 在宽分布中的错误决策；
+- 代价是实现复杂度更高，每天要运行三个策略。

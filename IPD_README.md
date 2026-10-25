@@ -23,6 +23,18 @@
 - `run_grim_experiment.py`：固定高 Grim 比例的对比。
 - `p1_grim_search.py`：高 Grim 训练集上的参数搜索。
 - `run_simple_experiment.py`：简单决策树对手库实验。
+- `train_wide.py`：宽模型库、细参数、分布训练。
+- `train_multiobj.py`：Final/Harvest/Gap/Responsive3/BayesPlus 多目标训练。
+- `train_joint_final_resp.py`：Final + Responsive3 联合训练。
+- `train_bayes_priors.py`：BayesPlus 模型先验参数化训练。
+- `triple_hybrid.py`：Final + Responsive3 + BayesPlus 多数投票融合。
+- `blind_test.py`：完全未参与训练的 300 人盲测。
+- `final_benchmark.py`：Final/Resp3/BayesPlus/联合策略的统一对比。
+- `HANDOVER.md`：交接文档（推荐方案、参数、文件、风险、检查清单）。
+- `FINAL_COMPARISON.md`：各测试集完整对照表。
+- `opponent_plus.py`：额外 67 类复杂/细粒度对手。
+- `run_suite_benchmark.py`：9 个测试集的统一对比。
+- `SUITE_RESULTS.md`：新测试集结果。
 - `bayesplus_responsive3.cpp`：BayesPlus / Responsive3 的无依赖 C++17 实现。
 - `BAYES_RESPONSIVE_FLOW.md`：两者的 Mermaid 流程图和参数说明。
 - `ADVANCED_RESULTS.md`：P0/P1/P2 的完整结果。

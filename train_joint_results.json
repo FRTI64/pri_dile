@@ -1,0 +1,678 @@
+{
+  "best_final": {
+    "P_UNPROVOKED": 0.2395699546614404,
+    "P_MUTUAL": 0.6399155368157192,
+    "P_RESPONSIVE": 0.9544467968114831,
+    "MIN_C": 5,
+    "MIN_D": 2,
+    "RESP_GAP": 0.3871088255996472,
+    "DEFECT_RATE": 0.1170465108152342,
+    "PEACE_TESTS": 1,
+    "PEACE_COOLDOWN": 9
+  },
+  "best_resp": {
+    "g_unprov": 0.31711381663242244,
+    "g_mutual": 0.26173130084075913,
+    "g_resp": 0.9804446329081643,
+    "min_c": 5,
+    "min_d": 2,
+    "resp": 0.46788262082576104,
+    "rate": 0.197064176521839,
+    "max_tests": 3,
+    "cooldown": 14
+  },
+  "validation": [
+    {
+      "name": "tuned-final-p0.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 0.0,
+      "train_fit": 536.38328125,
+      "train_mean": 547.988125,
+      "train_worst": 541.3225,
+      "val_fit": 537.4517532399666,
+      "val_mean": 547.1460597826087,
+      "val_worst": 543.8216973244147
+    },
+    {
+      "name": "tuned-both-p0.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.0,
+      "train_fit": 536.46896875,
+      "train_mean": 548.480625,
+      "train_worst": 543.37875,
+      "val_fit": 536.3681385869565,
+      "val_mean": 546.6493520066889,
+      "val_worst": 543.2067307692307
+    },
+    {
+      "name": "tuned-both-p0.25",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.25,
+      "train_fit": 534.9844843750001,
+      "train_mean": 547.4771875,
+      "train_worst": 539.695,
+      "val_fit": 536.1097878344482,
+      "val_mean": 546.7082984949833,
+      "val_worst": 542.5769230769231
+    },
+    {
+      "name": "tuned-resp-p0.0",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.0,
+      "train_fit": 535.8493593750001,
+      "train_mean": 547.4771875,
+      "train_worst": 542.3625000000001,
+      "val_fit": 535.6908026755852,
+      "val_mean": 546.7980769230769,
+      "val_worst": 544.6551003344482
+    },
+    {
+      "name": "tuned-resp-p0.25",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.25,
+      "train_fit": 535.66734375,
+      "train_mean": 547.946875,
+      "train_worst": 541.125,
+      "val_fit": 535.3380304138796,
+      "val_mean": 546.3032504180602,
+      "val_worst": 542.3607859531772
+    },
+    {
+      "name": "tuned-final-p0.25",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 0.25,
+      "train_fit": 534.518015625,
+      "train_mean": 547.1253125,
+      "train_worst": 539.0625,
+      "val_fit": 534.7687996446489,
+      "val_mean": 546.3651233277592,
+      "val_worst": 540.258779264214
+    },
+    {
+      "name": "tuned-both-p0.5",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.5,
+      "train_fit": 534.346515625,
+      "train_mean": 547.3490625,
+      "train_worst": 539.49375,
+      "val_fit": 534.5716633570235,
+      "val_mean": 546.3680497491639,
+      "val_worst": 540.9352006688963
+    },
+    {
+      "name": "tuned-resp-p0.5",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.5,
+      "train_fit": 534.195671875,
+      "train_mean": 546.8871875,
+      "train_worst": 537.47375,
+      "val_fit": 534.1350465091973,
+      "val_mean": 546.0897261705686,
+      "val_worst": 540.6810200668897
+    },
+    {
+      "name": "tuned-both-p0.75",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.75,
+      "train_fit": 534.687359375,
+      "train_mean": 547.1896875,
+      "train_worst": 539.96,
+      "val_fit": 533.0819371864549,
+      "val_mean": 545.3655413879599,
+      "val_worst": 537.3413461538462
+    },
+    {
+      "name": "tuned-both-p1.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 1.0,
+      "train_fit": 534.256421875,
+      "train_mean": 546.8609375,
+      "train_worst": 538.82,
+      "val_fit": 531.1874007107023,
+      "val_mean": 544.5017767558528,
+      "val_worst": 534.2571070234113
+    }
+  ],
+  "train": [
+    {
+      "name": "tuned-both-p0.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.0,
+      "train_fit": 536.46896875,
+      "train_mean": 548.480625,
+      "train_worst": 543.37875
+    },
+    {
+      "name": "tuned-final-p0.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 0.0,
+      "train_fit": 536.38328125,
+      "train_mean": 547.988125,
+      "train_worst": 541.3225
+    },
+    {
+      "name": "tuned-resp-p0.0",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.0,
+      "train_fit": 535.8493593750001,
+      "train_mean": 547.4771875,
+      "train_worst": 542.3625000000001
+    },
+    {
+      "name": "tuned-resp-p0.25",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.25,
+      "train_fit": 535.66734375,
+      "train_mean": 547.946875,
+      "train_worst": 541.125
+    },
+    {
+      "name": "tuned-both-p0.25",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.25,
+      "train_fit": 534.9844843750001,
+      "train_mean": 547.4771875,
+      "train_worst": 539.695
+    },
+    {
+      "name": "tuned-both-p0.75",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.75,
+      "train_fit": 534.687359375,
+      "train_mean": 547.1896875,
+      "train_worst": 539.96
+    },
+    {
+      "name": "tuned-final-p0.25",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 0.25,
+      "train_fit": 534.518015625,
+      "train_mean": 547.1253125,
+      "train_worst": 539.0625
+    },
+    {
+      "name": "tuned-both-p0.5",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.5,
+      "train_fit": 534.346515625,
+      "train_mean": 547.3490625,
+      "train_worst": 539.49375
+    },
+    {
+      "name": "tuned-both-p1.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 1.0,
+      "train_fit": 534.256421875,
+      "train_mean": 546.8609375,
+      "train_worst": 538.82
+    },
+    {
+      "name": "tuned-resp-p0.5",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.5,
+      "train_fit": 534.195671875,
+      "train_mean": 546.8871875,
+      "train_worst": 537.47375
+    },
+    {
+      "name": "tuned-resp-p0.75",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 0.75,
+      "train_fit": 533.9977968750001,
+      "train_mean": 546.3996875,
+      "train_worst": 535.74375
+    },
+    {
+      "name": "base-final-p0.0",
+      "final": {},
+      "resp": {},
+      "p": 0.0,
+      "train_fit": 533.756859375,
+      "train_mean": 546.8234375,
+      "train_worst": 536.56125
+    },
+    {
+      "name": "base-final-p0.25",
+      "final": {},
+      "resp": {},
+      "p": 0.25,
+      "train_fit": 533.5281875,
+      "train_mean": 546.785,
+      "train_worst": 535.88375
+    },
+    {
+      "name": "base-final-p0.5",
+      "final": {},
+      "resp": {},
+      "p": 0.5,
+      "train_fit": 533.165171875,
+      "train_mean": 546.2709375000001,
+      "train_worst": 535.525
+    },
+    {
+      "name": "tuned-final-p0.5",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 0.5,
+      "train_fit": 533.110078125,
+      "train_mean": 545.8090625,
+      "train_worst": 536.04
+    },
+    {
+      "name": "base-final-p0.75",
+      "final": {},
+      "resp": {},
+      "p": 0.75,
+      "train_fit": 532.354875,
+      "train_mean": 545.71375,
+      "train_worst": 534.59875
+    },
+    {
+      "name": "tuned-resp-p1.0",
+      "final": {},
+      "resp": {
+        "g_unprov": 0.31711381663242244,
+        "g_mutual": 0.26173130084075913,
+        "g_resp": 0.9804446329081643,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.46788262082576104,
+        "rate": 0.197064176521839,
+        "max_tests": 3,
+        "cooldown": 14
+      },
+      "p": 1.0,
+      "train_fit": 532.23803125,
+      "train_mean": 545.843125,
+      "train_worst": 534.6025
+    },
+    {
+      "name": "base-final-p1.0",
+      "final": {},
+      "resp": {},
+      "p": 1.0,
+      "train_fit": 531.565734375,
+      "train_mean": 544.9534375,
+      "train_worst": 534.01875
+    },
+    {
+      "name": "tuned-final-p0.75",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 0.75,
+      "train_fit": 530.6363281250001,
+      "train_mean": 544.1540625,
+      "train_worst": 530.06
+    },
+    {
+      "name": "tuned-final-p1.0",
+      "final": {
+        "P_UNPROVOKED": 0.2395699546614404,
+        "P_MUTUAL": 0.6399155368157192,
+        "P_RESPONSIVE": 0.9544467968114831,
+        "MIN_C": 5,
+        "MIN_D": 2,
+        "RESP_GAP": 0.3871088255996472,
+        "DEFECT_RATE": 0.1170465108152342,
+        "PEACE_TESTS": 1,
+        "PEACE_COOLDOWN": 9
+      },
+      "resp": {},
+      "p": 1.0,
+      "train_fit": 528.93859375,
+      "train_mean": 543.806875,
+      "train_worst": 529.39
+    }
+  ]
+}
