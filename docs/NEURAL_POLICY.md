@@ -299,3 +299,11 @@ g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 6. **C++ 源码体积**
    `cpp/neural_policy_weights.hpp` 约 120 KB。如果比赛限制源码大小，可以减小隐藏层、
    量化权重，或只提交 Python 版本。
+
+---
+
+## 8. 后续：完整强化学习
+
+BC + DAgger 只能复制教师。`src/train_rl_policy.py` 用 PPO 直接优化比赛收益，
+最终从零 + hard 的单独 RL 盲测 563.23 / 8.00；加 `AdversarialPolicy` 后四分布
+554.29、盲测 562.91。详见 `docs/RL_POLICY.md`。

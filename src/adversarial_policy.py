@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Constrained adversarial exploitation wrapper for the neural IPD policies.
 
-The base policy (MLP or GRU) is trained by behavioural cloning/DAgger.  This
-wrapper adds two exploitation rules discovered by constrained adversarial
-tuning against the opponent pool:
+The base policy (BC MLP, GRU, or reward-trained RL) is wrapped with two
+exploitation rules discovered by constrained adversarial tuning against the
+opponent pool:
 
 1. **Late schedule exploitation**
    If the opponent's first defection happens on/after ``late_day`` and the next
@@ -24,6 +24,9 @@ Usage::
 
     from adversarial_policy import AdversarialPolicy
     p = AdversarialPolicy.from_config("configs/adversarial_policy_config.json")
+    # RL base:
+    p = AdversarialPolicy.from_config(
+        "configs/adversarial_rl_policy_config_aggressive.json")
     p.reset()
     action = p.move(day, mine, theirs)
 """
@@ -92,10 +95,18 @@ class AdversarialPolicy:
         elif arch == "gru":
             from gru_policy import GRUPolicy
             base = GRUPolicy(base_path, seed=seed, mode=mode)
+        elif arch == "rl":
+            from neural_policy import NeuralPolicy
+            from rl_policy import RLPolicy
+            with open(base_path, encoding="utf-8") as fh:
+                fmt = json.load(fh).get("format")
+            base_cls = (NeuralPolicy if fmt == "ipd-neural-policy-v1"
+                        else RLPolicy)
+            base = base_cls(base_path, seed=seed, mode=mode)
         else:
             raise ValueError(f"unknown base_arch: {arch}")
 
-        label = "Adv-GRU" if arch == "gru" else "Adv-MLP"
+        label = {"gru": "Adv-GRU", "rl": "Adv-RL"}.get(arch, "Adv-MLP")
         return cls(
             base,
             gap=cfg.get("gap"),

@@ -40,14 +40,19 @@
 - `cpp/gru_policy.cpp`：GRU-Net 的 C++17 推理实现（含 demo）。
 - `src/export_neural_cpp.py` / `src/export_gru_cpp.py`：权重 JSON → C++ 头文件。
 - `cpp/neural_policy_weights.hpp` / `cpp/gru_policy_weights.hpp`：生成的 C++ 权重。
-- `src/adversarial_policy.py`：在 MLP/GRU 之上的约束剥削 wrapper。
+- `src/adversarial_policy.py`：在 MLP/GRU/RL 之上的约束剥削 wrapper。
 - `src/train_adversarial_policy.py`：四分布不掉分约束下的对抗调参。
 - `configs/adversarial_policy_config*.json`：MLP 保守/激进剥削配置。
 - `configs/adversarial_gru_policy_config*.json`：GRU 保守/激进剥削配置。
-- `src/benchmark_neural_policy.py`：神经/对抗策略与现有策略的四分布统一对比。
-- `src/blind_test_neural.py`：包含 MLP/GRU/对抗策略的 300 人盲测排名。
+- `configs/adversarial_rl_policy_config*.json`：RL 保守/激进剥削配置。
+- `src/train_rl_policy.py`：完整 PPO 强化学习训练（奖励驱动，24 worker rollout）。
+- `src/rl_policy.py`：RL actor-critic 的纯 Python 推理与部署导出。
+- `cpp/rl_policy_weights.hpp`：RL 部署权重的 C++ 头文件。
+- `src/benchmark_neural_policy.py`：神经/RL/对抗策略与现有策略的四分布统一对比。
+- `src/blind_test_neural.py`：包含 MLP/GRU/RL/对抗策略的 300 人盲测排名。
 - `docs/NEURAL_POLICY.md`：MLP 策略的方法、训练、接口、结果与风险。
 - `docs/GRU_POLICY.md`：GRU-Net 的方法、训练、接口、结果与风险。
+- `docs/RL_POLICY.md`：完整 PPO 强化学习的方法、训练、结果与风险。
 - `docs/ADVERSARIAL_POLICY.md`：对抗性剥削规则、调参、结果与风险。
 - `src/blind_test.py`：完全未参与训练的 300 人盲测。
 - `src/final_benchmark.py`：Final/Resp3/BayesPlus/联合策略的统一对比。

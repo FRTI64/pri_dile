@@ -1,0 +1,30 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "rl",
+  "base_weights": "rl_policy_weights_bc.json",
+  "gap": 0.1,
+  "min_c": 8,
+  "min_d": 3,
+  "late_day": 50,
+  "repair": false,
+  "meta": {
+    "method": "PPO RL base + conservative constrained exploitation",
+    "base": "weights/rl_policy_weights_bc.json (run4, BC-initialised PPO)",
+    "constraint": "rule only triggers after the opponent has already defected",
+    "note": "lower per-type risk than the aggressive variant",
+    "benchmark_20": {
+      "original": 556.0966555183946,
+      "late": 549.2484949832776,
+      "grim30": 553.4275919732441,
+      "wide": 556.1565217391304,
+      "avg": 553.7323160535117
+    },
+    "blind_10": {
+      "score": 561.0535117056855,
+      "mean_rank": 8.2,
+      "rank1": "7/10",
+      "top10": "7/10",
+      "worst": 26
+    }
+  }
+}

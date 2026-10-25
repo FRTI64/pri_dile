@@ -297,6 +297,7 @@ class NeuralPolicy:
         seed: int = 20261024,
         mode: str = "sample",
         name: str | None = None,
+        safe: bool | None = None,
     ):
         if isinstance(weights, str):
             with open(weights, encoding="utf-8") as fh:
@@ -306,6 +307,9 @@ class NeuralPolicy:
         self.rng = random.Random(seed)
         if name:
             self.name = name
+        # Behaviour cloning checkpoints and all older policies use the no-probe
+        # safety rules.  Reward-trained checkpoints may explicitly disable them.
+        self.safe = bool(weights.get("safe", True)) if safe is None else bool(safe)
 
         self.n_features = int(weights["n_features"])
         self.temperature = float(weights.get("temperature", 1.0))
@@ -353,7 +357,7 @@ class NeuralPolicy:
         # catastrophic false positives against Grim-style opponents.
         if t >= 99:
             return D
-        if t == 0 or D not in theirs:
+        if self.safe and (t == 0 or D not in theirs):
             return C
         p_defect = self.predict_proba(mine, theirs)
         if self.mode == "argmax":

@@ -15,9 +15,24 @@
 | 配置 | 四分布均值 | 盲测均分 | 盲测排名 | 特点 |
 |---|---:|---:|---:|---|
 | 保守版（默认） | 551.62 | 557.44 | 8.30 | 逐类型风险更小 |
-| **激进版** | **552.24** | **559.51** | **8.10** | 分数最高，少量 wild 类型有小损失 |
+| **激进版** | **552.24** | **559.51** | **8.10** | Adv-MLP 内分数最高，少量 wild 类型有小损失 |
 | GRU 保守版 | 551.43 | 557.00 | 8.30 | 需要 GRU 权重 |
 | GRU 激进版 | 551.69 | 559.05 | 8.10 | 需要 GRU 权重 |
+
+### Adv-RL（本轮新增，最高四分布）
+
+把 base 换成完整 PPO 训练的 RL 策略，规则不变：
+
+| 配置 | 四分布均值 | 盲测均分 | 盲测排名 | 特点 |
+|---|---:|---:|---:|---|
+| **Adv-RL 激进** | **554.29** | **562.91** | **8.00** | 最高四分布 |
+| Adv-RL 保守 | 553.73 | 561.05 | 8.20 | 逐类型风险略小 |
+
+配置在 `configs/adversarial_rl_policy_config*.json`，base 为
+`weights/rl_policy_weights_bc.json`（run4 BC 初始化 + hard）。最终从零 + hard
+的单独 RL 盲测更高（563.23），但套上激进规则后 four-dist 553.08，因此正式
+Adv-RL 仍使用 BC base。C++ 版本在 `cpp/adversarial_rl.cpp`，BC base 编译时加
+`-DNEURAL_POLICY_USE_RL_BC_WEIGHTS`。详见 `docs/RL_POLICY.md`。
 
 ---
 
@@ -221,6 +236,10 @@ python3 src/blind_test.py --neural --neural-arch adversarial \
 | `results/blind_adversarial_aggressive_results.json` | MLP 激进版盲测 |
 | `results/blind_adversarial_gru_results.json` | GRU 保守版盲测 |
 | `results/blind_adversarial_gru_aggressive_results.json` | GRU 激进版盲测 |
+| `results/adversarial_rl_benchmark.json` | Adv-RL 激进版四分布 |
+| `results/blind_adversarial_rl_results.json` | Adv-RL 激进版盲测 |
+| `results/adversarial_rl_conservative_benchmark.json` | Adv-RL 保守版四分布 |
+| `results/blind_adversarial_rl_conservative_results.json` | Adv-RL 保守版盲测 |
 
 ---
 
@@ -236,10 +255,12 @@ python3 src/blind_test.py --neural --neural-arch adversarial \
 3. **随机性。**  
    基策略按概率采样；提交时固定 seed，并重新跑盲测。
 
-4. **Python wrapper 无 C++ 版本。**  
-   MLP/GRU 的 C++ 推理已提供，但剥削规则目前只在 Python 实现。
-   如果比赛要求 C++，需要把 `AdversarialPolicy` 的两条规则移植到 C++ wrapper。
+4. **C++ 版本。**
+   Adv-RL 已有 C++ 版本（`cpp/adversarial_rl.cpp`）；Adv-MLP/Adv-GRU 仍只有
+   Python wrapper。如果比赛要求 C++ 且想提交 Adv-MLP，需要把两条规则移植到
+   `NeuralPolicy` 外层。
 
 5. **权重和配置依赖。**  
-   需要 `weights/neural_policy_weights.json` / `weights/gru_policy_weights.json` 以及对应
-   `adversarial_*_config.json`；单文件提交时需要内嵌。
+   需要 `weights/neural_policy_weights.json` / `weights/gru_policy_weights.json`
+   或 `weights/rl_policy_weights.json`，以及对应 `adversarial_*_config.json`；
+   单文件提交时需要内嵌。

@@ -6,6 +6,7 @@ constexpr int N_FEATURES = 85;
 constexpr int N_HIDDEN0 = 64;
 constexpr int N_HIDDEN1 = 32;
 constexpr double TEMPERATURE = 0.95;
+constexpr bool SAFE = true;
 
 static const float MEAN[N_FEATURES] = {
     0.5f, 0.5f, 0.00999999978f, 0.00999999978f, 0.0500000007f, 0.100000001f, -0.664796293f, -0.659351826f, -0.653949082f, -0.648449063f,

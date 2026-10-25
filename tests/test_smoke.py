@@ -19,6 +19,7 @@ from gru_policy import GRUPolicy  # noqa: E402
 from ipd_sim import C, D, TFT  # noqa: E402
 from ipd_strategy import Machine  # noqa: E402
 from neural_policy import NeuralPolicy  # noqa: E402
+from rl_policy import RLPolicy  # noqa: E402
 
 
 def play(policy, opponent=TFT(), rounds: int = 100):
@@ -60,14 +61,29 @@ class LayoutTests(unittest.TestCase):
             paths.config_path("adversarial_policy_config_aggressive.json"),
             paths.config_path("adversarial_gru_policy_config.json"),
             paths.config_path("adversarial_gru_policy_config_aggressive.json"),
+            paths.config_path("adversarial_rl_policy_config.json"),
+            paths.config_path("adversarial_rl_policy_config_aggressive.json"),
             paths.weights_path("neural_policy_weights.json"),
             paths.weights_path("gru_policy_weights.json"),
+            paths.weights_path("rl_policy_checkpoint.json"),
+            paths.weights_path("rl_policy_weights.json"),
+            paths.weights_path("rl_policy_checkpoint_stage1.json"),
+            paths.weights_path("rl_policy_weights_stage1.json"),
+            paths.weights_path("rl_policy_checkpoint_bc.json"),
+            paths.weights_path("rl_policy_weights_bc.json"),
+            paths.weights_path("rl_policy_checkpoint_scratch_base.json"),
+            paths.weights_path("rl_policy_weights_scratch_base.json"),
             paths.result_path("train_multiobj_results.json"),
             paths.result_path("train_bayes_priors_results.json"),
             paths.result_path("train_joint_results.json"),
             paths.cpp_path("ipd_features.hpp"),
+            paths.cpp_path("neural_policy.hpp"),
+            paths.cpp_path("neural_policy.cpp"),
+            paths.cpp_path("adversarial_rl.cpp"),
             paths.cpp_path("neural_policy_weights.hpp"),
             paths.cpp_path("gru_policy_weights.hpp"),
+            paths.cpp_path("rl_policy_weights.hpp"),
+            paths.cpp_path("rl_policy_weights_bc.hpp"),
         ]
         for path in expected:
             self.assertTrue(Path(path).is_file(), path)
@@ -92,12 +108,30 @@ class PolicyTests(unittest.TestCase):
             GRUPolicy(paths.weights_path("gru_policy_weights.json"))
         )
 
+    @unittest.skipUnless(
+        Path(paths.weights_path("rl_policy_checkpoint.json")).is_file(),
+        "RL checkpoint has not been trained yet",
+    )
+    def test_rl_policy(self):
+        path = paths.weights_path("rl_policy_checkpoint.json")
+        self.assert_boundaries(RLPolicy(path, safe=True))
+
+        # The deployable export must match the actor-critic forward pass.
+        policy = RLPolicy(path, mode="argmax")
+        exported = NeuralPolicy(policy.export_policy_weights(), mode="argmax")
+        for mine, theirs in (([], []), ([C, C], [C, C]),
+                             ([C, D, C], [C, D, D]), ([D] * 10, [D] * 10)):
+            self.assertAlmostEqual(policy.predict_proba(mine, theirs),
+                                   exported.predict_proba(mine, theirs), places=7)
+
     def test_adversarial_config_resolution(self):
         for config in (
             "adversarial_policy_config.json",
             "adversarial_policy_config_aggressive.json",
             "adversarial_gru_policy_config.json",
             "adversarial_gru_policy_config_aggressive.json",
+            "adversarial_rl_policy_config.json",
+            "adversarial_rl_policy_config_aggressive.json",
         ):
             policy = AdversarialPolicy.from_config(paths.config_path(config))
             self.assert_boundaries(policy)

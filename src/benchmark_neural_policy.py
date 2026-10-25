@@ -8,6 +8,9 @@ Uses exactly the same four distributions and seed convention as
 Examples::
 
     python3 src/benchmark_neural_policy.py --fields 8 --workers 20
+    python3 src/benchmark_neural_policy.py --arch rl --fields 20
+    python3 src/benchmark_neural_policy.py --arch adv-rl \
+        --config configs/adversarial_rl_policy_config_aggressive.json --fields 20
     python3 src/benchmark_neural_policy.py --neural-mode argmax --fields 4
 """
 from __future__ import annotations
@@ -24,6 +27,7 @@ from ipd_sim import payoff
 from neural_policy import NeuralPolicy
 from gru_policy import GRUPolicy
 from adversarial_policy import AdversarialPolicy
+from rl_policy import RLPolicy
 from search_common import ParamPolicy
 from train_multiobj import ParamResp, build_dist_field
 from train_bayes_priors import ParamBayesPrior
@@ -61,6 +65,24 @@ def make(kind, cfg):
         return GRUPolicy(cfg["weights"], seed=cfg.get("seed", 20261024),
                          mode=cfg.get("mode", "sample"),
                          name=cfg.get("name", "GRU-Net"))
+    if kind in ("rl", "adv-rl"):
+        # Accept either the actor-critic checkpoint or the deployable MLP
+        # export.  Both are labelled RL-PPO in the result table.
+        with open(cfg["weights"], encoding="utf-8") as fh:
+            fmt = json.load(fh).get("format")
+        cls = NeuralPolicy if fmt == "ipd-neural-policy-v1" else RLPolicy
+        base = cls(cfg["weights"], seed=cfg.get("seed", 20261024),
+                   mode=cfg.get("mode", "sample"),
+                   name="RL-PPO" if kind == "adv-rl"
+                   else cfg.get("name", "RL-PPO"))
+        if kind == "rl":
+            return base
+        return AdversarialPolicy(
+            base, gap=cfg.get("gap"), min_c=cfg.get("min_c", 8),
+            min_d=cfg.get("min_d", 3), late_day=cfg.get("late_day"),
+            repair=cfg.get("repair", False),
+            name=cfg.get("name", "Adv-RL"),
+        )
     if kind == "adversarial":
         return AdversarialPolicy.from_config(
             cfg["config"], seed=cfg.get("seed", 20261024),
@@ -95,7 +117,8 @@ def eval_task(task):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--arch", default="mlp", choices=("mlp", "gru", "adversarial"))
+    ap.add_argument("--arch", default="mlp",
+                    choices=("mlp", "gru", "rl", "adv-rl", "adversarial"))
     ap.add_argument("--weights", default=None)
     ap.add_argument("--config", default=None,
                     help="adversarial config (default: adversarial_policy_config.json)")
@@ -109,24 +132,44 @@ def main():
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    if args.arch == "adversarial":
+    acfg = None
+    if args.arch in ("adversarial", "adv-rl"):
         if args.config is None:
-            args.config = config_path("adversarial_policy_config.json")
+            args.config = config_path(
+                "adversarial_policy_config_aggressive.json"
+                if args.arch == "adv-rl" else "adversarial_policy_config.json")
         with open(args.config, encoding="utf-8") as fh:
             acfg = json.load(fh)
+    if args.arch == "adversarial":
         label = f"Adv-{acfg.get('base_arch', 'mlp').upper()}"
         kind = "adversarial"
         if args.out is None:
             args.out = result_path("adversarial_benchmark.json")
+    elif args.arch == "adv-rl":
+        if args.weights is None:
+            base = acfg.get("base_weights", "rl_policy_checkpoint.json")
+            args.weights = weights_path(base)
+        label = "Adv-RL"
+        kind = "adv-rl"
+        if args.out is None:
+            args.out = result_path("adversarial_rl_benchmark.json")
     else:
         if args.weights is None:
-            args.weights = (weights_path("gru_policy_weights.json") if args.arch == "gru"
-                            else weights_path("neural_policy_weights.json"))
+            if args.arch == "gru":
+                args.weights = weights_path("gru_policy_weights.json")
+            elif args.arch == "rl":
+                args.weights = weights_path("rl_policy_checkpoint.json")
+            else:
+                args.weights = weights_path("neural_policy_weights.json")
         if args.out is None:
-            args.out = (result_path("gru_benchmark.json") if args.arch == "gru"
-                        else result_path("neural_benchmark.json"))
-        label = "GRU" if args.arch == "gru" else "Neural"
-        kind = "gru" if args.arch == "gru" else "neural"
+            if args.arch == "gru":
+                args.out = result_path("gru_benchmark.json")
+            elif args.arch == "rl":
+                args.out = result_path("rl_benchmark.json")
+            else:
+                args.out = result_path("neural_benchmark.json")
+        label = {"gru": "GRU", "rl": "RL-PPO"}.get(args.arch, "Neural")
+        kind = {"gru": "gru", "rl": "rl"}.get(args.arch, "neural")
 
     final_cfg, resp_cfg, bayes_cfg = load_cfgs()
     cands = [
@@ -137,8 +180,12 @@ def main():
                                        "bayes": bayes_cfg, "mode": "majority"}),
         (f"{label}-{args.neural_mode}", kind,
          ({"config": args.config, "mode": args.neural_mode}
-          if kind == "adversarial"
-          else {"weights": args.weights, "mode": args.neural_mode})),
+          if kind == "adversarial" else
+          {"weights": args.weights, "mode": args.neural_mode,
+           **{k: acfg.get(k) for k in
+              ("gap", "min_c", "min_d", "late_day", "repair")}}
+          if kind == "adv-rl" else
+          {"weights": args.weights, "mode": args.neural_mode})),
     ]
     if not args.include_baselines:
         cands = cands[-1:]

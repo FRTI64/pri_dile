@@ -8,6 +8,10 @@ cheaper to compare several strategies on unseen fields.
 Example::
 
     python3 src/blind_test_neural.py --fields 10 --workers 10
+    python3 src/blind_test_neural.py --arch rl --fields 10 --workers 12
+    python3 src/blind_test_neural.py --arch adv-rl \
+        --config configs/adversarial_rl_policy_config_aggressive.json \
+        --fields 10 --workers 12
 """
 from __future__ import annotations
 
@@ -23,6 +27,7 @@ from ipd_sim import payoff, play_match
 from neural_policy import NeuralPolicy
 from gru_policy import GRUPolicy
 from adversarial_policy import AdversarialPolicy
+from rl_policy import RLPolicy
 from search_common import ParamPolicy
 from train_multiobj import ParamResp
 from train_bayes_priors import ParamBayesPrior
@@ -47,6 +52,23 @@ def make_candidates(weights: str, neural_mode: str, arch: str = "mlp",
     if arch == "gru":
         policy = GRUPolicy(weights, seed=20261024, mode=neural_mode)
         label = "GRU"
+    elif arch in ("rl", "adv-rl"):
+        with open(weights, encoding="utf-8") as fh:
+            fmt = json.load(fh).get("format")
+        cls = NeuralPolicy if fmt == "ipd-neural-policy-v1" else RLPolicy
+        base = cls(weights, seed=20261024, mode=neural_mode)
+        if arch == "rl":
+            policy = base
+            label = "RL-PPO"
+        else:
+            with open(config, encoding="utf-8") as fh:
+                acfg = json.load(fh)
+            policy = AdversarialPolicy(
+                base, gap=acfg.get("gap"), min_c=acfg.get("min_c", 8),
+                min_d=acfg.get("min_d", 3), late_day=acfg.get("late_day"),
+                repair=acfg.get("repair", False), name="Adv-RL",
+            )
+            label = "Adv-RL"
     elif arch == "adversarial":
         policy = AdversarialPolicy.from_config(config, seed=20261024,
                                                 mode=neural_mode)
@@ -111,25 +133,42 @@ def main():
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=20261025)
     ap.add_argument("--arch", default="mlp",
-                    choices=("mlp", "gru", "adversarial"))
+                    choices=("mlp", "gru", "rl", "adv-rl", "adversarial"))
     ap.add_argument("--weights", default=None)
     ap.add_argument("--config", default=None)
     ap.add_argument("--neural-mode", default="sample", choices=("sample", "argmax"))
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    if args.arch == "adversarial":
+    if args.arch in ("adversarial", "adv-rl"):
         if args.config is None:
-            args.config = config_path("adversarial_policy_config.json")
+            args.config = config_path(
+                "adversarial_policy_config_aggressive.json"
+                if args.arch == "adv-rl" else "adversarial_policy_config.json")
+        if args.arch == "adv-rl" and args.weights is None:
+            with open(args.config, encoding="utf-8") as fh:
+                base = json.load(fh).get("base_weights",
+                                         "rl_policy_checkpoint.json")
+            args.weights = weights_path(base)
         if args.out is None:
-            args.out = result_path("blind_adversarial_results.json")
+            args.out = result_path(
+                "blind_adversarial_rl_results.json"
+                if args.arch == "adv-rl" else "blind_adversarial_results.json")
     else:
         if args.weights is None:
-            args.weights = (weights_path("gru_policy_weights.json") if args.arch == "gru"
-                            else weights_path("neural_policy_weights.json"))
+            if args.arch == "gru":
+                args.weights = weights_path("gru_policy_weights.json")
+            elif args.arch == "rl":
+                args.weights = weights_path("rl_policy_checkpoint.json")
+            else:
+                args.weights = weights_path("neural_policy_weights.json")
         if args.out is None:
-            args.out = (result_path("blind_gru_results.json") if args.arch == "gru"
-                        else result_path("blind_neural_results.json"))
+            if args.arch == "gru":
+                args.out = result_path("blind_gru_results.json")
+            elif args.arch == "rl":
+                args.out = result_path("blind_rl_results.json")
+            else:
+                args.out = result_path("blind_neural_results.json")
     seeds = [args.seed + i * 7919 for i in range(args.fields)]
     tasks = [(seed, args.n, args.weights, args.neural_mode, args.arch,
               args.config) for seed in seeds]

@@ -1,7 +1,9 @@
 # 100 天囚徒困境策略项目
 
 本项目实现并比较了多类 100 天迭代囚徒困境（IPD）策略：规则策略、贝叶斯策略、
-多数投票融合策略，以及可导出到 C++ 的 MLP / GRU-Net 神经策略和约束对抗剥削版本。
+多数投票融合策略，可导出到 C++ 的 MLP / GRU-Net 神经策略、约束对抗剥削版本，
+以及直接用比赛收益训练的完整 PPO 强化学习策略。最终从零训练的 RL 是最高盲测，
+加上约束剥削规则（Adv-RL）后是最高四分布。
 
 当前推荐版本和完整实验结论见 **[HANDOVER.md](HANDOVER.md)**。
 
@@ -67,6 +69,8 @@ pip install -r requirements-train.txt
 python3 src/train_neural_policy.py --device auto
 python3 src/train_gru_policy.py --device auto
 python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
+python3 src/train_rl_policy.py --device auto --iterations 100 \
+  --dist-weights 1,1,1,2 --bc-kl-coef 0.1
 ```
 
 ### 四分布与盲测
@@ -76,10 +80,16 @@ python3 src/benchmark_neural_policy.py --fields 20 --workers 20
 python3 src/benchmark_neural_policy.py --arch gru --fields 20 --workers 20
 python3 src/benchmark_neural_policy.py --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch rl --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch adv-rl \
+  --config configs/adversarial_rl_policy_config_aggressive.json --fields 20 --workers 20
 
 python3 src/blind_test_neural.py --fields 10 --workers 12
 python3 src/blind_test_neural.py --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch rl --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch adv-rl \
+  --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
 ### C++ 推理
@@ -94,6 +104,21 @@ g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
 # BayesPlus / Responsive3
 g++ -std=c++17 -O2 -DRESP_BAYES_DEMO cpp/bayesplus_responsive3.cpp -o demo
 ./demo
+
+# 完整 RL 策略（权重头文件已生成）
+g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
+  -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o rl_demo
+./rl_demo
+
+# Adv-RL（RL + 两条约束剥削规则；最终 RL base）
+g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
+  -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_demo
+./adv_rl_demo
+
+# Adv-RL（BC 初始化 base，对应 554.29 / 562.91）
+g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_BC_WEIGHTS \
+  -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_bc_demo
+./adv_rl_bc_demo
 ```
 
 重新训练权重后，刷新 C++ 头文件：
@@ -101,6 +126,10 @@ g++ -std=c++17 -O2 -DRESP_BAYES_DEMO cpp/bayesplus_responsive3.cpp -o demo
 ```bash
 python3 src/export_neural_cpp.py   # weights/neural_policy_weights.json -> cpp/neural_policy_weights.hpp
 python3 src/export_gru_cpp.py      # weights/gru_policy_weights.json    -> cpp/gru_policy_weights.hpp
+python3 src/export_neural_cpp.py --weights weights/rl_policy_weights.json \
+  --out cpp/rl_policy_weights.hpp  # 最终 RL -> cpp/rl_policy_weights.hpp
+python3 src/export_neural_cpp.py --weights weights/rl_policy_weights_bc.json \
+  --out cpp/rl_policy_weights_bc.hpp  # Adv-RL base
 ```
 
 ## 结果摘要
@@ -109,7 +138,11 @@ python3 src/export_gru_cpp.py      # weights/gru_policy_weights.json    -> cpp/g
 
 | 策略 | 四分布均值 | 盲测均分 / 平均排名 |
 |---|---:|---:|
-| **Adv-MLP 激进** | **552.24** | **559.51 / 8.10** |
+| **RL-PPO（从零 + hard，最终）** | **553.33** | **563.23 / 8.00** |
+| **Adv-RL 激进（RL + 约束剥削）** | **554.29** | **562.91 / 8.00** |
+| RL-PPO（从零 base） | 551.87 | 559.27 / 8.30 |
+| RL-PPO（BC 初始化 + hard） | 550.50 | 558.60 / 8.30 |
+| Adv-MLP 激进 | 552.24 | 559.51 / 8.10 |
 | Adv-GRU 激进 | 551.69 | 559.05 / 8.10 |
 | Adv-MLP 保守 | 551.62 | 557.44 / 8.30 |
 | GRU-Net | 547.81 | 555.22 / 8.30 |
@@ -127,6 +160,7 @@ python3 src/export_gru_cpp.py      # weights/gru_policy_weights.json    -> cpp/g
 | [docs/IPD_README.md](docs/IPD_README.md) | 全部模块和实验脚本清单 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |
+| [docs/RL_POLICY.md](docs/RL_POLICY.md) | 完整 PPO 强化学习策略：MDP、训练、结果、风险 |
 | [docs/ADVERSARIAL_POLICY.md](docs/ADVERSARIAL_POLICY.md) | 约束对抗剥削规则与调参 |
 | [docs/FINAL_COMPARISON.md](docs/FINAL_COMPARISON.md) | 各测试集主表 |
 | [docs/SUITE_RESULTS.md](docs/SUITE_RESULTS.md) | 9 个测试集结果 |

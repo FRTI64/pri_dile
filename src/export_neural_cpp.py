@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-"""Generate the C++ weight header for the neural policy.
+"""Generate the C++ weight header for the MLP policy (BC or RL).
 
 Usage::
 
     python3 src/export_neural_cpp.py
-    g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO neural_policy.cpp -o neural_demo
+    g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
+
+    python3 src/export_neural_cpp.py \
+        --weights weights/rl_policy_weights.json \
+        --out cpp/rl_policy_weights.hpp
+    g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
+        -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o rl_demo
 """
 from __future__ import annotations
 
@@ -55,6 +61,7 @@ def main():
         f"constexpr int N_HIDDEN0 = {n0};",
         f"constexpr int N_HIDDEN1 = {n1};",
         f"constexpr double TEMPERATURE = {float(w.get('temperature', 1.0)):.9g};",
+        f"constexpr bool SAFE = {'true' if w.get('safe', True) else 'false'};",
         "",
         "static const float MEAN[N_FEATURES] = {",
         "    " + array(w["feature_mean"], 10),

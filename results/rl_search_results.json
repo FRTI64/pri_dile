@@ -1,0 +1,180 @@
+{
+  "format": "ipd-rl-search-results-v1",
+  "seed_convention": {
+    "benchmark": 20261026,
+    "blind": 20261025,
+    "training_seed": 20261030
+  },
+  "runs": [
+    {
+      "name": "run2-safe-ppo",
+      "description": "PPO from BC, shared trunk, reward centering",
+      "command": "python3 src/train_rl_policy.py --device cuda --workers 24 --iterations 100 --val-every 5 --fields-per-dist 6 --n 80 --val-fields-per-dist 4 --val-n 100 --ent-coef 0.0001 --lr 2e-4 --center-rewards --target-kl 0.02",
+      "best_iteration": 70,
+      "benchmark_20": {
+        "original": 552.44,
+        "late": 546.08,
+        "grim30": 551.27,
+        "wide": 547.63,
+        "avg": 549.35
+      },
+      "blind_10": {
+        "score": 550.70,
+        "mean_rank": 9.10,
+        "rank1": "4/10",
+        "top10": "7/10",
+        "worst": 27
+      },
+      "note": "safe but over-exploits; wide/blind below BC"
+    },
+    {
+      "name": "run3-wide-kl",
+      "description": "PPO from BC, separate value trunk, advantage centering, wide 2x, BC KL 0.1",
+      "command": "python3 src/train_rl_policy.py --device cuda --workers 24 --iterations 100 --val-every 5 --fields-per-dist 6 --n 80 --val-fields-per-dist 4 --val-n 100 --ent-coef 0.0001 --lr 2e-4 --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 --dist-weights 1,1,1,2",
+      "best_iteration": 95,
+      "benchmark_20": {
+        "original": 551.66,
+        "late": 543.81,
+        "grim30": 550.28,
+        "wide": 552.44,
+        "avg": 549.55
+      },
+      "blind_10": {
+        "score": 557.95,
+        "mean_rank": 8.30,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 27
+      },
+      "note": "wide weighting and BC KL recover blind performance; shipped as stage1"
+    },
+    {
+      "name": "run4-bc-hard-mined",
+      "description": "fine-tune run3 with hard opponents (ProbeBot/EarlyD/Bully/etc.)",
+      "command": "python3 src/train_rl_policy.py --device cuda --workers 24 --iterations 60 --val-every 5 --fields-per-dist 5 --n 80 --val-fields-per-dist 4 --val-n 100 --ent-coef 0.0001 --lr 1e-4 --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 --init-weights weights/rl_policy_checkpoint_stage1.json --train-dists original,late,grim30,wide,hard --dist-weights 1,1,1,2,1 --select-metric blind",
+      "best_iteration": 15,
+      "benchmark_20": {
+        "original": 554.08,
+        "late": 544.29,
+        "grim30": 550.34,
+        "wide": 553.30,
+        "avg": 550.50
+      },
+      "blind_10": {
+        "score": 558.60,
+        "mean_rank": 8.30,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 27
+      },
+      "note": "shipped as weights/rl_policy_*_bc.json; base for Adv-RL"
+    },
+    {
+      "name": "run5-scratch-base",
+      "description": "PPO from random initialization, 30 CPU iterations",
+      "command": "python3 src/train_rl_policy.py --device cpu --workers 16 --iterations 30 --val-every 5 --fields-per-dist 5 --n 80 --val-fields-per-dist 3 --val-n 100 --ent-coef 0.001 --lr 3e-4 --center-advantages --from-scratch --dist-weights 1,1,1,2 --select-metric avg",
+      "best_iteration": 30,
+      "benchmark_20": {
+        "original": 553.73,
+        "late": 547.55,
+        "grim30": 552.22,
+        "wide": 553.99,
+        "avg": 551.87
+      },
+      "blind_10": {
+        "score": 559.27,
+        "mean_rank": 8.30,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 27
+      },
+      "note": "shipped as weights/rl_policy_*_scratch_base.json"
+    },
+    {
+      "name": "run6-scratch-hard",
+      "description": "fine-tune the from-scratch run with hard opponents",
+      "command": "python3 src/train_rl_policy.py --device cpu --workers 16 --iterations 40 --val-every 5 --fields-per-dist 5 --n 80 --val-fields-per-dist 3 --val-n 100 --ent-coef 0.0001 --lr 1e-4 --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 --init-weights weights/rl_policy_checkpoint_scratch_base.json --train-dists original,late,grim30,wide,hard --dist-weights 1,1,1,2,1 --select-metric blind",
+      "best_iteration": 30,
+      "benchmark_20": {
+        "original": 555.88,
+        "late": 548.41,
+        "grim30": 552.09,
+        "wide": 556.95,
+        "avg": 553.33
+      },
+      "blind_10": {
+        "score": 563.23,
+        "mean_rank": 8.00,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 25
+      },
+      "note": "shipped as weights/rl_policy_*.json; best single RL and best blind score"
+    },
+    {
+      "name": "adv-rl-conservative",
+      "description": "run4 BC base + conservative exploitation rules",
+      "config": "configs/adversarial_rl_policy_config.json",
+      "base": "weights/rl_policy_weights_bc.json",
+      "benchmark_20": {
+        "original": 556.10,
+        "late": 549.25,
+        "grim30": 553.43,
+        "wide": 556.16,
+        "avg": 553.73
+      },
+      "blind_10": {
+        "score": 561.05,
+        "mean_rank": 8.20,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 26
+      }
+    },
+    {
+      "name": "adv-rl-aggressive",
+      "description": "run4 BC base + aggressive exploitation rules",
+      "config": "configs/adversarial_rl_policy_config_aggressive.json",
+      "base": "weights/rl_policy_weights_bc.json",
+      "benchmark_20": {
+        "original": 555.76,
+        "late": 549.19,
+        "grim30": 553.39,
+        "wide": 558.82,
+        "avg": 554.29
+      },
+      "blind_10": {
+        "score": 562.91,
+        "mean_rank": 8.00,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 25
+      },
+      "note": "best four-distribution score"
+    },
+    {
+      "name": "adv-rl-scratch-hard-ablation",
+      "description": "run6 scratch-hard base + conservative exploitation rules",
+      "base": "weights/rl_policy_weights.json",
+      "benchmark_20": {
+        "original": 556.41,
+        "late": 549.01,
+        "grim30": 552.76,
+        "wide": 556.75,
+        "avg": 553.73
+      },
+      "blind_10": {
+        "score": 562.79,
+        "mean_rank": 7.90,
+        "rank1": "7/10",
+        "top10": "7/10",
+        "worst": 25
+      },
+      "note": "slightly better mean rank than standalone, slightly lower score; not shipped as a config"
+    }
+  ],
+  "baselines": {
+    "neural_bc": {"benchmark_20_avg": 548.15, "blind_10": 555.10, "mean_rank": 8.30},
+    "adv_mlp_aggressive": {"benchmark_20_avg": 552.24, "blind_10": 559.51, "mean_rank": 8.10}
+  }
+}

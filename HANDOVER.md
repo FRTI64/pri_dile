@@ -19,7 +19,8 @@ README.md    项目总览与快速开始
 
 ## 0. 本次新增工作摘要
 
-本轮在原有规则策略之外，新增了三类神经/对抗策略，并补齐了 C++ 推理、测试和文档。
+本轮在原有规则策略之外，新增了 MLP/GRU/完整 RL 三类学习策略及对应的约束剥削
+版本，并补齐了 C++ 推理、测试和文档。
 
 | 工作 | 主要文件 | 四分布均值 | 盲测均分 / 排名 |
 |---|---|---:|---:|
@@ -27,6 +28,10 @@ README.md    项目总览与快速开始
 | GRU-Net 版本 | `src/train_gru_policy.py` / `src/gru_policy.py` | 547.81 | 555.22 / 8.30 |
 | 约束对抗剥削（MLP 激进） | `src/adversarial_policy.py` / `configs/adversarial_policy_config_aggressive.json` | **552.24** | **559.51 / 8.10** |
 | 约束对抗剥削（GRU 激进） | `configs/adversarial_gru_policy_config_aggressive.json` | 551.69 | 559.05 / 8.10 |
+| **完整 RL（PPO，从零 + hard，最终）** | `src/train_rl_policy.py` / `src/rl_policy.py` | **553.33** | **563.23 / 8.00** |
+| 完整 RL（PPO，从零 base） | `src/train_rl_policy.py --from-scratch` | 551.87 | 559.27 / 8.30 |
+| 完整 RL（PPO，BC 初始化） | `src/train_rl_policy.py` / `src/rl_policy.py` | 550.50 | 558.60 / 8.30 |
+| **Adv-RL 激进** | `src/adversarial_policy.py` + `configs/adversarial_rl_policy_config_aggressive.json` | **554.29** | **562.91 / 8.00** |
 
 关键点：
 
@@ -35,7 +40,17 @@ README.md    项目总览与快速开始
 - 对抗模块只做“对手先背叛之后”的事后剥削，不主动探测，因此不会触发 Grim。
 - 对抗版的约束是“四个验证分布均分不下降”，不是“每个对手类型都不下降”。
   激进版在少量 wild 类型上可能掉几分，保守版更稳；详见 `docs/ADVERSARIAL_POLICY.md`。
-- 本轮所有测试都在 24 核 CPU + RTX 5090 Laptop 上完成；NPU 代码路径已实现但未实机验证。
+- 完整 RL 版本用 PPO 直接优化 100 天总分，不再依赖行为克隆；训练时 24 个
+  worker 生成 rollout，GPU 只做更新，推理仍不需要 PyTorch。
+- RL 默认保留“不主动探测”的安全规则，并用 wide 加权、BC KL 正则和 hard 对手
+  挖掘压低尾部风险；`--allow-probe` 可关闭安全规则做对照。
+- **最终的单独 RL**（从零 + hard）四分布 553.33、盲测 **563.23 / 8.00**，
+  是目前最高盲测，也是最好的单网络策略。
+- **Adv-RL** 把 BC 初始化的 RL 作为 base，再套用两条约束剥削规则；四分布
+  **554.29**、盲测 562.91 / 8.00，是最高四分布。两者都超过此前最好的
+  Adv-MLP（552.24 / 559.51）。
+- 本轮大部分训练/测试在 24 核 CPU + RTX 5090 Laptop 上完成；最终从零 + hard
+  的 RL 在 CPU 上完成。NPU 代码路径已实现但未实机验证。
 
 复现入口：
 
@@ -46,11 +61,53 @@ pip install -r requirements-train.txt
 python3 src/train_neural_policy.py --device auto
 python3 src/train_gru_policy.py --device auto
 python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
+# RL 阶段 1：wide 加权 + BC KL
+python3 src/train_rl_policy.py --device auto --iterations 100 \
+  --dist-weights 1,1,1,2 --ent-coef 0.0001 --lr 2e-4 \
+  --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 \
+  --out weights/rl_policy_weights_stage1.json \
+  --checkpoint-out weights/rl_policy_checkpoint_stage1.json \
+  --history-out results/rl_training_history_stage1.json
+
+# RL 阶段 2：BC base + hard（Adv-RL 的 base）
+python3 src/train_rl_policy.py --device auto --iterations 60 \
+  --init-weights weights/rl_policy_checkpoint_stage1.json \
+  --train-dists original,late,grim30,wide,hard \
+  --dist-weights 1,1,1,2,1 --ent-coef 0.0001 --lr 1e-4 \
+  --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 \
+  --select-metric blind --out weights/rl_policy_weights_bc.json \
+  --checkpoint-out weights/rl_policy_checkpoint_bc.json \
+  --history-out results/rl_training_history_bc.json
+
+# RL 阶段 3：从零 base（30 iter）
+python3 src/train_rl_policy.py --device auto --from-scratch \
+  --iterations 30 --fields-per-dist 5 --n 80 \
+  --dist-weights 1,1,1,2 --ent-coef 0.001 --lr 3e-4 \
+  --center-advantages --select-metric avg \
+  --out weights/rl_policy_weights_scratch_base.json \
+  --checkpoint-out weights/rl_policy_checkpoint_scratch_base.json \
+  --history-out results/rl_training_history_scratch_base.json
+
+# RL 阶段 4：从零 + hard（最终单独 RL）
+python3 src/train_rl_policy.py --device auto --iterations 40 \
+  --init-weights weights/rl_policy_checkpoint_scratch_base.json \
+  --train-dists original,late,grim30,wide,hard \
+  --dist-weights 1,1,1,2,1 --ent-coef 0.0001 --lr 1e-4 \
+  --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 \
+  --select-metric blind --out weights/rl_policy_weights.json \
+  --checkpoint-out weights/rl_policy_checkpoint.json \
+  --history-out results/rl_training_history.json
 
 python3 src/benchmark_neural_policy.py --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch rl --fields 20 --workers 20
 python3 src/blind_test_neural.py --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch rl --fields 10 --workers 12
+python3 src/benchmark_neural_policy.py --arch adv-rl \
+  --config configs/adversarial_rl_policy_config_aggressive.json --fields 20 --workers 20
+python3 src/blind_test_neural.py --arch adv-rl \
+  --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
 ---
@@ -61,29 +118,43 @@ python3 src/blind_test_neural.py --arch adversarial \
 
 | 方案 | 复杂度 | 盲测均分 | 盲测平均排名 | 适用 |
 |---|---:|---:|---:|---|
-| **Adv-MLP 激进** | 中 | **559.51** | **8.10** | 追求最高分，需权重+配置 |
+| **RL-PPO（从零 + hard，最终）** | 中 | **563.23** | **8.00** | **最高盲测，最佳单网络策略** |
+| **Adv-RL 激进** | 中 | **562.91** | **8.00** | **最高四分布，RL 权重+配置** |
+| Adv-RL 保守 | 中 | 561.05 | 8.20 | RL 版，逐类型风险略小 |
+| **Adv-MLP 激进** | 中 | 559.51 | 8.10 | 此前最高分，需权重+配置 |
+| RL-PPO（从零 base） | 中 | 559.27 | 8.30 | 从零训练的中间阶段 |
 | **Adv-GRU 激进** | 中 | **559.05** | **8.10** | GRU 版最高分 |
+| RL-PPO（BC 初始化） | 中 | 558.60 | 8.30 | Adv-RL 的 base |
 | **Adv-MLP 保守** | 中 | 557.44 | 8.30 | 逐类型风险更小 |
 | **Adv-GRU 保守** | 中 | 557.00 | 8.30 | GRU 保守版 |
 | **GRU-Net-GPU/NPU** | 中 | 555.22 | 8.30 | 可携带权重、想要循环状态 |
 | **Neural-GPU/NPU** | 中 | 555.10 | 8.30 | 可携带权重、想要更简单的 MLP |
-| **Triple-majority** | 高 | 554.99 | 8.30 | 追求最高盲测表现 |
+| **Triple-majority** | 高 | 554.99 | 8.30 | 规则策略里盲测较强 |
 | **Final-tuned** | 低 | 549.39 | 10.40 | 实现最简单、综合稳定 |
 | **Final+Resp3** | 中 | 551.75 | 8.90 | 简单联合的折中 |
 
 **建议：**
 
-- 如果比赛允许提交权重 + 配置：优先 **Adv-MLP 激进**（559.51 / 8.10）；
-  想要更低逐类型风险则用 **Adv-MLP 保守**（557.44 / 8.30）；
+- 如果**盲测分数**是主要指标，且想用单一网络：优先 **RL-PPO 从零 + hard**
+  （553.33 / 563.23 / 8.00）；它没有外层规则，是当前最高盲测；
+- 如果**四分布均值**是主要指标：优先 **Adv-RL 激进**（554.29 / 562.91 / 8.00），
+  base 使用 `weights/rl_policy_weights_bc.json`；
+- 想要更低逐类型风险：**Adv-RL 保守**（553.73 / 561.05 / 8.20）；
+- 如果不想用外层剥削规则：**RL-PPO 从零 + hard** 或纯从零 base
+  （551.87 / 559.27 / 8.30）；
+- 如果不想用 RL 权重，退回 **Adv-MLP 激进**（552.24 / 559.51 / 8.10）；
 - 如果希望保留 GRU 循环状态：用 **Adv-GRU 激进** 或保守版；
 - 如果比赛允许每天运行多个子策略：**Triple-majority**；
 - 如果只能提交纯规则/无权重：**Final-tuned** 或 **Triple-majority**；
 - 如果不希望三重策略复杂，但想要联合收益：用 **Final+Resp3**。
 
-> 神经/对抗版本的盲测来自新的 `src/blind_test_neural.py`；该脚本复用了对手循环赛，
-> 与旧 `src/blind_test.py` 的绝对分数不能直接混用。同一脚本内 Adv > Neural/GRU > Triple。
+> 神经/RL/对抗版本的盲测来自新的 `src/blind_test_neural.py`；该脚本复用了对手循环赛，
+> 与旧 `src/blind_test.py` 的绝对分数不能直接混用。同一脚本内
+> RL-PPO（从零 + hard）≈ Adv-RL > Adv-MLP > Adv-GRU > RL-PPO（BC 初始化）>
+> Neural/GRU > Triple。
 > 对抗版本的约束是“四个分布均不下降”，不是“每个对手类型都不下降”。详见
-> `docs/NEURAL_POLICY.md`、`docs/GRU_POLICY.md`、`docs/ADVERSARIAL_POLICY.md`。
+> `docs/NEURAL_POLICY.md`、`docs/GRU_POLICY.md`、`docs/RL_POLICY.md`、
+> `docs/ADVERSARIAL_POLICY.md`。
 
 不要直接使用 `src/ipd_strategy.py` 中的默认参数当作 Final-tuned；默认是早期版本。Final-tuned 的参数在下文和 JSON 中。
 
@@ -95,9 +166,14 @@ python3 src/blind_test_neural.py --arch adversarial \
 
 | 策略 | 原始混合 | 末期收割 | 高 Grim | 宽+聪明 | 四分布均值 |
 |---|---:|---:|---:|---:|---:|
+| **Adv-RL 激进** | **555.76** | **549.19** | **553.39** | **558.82** | **554.29** |
+| Adv-RL 保守 | 556.10 | 549.25 | 553.43 | 556.16 | 553.73 |
+| **RL-PPO（从零 + hard，最终）** | **555.88** | **548.41** | **552.09** | **556.95** | **553.33** |
 | **Adv-MLP 激进** | **552.64** | **548.26** | 553.33 | **554.72** | **552.24** |
 | Adv-MLP 保守 | 552.24 | 547.98 | 553.31 | 552.97 | 551.62 |
 | Adv-GRU 激进 | 551.45 | 547.63 | 553.29 | 554.41 | 551.69 |
+| **RL-PPO（从零 base）** | **553.73** | **547.55** | **552.22** | **553.99** | **551.87** |
+| **RL-PPO（BC 初始化 + hard）** | **554.08** | **544.29** | **550.34** | **553.30** | **550.50** |
 | Neural-sample | 549.92 | 542.85 | 550.20 | 549.63 | 548.15 |
 | GRU-sample | 549.37 | 542.74 | 550.21 | 548.93 | 547.81 |
 | Triple-majority | 549.21 | 542.54 | 549.96 | 548.32 | 547.51 |
@@ -106,8 +182,9 @@ python3 src/blind_test_neural.py --arch adversarial \
 | Resp3-tuned | 547.69 | 542.49 | 549.84 | 543.77 | 545.95 |
 | Bayes-tuned | **550.19** | **546.23** | **554.16** | 526.24 | 544.21 |
 
-Adv 比 Neural/GRU 高约 3.5–4 分；Neural/GRU 与 Triple 同档。对抗版的约束是
-四个分布均不下降，逐类型风险见 `docs/ADVERSARIAL_POLICY.md`。
+最终 RL / Adv-RL 比 Neural/GRU 高约 5–6 分；Adv-MLP 比 Neural/GRU 高约
+3.5–4 分。Neural/GRU 与 Triple 同档。对抗版的约束是四个分布均不下降，
+逐类型风险见 `docs/ADVERSARIAL_POLICY.md`。
 
 ### 2.2 盲测（10 个未见过的 300 人赛场）
 
@@ -119,12 +196,17 @@ Adv 比 Neural/GRU 高约 3.5–4 分；Neural/GRU 与 Triple 同档。对抗版
 | Resp3-tuned | 547.84 | 11.40 | 4/10 | 7/10 |
 | Bayes-tuned | 527.67 | 64.40 | 0/10 | 0/10 |
 
-Neural/GRU/Adv 的盲测用 `src/blind_test_neural.py` 单独跑（复用对手循环赛、每个候选深拷贝同一赛场）：
+Neural/GRU/RL/Adv 的盲测用 `src/blind_test_neural.py` 单独跑（复用对手循环赛、每个候选深拷贝同一赛场）：
 
 | 策略 | 均分 | 平均排名 | 第 1 名 | 前 10 | 最差 |
 |---|---:|---:|---:|---:|---:|
+| **RL-PPO（从零 + hard，最终）** | **563.23** | **8.00** | **7/10** | **7/10** | **25** |
+| **Adv-RL 激进** | **562.91** | **8.00** | **7/10** | **7/10** | **25** |
+| Adv-RL 保守 | 561.05 | 8.20 | 7/10 | 7/10 | 26 |
 | **Adv-MLP 激进** | **559.51** | **8.10** | 7/10 | 7/10 | 25 |
+| RL-PPO（从零 base） | 559.27 | 8.30 | 7/10 | 7/10 | 27 |
 | Adv-GRU 激进 | 559.05 | 8.10 | 7/10 | 7/10 | 25 |
+| RL-PPO（BC 初始化 + hard） | 558.60 | 8.30 | 7/10 | 7/10 | 27 |
 | Adv-MLP 保守 | 557.44 | 8.30 | 7/10 | 7/10 | 27 |
 | Adv-GRU 保守 | 557.00 | 8.30 | 7/10 | 7/10 | 27 |
 | GRU-sample | 555.22 | 8.30 | 7/10 | 7/10 | 27 |
@@ -329,6 +411,90 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 
 详见 `docs/ADVERSARIAL_POLICY.md`。
 
+### 3.9 RL-PPO（完整强化学习）
+
+实现：
+
+- `src/train_rl_policy.py`：PPO 训练、24 worker rollout、验证与导出；
+- `src/rl_policy.py`：纯 Python actor-critic 推理与部署格式导出；
+- `weights/rl_policy_checkpoint.json` / `weights/rl_policy_weights.json`：最终
+  （从零 + hard）checkpoint / 部署 MLP；
+- `weights/rl_policy_checkpoint_bc.json` / `weights/rl_policy_weights_bc.json`：
+  BC 初始化 + hard（Adv-RL base）；
+- `weights/rl_policy_checkpoint_scratch_base.json` /
+  `weights/rl_policy_weights_scratch_base.json`：纯从零 base；
+- `weights/rl_policy_checkpoint_stage1.json` / `weights/rl_policy_weights_stage1.json`：run3 阶段产物；
+- `cpp/rl_policy_weights.hpp` / `cpp/rl_policy_weights_bc.hpp`：C++ 权重。
+
+MDP：
+
+- 状态：与 BC/GRU 相同的 85 维历史特征；
+- 动作：C/D；
+- 奖励：每轮 `payoff/100`，回合 100 轮；
+- 对手：四个官方分布 + 可选 hard 对手混合。
+
+训练：
+
+- 策略主干 85→64→32→1，价值主干独立 85→64→32→1；
+- PPO clip=0.2、GAE(gamma=1, lambda=0.95)、每场优势中心化；
+- `bc_kl_coef=0.1` 把策略拉向初始 BC 策略，抑制过度剥削；
+- `--dist-weights 1,1,1,2` 提高 wide（盲测分布）权重；
+- `--train-dists ...,hard` 加入 ProbeBot、EarlyD1/10/25、Bully 等 hard 对手；
+- 默认保留第 1 天 C、对手未 D 时 C、第 100 天 D 的安全规则。
+
+结果（最终从零 + hard）：
+
+```text
+四分布：555.88 / 548.41 / 552.09 / 556.95，均值 553.33
+盲测：563.23 / 8.00（BC 555.10 / 8.30）
+```
+
+这是目前最高盲测和最好的单网络策略。训练路径：
+
+```text
+run3（BC + wide + KL）        549.55 / 557.95
+run4（BC + hard）             550.50 / 558.60   -> Adv-RL base
+run5（从零 base，30 iter）    551.87 / 559.27
+run6（从零 + hard，40 iter）  553.33 / 563.23   -> 最终
+```
+
+从零训练完全不加载 BC，只复用固定特征标准化，说明 PPO 确实在利用奖励信号学习。
+主要尾部风险是 `Rand3->TFT`（BC 约 554，最终 RL 约 347）；`ProbeBot` 已从
+run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
+
+### 3.10 Adv-RL（RL + 约束剥削）
+
+实现：
+
+- `src/adversarial_policy.py` 的 `base_arch: "rl"` 分支；
+- `configs/adversarial_rl_policy_config_aggressive.json`（激进）；
+- `configs/adversarial_rl_policy_config.json`（保守）；
+- `cpp/adversarial_rl.cpp`（C++17 版本）。
+
+规则与 Adv-MLP 完全相同，base 使用 `weights/rl_policy_weights_bc.json`
+（run4 BC 初始化 + hard）：
+
+1. 首次 D 在 `late_day` 之后且下一回合继续 D → 永久 D；
+2. `n_c>=min_c, n_d>=min_d` 且 `pD-pC<=gap` → 永久 D。
+
+激进配置：`gap=0.2, min_c=12, min_d=2, late_day=40, repair=true`。
+
+结果：
+
+```text
+四分布：555.76 / 549.19 / 553.39 / 558.82，均值 554.29
+盲测：562.91 / 8.00（7/10 第一，7/10 前 10）
+```
+
+这是最高四分布候选，已经超过 Adv-MLP 激进（552.24 / 559.51）。保守版为
+553.73 / 561.05 / 8.20，逐类型风险略小。
+
+把规则套到最终 scratch-hard 单独 RL 上：保守版 553.73 / 562.79，激进版四分布
+553.08，均不如 BC base；所以正式 Adv-RL 配置仍使用
+`weights/rl_policy_weights_bc.json`。
+
+详见 `docs/RL_POLICY.md`。
+
 ---
 
 ## 4. 重要文件
@@ -358,6 +524,18 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 | `src/export_gru_cpp.py` | GRU 权重 JSON → C++ 头文件 |
 | `src/adversarial_policy.py` | 约束剥削 wrapper（MLP/GRU） |
 | `src/train_adversarial_policy.py` | 四分布不掉分约束下的对抗调参 |
+| `src/train_rl_policy.py` | 完整 PPO 强化学习训练（24 worker rollout + GPU 更新） |
+| `src/rl_policy.py` | RL actor-critic 纯 Python 推理与部署导出 |
+| `weights/rl_policy_checkpoint.json` / `weights/rl_policy_weights.json` | 最终从零 + hard 单独 RL |
+| `weights/rl_policy_checkpoint_bc.json` / `weights/rl_policy_weights_bc.json` | BC 初始化 + hard（Adv-RL base） |
+| `weights/rl_policy_checkpoint_scratch_base.json` / `weights/rl_policy_weights_scratch_base.json` | 纯从零 base |
+| `weights/rl_policy_checkpoint_stage1.json` / `weights/rl_policy_weights_stage1.json` | run3 阶段产物 |
+| `cpp/neural_policy.hpp` | BC/RL 共用的 C++ MLP 推理类 |
+| `cpp/adversarial_rl.cpp` | Adv-RL 的 C++17 实现 |
+| `cpp/rl_policy_weights.hpp` | 最终从零 RL 的 C++ 权重头文件 |
+| `cpp/rl_policy_weights_bc.hpp` | Adv-RL BC base 的 C++ 权重头文件 |
+| `configs/adversarial_rl_policy_config*.json` | Adv-RL 保守/激进配置 |
+| `docs/RL_POLICY.md` | RL 的 MDP、训练、结果与风险 |
 | `configs/adversarial_policy_config*.json` | MLP 保守/激进配置 |
 | `configs/adversarial_gru_policy_config*.json` | GRU 保守/激进配置 |
 | `docs/NEURAL_POLICY.md` / `docs/GRU_POLICY.md` / `docs/ADVERSARIAL_POLICY.md` | 三种策略族的方法、接口、结果、风险 |
@@ -393,6 +571,22 @@ GRU 与 MLP 同档：四分布 547.81 vs 548.15，盲测 555.22 vs 555.10。
 | `results/blind_adversarial_aggressive_results.json` | Adv-MLP 激进版盲测 |
 | `results/blind_adversarial_gru_results.json` | Adv-GRU 保守版盲测 |
 | `results/blind_adversarial_gru_aggressive_results.json` | Adv-GRU 激进版盲测 |
+| `results/rl_training_history.json` | 最终从零 + hard 训练/验证曲线 |
+| `results/rl_training_history_bc.json` | BC 初始化 + hard（Adv-RL base）曲线 |
+| `results/rl_training_history_scratch_base.json` | 纯从零 base 曲线 |
+| `results/rl_training_history_stage1.json` | run3 训练/验证曲线 |
+| `results/rl_benchmark.json` | 最终从零 + hard 四分布结果 |
+| `results/blind_rl_results.json` | 最终从零 + hard 盲测结果 |
+| `results/rl_bc_benchmark.json` | BC 初始化 + hard 四分布结果 |
+| `results/blind_rl_bc_results.json` | BC 初始化 + hard 盲测结果 |
+| `results/rl_scratch_base_benchmark.json` | 纯从零 base 四分布结果 |
+| `results/blind_rl_scratch_base_results.json` | 纯从零 base 盲测结果 |
+| `results/adversarial_rl_benchmark.json` | Adv-RL 激进四分布 |
+| `results/blind_adversarial_rl_results.json` | Adv-RL 激进盲测 |
+| `results/adversarial_rl_conservative_benchmark.json` | Adv-RL 保守四分布 |
+| `results/blind_adversarial_rl_conservative_results.json` | Adv-RL 保守盲测 |
+| `results/rl_search_results.json` | RL 各轮 run 的配置与分数汇总 |
+| `results/rl_search_results.json` | RL 各轮 run 的配置与分数汇总 |
 | `results/suite_results.json` | 新测试集数据 |
 | `src/blind_test.py` | 盲测代码 |
 | `src/blind_test_neural.py` | 包含神经策略的盲测代码 |
@@ -427,19 +621,42 @@ python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements-tra
 python3 src/train_neural_policy.py --device auto --seed 20261025
 python3 src/train_gru_policy.py --device auto --seed 20261025
 python3 src/train_adversarial_policy.py --arch mlp --seed 20261026
+python3 src/train_rl_policy.py --device auto --iterations 100 \
+  --dist-weights 1,1,1,2 --ent-coef 0.0001 --lr 2e-4 \
+  --center-advantages --bc-kl-coef 0.1 --target-kl 0.02 \
+  --out weights/rl_policy_weights_stage1.json \
+  --checkpoint-out weights/rl_policy_checkpoint_stage1.json \
+  --history-out results/rl_training_history_stage1.json
+
+# 从零训练（最佳单一 RL 的第一阶段）
+python3 src/train_rl_policy.py --device auto --from-scratch \
+  --iterations 30 --fields-per-dist 5 --n 80 \
+  --dist-weights 1,1,1,2 --ent-coef 0.001 --lr 3e-4 \
+  --center-advantages --select-metric avg \
+  --out weights/rl_policy_weights_scratch_base.json \
+  --checkpoint-out weights/rl_policy_checkpoint_scratch_base.json \
+  --history-out results/rl_training_history_scratch_base.json
 
 # 推理自检（不需要 PyTorch）
 python3 src/neural_policy.py weights/neural_policy_weights.json
 python3 src/gru_policy.py weights/gru_policy_weights.json
 python3 src/adversarial_policy.py configs/adversarial_policy_config.json
+python3 src/neural_policy.py weights/rl_policy_weights.json
+python3 src/neural_policy.py weights/rl_policy_weights_bc.json
+python3 src/neural_policy.py weights/rl_policy_weights_scratch_base.json
+python3 src/adversarial_policy.py configs/adversarial_rl_policy_config_aggressive.json
 
 # 四分布与盲测（不需要 PyTorch）
 python3 src/benchmark_neural_policy.py --fields 20 --workers 20
 python3 src/benchmark_neural_policy.py --arch gru --fields 20 --workers 20
 python3 src/benchmark_neural_policy.py --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch rl --fields 20 --workers 20
+python3 src/benchmark_neural_policy.py --arch adv-rl --config configs/adversarial_rl_policy_config_aggressive.json --fields 20 --workers 20
 python3 src/blind_test_neural.py --fields 10 --workers 12
 python3 src/blind_test_neural.py --arch gru --fields 10 --workers 12
 python3 src/blind_test_neural.py --arch adversarial --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch rl --fields 10 --workers 12
+python3 src/blind_test_neural.py --arch adv-rl --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
 ```
 
 ### 9 个测试集
@@ -485,6 +702,15 @@ mine/theirs = 到此日之前的动作
   1. 把 Final-tuned 也移植到 C++；
   2. 把 Final、Responsive3、BayesPlus 三个动作做多数投票；
   3. 保持三者各自独立状态。
+- **C++ 版 RL-PPO 已提供**：`weights/rl_policy_weights.json` 与
+  `cpp/rl_policy_weights.hpp`；编译时加 `-DNEURAL_POLICY_USE_RL_WEIGHTS`：
+  `g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o rl_demo`。
+  头文件里的 `SAFE` 常量与 Python checkpoint 的 `safe` 字段一致。
+- **C++ 版 Adv-RL 已提供**：`cpp/adversarial_rl.cpp`。
+  最终从零 RL base：
+  `g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_demo`；
+  BC base（对应 554.29 / 562.91）：
+  `g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_BC_WEIGHTS -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_bc_demo`。
 - **C++ 版 NeuralPolicy 已提供**：`cpp/neural_policy.cpp` + `cpp/neural_policy_weights.hpp`。
   重新训练权重后先运行 `python3 src/export_neural_cpp.py` 刷新头文件，再编译：
   `g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo`。
@@ -494,8 +720,9 @@ mine/theirs = 到此日之前的动作
   `g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo`。
   与 Python 版做过 60 组随机历史的逐步概率对齐，最大差异约 `5e-10`。
 - 两种 C++ 策略共用 `cpp/ipd_features.hpp` 的 85 维特征提取。
-- **AdversarialPolicy 目前只有 Python 版本**。如果比赛要求 C++，需要在
-  `NeuralPolicy`/`GRUPolicy` 外层再加同样的两条剥削规则。
+- **Adv-MLP / Adv-GRU 目前只有 Python 版本**；**Adv-RL 已有 C++ 版本**
+  （`cpp/adversarial_rl.cpp`）。如果比赛要求 C++ 且想提交 Adv-MLP，需要在
+  `NeuralPolicy` 外层再加同样的两条剥削规则。
 
 C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序可能造成几分差异。
 
@@ -546,7 +773,22 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
 12. **对抗版本的约束是分布级别，不是逐类型级别**
     Adv 激进版在 `MemOne-rand`、`Extort3`、`NoisyTFT.10/20` 等 wild 类型上可能
     掉几分；但四个分布和盲测总分均上涨。若要求逐类型不掉分，使用保守版或纯
-    Neural/GRU。AdversarialPolicy 目前没有 C++ 版本。
+    Neural/GRU。Adv-MLP/Adv-GRU 目前没有 C++ 版本；Adv-RL 有。
+
+13. **RL 会放大尾部风险**
+    最终 RL 在 `EarlyD1/10`、`Bully`、`Random.90`、`LateD` 上大幅超过 BC；
+    `ProbeBot` 已从 run2 的 143.5 修复到 603，`EarlyD25` 基本持平。最大回退是
+    `Rand3->TFT`（BC 约 554，最终 RL 约 347），`Extort3`、`Random.50/70` 也有
+    小幅回退。如果比赛字段中这些类型比例异常高，优先 Adv-RL（BC base）或
+    BC/GRU。
+
+14. **RL 需要 checkpoint 或部署权重**
+    最终单独 RL：`weights/rl_policy_checkpoint.json` + `weights/rl_policy_weights.json`；
+    Adv-RL base：`weights/rl_policy_weights_bc.json`；纯从零 base：
+    `weights/rl_policy_weights_scratch_base.json`。Adv-RL 还需要
+    `configs/adversarial_rl_policy_config_aggressive.json`。单文件提交时需要
+    内嵌对应 MLP 权重，或退回 Adv-MLP。默认 `safe=true`；只有显式训练
+    `--allow-probe` 才会关闭主动探测限制。
 
 ---
 
@@ -555,14 +797,22 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
 - [ ] 确认比赛接口：函数签名、历史格式、是否允许自定义类和 reset。
 - [ ] 确认是否允许每天运行三个子策略（Triple）。
 - [ ] 确认是否允许提交权重文件；如果只允许单文件，决定是否把 Neural/GRU 权重内嵌。
-- [ ] 确定提交版本：Adv / Neural / GRU-Net / Triple / Final-tuned / Final+Resp3。
-- [ ] 如果提交 Neural/GRU/Adv，先做无 PyTorch 自检：
+- [ ] 确定提交版本：**RL-PPO（从零 + hard）** / **Adv-RL** / Adv-MLP / Neural /
+      GRU-Net / Triple / Final-tuned / Final+Resp3。
+- [ ] 如果提交 Neural/GRU/Adv/RL，先做无 PyTorch 自检：
       `python3 src/neural_policy.py weights/neural_policy_weights.json`、
-      `python3 src/gru_policy.py weights/gru_policy_weights.json` 或
-      `python3 src/adversarial_policy.py configs/adversarial_policy_config.json`。
+      `python3 src/gru_policy.py weights/gru_policy_weights.json`、
+      `python3 src/adversarial_policy.py configs/adversarial_policy_config.json`、
+      `python3 src/neural_policy.py weights/rl_policy_weights.json`、
+      `python3 src/neural_policy.py weights/rl_policy_weights_bc.json`、
+      `python3 src/neural_policy.py weights/rl_policy_weights_scratch_base.json` 或
+      `python3 src/adversarial_policy.py configs/adversarial_rl_policy_config_aggressive.json`。
 - [ ] 如果提交 GRU/Adv-GRU，确认每场调用 `reset()`，且同一时间步只调用一次 `act()`。
-- [ ] 如果提交 Adv，确认权重和对应 `adversarial_*_config.json` 一起提交。
-- [ ] 如果提交 C++，完成 Final-tuned 和 Triple 的 C++ 合并，或使用现有 Neural/GRU C++ 版本。
+- [ ] 如果提交 Adv/Adv-RL，确认权重和对应 `adversarial_*_config.json` 一起提交。
+- [ ] 如果提交 C++，完成 Final-tuned 和 Triple 的 C++ 合并，或使用现有
+      Neural/GRU/RL/Adv-RL C++ 版本（最终 RL 加 `-DNEURAL_POLICY_USE_RL_WEIGHTS`，
+      Adv-RL BC base 加 `-DNEURAL_POLICY_USE_RL_BC_WEIGHTS`，两者都加
+      `-DADVERSARIAL_RL_DEMO` 时启用 Adv-RL wrapper）。
 - [ ] 固定随机种子。
 - [ ] 用最终版本重新跑一次 `src/blind_test.py` 或 `src/blind_test_neural.py`，确认没有配置遗漏。
 - [ ] 检查第 1 天和第 100 天行为。

@@ -1,0 +1,30 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "rl",
+  "base_weights": "rl_policy_weights_bc.json",
+  "gap": 0.2,
+  "min_c": 12,
+  "min_d": 2,
+  "late_day": 40,
+  "repair": true,
+  "meta": {
+    "method": "PPO RL base + constrained aggressive exploitation",
+    "base": "weights/rl_policy_weights_bc.json (run4, BC-initialised PPO)",
+    "constraint": "rule only triggers after the opponent has already defected",
+    "benchmark_20": {
+      "original": 555.76,
+      "late": 549.19,
+      "grim30": 553.39,
+      "wide": 558.82,
+      "avg": 554.29
+    },
+    "blind_10": {
+      "score": 562.91,
+      "mean_rank": 8.0,
+      "rank1": "7/10",
+      "top10": "7/10",
+      "worst": 25
+    },
+    "note": "current best candidate: RL base + the same aggressive rules used by Adv-MLP"
+  }
+}
