@@ -1,0 +1,53 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "gru",
+  "base_weights": "gru_policy_weights.json",
+  "gap": 0.2,
+  "min_c": 12,
+  "min_d": 2,
+  "late_day": 40,
+  "repair": true,
+  "meta": {
+    "method": "constrained black-box adversarial tuning",
+    "constraint": "validation mean may not decrease in any distribution",
+    "seed": 20261026,
+    "search_fields": 4,
+    "search_n": 100,
+    "val_fields": 12,
+    "val_n": 299,
+    "base_scores": {
+      "original": 559.4991638795987,
+      "late": 543.1794871794872,
+      "grim30": 550.0445930880713,
+      "wide": 551.8979933110368
+    },
+    "selected_scores": {
+      "original": 562.0496098104794,
+      "late": 547.6608138238573,
+      "grim30": 553.2254738015607,
+      "wide": 558.4623745819398
+    },
+    "selected_delta": {
+      "original": 2.5504459308807554,
+      "late": 4.481326644370142,
+      "grim30": 3.180880713489387,
+      "wide": 6.564381270903027
+    },
+    "candidates": 24,
+    "note": "aggressive Pareto point for the GRU base",
+    "benchmark_20": {
+      "original": 551.45,
+      "late": 547.63,
+      "grim30": 553.29,
+      "wide": 554.41,
+      "avg": 551.69
+    },
+    "blind": {
+      "score": 559.05,
+      "mean_rank": 8.1,
+      "rank1": "7/10",
+      "top10": "7/10",
+      "worst": 25
+    }
+  }
+}

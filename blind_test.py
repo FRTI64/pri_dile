@@ -10,6 +10,9 @@ from train_bayes_priors import ParamBayesPrior
 from train_joint_final_resp import Hybrid
 from p2_skeleton_search import GapStartPolicy
 from train_wide import sample_wide
+from neural_policy import NeuralPolicy
+from gru_policy import GRUPolicy
+from adversarial_policy import AdversarialPolicy
 
 class Cand:
     def __init__(self, name, policy):
@@ -32,7 +35,8 @@ def load_cfgs():
     bb=max(b['validation'], key=lambda x:x['val_fit'])
     return f,r,h,hb,bb
 
-def candidates():
+def candidates(include_neural=False, neural_weights=None,
+               neural_mode='sample', neural_arch='mlp', neural_config=None):
     f,r,h,hb,bb=load_cfgs()
     out=[]
     out.append(Cand('Final-base', ParamPolicy(seed=20261024)))
@@ -45,6 +49,23 @@ def candidates():
     out.append(Cand('GapStart', GapStartPolicy(1,.5)))
     out.append(Cand('Bayes-base', ParamBayesPrior({"coop_scale":1,"punitive_scale":1,"late_scale":1,"noise_scale":1,"probe_scale":1,"nonresp":.40,"punitive_thr":.55})))
     out.append(Cand('Bayes-tuned', ParamBayesPrior(bb['cfg'])))
+    if include_neural:
+        if neural_weights is None:
+            neural_weights=('gru_policy_weights.json' if neural_arch=='gru'
+                            else 'neural_policy_weights.json')
+        if neural_arch=='gru':
+            out.append(Cand(f'GRU-{neural_mode}',
+                            GRUPolicy(neural_weights, seed=20261024,
+                                      mode=neural_mode)))
+        elif neural_arch=='adversarial':
+            out.append(Cand(f'Adv-{neural_mode}',
+                            AdversarialPolicy.from_config(
+                                neural_config or 'adversarial_policy_config.json',
+                                seed=20261024, mode=neural_mode)))
+        else:
+            out.append(Cand(f'Neural-{neural_mode}',
+                            NeuralPolicy(neural_weights, seed=20261024,
+                                         mode=neural_mode)))
     return out
 
 def eval_field(cand, field):
@@ -70,8 +91,13 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--fields",type=int,default=10)
     ap.add_argument("--seed",type=int,default=20261025)
+    ap.add_argument("--neural",action="store_true",help="include the exported neural policy")
+    ap.add_argument("--neural-arch",default="mlp",choices=("mlp","gru","adversarial"))
+    ap.add_argument("--neural-weights",default=None)
+    ap.add_argument("--neural-config",default=None)
+    ap.add_argument("--neural-mode",default="sample",choices=("sample","argmax"))
     args=ap.parse_args()
-    cands=candidates()
+    cands=candidates(args.neural,args.neural_weights,args.neural_mode,args.neural_arch,args.neural_config)
     print("blind seed base",args.seed)
     all_ranks={c.name:[] for c in cands}
     all_scores={c.name:[] for c in cands}

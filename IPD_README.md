@@ -28,6 +28,23 @@
 - `train_joint_final_resp.py`：Final + Responsive3 联合训练。
 - `train_bayes_priors.py`：BayesPlus 模型先验参数化训练。
 - `triple_hybrid.py`：Final + Responsive3 + BayesPlus 多数投票融合。
+- `train_neural_policy.py`：GPU/NPU 训练的 MLP 神经策略（PyTorch + DAgger）。
+- `neural_policy.py`：MLP 策略的纯 Python 推理实现（无需 PyTorch）。
+- `neural_policy.cpp`：MLP 策略的 C++17 推理实现（含 demo）。
+- `train_gru_policy.py`：GPU/NPU 训练的 GRU-Net 策略。
+- `gru_policy.py`：GRU-Net 的纯 Python 推理实现。
+- `gru_policy.cpp`：GRU-Net 的 C++17 推理实现（含 demo）。
+- `export_neural_cpp.py` / `export_gru_cpp.py`：权重 JSON → C++ 头文件。
+- `neural_policy_weights.hpp` / `gru_policy_weights.hpp`：生成的 C++ 权重。
+- `adversarial_policy.py`：在 MLP/GRU 之上的约束剥削 wrapper。
+- `train_adversarial_policy.py`：四分布不掉分约束下的对抗调参。
+- `adversarial_policy_config*.json`：MLP 保守/激进剥削配置。
+- `adversarial_gru_policy_config*.json`：GRU 保守/激进剥削配置。
+- `benchmark_neural_policy.py`：神经/对抗策略与现有策略的四分布统一对比。
+- `blind_test_neural.py`：包含 MLP/GRU/对抗策略的 300 人盲测排名。
+- `NEURAL_POLICY.md`：MLP 策略的方法、训练、接口、结果与风险。
+- `GRU_POLICY.md`：GRU-Net 的方法、训练、接口、结果与风险。
+- `ADVERSARIAL_POLICY.md`：对抗性剥削规则、调参、结果与风险。
 - `blind_test.py`：完全未参与训练的 300 人盲测。
 - `final_benchmark.py`：Final/Resp3/BayesPlus/联合策略的统一对比。
 - `HANDOVER.md`：交接文档（推荐方案、参数、文件、风险、检查清单）。
@@ -47,6 +64,24 @@ python3 ipd_early.py
 python3 run_large_experiments.py --fields 500 --rank-fields 120 --seed 2026
 g++ -std=c++17 -O2 -DIPD_STRATEGY_DEMO ipd_strategy.cpp -o ipd_demo
 ./ipd_demo
+
+# 神经策略：训练需要 PyTorch，推理不需要
+python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements-train.txt
+python3 train_neural_policy.py --device auto
+python3 train_gru_policy.py --device auto
+python3 train_adversarial_policy.py --arch mlp --seed 20261026
+python3 benchmark_neural_policy.py --fields 20 --workers 20
+python3 benchmark_neural_policy.py --arch gru --fields 20 --workers 20
+python3 benchmark_neural_policy.py --arch adversarial --config adversarial_policy_config_aggressive.json --fields 20 --workers 20
+python3 blind_test_neural.py --fields 10 --workers 12
+python3 blind_test_neural.py --arch gru --fields 10 --workers 12
+python3 blind_test_neural.py --arch adversarial --config adversarial_policy_config_aggressive.json --fields 10 --workers 12
+python3 export_neural_cpp.py
+python3 export_gru_cpp.py
+g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO neural_policy.cpp -o neural_demo
+g++ -std=c++17 -O2 -DGRU_POLICY_DEMO gru_policy.cpp -o gru_demo
+./neural_demo
+./gru_demo
 ```
 
 动作约定：`0=C`，`1=D`；`day` 从 1 到 100；每场开始前调用 `reset()`。

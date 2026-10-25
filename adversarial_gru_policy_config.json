@@ -1,0 +1,28 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "gru",
+  "base_weights": "gru_policy_weights.json",
+  "gap": 0.1,
+  "min_c": 8,
+  "min_d": 3,
+  "late_day": 50,
+  "repair": false,
+  "meta": {
+    "method": "same exploitation parameters as the MLP version; validate on GRU before use",
+    "constraint": "no validation distribution may lose score",
+    "benchmark_20": {
+      "original": 551.82,
+      "late": 547.84,
+      "grim30": 553.26,
+      "wide": 552.79,
+      "avg": 551.43
+    },
+    "blind": {
+      "score": 557.0,
+      "mean_rank": 8.3,
+      "rank1": "7/10",
+      "top10": "7/10",
+      "worst": 27
+    }
+  }
+}

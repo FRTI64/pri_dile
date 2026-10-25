@@ -1,0 +1,45 @@
+{
+  "format": "ipd-adversarial-config-v1",
+  "base_arch": "mlp",
+  "base_weights": "neural_policy_weights.json",
+  "gap": 0.1,
+  "min_c": 8,
+  "min_d": 3,
+  "late_day": 50,
+  "repair": false,
+  "meta": {
+    "method": "constrained adversarial tuning on four distributions",
+    "constraint": "no validation distribution may lose score",
+    "search_fields": 20,
+    "search_n": 299,
+    "seed": 20261026,
+    "base_scores": {
+      "original": 549.92,
+      "late": 542.85,
+      "grim30": 550.2,
+      "wide": 549.63,
+      "avg": 548.15
+    },
+    "adversarial_scores": {
+      "original": 552.24,
+      "late": 547.98,
+      "grim30": 553.31,
+      "wide": 552.97,
+      "avg": 551.62
+    },
+    "benchmark_20": {
+      "original": 552.24,
+      "late": 547.98,
+      "grim30": 553.31,
+      "wide": 552.97,
+      "avg": 551.62
+    },
+    "blind": {
+      "score": 557.44,
+      "mean_rank": 8.3,
+      "rank1": "7/10",
+      "top10": "7/10",
+      "worst": 27
+    }
+  }
+}

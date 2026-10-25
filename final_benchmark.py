@@ -8,12 +8,18 @@ from search_common import ParamPolicy
 from train_multiobj import ParamResp, build_dist_field
 from train_bayes_priors import ParamBayesPrior
 from train_joint_final_resp import Hybrid
+from neural_policy import NeuralPolicy
+from gru_policy import GRUPolicy
+from adversarial_policy import AdversarialPolicy
 
 def make(kind,cfg):
     if kind=='final': return ParamPolicy(seed=20261024,**cfg)
     if kind=='resp': return ParamResp(seed=20261024,**cfg)
     if kind=='bayes': return ParamBayesPrior(cfg)
     if kind=='hybrid': return Hybrid(cfg['final'],cfg['resp'],cfg['p'])
+    if kind=='neural': return NeuralPolicy(cfg['weights'],seed=cfg.get('seed',20261024),mode=cfg.get('mode','sample'))
+    if kind=='gru': return GRUPolicy(cfg['weights'],seed=cfg.get('seed',20261024),mode=cfg.get('mode','sample'))
+    if kind=='adversarial': return AdversarialPolicy.from_config(cfg['config'],seed=cfg.get('seed',20261024),mode=cfg.get('mode','sample'))
     raise ValueError(kind)
 
 def eval_one(args):
@@ -31,7 +37,13 @@ def eval_one(args):
     return name,dist,vals
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--fields',type=int,default=20);ap.add_argument('--workers',type=int,default=24);ap.add_argument('--out',default='final_benchmark.json');args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--fields',type=int,default=20);ap.add_argument('--workers',type=int,default=24);ap.add_argument('--out',default='final_benchmark.json')
+    ap.add_argument('--neural',action='store_true',help='include the exported neural policy')
+    ap.add_argument('--neural-arch',default='mlp',choices=('mlp','gru','adversarial'))
+    ap.add_argument('--neural-weights',default=None)
+    ap.add_argument('--neural-config',default=None)
+    ap.add_argument('--neural-mode',default='sample',choices=('sample','argmax'))
+    args=ap.parse_args()
     m=json.load(open('train_multiobj_results.json'))
     f=next(r['cfg'] for r in m['validation'] if r['kind']=='final')
     r=next(r['cfg'] for r in m['validation'] if r['kind']=='resp')
@@ -48,6 +60,20 @@ def main():
       ('Bayes-tuned','bayes',bt),
       ('Final+Resp3','hybrid',{'final':h['final'],'resp':h['resp'],'p':h['p']}),
     ]
+    if args.neural:
+        if args.neural_arch=='adversarial':
+            if args.neural_config is None:
+                args.neural_config='adversarial_policy_config.json'
+            cands.append((f'Adv-{args.neural_mode}','adversarial',
+                          {'config':args.neural_config,'mode':args.neural_mode}))
+        else:
+            if args.neural_weights is None:
+                args.neural_weights=('gru_policy_weights.json' if args.neural_arch=='gru'
+                                     else 'neural_policy_weights.json')
+            label='GRU' if args.neural_arch=='gru' else 'Neural'
+            kind='gru' if args.neural_arch=='gru' else 'neural'
+            cands.append((f'{label}-{args.neural_mode}',kind,
+                          {'weights':args.neural_weights,'mode':args.neural_mode}))
     rng=random.Random(20261026)
     seed_map={d:[rng.randrange(1<<30) for _ in range(args.fields)] for d in ('original','late','grim30','wide')}
     tasks=[(name,kind,cfg,dist,seeds,299) for name,kind,cfg in cands for dist,seeds in seed_map.items()]
