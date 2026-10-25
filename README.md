@@ -192,7 +192,8 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | Triple-majority | 547.51 | 552.52 / 9.20 |
 | Final-tuned | 546.35 | 549.39 / 10.40 |
 
-不同盲测脚本的绝对分数不可直接混用；详细说明见 `HANDOVER.md`。
+当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
+历史快照与 tuned 参数来源仍保留在 `results/`。详细说明见 `HANDOVER.md`。
 
 ## 文档索引
 

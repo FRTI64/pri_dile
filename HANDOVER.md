@@ -562,8 +562,10 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 | `docs/OPPONENT_PERFORMANCE.md` | 85 类对手逐类型表现 |
 | `docs/MATCHUP_RESULTS.md` | 早期策略对阵汇总 |
 | `docs/ADVANCED_RESULTS.md` | 训练/优化/盲测全过程 |
+| `results/benchmark.json` | 当前统一四分布结果（全部候选） |
+| `results/blind_results.json` | 当前统一盲测结果（全部候选） |
 | `results/matchup_triple_results.csv` | 主策略逐类型原始数据 |
-| `results/final_benchmark.json` | 统一四分布数据 |
+| `results/final_benchmark.json` | 规则基线四分布数据 |
 | `results/neural_benchmark.json` | MLP 策略四分布对比数据 |
 | `results/neural_blind_results.json` | MLP 策略盲测排名数据 |
 | `results/neural_training_history.json` | MLP 策略训练/验证曲线 |
