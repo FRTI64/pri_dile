@@ -1,6 +1,7 @@
 """Evaluation harness: matches, fields, CLIs and output schemas."""
 from __future__ import annotations
 
+import csv
 import json
 import tempfile
 import unittest
@@ -97,6 +98,30 @@ class MatchTests(unittest.TestCase):
                 out.stem + "_suite_weighted.csv")
             self.assertTrue(suite_csv.is_file())
             self.assertIn("original", suite_csv.read_text(encoding="utf-8"))
+
+    def test_pivot_matchup_tables(self):
+        from ipd.tools.pivot_matchup import pivot
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "long.csv"
+            source.write_text(
+                "candidate,type,family,our,opponent,diff,reps\n"
+                "A,TFT,nice,604.0,594.0,10.0,1\n"
+                "A,Grim,punitive,600.0,590.0,10.0,1\n"
+                "B,TFT,nice,595.0,595.0,0.0,1\n"
+                "B,Grim,punitive,590.0,590.0,0.0,1\n",
+                encoding="utf-8")
+            wide = root / "wide.csv"
+            scores = root / "scores.csv"
+            pivot(source, root / "missing.json", wide, scores)
+            rows = list(csv.reader(wide.open(encoding="utf-8")))
+            self.assertEqual(rows[0], ["candidate", "TFT", "Grim"])
+            self.assertEqual(rows[1], ["A", "604|594", "600|590"])
+            self.assertEqual(rows[2], ["B", "595|595", "590|590"])
+            long_rows = list(csv.reader(scores.open(encoding="utf-8")))
+            self.assertEqual(long_rows[0], ["candidate", "type", "family",
+                                            "score"])
+            self.assertEqual(long_rows[1], ["A", "TFT", "nice", "604|594"])
 
 
 class CliIntegrationTests(unittest.TestCase):

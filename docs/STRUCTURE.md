@@ -79,7 +79,7 @@ ipd/
 │   ├── rl.py              PPO
 │   ├── adversarial.py     约束剥削规则搜索
 │   └── search/            multiobj / bayes / joint / wide / triple / p1 / p2...
-└── tools/                 部署工具（C++ 权重导出）
+└── tools/                 部署/结果工具（C++ 权重导出、matchup 透视）
 
 tests/                     分层测试
 configs/eval/              按候选拆分参数的评估配置
@@ -246,6 +246,9 @@ python3 -m ipd matchup --candidates all --opponent-set all --reps 16
 # 逐类型矩阵 + 9 个测试集加权，输出 CSV/JSON
 # 结果文件：matchup_all.csv / matchup_all.json /
 #           matchup_all_suite_weighted.csv
+python3 ipd/tools/pivot_matchup.py
+# matchup_all_wide.csv：候选 × 对手，单元格为 我方分数|对手分数
+# matchup_all_scores.csv：长表 score=我方分数|对手分数
 python3 -m ipd self-test --candidates all             # 快速接口自检
 ```
 

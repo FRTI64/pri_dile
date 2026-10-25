@@ -12,6 +12,8 @@
 文件：
 
 - `results/matchup_all.csv`：逐候选 × 逐对手类型明细
+- `results/matchup_all_wide.csv`：候选 × 对手透视表，单元格为 `我方分数|对手分数`
+- `results/matchup_all_scores.csv`：长表，`score` 列为 `我方分数|对手分数`
 - `results/matchup_all.json`：结构化明细 + 测试集权重 + 加权分数
 - `results/matchup_all_suite_weighted.csv`：9 个测试集加权分数
 - `results/matchup_all_README.md`：本摘要

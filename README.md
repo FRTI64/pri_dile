@@ -223,8 +223,9 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
-逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`。历史快照与
-tuned 参数来源仍保留在 `results/`。详细说明见 `HANDOVER.md`。
+逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`，透视表见
+`results/matchup_all_wide.csv`。历史快照与 tuned 参数来源仍保留在 `results/`。
+详细说明见 `HANDOVER.md`。
 
 ## 文档索引
 
