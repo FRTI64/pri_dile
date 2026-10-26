@@ -24,6 +24,7 @@ MODULES = {
     "neural": "neural",
     "gru": "gru",
     "rl": "rl",
+    "rl-hard60": "rl_hard60",
     "adv-mlp": "adv_mlp",
     "adv-gru": "adv_gru",
     "adv-rl": "adv_rl",

@@ -89,6 +89,11 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   权重 checksum、冻结建议和 E4 负结果见
   `results/selfplay_improvement/sanity/README.md`。主提交建议 RL-PPO，
   21 维备选 SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
+- **新候选 RL-PPO-Hard60（2026-10-26，实验名 A60）**：官方 20-field
+  554.36、blind 20-field 564.17 / 5.75、held-out final 509.76
+  （RL-PPO 506.49），held-out family 无回退。注册名 `rl-hard60`；
+  权重 `weights/rl_policy_weights_hard60.json`；报告
+  `results/hard2_20261026/README.md`。尚未替换主权重。
 
 复现入口：
 
@@ -160,6 +165,7 @@ python3 -m ipd blind --arch adv-rl \
 | 方案 | 复杂度 | 盲测均分 | 盲测平均排名 | 适用 |
 |---|---:|---:|---:|---|
 | **RL-PPO（从零 + hard，最终）** | 中 | **563.23** | **8.00** | **最高盲测，最佳单网络策略** |
+| **RL-PPO-Hard60（hard×2 fine-tune，候选）** | 中 | **564.17** | **5.75** | 20-field blind；官方 554.36，held-out 改善 |
 | **SelfPlay-GRU（21 维，BC 蒸馏）** | 中 | **560.43** | **8.10** | 21 维观测，推理无 PyTorch |
 | **Adv-RL 激进** | 中 | **562.91** | **8.00** | **最高四分布，RL 权重+配置** |
 | Adv-RL 保守 | 中 | 561.05 | 8.20 | RL 版，逐类型风险略小 |

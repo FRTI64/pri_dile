@@ -219,6 +219,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | 策略 | 四分布均值 | 盲测均分 / 平均排名 |
 |---|---:|---:|
 | **RL-PPO（从零 + hard，最终）** | **553.33** | **563.23 / 8.00** |
+| **RL-PPO-Hard60（hard×2 fine-tune，候选）** | **554.36** | **564.17 / 5.75（20 fields）** |
 | **Adv-RL 激进（RL + 约束剥削）** | **554.29** | **562.91 / 8.00** |
 | **SelfPlay-GRU（21 维，BC 蒸馏）** | **550.76** | **560.43 / 8.10** |
 | RL-PPO（从零 base） | 551.87 | 559.27 / 8.30 |
@@ -240,6 +241,12 @@ red best response 100% 击败 BC/RL/Adv；详见
 benchmark/blind 完全复现，权重 checksum 与冻结建议见
 `results/selfplay_improvement/sanity/README.md`；主提交建议 RL-PPO，21 维备选
 SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
+
+新候选 **RL-PPO-Hard60**（`rl-hard60`，实验名 A60）：
+官方 20-field 554.36、blind 20-field 564.17 / 5.75、held-out final 509.76
+（RL-PPO 506.49），且 held-out family 无回退。权重在
+`weights/rl_policy_weights_hard60.json`；报告见
+`results/hard2_20261026/README.md`。当前未替换主权重，作为下一提交候选。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手

@@ -32,6 +32,7 @@ DISPLAY = {
     "neural": "Neural",
     "gru": "GRU",
     "rl": "RL-PPO",
+    "rl-hard60": "RL-PPO-Hard60",
     "adv-mlp": "Adv-MLP",
     "adv-gru": "Adv-GRU",
     "adv-rl": "Adv-RL",
@@ -70,6 +71,10 @@ ALIASES = {
     "rl-ppo": "rl",
     "rl-sample": "rl",
     "rl-argmax": "rl",
+    "rl-hard": "rl-hard60",
+    "rl-hard60": "rl-hard60",
+    "rl-ppo-hard60": "rl-hard60",
+    "hard60": "rl-hard60",
     "adv": "adv-mlp",
     "adversarial": "adv-mlp",
     "advmlp": "adv-mlp",
@@ -89,8 +94,8 @@ BASE_NAMES = (
 LEGACY_NAMES = BASE_NAMES
 CLASSIC_NAMES = BASE_NAMES + ("harvest45", "harvest-tuned", "gap-start")
 SUITE_NAMES = BASE_NAMES + ("harvest45", "triple-majority")
-LEARNED_NAMES = ("neural", "gru", "rl", "adv-mlp", "adv-gru", "adv-rl",
-                 "selfplay")
+LEARNED_NAMES = ("neural", "gru", "rl", "rl-hard60", "adv-mlp", "adv-gru",
+                 "adv-rl", "selfplay")
 ALL_NAMES = tuple(dict.fromkeys(
     SUITE_NAMES + CLASSIC_NAMES + LEARNED_NAMES))
 
@@ -176,7 +181,7 @@ class CandidateSpec:
 def _params_for(kind: str, weights: str | None, config: str | None,
                 mode: str) -> dict[str, Any]:
     params: dict[str, Any] = {}
-    if kind in ("neural", "gru", "rl", "selfplay"):
+    if kind in ("neural", "gru", "rl", "rl-hard60", "selfplay"):
         if weights:
             params["weights"] = weights
         params["mode"] = mode

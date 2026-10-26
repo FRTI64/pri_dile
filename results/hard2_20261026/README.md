@@ -2,10 +2,11 @@
 
 ## 0. 结论
 
-**推荐新主提交：A60（现有 RL-PPO + hard 权重 2，60 iterations，KL 0.1，lr 1e-4）。**
+**推荐新主提交：RL-PPO-Hard60**（实验名 A60；现有 RL-PPO + hard 权重 2，60 iterations，KL 0.1，lr 1e-4）。
+
+> 命名说明：实验代号 **A60** = 注册候选 **`rl-hard60` / `RL-PPO-Hard60`**。
 
 A60 相对当前 RL-PPO：
-
 | 指标 | RL-PPO | A60 | Δ |
 |---|---:|---:|---:|
 | 官方四分布（20 fields × 299） | 553.33 | **554.36** | +1.03 |
@@ -101,11 +102,11 @@ avg 553.33
 ## 4. Backtest 文件
 
 ```text
-weights/rl_policy_weights_hard2.json       # A60 可部署策略
-weights/rl_policy_checkpoint_hard2.json    # A60 checkpoint
+weights/rl_policy_weights_hard60.json       # A60 可部署策略
+weights/rl_policy_checkpoint_hard60.json    # A60 checkpoint
 sha256:
-  42c64c8a7524115f5ec17511a482dc56a2259cfcb6740ab5b223a193797ff60e  rl_policy_weights_hard2.json
-  13276c70302d0d79e3eea3e034139262eeb896b8dbe5bea396f5722a7ed72ab5  rl_policy_checkpoint_hard2.json
+  42c64c8a7524115f5ec17511a482dc56a2259cfcb6740ab5b223a193797ff60e  rl_policy_weights_hard60.json
+  13276c70302d0d79e3eea3e034139262eeb896b8dbe5bea396f5722a7ed72ab5  rl_policy_checkpoint_hard60.json
 ```
 
 原始实验产物：
@@ -135,8 +136,8 @@ results/hard2_20261026/seed2/compare_final_A60.json
   --bc-kl-coef 0.1 --lr 1e-4 --ent-coef 0.0001 --target-kl 0.02 \
   --val-fields-per-dist 5 --val-n 100 --val-every 5 \
   --select-metric avg \
-  --out weights/rl_policy_weights_hard2.json \
-  --checkpoint-out weights/rl_policy_checkpoint_hard2.json \
+  --out weights/rl_policy_weights_hard60.json \
+  --checkpoint-out weights/rl_policy_checkpoint_hard60.json \
   --history-out results/hard2_20261026/A60_history.json
 ```
 
@@ -144,9 +145,9 @@ results/hard2_20261026/seed2/compare_final_A60.json
 
 ```bash
 .venv/bin/python -m ipd benchmark --candidates rl \
-  --weights weights/rl_policy_weights_hard2.json --fields 20 --workers 20
+  --weights weights/rl_policy_weights_hard60.json --fields 20 --workers 20
 .venv/bin/python -m ipd blind --candidates rl \
-  --weights weights/rl_policy_weights_hard2.json --fields 20 --workers 10
+  --weights weights/rl_policy_weights_hard60.json --fields 20 --workers 10
 ```
 
 ## 6. 注意
@@ -156,5 +157,5 @@ results/hard2_20261026/seed2/compare_final_A60.json
 - 这次 final suite 已经用于 A/B/C 比较；严格来说它现在更像 validation。
   confirm 使用了新的 seed base（20761026），但仍是同一批 opponent 参数。
   如果要继续选模，必须再留一套完全新的 family/参数做最终 test。
-- 是否把 `weights/rl_policy_weights.json` 替换成 A60，需要最终确认。
-  当前已保留原 RL-PPO 权重，并新增 `weights/rl_policy_weights_hard2.json`。
+- 是否把 `weights/rl_policy_weights.json` 替换成 RL-PPO-Hard60，需要最终确认。
+  当前已保留原 RL-PPO 权重，并新增 `weights/rl_policy_weights_hard60.json`。
