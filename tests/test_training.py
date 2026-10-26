@@ -90,7 +90,7 @@ class TrainingInterfaceTests(unittest.TestCase):
             self.assertIn("--device", proc.stdout)
             if task == "rl":
                 for flag in ("--risk-objective", "--dro-eta",
-                             "--dirichlet-concentration"):
+                             "--dirichlet-concentration", "--opponent-pool"):
                     self.assertIn(flag, proc.stdout)
 
 

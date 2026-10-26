@@ -28,6 +28,7 @@ COMMANDS = {
     "suite": "nine family-weighted suites",
     "matchup": "per-opponent-type matchup matrix",
     "league": "E0 cross-play / Nash / exploitability harness",
+    "meta": "P3 red maximin weights / opponent manifest",
     "train": "train a learned policy or search rule parameters",
     "export": "export weights to C++ headers",
     "self-test": "fast policy-interface check",
@@ -92,6 +93,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         from .evaluation.matchup import main as run
     elif command in ("league", "e0"):
         from .evaluation.league import main as run
+    elif command in ("meta", "meta-weights"):
+        from .training.league import main as run
     elif command in ("train", "training"):
         from .training.cli import main as run
     elif command in ("export", "export-cpp"):

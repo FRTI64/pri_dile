@@ -1,0 +1,119 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "p3_blue_checkpoint_selection_20261026",
+  "note": "Choose a blue checkpoint using official/blind/heldout_v2 validation and the TRAINING reds v3/v4. Held-out reds are excluded. RL-Repair is the baseline for official/family checks.",
+  "baseline": "RL-Repair",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20,
+    "cross_play_seeds": 1,
+    "red_seeds": 20
+  },
+  "suites": {
+    "official": {
+      "kind": "official",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026
+    },
+    "blind": {
+      "kind": "blind",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261025
+    },
+    "validation": {
+      "kind": "opponents",
+      "suite": "validation",
+      "seeds": 20,
+      "seed_base": 20261026
+    },
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 20,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 1,
+    "seed_base": 20561026,
+    "policy_seed_base": 20461026
+  },
+  "red": {
+    "seeds": 20,
+    "seed_base": 20561026,
+    "policy_seed_base": 20361026
+  },
+  "candidates": [
+    {
+      "name": "RL-Repair",
+      "kind": "rl-repair",
+      "group": "baseline",
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-b1-15",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "/tmp/p3_league/blue_b1_checkpoints/iter_015.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-b1-20",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "/tmp/p3_league/blue_b1_checkpoints/iter_020.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-b2-15",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "/tmp/p3_league/blue_b2_checkpoints/iter_015.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-b2-20",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "/tmp/p3_league/blue_b2_checkpoints/iter_020.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": [
+    {
+      "name": "Red-RL-v3",
+      "kind": "rl",
+      "group": "train-red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v3.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v4",
+      "kind": "rl",
+      "group": "train-red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v4.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

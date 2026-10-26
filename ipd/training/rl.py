@@ -109,12 +109,13 @@ def rollout_task(task: dict[str, Any]):
     center_advantages = bool(task.get("center_advantages", True))
     opponent_penalty = float(task.get("opponent_penalty", 0.0))
 
+    opponent_pool = task.get("opponent_pool")
     opponent_weights = task.get("opponent_weights")
-    if opponent_weights:
+    if opponent_pool or opponent_weights:
         from ipd.evaluation.policy_pool import build_policy_field
 
-        field = build_policy_field(opponent_weights, seed=seed, n=n,
-                                   mode="sample")
+        field = build_policy_field(opponent_pool or opponent_weights,
+                                   seed=seed, n=n, mode="sample")
     else:
         field = build_train_dist_field(dist, seed, n)
     policy = RLPolicy(checkpoint, seed=policy_seed, mode=mode, safe=safe)
@@ -539,7 +540,8 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
                      dirichlet_concentration: float = 0.0,
                      opponent_weights: Sequence[str] | None = None,
                      opponent_penalty: float = 0.0,
-                     opponent_fraction: float = 1.0
+                     opponent_fraction: float = 1.0,
+                     opponent_pool: Sequence[dict[str, Any]] | None = None
                      ) -> dict[str, Any]:
     rng = random.Random(seed)
     tasks: list[dict[str, Any]] = []
@@ -561,7 +563,11 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
             "opponent_penalty": opponent_penalty,
         }
         if red:
-            task["opponent_weights"] = list(opponent_weights or ())
+            if opponent_pool:
+                task["opponent_pool"] = [dict(entry)
+                                         for entry in opponent_pool]
+            else:
+                task["opponent_weights"] = list(opponent_weights or ())
         tasks.append(task)
 
     base = {dist: (1.0 if dist_weights is None
@@ -570,7 +576,8 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
     base_total = sum(base.values()) or float(len(dists))
     frac = min(1.0, max(0.0, float(opponent_fraction)))
     total_fields = max(1, int(round(fields_per_dist * base_total)))
-    n_red = (int(round(total_fields * frac)) if opponent_weights else 0)
+    has_pool = bool(opponent_pool or opponent_weights)
+    n_red = (int(round(total_fields * frac)) if has_pool else 0)
     n_official = total_fields - n_red
     counts = {dist: 0 for dist in dists}
     if n_official > 0:
@@ -732,6 +739,9 @@ def main(argv=None) -> None:
     ap.add_argument("--opponent-weights", default="",
                     help="comma-separated frozen blue policy JSONs; train a "
                          "red best response against this pool")
+    ap.add_argument("--opponent-pool", default="",
+                    help="weighted opponent manifest (JSON) with path/spec "
+                         "entries; supports Adv-RL/rules and meta-Nash mixes")
     ap.add_argument("--opponent-penalty", type=float, default=0.0,
                     help="subtract this fraction of opponent payoff from the "
                          "PPO reward (1.0 = score-difference objective)")
@@ -764,10 +774,18 @@ def main(argv=None) -> None:
 
     opponent_weights = tuple(
         x.strip() for x in args.opponent_weights.split(",") if x.strip())
+    opponent_pool: list[dict[str, Any]] = []
+    if args.opponent_pool and opponent_weights:
+        raise SystemExit("use either --opponent-pool or --opponent-weights")
+    if args.opponent_pool:
+        from ipd.training.league import load_opponent_manifest
+
+        opponent_pool = load_opponent_manifest(args.opponent_pool)
     train_dists = (tuple(x.strip() for x in args.train_dists.split(",")
                          if x.strip())
                    if args.train_dists else val_dists)
-    if opponent_weights:
+    has_pool = bool(opponent_pool or opponent_weights)
+    if has_pool:
         unknown_train = []
     else:
         unknown_train = [d for d in train_dists if d not in TRAIN_DISTS]
@@ -775,7 +793,7 @@ def main(argv=None) -> None:
         raise SystemExit(f"unknown training distributions: {unknown_train}")
 
     dist_weights = None
-    if args.dist_weights and not opponent_weights:
+    if args.dist_weights:
         vals = [float(x) for x in args.dist_weights.split(",") if x.strip()]
         if len(vals) != len(train_dists):
             raise SystemExit("--dist-weights must match --train-dists in length")
@@ -794,7 +812,7 @@ def main(argv=None) -> None:
           f"n={args.n} iterations={args.iterations} safe={not args.allow_probe} "
           f"risk={risk_desc} "
           f"dirichlet={args.dirichlet_concentration:g} "
-          f"blue_pool={len(opponent_weights)}",
+          f"blue_pool={len(opponent_pool) or len(opponent_weights)}",
           flush=True)
 
     torch.manual_seed(args.seed)
@@ -860,6 +878,8 @@ def main(argv=None) -> None:
         "dists": list(val_dists),
         "train_dists": list(train_dists),
         "opponent_weights": list(opponent_weights),
+        "opponent_pool": list(opponent_pool),
+        "opponent_pool_path": args.opponent_pool or None,
         "opponent_penalty": args.opponent_penalty,
         "opponent_fraction": args.opponent_fraction,
         "fields_per_dist": args.fields_per_dist,
@@ -928,7 +948,8 @@ def main(argv=None) -> None:
                 dirichlet_concentration=args.dirichlet_concentration,
                 opponent_weights=opponent_weights,
                 opponent_penalty=args.opponent_penalty,
-                opponent_fraction=args.opponent_fraction)
+                opponent_fraction=args.opponent_fraction,
+                opponent_pool=opponent_pool)
             rollout_time = time.time() - rollout_start
 
             train_start = time.time()

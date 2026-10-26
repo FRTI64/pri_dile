@@ -1,0 +1,25 @@
+E0 league: candidates=['RL-PPO', 'RL-PPO-Hard60', 'RL-Repair', 'Adv-RL', 'SelfPlay-GRU', 'Final-tuned', 'Triple-majority', 'Blue-vs-Red-Comp-v1'] suites=[] workers=20
+  red 4/48 tasks (1.0s)
+  red 8/48 tasks (1.1s)
+  red 12/48 tasks (1.1s)
+  red 16/48 tasks (1.1s)
+  red 20/48 tasks (1.1s)
+  red 24/48 tasks (1.6s)
+  red 28/48 tasks (4.5s)
+  red 32/48 tasks (4.5s)
+  red 36/48 tasks (4.5s)
+  red 40/48 tasks (4.5s)
+  red 44/48 tasks (4.5s)
+  red 48/48 tasks (4.5s)
+written results/p3_league_20261026/red_eval.json
+written results/p3_league_20261026/red_eval.md
+fingerprint 50071ade431946d69e91f49562943b979c2da6612efc4b838e0d7b9a9fcc576b
+RL-PPO               mean=    0.00 min_norm=       - red_blue=  338.99
+RL-PPO-Hard60        mean=    0.00 min_norm=       - red_blue=  338.16
+RL-Repair            mean=    0.00 min_norm=       - red_blue=  336.57
+Adv-RL               mean=    0.00 min_norm=       - red_blue=  348.83
+SelfPlay-GRU         mean=    0.00 min_norm=       - red_blue=  336.79
+Final-tuned          mean=    0.00 min_norm=       - red_blue=  362.88
+Triple-majority      mean=    0.00 min_norm=       - red_blue=  357.39
+Blue-vs-Red-Comp-v1  mean=    0.00 min_norm=       - red_blue=  342.68
+gate: INCOMPLETE

@@ -289,7 +289,13 @@ held-out blue 上强于 E4 red（对 RL-Repair red 727.6 vs 703.8），red pool
 第一里程碑 Go。League-lite competitive blue response 把 E4 exploitability
 407.0→355.0（-12.8%），official 554.74 / blind 563.80；未达 -20% Gate，
 判 **No-Go**，不 promotion。E4 red 仍 100% 击败，anti-exploitation 未解决。
-详见 `results/red_pool_20261026/README.md`、`docs/p3-red-league.md`。
+P3 扩展又训练了 v2–v4 和严格 held-out v5/v6，使用 maximin 权重和
+`--opponent-pool`；选中 50% red 的 Blue-Meta-v2 在 held-out red 上只把
+exploitability 从 390.33 降到 367.33（**-5.9%**），且 `validation:extort`
+掉 3.21%，**Gate D 仍 FAIL**。不注册 `rl-meta`，RL-Repair 仍是候选；
+下一步转 P2 C1。详见 `results/red_pool_20261026/README.md`、
+`results/p3_league_20261026/README.md`、`docs/p3-red-league.md`、
+`docs/p3-expansion-plan.md`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
@@ -310,6 +316,7 @@ held-out blue 上强于 E4 red（对 RL-Repair red 727.6 vs 703.8），red pool
 | [docs/e1-robust-finetune.md](docs/e1-robust-finetune.md) | E1 domain-randomized / repair fine-tune |
 | [docs/e2-risk-ppo.md](docs/e2-risk-ppo.md) | E2 CVaR / risk-sensitive PPO |
 | [docs/p3-red-league.md](docs/p3-red-league.md) | P3 red/exploiter pool + league-lite |
+| [docs/p3-expansion-plan.md](docs/p3-expansion-plan.md) | P3 multi-red + PSRO-lite（No-Go） |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

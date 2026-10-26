@@ -1,0 +1,101 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "p3_blue_selection_trainreds_20261026",
+  "note": "Select among blue responses using official/blind validation and the TRAINING reds v3/v4 only. Held-out reds are not referenced.",
+  "baseline": "Blue-Meta-b1",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20,
+    "cross_play_seeds": 1,
+    "red_seeds": 20
+  },
+  "suites": {
+    "official": {
+      "kind": "official",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026
+    },
+    "blind": {
+      "kind": "blind",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261025
+    },
+    "validation": {
+      "kind": "opponents",
+      "suite": "validation",
+      "seeds": 20,
+      "seed_base": 20261026
+    },
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 20,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 1,
+    "seed_base": 20561026,
+    "policy_seed_base": 20461026
+  },
+  "red": {
+    "seeds": 20,
+    "seed_base": 20561026,
+    "policy_seed_base": 20361026
+  },
+  "candidates": [
+    {
+      "name": "Blue-Meta-b1",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "weights/red_pool/blue_meta_b1.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-b2",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "weights/red_pool/blue_meta_b2.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-b3",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "weights/red_pool/blue_meta_b3.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": [
+    {
+      "name": "Red-RL-v3",
+      "kind": "rl",
+      "group": "train-red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v3.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v4",
+      "kind": "rl",
+      "group": "train-red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v4.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

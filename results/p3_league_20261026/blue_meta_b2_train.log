@@ -1,0 +1,45 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,repair val_dists=original,late,grim30,wide fields/iter/dist=5 n=80 iterations=25 safe=True risk=none dirichlet=0 blue_pool=4
+initialised from weights/rl_policy_checkpoint_repair.json
+using reference-policy KL penalty (coef=0.05)
+initial val avg=557.29 worst=547.75 original=560.75 late=562.69 grim30=557.98 wide=547.75
+iter   1 reward= 413.77 pi=-0.0009 v=0.1880 H=0.1429 kl=0.0007 bckl=0.0007 clip=0.008 ev=+0.939 (9.5s+2.5s)
+iter   2 reward= 419.40 pi=-0.0013 v=0.1758 H=0.1474 kl=0.0006 bckl=0.0014 clip=0.007 ev=+0.880 (9.6s+0.6s)
+iter   3 reward= 416.62 pi=-0.0011 v=0.1994 H=0.1487 kl=0.0009 bckl=0.0026 clip=0.010 ev=+0.811 (9.4s+0.8s)
+iter   4 reward= 416.51 pi=-0.0006 v=0.2172 H=0.1510 kl=0.0009 bckl=0.0061 clip=0.012 ev=+0.797 (9.4s+0.9s)
+  new best at iter 5: avg=557.32 worst=547.39
+iter   5 reward= 417.93 pi=-0.0010 v=0.2063 H=0.1582 kl=0.0008 bckl=0.0115 clip=0.009 ev=+0.823 (9.3s+0.9s)
+      train original=552.09 late=556.48 grim30=553.67 wide=567.13 repair=489.08 blue_pool=337.06 | val avg=557.32 worst=547.39 original=560.76 late=562.87 grim30=558.25 wide=547.39
+iter   6 reward= 419.20 pi=-0.0005 v=0.1932 H=0.1625 kl=0.0010 bckl=0.0191 clip=0.010 ev=+0.845 (9.5s+0.7s)
+iter   7 reward= 420.85 pi=-0.0005 v=0.1833 H=0.1680 kl=0.0007 bckl=0.0253 clip=0.009 ev=+0.856 (9.2s+0.7s)
+iter   8 reward= 422.48 pi=-0.0007 v=0.1827 H=0.1729 kl=0.0005 bckl=0.0319 clip=0.006 ev=+0.857 (9.3s+0.8s)
+iter   9 reward= 418.25 pi=-0.0019 v=0.1821 H=0.1731 kl=0.0007 bckl=0.0330 clip=0.008 ev=+0.860 (9.2s+0.7s)
+  new best at iter 10: avg=557.35 worst=547.18
+iter  10 reward= 421.19 pi=-0.0009 v=0.1826 H=0.1799 kl=0.0008 bckl=0.0462 clip=0.007 ev=+0.866 (9.3s+0.8s)
+      train original=565.89 late=556.27 grim30=560.61 wide=576.72 repair=487.06 blue_pool=339.10 | val avg=557.35 worst=547.18 original=560.64 late=563.00 grim30=558.58 wide=547.18
+  saved checkpoint (best iter 10, val avg=557.3515)
+iter  11 reward= 419.34 pi=-0.0014 v=0.2019 H=0.1769 kl=0.0006 bckl=0.0524 clip=0.006 ev=+0.860 (9.4s+0.6s)
+iter  12 reward= 419.33 pi=-0.0005 v=0.1922 H=0.1828 kl=0.0005 bckl=0.0630 clip=0.005 ev=+0.857 (9.5s+0.9s)
+iter  13 reward= 420.45 pi=-0.0017 v=0.1921 H=0.1860 kl=0.0005 bckl=0.0696 clip=0.004 ev=+0.855 (9.2s+0.9s)
+iter  14 reward= 425.39 pi=-0.0017 v=0.1933 H=0.1902 kl=0.0006 bckl=0.0806 clip=0.004 ev=+0.861 (9.2s+0.6s)
+iter  15 reward= 422.63 pi=-0.0007 v=0.1982 H=0.1895 kl=0.0004 bckl=0.0920 clip=0.004 ev=+0.855 (9.2s+0.7s)
+      train original=566.21 late=554.27 grim30=552.61 wide=565.87 repair=487.97 blue_pool=344.30 | val avg=556.42 worst=545.47 original=558.63 late=562.75 grim30=558.83 wide=545.47
+iter  16 reward= 418.97 pi=-0.0013 v=0.1821 H=0.1969 kl=0.0007 bckl=0.1085 clip=0.004 ev=+0.856 (9.3s+0.8s)
+iter  17 reward= 421.53 pi=-0.0016 v=0.1793 H=0.2005 kl=0.0006 bckl=0.1206 clip=0.005 ev=+0.857 (9.3s+0.6s)
+iter  18 reward= 421.47 pi=-0.0008 v=0.1952 H=0.1977 kl=0.0004 bckl=0.1304 clip=0.002 ev=+0.857 (9.3s+0.8s)
+iter  19 reward= 423.05 pi=-0.0014 v=0.1976 H=0.2012 kl=0.0005 bckl=0.1498 clip=0.004 ev=+0.853 (9.3s+0.6s)
+iter  20 reward= 421.40 pi=-0.0017 v=0.1898 H=0.1988 kl=0.0004 bckl=0.1602 clip=0.002 ev=+0.854 (9.2s+0.6s)
+      train original=532.26 late=553.29 grim30=544.92 wide=564.86 repair=487.33 blue_pool=346.64 | val avg=554.44 worst=540.91 original=556.07 late=561.72 grim30=559.07 wide=540.91
+  saved checkpoint (best iter 10, val avg=557.3515)
+iter  21 reward= 417.21 pi=-0.0011 v=0.1819 H=0.2021 kl=0.0004 bckl=0.1762 clip=0.003 ev=+0.852 (9.2s+0.9s)
+iter  22 reward= 419.37 pi=-0.0014 v=0.1866 H=0.2030 kl=0.0007 bckl=0.1978 clip=0.003 ev=+0.858 (9.2s+0.9s)
+iter  23 reward= 418.72 pi=-0.0022 v=0.1943 H=0.2029 kl=0.0008 bckl=0.2329 clip=0.005 ev=+0.849 (9.2s+0.8s)
+iter  24 reward= 419.40 pi=-0.0018 v=0.1785 H=0.2051 kl=0.0006 bckl=0.2652 clip=0.003 ev=+0.852 (9.3s+0.7s)
+iter  25 reward= 421.94 pi=-0.0012 v=0.1995 H=0.1968 kl=0.0001 bckl=0.2826 clip=0.000 ev=+0.847 (9.2s+0.9s)
+      train original=535.89 late=557.91 grim30=544.17 wide=554.80 repair=477.77 blue_pool=350.55 | val avg=549.01 worst=527.61 original=550.40 late=558.83 grim30=559.18 wide=527.61
+  saved checkpoint (best iter 10, val avg=557.3515)
+best iteration 10 val={'by_dist': {'original': 560.638, 'late': 563.004, 'grim30': 558.582, 'wide': 547.182}, 'avg': 557.3515, 'worst': 547.182, 'selection': 554.809125}
+written /tmp/p3_league/blue_b2_checkpoint.json
+written weights/red_pool/blue_meta_b2.json (250234 bytes)
+written results/p3_league_20261026/blue_meta_b2_train.json
+vs AllC-until-90: C=92 D=8 score=548

@@ -137,6 +137,17 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   50% red pool，reward=own-opponent）把 E4 exploitability 407.0→355.0
   （-12.8%），official 554.74、blind 563.80，未达 -20% Gate，判 No-Go。
   不 promotion；E4 red 仍 100% 击败。结果见 `results/red_pool_20261026/`。
+- **P3 expansion（2026-10-26，Gate D No-Go）**：新增 weighted
+  `--opponent-pool` manifest、`python -m ipd meta`（maximin + Gate D）、
+  CandidateSpec-aware policy pool。训练 Red-v2–v4（训练池）和严格 held-out
+  v5/v6；maximin 权重 v4 0.70、v1/v2/v3 0.10。Blue-Meta-v2 用 50% red
+  训练，official 554.999、blind 564.345、heldout_v2 502.938；held-out
+  exploitability 390.33→367.33（**-5.9%**，要求 -20%），E4 -10.5%、
+  Red-v5 -1.7%、Red-v6 -4.7%；official +0.24 通过，但
+  `validation:extort` -3.21%，family Gate 也失败。**Gate D FAIL**，不注册
+  `rl-meta`，RL-Repair 仍是候选，`heldout_v4` 未用。结果见
+  `results/p3_league_20261026/`、`docs/p3-expansion-plan.md`。下一步转
+  P2 C1 Bayesian belief planner 的离线评估。
 
 复现入口：
 

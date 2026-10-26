@@ -1,10 +1,14 @@
 # P3 — red/exploiter pool + league-lite
 
-- **Status:** red training (first exploiter)
-- **Code:** `ipd/evaluation/policy_pool.py`, `ipd/training/rl.py`
+- **Status:** red pool Go; single-red league-lite No-Go; P3 expansion
+  (multi-red + PSRO-lite) **No-Go** on Gate D
+- **Code:** `ipd/evaluation/policy_pool.py`, `ipd/training/rl.py`,
+  `ipd/training/league.py`
 - **Goal:** produce a stronger red best response than E4 and measure
   exploitability against held-out blue policies. This is not a claim that
   anti-exploitation is solved.
+- **Expansion report:** `results/p3_league_20261026/README.md`
+- **Plan:** `docs/p3-expansion-plan.md`
 
 ## 1. Blue pool
 
@@ -119,8 +123,36 @@ PSRO/meta-Nash weighting rather than a single-red response.
 ## 5. Tests
 
 ```bash
-python3 -m unittest tests.test_policy_pool tests.test_training -v
+python3 -m unittest tests.test_policy_pool tests.test_training \
+  tests.test_league_meta -v
 ```
 
 Plus a one-iteration CPU smoke with `--opponent-weights`, checking history
 contains `blue_pool` rewards and the exported red weights.
+
+## 6. P3 expansion — multi-red + PSRO-lite（No-Go）
+
+The single-red league-lite stopped at E4 -12.8%.  The expansion adds:
+
+- weighted / CandidateSpec-aware opponent manifests (`--opponent-pool`);
+- `python3 -m ipd meta` for maximin red mixtures and Gate D checks;
+- 4 training reds (v1-v4) and 2 strictly held-out reds (v5/v6);
+- blue responses trained against the maximin mixture, selected on
+  official/blind/heldout_v2 validation and **training** reds only.
+
+Result (`results/p3_league_20261026/README.md`):
+
+```text
+meta weights: v4 0.70, v1/v2/v3 0.10 each
+selected blue: 50% red, iter 5
+official 554.999 / blind 564.345 / heldout_v2 502.938
+held-out exploitability: 390.33 -> 367.33 (-5.9%)
+E4 -10.5% / Red-v5 -1.7% / Red-v6 -4.7%
+official +0.24 PASS; validation:extort -3.21% FAIL
+Gate D: FAIL
+```
+
+More reds did **not** beat the single-red E4 reduction; the more aggressive
+60%-red response reached better training-red exploitation but collapsed the
+extort family.  Gate D remains open.  The next direction is P2 C1
+(Bayesian belief planner), not further E2 risk tuning.

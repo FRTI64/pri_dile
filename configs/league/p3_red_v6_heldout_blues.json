@@ -1,0 +1,61 @@
+{
+  "schema": "ipd-opponent-pool-v1",
+  "name": "p3_red_v6_heldout_blues",
+  "note": "Held-out Red-v6: strongest mixed blue pool including the previous league-lite response.",
+  "entries": [
+    {
+      "kind": "rl",
+      "name": "RL-PPO",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-hard60",
+      "name": "RL-PPO-Hard60",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-repair",
+      "name": "RL-Repair",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL",
+      "weight": 1.0,
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "selfplay",
+      "name": "SelfPlay-GRU",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/selfplay_gru_policy.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "Blue-vs-Red-Comp-v1",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/red_pool/blue_vs_red_comp_v1.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

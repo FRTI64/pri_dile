@@ -1,0 +1,47 @@
+{
+  "weights": {
+    "Red-RL-v1": 0.1,
+    "Red-RL-v2": 0.1,
+    "Red-RL-v3": 0.7,
+    "Red-RL-v4": 0.1
+  },
+  "matrix": [
+    [
+      399.49999999999994,
+      386.49999999999994
+    ],
+    [
+      321.5,
+      309.5
+    ],
+    [
+      486.0,
+      434.00000000000006
+    ],
+    [
+      396.5,
+      379.5
+    ]
+  ],
+  "reds": [
+    "Red-RL-v1",
+    "Red-RL-v2",
+    "Red-RL-v3",
+    "Red-RL-v4"
+  ],
+  "blues": [
+    "RL-Repair",
+    "Blue-vs-Red-Comp-v1"
+  ],
+  "worst_case": 411.35,
+  "worst_blue": "Blue-vs-Red-Comp-v1",
+  "maximin_value": 434.00000000000006,
+  "maximin_weights": {
+    "Red-RL-v1": 0.0,
+    "Red-RL-v2": 0.0,
+    "Red-RL-v3": 1.0,
+    "Red-RL-v4": 0.0
+  },
+  "uniform_mix": 0.4,
+  "iterations": 20000
+}

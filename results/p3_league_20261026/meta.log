@@ -1,0 +1,5 @@
+train reds: Red-RL-v1=0.100, Red-RL-v2=0.100, Red-RL-v3=0.100, Red-RL-v4=0.700
+held-out reds (excluded): Red-RL-v5-heldout, Red-RL-v6-heldout
+worst-case diff 345.75 vs Adv-RL
+written results/p3_league_20261026/blue_meta_pool.json (4 entries)
+written results/p3_league_20261026/meta_weights.json

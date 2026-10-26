@@ -116,10 +116,13 @@ blind +0.80，held-out v3 final +3.91，判 **Go candidate**。权重
 
 P3 新增 frozen policy pool 训练入口：
 `--opponent-weights path1,path2` 让 RL learner 直接对 RL/Neural/GRU/SelfPlay
-权重训练；`--opponent-fraction` 控制 official 分布与 frozen pool 的混合；
-`--opponent-penalty λ` 把 reward 改成 `own - λ*opponent`，用于
-anti-exploitation blue response。`--no-validation` 适合 red best response
-（固定预算、不做官方分布选模）。详见 `docs/p3-red-league.md`。
+权重训练；`--opponent-pool manifest.json` 读取带权重的 pool entry，支持
+Adv-RL / Final / Triple 等 CandidateSpec，并可由 `python -m ipd meta`
+从 red league report 生成 maximin / meta-Nash 混合。`--opponent-fraction`
+控制 official 分布与 frozen pool 的混合；`--opponent-penalty λ` 把 reward
+改成 `own - λ*opponent`，用于 anti-exploitation blue response。
+`--no-validation` 适合 red best response（固定预算、不做官方分布选模）。
+详见 `docs/p3-red-league.md` 和 `docs/p3-expansion-plan.md`。
 
 ### 3.4 并行与设备
 

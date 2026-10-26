@@ -1,0 +1,48 @@
+{
+  "baseline": "RL-Repair",
+  "candidate": "Blue-Meta-v2",
+  "heldout_reds": [
+    "E4-red-BC",
+    "Red-RL-v5-heldout",
+    "Red-RL-v6-heldout"
+  ],
+  "baseline_exploitability": 390.3333333333333,
+  "candidate_exploitability": 367.3333333333333,
+  "reduction": 0.058923996584116144,
+  "official_delta": 0.23540969899659103,
+  "worst_family": "validation:extort",
+  "worst_family_delta": -0.03205968799457393,
+  "per_red": {
+    "E4-red-BC": {
+      "baseline_diff": 408.5,
+      "candidate_diff": 365.5,
+      "delta": -43.0,
+      "relative_increase": -0.10526315789473684,
+      "baseline_blue": 293.4,
+      "candidate_blue": 300.35
+    },
+    "Red-RL-v5-heldout": {
+      "baseline_diff": 330.5,
+      "candidate_diff": 325.0,
+      "delta": -5.5,
+      "relative_increase": -0.01664145234493192,
+      "baseline_blue": 382.35,
+      "candidate_blue": 384.65
+    },
+    "Red-RL-v6-heldout": {
+      "baseline_diff": 431.99999999999994,
+      "candidate_diff": 411.5,
+      "delta": -20.499999999999943,
+      "relative_increase": -0.04745370370370358,
+      "baseline_blue": 314.8,
+      "candidate_blue": 319.5
+    }
+  },
+  "checks": {
+    "exploitability_reduction": false,
+    "official": true,
+    "families": false,
+    "per_red": true
+  },
+  "status": "FAIL"
+}

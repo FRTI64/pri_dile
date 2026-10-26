@@ -49,6 +49,12 @@ python3 -m ipd league --config configs/eval/e0_league.json \
 | `ipd/evaluation/league.py` | config loader, cross-play/suite/red workers, summaries, CLI, Markdown report |
 | `configs/eval/e0_league.json` | frozen candidate/suite/seed config |
 
+P3 extends the harness with `ipd/training/league.py` and
+`python3 -m ipd meta`: it extracts a red×blue score-difference matrix from a
+red report, computes maximin weights, and writes a weighted opponent manifest
+for `python3 -m ipd train rl --opponent-pool`.  See
+`docs/p3-expansion-plan.md`.
+
 `heldout_v2` has seven families: `reciprocal_v2`, `punitive_v2`, `noisy_v2`,
 `extort_v2`, `random_v2`, `temporal_v2`, `adaptive_v2`. Its parameter draws
 are disjoint from the historical `final`/validation draws wherever practical.

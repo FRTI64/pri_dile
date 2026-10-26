@@ -1,0 +1,31 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide val_dists=original,late,grim30,wide fields/iter/dist=16 n=80 iterations=20 safe=False risk=none dirichlet=0 blue_pool=4
+initialised from scratch (fixed BC feature scaler)
+initial val avg=417.84 worst=365.03 original=386.94 late=517.78 grim30=401.62 wide=365.03
+iter   1 reward= 140.69 pi=-0.0012 v=0.9451 H=0.6835 kl=0.0121 bckl=0.0000 clip=0.043 ev=+0.629 (18.8s+3.5s)
+iter   2 reward= 194.82 pi=-0.0040 v=0.3619 H=0.6534 kl=0.0140 bckl=0.0000 clip=0.149 ev=+0.915 (18.9s+0.9s)
+iter   3 reward= 374.96 pi=-0.0126 v=0.1382 H=0.5915 kl=0.0165 bckl=0.0000 clip=0.162 ev=+0.962 (18.5s+1.1s)
+iter   4 reward= 597.80 pi=-0.0110 v=0.0606 H=0.5483 kl=0.0134 bckl=0.0000 clip=0.125 ev=+0.981 (18.2s+1.0s)
+iter   5 reward= 663.30 pi=-0.0078 v=0.0171 H=0.5290 kl=0.0115 bckl=0.0000 clip=0.092 ev=+0.995 (18.3s+0.9s)
+iter   6 reward= 672.71 pi=-0.0090 v=0.0087 H=0.4996 kl=0.0130 bckl=0.0000 clip=0.080 ev=+0.997 (18.2s+1.1s)
+iter   7 reward= 687.30 pi=-0.0058 v=0.0050 H=0.4881 kl=0.0092 bckl=0.0000 clip=0.141 ev=+0.998 (17.9s+1.2s)
+iter   8 reward= 697.15 pi=-0.0066 v=0.0039 H=0.4709 kl=0.0109 bckl=0.0000 clip=0.162 ev=+0.999 (17.7s+1.1s)
+iter   9 reward= 706.73 pi=-0.0087 v=0.0032 H=0.4421 kl=0.0093 bckl=0.0000 clip=0.142 ev=+0.999 (17.6s+1.2s)
+iter  10 reward= 713.24 pi=-0.0093 v=0.0026 H=0.4135 kl=0.0074 bckl=0.0000 clip=0.104 ev=+0.999 (17.8s+1.0s)
+  saved checkpoint (best iter 10, val avg=none)
+iter  11 reward= 719.05 pi=-0.0089 v=0.0028 H=0.4014 kl=0.0057 bckl=0.0000 clip=0.080 ev=+0.999 (17.8s+1.0s)
+iter  12 reward= 725.90 pi=-0.0082 v=0.0026 H=0.3865 kl=0.0046 bckl=0.0000 clip=0.061 ev=+0.999 (18.1s+0.9s)
+iter  13 reward= 729.34 pi=-0.0074 v=0.0025 H=0.3672 kl=0.0036 bckl=0.0000 clip=0.048 ev=+0.999 (18.1s+1.1s)
+iter  14 reward= 732.39 pi=-0.0064 v=0.0023 H=0.3470 kl=0.0029 bckl=0.0000 clip=0.037 ev=+0.999 (18.4s+1.0s)
+iter  15 reward= 734.74 pi=-0.0046 v=0.0024 H=0.3255 kl=0.0029 bckl=0.0000 clip=0.028 ev=+0.999 (18.7s+1.2s)
+iter  16 reward= 736.21 pi=-0.0024 v=0.0024 H=0.3048 kl=0.0017 bckl=0.0000 clip=0.015 ev=+0.999 (19.2s+1.2s)
+iter  17 reward= 738.50 pi=-0.0016 v=0.0022 H=0.2841 kl=0.0011 bckl=0.0000 clip=0.008 ev=+0.999 (19.2s+1.4s)
+iter  18 reward= 739.55 pi=-0.0010 v=0.0021 H=0.2665 kl=0.0007 bckl=0.0000 clip=0.002 ev=+0.999 (19.2s+1.3s)
+iter  19 reward= 740.00 pi=-0.0004 v=0.0021 H=0.2570 kl=0.0002 bckl=0.0000 clip=0.000 ev=+0.999 (19.2s+1.2s)
+iter  20 reward= 740.72 pi=-0.0001 v=0.0020 H=0.2527 kl=0.0000 bckl=0.0000 clip=0.000 ev=+0.999 (19.2s+1.1s)
+  saved checkpoint (best iter 20, val avg=none)
+best iteration 20 val=None
+written /tmp/p3_league/red_v3_checkpoint.json
+written weights/red_pool/red_rl_v3.json (250032 bytes)
+written results/p3_league_20261026/red_v3_train.json
+vs AllC-until-90: C=58 D=42 score=681

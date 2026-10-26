@@ -141,6 +141,84 @@ def nash_average(matrix: Matrix, iterations: int = 20000,
     return fictitious_play(matrix, iterations=iterations, seed=seed)
 
 
+def maximin_strategy(matrix: Matrix, iterations: int = 20000,
+                     seed: int = 0, tol: float = 0.0) -> dict:
+    """Approximate a maximin mixture for a general (rectangular) matrix.
+
+    Rows are the learner's pure strategies (e.g. red exploiters), columns are
+    the opponent's pure strategies (e.g. frozen blues).  Fictitious play
+    alternates a row best response with a column best response.  The returned
+    ``worst_case`` is the minimum row payoff of the mixture across columns;
+    ``best_column`` is the column that attains it.
+
+    Unlike :func:`fictitious_play`, this does not require a symmetric or
+    antisymmetric matrix, so it can use the raw red-minus-blue differences from
+    a league red report.
+    """
+    rows = len(matrix)
+    if rows == 0:
+        raise ValueError("matrix must not be empty")
+    cols = len(matrix[0])
+    if cols == 0 or any(len(row) != cols for row in matrix):
+        raise ValueError("matrix must be rectangular and non-empty")
+    a = [[float(value) for value in row] for row in matrix]
+    if iterations <= 0:
+        p = [1.0 / rows] * rows
+        q = [1.0 / cols] * cols
+        payoffs = [sum(a[i][j] * q[j] for j in range(cols))
+                   for i in range(rows)]
+        by_col = [sum(p[i] * a[i][j] for i in range(rows))
+                  for j in range(cols)]
+        best_column = min(range(cols), key=lambda j: by_col[j])
+        return {
+            "weights": p,
+            "value": sum(p[i] * a[i][j] * q[j]
+                         for i in range(rows) for j in range(cols)),
+            "worst_case": min(by_col),
+            "best_column": best_column,
+            "iterations": 0,
+            "row_payoffs": payoffs,
+        }
+    rng = random.Random(seed)
+    p_avg = [1.0 / rows] * rows
+    q_avg = [1.0 / cols] * cols
+    p_sum = [0.0] * rows
+    q_sum = [0.0] * cols
+    used = 0
+    for step in range(1, iterations + 1):
+        row_values = [sum(a[i][j] * q_avg[j] for j in range(cols))
+                      for i in range(rows)]
+        row_br = _best_response(row_values, rng, maximise=True)
+        col_values = [sum(p_avg[i] * a[i][j] for i in range(rows))
+                      for j in range(cols)]
+        col_br = _best_response(col_values, rng, maximise=False)
+        p_sum[row_br] += 1.0
+        q_sum[col_br] += 1.0
+        p_avg = [x / step for x in p_sum]
+        q_avg = [x / step for x in q_sum]
+        used = step
+        if tol > 0.0 and step % 100 == 0:
+            by_col = [sum(p_avg[i] * a[i][j] for i in range(rows))
+                      for j in range(cols)]
+            if min(by_col) >= tol:
+                break
+    p = _normalise(p_avg)
+    by_col = [sum(p[i] * a[i][j] for i in range(rows))
+              for j in range(cols)]
+    best_column = min(range(cols), key=lambda j: by_col[j])
+    row_payoffs = [sum(a[i][j] * q_avg[j] for j in range(cols))
+                   for i in range(rows)]
+    return {
+        "weights": p,
+        "value": sum(p[i] * a[i][j] * q_avg[j]
+                     for i in range(rows) for j in range(cols)),
+        "worst_case": min(by_col),
+        "best_column": best_column,
+        "iterations": used,
+        "row_payoffs": row_payoffs,
+    }
+
+
 def elo_ratings(expected_scores: Matrix, iterations: int = 500,
                 base: float = 1000.0, scale: float = 400.0,
                 eps: float = 0.01) -> list[float]:
@@ -185,5 +263,5 @@ def elo_ratings(expected_scores: Matrix, iterations: int = 500,
 
 __all__ = [
     "Matrix", "antisymmetrize", "exploitability", "fictitious_play",
-    "nash_average", "elo_ratings",
+    "nash_average", "maximin_strategy", "elo_ratings",
 ]

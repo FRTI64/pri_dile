@@ -1,0 +1,162 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "p3_red_pool_20261026",
+  "note": "P3 red pool v1-v6 vs training/held-out blue candidates. Used to compute maximin red weights; not a blue promotion report.",
+  "baseline": "RL-Repair",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20,
+    "cross_play_seeds": 20,
+    "red_seeds": 20
+  },
+  "suites": {
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 1,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 1,
+    "seed_base": 20561026,
+    "policy_seed_base": 20461026
+  },
+  "red": {
+    "seeds": 20,
+    "seed_base": 20561026,
+    "policy_seed_base": 20361026
+  },
+  "candidates": [
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "group": "blue",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "group": "blue",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-Repair",
+      "kind": "rl-repair",
+      "group": "blue",
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL",
+      "kind": "adv-rl",
+      "group": "blue",
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "SelfPlay-GRU",
+      "kind": "selfplay",
+      "group": "blue",
+      "params": {
+        "weights": "weights/selfplay_gru_policy.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "group": "rule",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "group": "rule",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-vs-Red-Comp-v1",
+      "kind": "rl",
+      "group": "blue",
+      "params": {
+        "weights": "weights/red_pool/blue_vs_red_comp_v1.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": [
+    {
+      "name": "Red-RL-v1",
+      "kind": "rl",
+      "group": "red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v1.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v2",
+      "kind": "rl",
+      "group": "red-train",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v2.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v3",
+      "kind": "rl",
+      "group": "red-train",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v3.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v4",
+      "kind": "rl",
+      "group": "red-train",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v4.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v5-heldout",
+      "kind": "rl",
+      "group": "red-heldout",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v5_heldout.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v6-heldout",
+      "kind": "rl",
+      "group": "red-heldout",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v6_heldout.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

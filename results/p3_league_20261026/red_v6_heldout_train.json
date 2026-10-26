@@ -1,0 +1,879 @@
+{
+  "meta": {
+    "algorithm": "ppo",
+    "seed": 20261042,
+    "dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ],
+    "train_dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide"
+    ],
+    "opponent_weights": [],
+    "opponent_pool": [
+      {
+        "kind": "rl",
+        "name": "RL-PPO",
+        "weight": 1.0,
+        "params": {
+          "weights": "weights/rl_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      {
+        "kind": "rl-hard60",
+        "name": "RL-PPO-Hard60",
+        "weight": 1.0,
+        "params": {
+          "weights": "weights/rl_policy_weights_hard60.json",
+          "mode": "sample"
+        }
+      },
+      {
+        "kind": "rl-repair",
+        "name": "RL-Repair",
+        "weight": 1.0,
+        "params": {
+          "weights": "weights/rl_policy_weights_repair.json",
+          "mode": "sample"
+        }
+      },
+      {
+        "kind": "adv-rl",
+        "name": "Adv-RL",
+        "weight": 1.0,
+        "params": {
+          "config": "configs/adversarial_rl_policy_config_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      {
+        "kind": "selfplay",
+        "name": "SelfPlay-GRU",
+        "weight": 1.0,
+        "params": {
+          "weights": "weights/selfplay_gru_policy.json",
+          "mode": "sample"
+        }
+      },
+      {
+        "kind": "rl",
+        "name": "Blue-vs-Red-Comp-v1",
+        "weight": 1.0,
+        "params": {
+          "weights": "weights/red_pool/blue_vs_red_comp_v1.json",
+          "mode": "sample"
+        }
+      }
+    ],
+    "opponent_pool_path": "configs/league/p3_red_v6_heldout_blues.json",
+    "opponent_penalty": 0.0,
+    "opponent_fraction": 1.0,
+    "fields_per_dist": 12,
+    "dist_weights": null,
+    "n": 80,
+    "val_fields_per_dist": 1,
+    "val_n": 32,
+    "hidden": [
+      64,
+      32
+    ],
+    "lr": 0.0002,
+    "clip": 0.2,
+    "vf_coef": 0.5,
+    "ent_coef": 0.01,
+    "bc_kl_coef": 0.0,
+    "risk_objective": "none",
+    "risk_coef": 0.0,
+    "risk_quantile": 0.2,
+    "dro_eta": 0.5,
+    "dro_quantile": 0.5,
+    "dro_blend": 0.5,
+    "dro_floor": 0.1,
+    "dirichlet_concentration": 0.0,
+    "freeze_policy_trunk": false,
+    "select_metric": "balanced",
+    "save_all_checkpoints": null,
+    "gamma": 1.0,
+    "lam": 0.95,
+    "center_rewards": false,
+    "center_advantages": true,
+    "safe": false,
+    "init_weights": null,
+    "feature_version": "ipd-neural-features-v1",
+    "best_iteration": 25,
+    "best_val": null
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "val": {
+        "by_dist": {
+          "original": 465.59375,
+          "late": 497.75,
+          "grim30": 399.28125,
+          "wide": 370.21875
+        },
+        "avg": 433.2109375,
+        "worst": 370.21875,
+        "selection": 417.462890625
+      },
+      "phase": "init"
+    },
+    {
+      "iteration": 1,
+      "reward_mean": 140.58828125,
+      "reward_by_dist": {
+        "blue_pool": 140.58828125
+      },
+      "reward_min": 56,
+      "reward_max": 740,
+      "rollout_s": 37.92622089385986,
+      "train_s": 2.864912986755371,
+      "lr": 0.0001992114701314478,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0008686984709787252,
+      "value_loss": 1.0727452664299215,
+      "entropy": 0.6824670621055238,
+      "approx_kl": 0.009627093191214636,
+      "clip_frac": 0.007712994032307835,
+      "bc_kl": 0.0,
+      "explained_var": 0.48139146058196725,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 2,
+      "reward_mean": 193.44505208333334,
+      "reward_by_dist": {
+        "blue_pool": 193.44505208333334
+      },
+      "reward_min": 64,
+      "reward_max": 731,
+      "rollout_s": 37.164217948913574,
+      "train_s": 0.8368394374847412,
+      "lr": 0.0001968583161128631,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.002910806855729885,
+      "value_loss": 0.5485602522149999,
+      "entropy": 0.6480149392117845,
+      "approx_kl": 0.009877992728836403,
+      "clip_frac": 0.08529898628562768,
+      "bc_kl": 0.0,
+      "explained_var": 0.8015839262403285,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 3,
+      "reward_mean": 355.1419270833333,
+      "reward_by_dist": {
+        "blue_pool": 355.1419270833333
+      },
+      "reward_min": 75,
+      "reward_max": 735,
+      "rollout_s": 36.911566972732544,
+      "train_s": 0.8136839866638184,
+      "lr": 0.00019297764858882514,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.00969674840245929,
+      "value_loss": 0.269700048134682,
+      "entropy": 0.5786605432946631,
+      "approx_kl": 0.016348069249614204,
+      "clip_frac": 0.19962775575472635,
+      "bc_kl": 0.0,
+      "explained_var": 0.9254804737706277,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 4,
+      "reward_mean": 582.45,
+      "reward_by_dist": {
+        "blue_pool": 582.45
+      },
+      "reward_min": 78,
+      "reward_max": 730,
+      "rollout_s": 36.054954528808594,
+      "train_s": 0.9067339897155762,
+      "lr": 0.00018763066800438636,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.01203481821648119,
+      "value_loss": 0.111116978716343,
+      "entropy": 0.5146083649485669,
+      "approx_kl": 0.020047558553049287,
+      "clip_frac": 0.13378413952825136,
+      "bc_kl": 0.0,
+      "explained_var": 0.9697520435086285,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 5,
+      "reward_mean": 659.77421875,
+      "reward_by_dist": {
+        "blue_pool": 659.77421875
+      },
+      "reward_min": 136,
+      "reward_max": 733,
+      "rollout_s": 37.17094922065735,
+      "train_s": 0.8903491497039795,
+      "lr": 0.00018090169943749476,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.006161582907467125,
+      "value_loss": 0.02831472830965798,
+      "entropy": 0.48193551917025385,
+      "approx_kl": 0.011272014559008935,
+      "clip_frac": 0.06643058953774558,
+      "bc_kl": 0.0,
+      "explained_var": 0.9938694773413778,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 6,
+      "reward_mean": 663.6361979166667,
+      "reward_by_dist": {
+        "blue_pool": 663.6361979166667
+      },
+      "reward_min": 323,
+      "reward_max": 726,
+      "rollout_s": 35.402661085128784,
+      "train_s": 0.8191237449645996,
+      "lr": 0.00017289686274214118,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.005811307788424026,
+      "value_loss": 0.014711136820706282,
+      "entropy": 0.4433630514652171,
+      "approx_kl": 0.0070676070706588755,
+      "clip_frac": 0.05623015423523302,
+      "bc_kl": 0.0,
+      "explained_var": 0.9965680870132149,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 7,
+      "reward_mean": 668.6098958333333,
+      "reward_by_dist": {
+        "blue_pool": 668.6098958333333
+      },
+      "reward_min": 479,
+      "reward_max": 729,
+      "rollout_s": 35.6018762588501,
+      "train_s": 0.9459550380706787,
+      "lr": 0.000163742398974869,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.005340566887366065,
+      "value_loss": 0.009123108877324836,
+      "entropy": 0.416443369807081,
+      "approx_kl": 0.00876844880425351,
+      "clip_frac": 0.10254440241136607,
+      "bc_kl": 0.0,
+      "explained_var": 0.9975844593458012,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 8,
+      "reward_mean": 681.5924479166666,
+      "reward_by_dist": {
+        "blue_pool": 681.5924479166666
+      },
+      "reward_min": 308,
+      "reward_max": 737,
+      "rollout_s": 35.35738253593445,
+      "train_s": 0.8387744426727295,
+      "lr": 0.00015358267949789966,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.004794774949111362,
+      "value_loss": 0.006340651654024074,
+      "entropy": 0.402258518845477,
+      "approx_kl": 0.009013787423984797,
+      "clip_frac": 0.1197797771824395,
+      "bc_kl": 0.0,
+      "explained_var": 0.9980104317333885,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 9,
+      "reward_mean": 688.1291666666667,
+      "reward_by_dist": {
+        "blue_pool": 688.1291666666667
+      },
+      "reward_min": 306,
+      "reward_max": 741,
+      "rollout_s": 33.6567223072052,
+      "train_s": 0.8156750202178955,
+      "lr": 0.00014257792915650726,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0044202122685903225,
+      "value_loss": 0.005206326993697501,
+      "entropy": 0.3885643721577969,
+      "approx_kl": 0.0073027796133236945,
+      "clip_frac": 0.10427251864383195,
+      "bc_kl": 0.0,
+      "explained_var": 0.9980582706043525,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 10,
+      "reward_mean": 699.1135416666667,
+      "reward_by_dist": {
+        "blue_pool": 699.1135416666667
+      },
+      "reward_min": 315,
+      "reward_max": 743,
+      "rollout_s": 36.57646179199219,
+      "train_s": 0.5370941162109375,
+      "lr": 0.00013090169943749474,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.011595808722549531,
+      "value_loss": 0.00504431748723096,
+      "entropy": 0.4252634844247331,
+      "approx_kl": 0.023226287743301717,
+      "clip_frac": 0.14128202284213176,
+      "bc_kl": 0.0,
+      "explained_var": 0.9979070202662064,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 11,
+      "reward_mean": 712.49453125,
+      "reward_by_dist": {
+        "blue_pool": 712.49453125
+      },
+      "reward_min": 553,
+      "reward_max": 763,
+      "rollout_s": 36.48074007034302,
+      "train_s": 0.8626625537872314,
+      "lr": 0.00011873813145857248,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0077407304473107365,
+      "value_loss": 0.005153536486954606,
+      "entropy": 0.40718522081349756,
+      "approx_kl": 0.00519002214501677,
+      "clip_frac": 0.07472409946011736,
+      "bc_kl": 0.0,
+      "explained_var": 0.9978951097581373,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 12,
+      "reward_mean": 714.86640625,
+      "reward_by_dist": {
+        "blue_pool": 714.86640625
+      },
+      "reward_min": 432,
+      "reward_max": 768,
+      "rollout_s": 36.849645376205444,
+      "train_s": 0.8766798973083496,
+      "lr": 0.00010627905195293135,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.005741740621623591,
+      "value_loss": 0.004893539292599134,
+      "entropy": 0.390156977512735,
+      "approx_kl": 0.0038771555213947166,
+      "clip_frac": 0.05563921384585209,
+      "bc_kl": 0.0,
+      "explained_var": 0.9980279445557418,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 13,
+      "reward_mean": 717.9955729166667,
+      "reward_by_dist": {
+        "blue_pool": 717.9955729166667
+      },
+      "reward_min": 310,
+      "reward_max": 778,
+      "rollout_s": 36.464890241622925,
+      "train_s": 0.96016526222229,
+      "lr": 9.372094804706867e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.004278406593352593,
+      "value_loss": 0.004672612402924991,
+      "entropy": 0.3731099823687939,
+      "approx_kl": 0.0028243159686079993,
+      "clip_frac": 0.038655715187524815,
+      "bc_kl": 0.0,
+      "explained_var": 0.9981261336173548,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 14,
+      "reward_mean": 719.31015625,
+      "reward_by_dist": {
+        "blue_pool": 719.31015625
+      },
+      "reward_min": 72,
+      "reward_max": 781,
+      "rollout_s": 37.90238118171692,
+      "train_s": 0.9389722347259521,
+      "lr": 8.126186854142755e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0031713961492487023,
+      "value_loss": 0.004522665190768052,
+      "entropy": 0.36194972139089665,
+      "approx_kl": 0.002577816879525594,
+      "clip_frac": 0.030040727767280916,
+      "bc_kl": 0.0,
+      "explained_var": 0.9981751626225522,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 15,
+      "reward_mean": 721.3356770833333,
+      "reward_by_dist": {
+        "blue_pool": 721.3356770833333
+      },
+      "reward_min": 613,
+      "reward_max": 776,
+      "rollout_s": 36.5195038318634,
+      "train_s": 0.9502062797546387,
+      "lr": 6.90983005625053e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0022576991566970817,
+      "value_loss": 0.004366978799844993,
+      "entropy": 0.34805906025019095,
+      "approx_kl": 0.0019640803463756283,
+      "clip_frac": 0.02053163669498122,
+      "bc_kl": 0.0,
+      "explained_var": 0.9981948072962489,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 16,
+      "reward_mean": 722.8885416666667,
+      "reward_by_dist": {
+        "blue_pool": 722.8885416666667
+      },
+      "reward_min": 621,
+      "reward_max": 781,
+      "rollout_s": 36.08054971694946,
+      "train_s": 0.9831717014312744,
+      "lr": 5.742207084349274e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.001975597714813085,
+      "value_loss": 0.004251237701069802,
+      "entropy": 0.3359029407196857,
+      "approx_kl": 0.0018584603273176974,
+      "clip_frac": 0.01866295774952766,
+      "bc_kl": 0.0,
+      "explained_var": 0.9982037248489459,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 17,
+      "reward_mean": 724.73671875,
+      "reward_by_dist": {
+        "blue_pool": 724.73671875
+      },
+      "reward_min": 616,
+      "reward_max": 777,
+      "rollout_s": 36.95427179336548,
+      "train_s": 0.961841344833374,
+      "lr": 4.6417320502100316e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0015124795329822828,
+      "value_loss": 0.00418053169863576,
+      "entropy": 0.3198839438722489,
+      "approx_kl": 0.001341958280966091,
+      "clip_frac": 0.013231826536828018,
+      "bc_kl": 0.0,
+      "explained_var": 0.9982129245111632,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 18,
+      "reward_mean": 725.46328125,
+      "reward_by_dist": {
+        "blue_pool": 725.46328125
+      },
+      "reward_min": 616,
+      "reward_max": 785,
+      "rollout_s": 37.5668740272522,
+      "train_s": 0.9685723781585693,
+      "lr": 3.6257601025131026e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0012481152972900708,
+      "value_loss": 0.004291875156613582,
+      "entropy": 0.3054240862739847,
+      "approx_kl": 0.0012801531296228097,
+      "clip_frac": 0.009110747154060865,
+      "bc_kl": 0.0,
+      "explained_var": 0.9981519814243136,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 19,
+      "reward_mean": 727.25078125,
+      "reward_by_dist": {
+        "blue_pool": 727.25078125
+      },
+      "reward_min": 427,
+      "reward_max": 781,
+      "rollout_s": 36.4181764125824,
+      "train_s": 0.8513128757476807,
+      "lr": 2.7103137257858868e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0009179375516164038,
+      "value_loss": 0.004315913322956321,
+      "entropy": 0.2926675277821561,
+      "approx_kl": 0.0011274670181256059,
+      "clip_frac": 0.005718177963841454,
+      "bc_kl": 0.0,
+      "explained_var": 0.9981301757655321,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 20,
+      "reward_mean": 727.896875,
+      "reward_by_dist": {
+        "blue_pool": 727.896875
+      },
+      "reward_min": 597,
+      "reward_max": 783,
+      "rollout_s": 37.411421060562134,
+      "train_s": 0.855231761932373,
+      "lr": 1.909830056250527e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0007019173025718316,
+      "value_loss": 0.004077100515752,
+      "entropy": 0.28342583141428357,
+      "approx_kl": 0.0008779958685221245,
+      "clip_frac": 0.002617676473319273,
+      "bc_kl": 0.0,
+      "explained_var": 0.9982340645877525,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 21,
+      "reward_mean": 728.3114583333333,
+      "reward_by_dist": {
+        "blue_pool": 728.3114583333333
+      },
+      "reward_min": 615,
+      "reward_max": 781,
+      "rollout_s": 38.01526594161987,
+      "train_s": 0.8871815204620361,
+      "lr": 1.2369331995613644e-05,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.00062406156709169,
+      "value_loss": 0.00400679258684172,
+      "entropy": 0.26936777015315727,
+      "approx_kl": 0.0005158482928343668,
+      "clip_frac": 0.0009570651310879955,
+      "bc_kl": 0.0,
+      "explained_var": 0.9982660133066281,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 22,
+      "reward_mean": 729.2502604166667,
+      "reward_by_dist": {
+        "blue_pool": 729.2502604166667
+      },
+      "reward_min": 631,
+      "reward_max": 785,
+      "rollout_s": 36.00168228149414,
+      "train_s": 0.881678581237793,
+      "lr": 7.0223514111748665e-06,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0003972303127042362,
+      "value_loss": 0.0037581174711181606,
+      "entropy": 0.2620715716100754,
+      "approx_kl": 0.00034587379339438926,
+      "clip_frac": 0.00029473489051637673,
+      "bc_kl": 0.0,
+      "explained_var": 0.9983746192098346,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 23,
+      "reward_mean": 728.3401041666667,
+      "reward_by_dist": {
+        "blue_pool": 728.3401041666667
+      },
+      "reward_min": 608,
+      "reward_max": 782,
+      "rollout_s": 36.8776957988739,
+      "train_s": 1.4549012184143066,
+      "lr": 3.141683887136904e-06,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0002716697966864926,
+      "value_loss": 0.003847608360105214,
+      "entropy": 0.2569097872585692,
+      "approx_kl": 0.0008063650063011231,
+      "clip_frac": 0.0007810169461547358,
+      "bc_kl": 0.0,
+      "explained_var": 0.9983384233726974,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 24,
+      "reward_mean": 729.2856770833333,
+      "reward_by_dist": {
+        "blue_pool": 729.2856770833333
+      },
+      "reward_min": 613,
+      "reward_max": 780,
+      "rollout_s": 35.70648384094238,
+      "train_s": 0.9935369491577148,
+      "lr": 7.885298685522236e-07,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -0.0001013286170184964,
+      "value_loss": 0.003460123931909812,
+      "entropy": 0.25524034842531734,
+      "approx_kl": 0.00012304265405664683,
+      "clip_frac": 0.0,
+      "bc_kl": 0.0,
+      "explained_var": 0.9985039490753753,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    },
+    {
+      "iteration": 25,
+      "reward_mean": 728.5872395833334,
+      "reward_by_dist": {
+        "blue_pool": 728.5872395833334
+      },
+      "reward_min": 632,
+      "reward_max": 782,
+      "rollout_s": 35.34124827384949,
+      "train_s": 0.7815995216369629,
+      "lr": 0.0,
+      "mixture": {
+        "original": 0.0,
+        "late": 0.0,
+        "grim30": 0.0,
+        "wide": 0.0,
+        "blue_pool": 1.0
+      },
+      "policy_loss": -6.67683128356541e-05,
+      "value_loss": 0.003640363618305468,
+      "entropy": 0.25288481146414227,
+      "approx_kl": 1.2966133036392376e-05,
+      "clip_frac": 0.0,
+      "bc_kl": 0.0,
+      "explained_var": 0.998427874789798,
+      "n_steps": 384000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0
+    }
+  ]
+}

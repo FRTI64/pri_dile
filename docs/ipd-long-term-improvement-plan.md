@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; next P2 C1
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -433,3 +433,21 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
 - 不 promotion；E4 red 仍 100% 击败。`heldout_v4` 仍未使用。
 - 下一步：扩大 red 池（Adv/SelfPlay exploiters、多 checkpoint）+ PSRO/
   meta-Nash 权重，而不是单 red response。
+
+## 15. P3 expansion — multi-red + PSRO-lite（2026-10-26，No-Go）
+
+- 新增 weighted `--opponent-pool`、CandidateSpec-aware policy pool、
+  `python -m ipd meta`（maximin 权重 + Gate D）。
+- 训练 Red-v2–v4（入 blue 训练池）和严格 held-out Red-v5/v6；
+  red pool 扩展到 6 个 checkpoint。
+- maximin 选 v4 0.70、v1/v2/v3 各 0.10（learned-blue columns）。
+- Blue-Meta-v2（50% red，iter 5）：official 554.999、blind 564.345、
+  heldout_v2 502.938、min_norm 0.9679。
+- held-out red exploitability 390.33→367.33（**-5.9%**，Gate -20%）；
+  E4 -10.5%、Red-v5 -1.7%、Red-v6 -4.7%；official +0.24 通过，
+  但 `validation:extort` -3.21%，family Gate 失败。**Gate D FAIL**。
+- 结论：多 red + maximin 没有超过单 red 的 E4 降幅；更激进的 60% red
+  响应以 extort family 崩塌为代价。不注册 `rl-meta`，RL-Repair 保留。
+  下一步 P2 C1 Bayesian belief planner 离线评估；不要继续调 E2。
+- 报告：`results/p3_league_20261026/README.md`；
+  计划/结果：`docs/p3-expansion-plan.md`。

@@ -1,0 +1,50 @@
+{
+  "schema": "ipd-opponent-pool-v1",
+  "name": "p3_red_v5_heldout_blues",
+  "note": "Held-out Red-v5 trigger: all major blue families, never used by the blue response.",
+  "entries": [
+    {
+      "kind": "rl-repair",
+      "name": "RL-Repair",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL",
+      "weight": 1.0,
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "selfplay",
+      "name": "SelfPlay-GRU",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/selfplay_gru_policy.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "weight": 1.0,
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "triple-majority",
+      "name": "Triple-majority",
+      "weight": 1.0,
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ]
+}

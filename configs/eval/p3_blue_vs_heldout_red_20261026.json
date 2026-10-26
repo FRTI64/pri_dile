@@ -1,0 +1,110 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "p3_blue_vs_heldout_red_20261026",
+  "note": "Gate D: compare RL-Repair, the maximin blue response and the previous league-lite response against held-out E4/Red-v5/Red-v6. Official/blind/heldout_v2 checked for family regressions.",
+  "baseline": "RL-Repair",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20,
+    "cross_play_seeds": 20,
+    "red_seeds": 20
+  },
+  "suites": {
+    "official": {
+      "kind": "official",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026
+    },
+    "blind": {
+      "kind": "blind",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261025
+    },
+    "validation": {
+      "kind": "opponents",
+      "suite": "validation",
+      "seeds": 20,
+      "seed_base": 20261026
+    },
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 20,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 1,
+    "seed_base": 20561026,
+    "policy_seed_base": 20461026
+  },
+  "red": {
+    "seeds": 20,
+    "seed_base": 20561026,
+    "policy_seed_base": 20361026
+  },
+  "candidates": [
+    {
+      "name": "RL-Repair",
+      "kind": "rl-repair",
+      "group": "baseline",
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-v2",
+      "kind": "rl",
+      "group": "candidate",
+      "params": {
+        "weights": "weights/red_pool/blue_meta_v2.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-vs-Red-Comp-v1",
+      "kind": "rl",
+      "group": "previous",
+      "params": {
+        "weights": "weights/red_pool/blue_vs_red_comp_v1.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": [
+    {
+      "name": "E4-red-BC",
+      "kind": "selfplay",
+      "group": "heldout-red",
+      "params": {
+        "weights": "weights/selfplay_improvement/E4_red_policy.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v5-heldout",
+      "kind": "rl",
+      "group": "heldout-red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v5_heldout.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v6-heldout",
+      "kind": "rl",
+      "group": "heldout-red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v6_heldout.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

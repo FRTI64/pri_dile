@@ -1,0 +1,30 @@
+field 1/20 seed=20261025 Final-tuned:24, Resp3-tuned:34, Bayes-tuned:48, Triple-majority:24, RL-PPO:24
+field 2/20 seed=20268944 Final-tuned:5, Resp3-tuned:1, Bayes-tuned:70, Triple-majority:1, RL-PPO:1
+field 3/20 seed=20276863 Final-tuned:9, Resp3-tuned:11, Bayes-tuned:100, Triple-majority:1, RL-PPO:1
+field 4/20 seed=20284782 Final-tuned:15, Resp3-tuned:1, Bayes-tuned:36, Triple-majority:1, RL-PPO:1
+field 5/20 seed=20292701 Final-tuned:1, Resp3-tuned:1, Bayes-tuned:63, Triple-majority:1, RL-PPO:1
+field 6/20 seed=20300620 Final-tuned:15, Resp3-tuned:3, Bayes-tuned:94, Triple-majority:2, RL-PPO:1
+field 7/20 seed=20308539 Final-tuned:1, Resp3-tuned:1, Bayes-tuned:20, Triple-majority:1, RL-PPO:1
+field 8/20 seed=20316458 Final-tuned:27, Resp3-tuned:27, Bayes-tuned:88, Triple-majority:27, RL-PPO:23
+field 9/20 seed=20324377 Final-tuned:5, Resp3-tuned:2, Bayes-tuned:79, Triple-majority:1, RL-PPO:1
+field 10/20 seed=20332296 Final-tuned:30, Resp3-tuned:28, Bayes-tuned:60, Triple-majority:36, RL-PPO:25
+field 11/20 seed=20340215 Final-tuned:4, Resp3-tuned:1, Bayes-tuned:38, Triple-majority:1, RL-PPO:1
+field 12/20 seed=20348134 Final-tuned:1, Resp3-tuned:1, Bayes-tuned:34, Triple-majority:1, RL-PPO:1
+field 13/20 seed=20356053 Final-tuned:1, Resp3-tuned:4, Bayes-tuned:56, Triple-majority:2, RL-PPO:1
+field 14/20 seed=20363972 Final-tuned:6, Resp3-tuned:20, Bayes-tuned:81, Triple-majority:6, RL-PPO:1
+field 15/20 seed=20371891 Final-tuned:1, Resp3-tuned:1, Bayes-tuned:92, Triple-majority:1, RL-PPO:1
+field 16/20 seed=20379810 Final-tuned:1, Resp3-tuned:1, Bayes-tuned:12, Triple-majority:1, RL-PPO:1
+field 17/20 seed=20387729 Final-tuned:3, Resp3-tuned:1, Bayes-tuned:51, Triple-majority:1, RL-PPO:1
+field 18/20 seed=20395648 Final-tuned:1, Resp3-tuned:3, Bayes-tuned:93, Triple-majority:1, RL-PPO:1
+field 19/20 seed=20403567 Final-tuned:1, Resp3-tuned:7, Bayes-tuned:15, Triple-majority:1, RL-PPO:1
+field 20/20 seed=20411486 Final-tuned:27, Resp3-tuned:27, Bayes-tuned:82, Triple-majority:27, RL-PPO:27
+
+Blind test over 20 unseen 299-player fields:
+strategy                   score   mean rank   rank1   top10   worst
+Final-tuned               547.75        8.90    8/20   14/20      30
+Resp3-tuned               548.47        8.75    9/20   14/20      34
+Bayes-tuned               528.67       60.60    0/20    0/20     100
+Triple-majority           551.33        6.85   13/20   16/20      36
+RL-PPO                    564.28        5.75   16/20   16/20      27
+
+written results/p3_league_20261026/blind/blue_meta_v2.json

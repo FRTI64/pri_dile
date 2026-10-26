@@ -1,0 +1,42 @@
+{
+  "schema": "ipd-opponent-pool-v1",
+  "name": "blue_meta_pool_prelim",
+  "entries": [
+    {
+      "kind": "rl",
+      "name": "Red-RL-v1",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/red_pool/red_rl_v1.json",
+        "mode": "sample"
+      },
+      "weight": 0.1
+    },
+    {
+      "kind": "rl",
+      "name": "Red-RL-v2",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/red_pool/red_rl_v2.json",
+        "mode": "sample"
+      },
+      "weight": 0.1
+    },
+    {
+      "kind": "rl",
+      "name": "Red-RL-v3",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/red_pool/red_rl_v3.json",
+        "mode": "sample"
+      },
+      "weight": 0.10003000000000001
+    },
+    {
+      "kind": "rl",
+      "name": "Red-RL-v4",
+      "params": {
+        "weights": "/home/frti64/pri_dile/weights/red_pool/red_rl_v4.json",
+        "mode": "sample"
+      },
+      "weight": 0.69997
+    }
+  ]
+}

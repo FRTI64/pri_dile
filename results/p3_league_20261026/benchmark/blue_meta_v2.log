@@ -1,0 +1,50 @@
+progress 20/400 field tasks
+progress 40/400 field tasks
+progress 60/400 field tasks
+progress 80/400 field tasks
+progress 100/400 field tasks
+progress 120/400 field tasks
+progress 140/400 field tasks
+progress 160/400 field tasks
+progress 180/400 field tasks
+progress 200/400 field tasks
+progress 220/400 field tasks
+progress 240/400 field tasks
+progress 260/400 field tasks
+progress 280/400 field tasks
+progress 300/400 field tasks
+progress 320/400 field tasks
+progress 340/400 field tasks
+progress 360/400 field tasks
+progress 380/400 field tasks
+progress 400/400 field tasks
+Final-tuned        original  mean= 549.30 min= 500.53
+Final-tuned        late      mean= 542.83 min= 510.12
+Final-tuned        grim30    mean= 549.69 min= 538.91
+Final-tuned        wide      mean= 543.56 min= 524.43
+Resp3-tuned        original  mean= 547.73 min= 495.97
+Resp3-tuned        late      mean= 542.44 min= 511.19
+Resp3-tuned        grim30    mean= 549.84 min= 539.22
+Resp3-tuned        wide      mean= 544.01 min= 518.33
+Bayes-tuned        original  mean= 550.19 min= 493.31
+Bayes-tuned        late      mean= 546.23 min= 522.45
+Bayes-tuned        grim30    mean= 554.16 min= 544.18
+Bayes-tuned        wide      mean= 526.24 min= 507.27
+Triple-majority    original  mean= 549.14 min= 499.32
+Triple-majority    late      mean= 542.49 min= 511.17
+Triple-majority    grim30    mean= 549.96 min= 539.40
+Triple-majority    wide      mean= 547.89 min= 519.85
+RL-PPO             original  mean= 557.85 min= 516.68
+RL-PPO             late      mean= 549.22 min= 521.13
+RL-PPO             grim30    mean= 552.86 min= 543.24
+RL-PPO             wide      mean= 559.24 min= 531.32
+
+Summary (mean score per opponent):
+strategy              original      late    grim30      wide       avg     worst       min
+Final-tuned             549.30    542.83    549.69    543.56    546.35    542.83    500.53
+Resp3-tuned             547.73    542.44    549.84    544.01    546.00    542.44    495.97
+Bayes-tuned             550.19    546.23    554.16    526.24    544.21    526.24    493.31
+Triple-majority         549.14    542.49    549.96    547.89    547.37    542.49    499.32
+RL-PPO                  557.85    549.22    552.86    559.24    554.79    549.22    516.68
+
+written results/p3_league_20261026/benchmark/blue_meta_v2.json

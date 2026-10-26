@@ -1,0 +1,41 @@
+{
+  "schema": "ipd-opponent-pool-v1",
+  "name": "p3_red_v2_blues",
+  "note": "Red-v2: exploit Adv-RL / SelfPlay / rule blue population.",
+  "entries": [
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL",
+      "weight": 1.0,
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "selfplay",
+      "name": "SelfPlay-GRU",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/selfplay_gru_policy.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "weight": 1.0,
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "triple-majority",
+      "name": "Triple-majority",
+      "weight": 1.0,
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ]
+}

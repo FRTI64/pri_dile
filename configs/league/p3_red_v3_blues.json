@@ -1,0 +1,43 @@
+{
+  "schema": "ipd-opponent-pool-v1",
+  "name": "p3_red_v3_blues",
+  "note": "Red-v3: exploit the current 85-dim blue population plus the previous league-lite response.",
+  "entries": [
+    {
+      "kind": "rl",
+      "name": "RL-PPO",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-hard60",
+      "name": "RL-PPO-Hard60",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-repair",
+      "name": "RL-Repair",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "Blue-vs-Red-Comp-v1",
+      "weight": 1.0,
+      "params": {
+        "weights": "weights/red_pool/blue_vs_red_comp_v1.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}
