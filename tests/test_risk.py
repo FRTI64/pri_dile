@@ -5,7 +5,8 @@ import random
 import unittest
 
 from ipd.training.risk import (
-    cvar_episode_weights, dirichlet_weights, dro_update_weights,
+    competitive_reward, cvar_episode_weights, dirichlet_weights,
+    dro_update_weights,
 )
 
 
@@ -53,6 +54,18 @@ class DirichletTests(unittest.TestCase):
         weights = dirichlet_weights(base, random.Random(1), concentration=0.0)
         self.assertAlmostEqual(weights["a"], 0.25)
         self.assertAlmostEqual(weights["b"], 0.75)
+
+
+class CompetitiveRewardTests(unittest.TestCase):
+    def test_zero_penalty_is_own_payoff(self):
+        self.assertEqual(competitive_reward(6, 6, 0.0), 6)
+        self.assertEqual(competitive_reward(10, 0, 0.0), 10)
+
+    def test_penalty_subtracts_opponent_payoff(self):
+        self.assertEqual(competitive_reward(6, 6, 1.0), 0)
+        self.assertEqual(competitive_reward(10, 0, 1.0), 10)
+        self.assertEqual(competitive_reward(0, 10, 1.0), -10)
+        self.assertEqual(competitive_reward(0, 10, 0.5), -5)
 
 
 class DROWeightTests(unittest.TestCase):

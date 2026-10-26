@@ -59,14 +59,15 @@ import statistics
 import time
 from array import array
 from concurrent.futures import ProcessPoolExecutor
-from typing import Any
+from typing import Any, Sequence
 
 from ipd.core.simulator import C, D, payoff
 from ipd.evaluation.distributions import DISTS, TRAIN_DISTS, build_train_dist_field
 from ipd.policies.neural import FEATURE_VERSION, extract_features
 from ipd.training.neural import describe_device, resolve_device
 from ipd.training.risk import (
-    cvar_episode_weights, dirichlet_weights, dro_update_weights,
+    competitive_reward, cvar_episode_weights, dirichlet_weights,
+    dro_update_weights,
 )
 
 N_FEATURES = len(extract_features([], []))
@@ -106,8 +107,16 @@ def rollout_task(task: dict[str, Any]):
     lam = float(task.get("lam", 0.95))
     center_rewards = bool(task.get("center_rewards", False))
     center_advantages = bool(task.get("center_advantages", True))
+    opponent_penalty = float(task.get("opponent_penalty", 0.0))
 
-    field = build_train_dist_field(dist, seed, n)
+    opponent_weights = task.get("opponent_weights")
+    if opponent_weights:
+        from ipd.evaluation.policy_pool import build_policy_field
+
+        field = build_policy_field(opponent_weights, seed=seed, n=n,
+                                   mode="sample")
+    else:
+        field = build_train_dist_field(dist, seed, n)
     policy = RLPolicy(checkpoint, seed=policy_seed, mode=mode, safe=safe)
 
     scores: list[float] = []
@@ -154,7 +163,9 @@ def rollout_task(task: dict[str, Any]):
             logit, value = policy.logit_value(f)
             action, logprob, forced = policy.select(t, theirs, logit)
             reply = opp.act(t, theirs, mine)
-            reward = payoff(action, reply)
+            own = payoff(action, reply)
+            reward = competitive_reward(
+                own, payoff(reply, action), opponent_penalty)
 
             ep_features.append(f)
             ep_actions.append(action)
@@ -165,7 +176,7 @@ def rollout_task(task: dict[str, Any]):
 
             mine.append(action)
             theirs.append(reply)
-            score += reward
+            score += own
 
         if center_rewards:
             # Optional: remove the per-episode mean reward before GAE.  The
@@ -525,39 +536,68 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
                      center_rewards: bool = False,
                      center_advantages: bool = True,
                      dist_weights: dict[str, float] | None = None,
-                     dirichlet_concentration: float = 0.0) -> dict[str, Any]:
+                     dirichlet_concentration: float = 0.0,
+                     opponent_weights: Sequence[str] | None = None,
+                     opponent_penalty: float = 0.0,
+                     opponent_fraction: float = 1.0
+                     ) -> dict[str, Any]:
     rng = random.Random(seed)
+    tasks: list[dict[str, Any]] = []
+
+    def add_task(dist: str, red: bool) -> None:
+        task = {
+            "dist": dist,
+            "seed": rng.randrange(1 << 30),
+            "n": n,
+            "checkpoint": checkpoint,
+            "safe": safe,
+            "collect": True,
+            "mode": "sample",
+            "policy_seed": rng.randrange(1 << 30),
+            "gamma": gamma,
+            "lam": lam,
+            "center_rewards": center_rewards,
+            "center_advantages": center_advantages,
+            "opponent_penalty": opponent_penalty,
+        }
+        if red:
+            task["opponent_weights"] = list(opponent_weights or ())
+        tasks.append(task)
+
     base = {dist: (1.0 if dist_weights is None
                    else float(dist_weights.get(dist, 1.0)))
             for dist in dists}
     base_total = sum(base.values()) or float(len(dists))
-    if dirichlet_concentration > 0.0:
-        sampled = dirichlet_weights(base, rng, dirichlet_concentration)
-        mixture = {dist: sampled[dist] * base_total for dist in dists}
-    else:
-        mixture = base
-    tasks = []
-    for dist in dists:
-        weight = mixture.get(dist, 1.0)
-        n_fields = max(1, int(round(fields_per_dist * weight)))
-        for _ in range(n_fields):
-            tasks.append({
-                "dist": dist,
-                "seed": rng.randrange(1 << 30),
-                "n": n,
-                "checkpoint": checkpoint,
-                "safe": safe,
-                "collect": True,
-                "mode": "sample",
-                "policy_seed": rng.randrange(1 << 30),
-                "gamma": gamma,
-                "lam": lam,
-                "center_rewards": center_rewards,
-                "center_advantages": center_advantages,
-            })
+    frac = min(1.0, max(0.0, float(opponent_fraction)))
+    total_fields = max(1, int(round(fields_per_dist * base_total)))
+    n_red = (int(round(total_fields * frac)) if opponent_weights else 0)
+    n_official = total_fields - n_red
+    counts = {dist: 0 for dist in dists}
+    if n_official > 0:
+        if dirichlet_concentration > 0.0:
+            sampled = dirichlet_weights(base, rng, dirichlet_concentration)
+            mixture = {dist: sampled[dist] * base_total for dist in dists}
+        else:
+            mixture = base
+        raw = {dist: n_official * mixture.get(dist, 1.0) / base_total
+               for dist in dists}
+        counts = {dist: int(raw[dist]) for dist in dists}
+        remaining = n_official - sum(counts.values())
+        for dist in sorted(dists, key=lambda d: raw[d] - counts[d],
+                           reverse=True)[:remaining]:
+            counts[dist] += 1
+        for dist in dists:
+            for _ in range(max(0, counts[dist])):
+                add_task(dist, red=False)
+    for _ in range(n_red):
+        add_task("blue_pool", red=True)
     results = list(pool.map(rollout_task, tasks, chunksize=1))
     payload = _concat_payloads(results)
-    payload["mixture"] = mixture
+    payload["mixture"] = {
+        **{dist: (counts.get(dist, 0) / total_fields)
+           for dist in dists},
+        "blue_pool": n_red / total_fields,
+    }
     return payload
 
 
@@ -689,6 +729,18 @@ def main(argv=None) -> None:
                     help="do not load initial policy weights (normalisation is kept)")
     ap.add_argument("--allow-probe", action="store_true",
                     help="remove the day-1/no-proactive-probe safety rules")
+    ap.add_argument("--opponent-weights", default="",
+                    help="comma-separated frozen blue policy JSONs; train a "
+                         "red best response against this pool")
+    ap.add_argument("--opponent-penalty", type=float, default=0.0,
+                    help="subtract this fraction of opponent payoff from the "
+                         "PPO reward (1.0 = score-difference objective)")
+    ap.add_argument("--opponent-fraction", type=float, default=1.0,
+                    help="fraction of training fields drawn from "
+                         "--opponent-weights; 1.0 = red-only, 0.5 = mixed")
+    ap.add_argument("--no-validation", action="store_true",
+                    help="skip official validation/selection and export the "
+                         "last iteration (used for red best responses)")
     ap.add_argument("--out", default=weights_path("rl_policy_weights.json"))
     ap.add_argument("--checkpoint-out", default=weights_path("rl_policy_checkpoint.json"))
     ap.add_argument("--history-out", default=result_path("rl_training_history.json"))
@@ -710,15 +762,20 @@ def main(argv=None) -> None:
     if unknown:
         raise SystemExit(f"unknown validation distributions: {unknown}")
 
+    opponent_weights = tuple(
+        x.strip() for x in args.opponent_weights.split(",") if x.strip())
     train_dists = (tuple(x.strip() for x in args.train_dists.split(",")
                          if x.strip())
                    if args.train_dists else val_dists)
-    unknown_train = [d for d in train_dists if d not in TRAIN_DISTS]
+    if opponent_weights:
+        unknown_train = []
+    else:
+        unknown_train = [d for d in train_dists if d not in TRAIN_DISTS]
     if unknown_train:
         raise SystemExit(f"unknown training distributions: {unknown_train}")
 
     dist_weights = None
-    if args.dist_weights:
+    if args.dist_weights and not opponent_weights:
         vals = [float(x) for x in args.dist_weights.split(",") if x.strip()]
         if len(vals) != len(train_dists):
             raise SystemExit("--dist-weights must match --train-dists in length")
@@ -736,7 +793,8 @@ def main(argv=None) -> None:
           f"fields/iter/dist={args.fields_per_dist} "
           f"n={args.n} iterations={args.iterations} safe={not args.allow_probe} "
           f"risk={risk_desc} "
-          f"dirichlet={args.dirichlet_concentration:g}",
+          f"dirichlet={args.dirichlet_concentration:g} "
+          f"blue_pool={len(opponent_weights)}",
           flush=True)
 
     torch.manual_seed(args.seed)
@@ -801,6 +859,9 @@ def main(argv=None) -> None:
         "seed": args.seed,
         "dists": list(val_dists),
         "train_dists": list(train_dists),
+        "opponent_weights": list(opponent_weights),
+        "opponent_penalty": args.opponent_penalty,
+        "opponent_fraction": args.opponent_fraction,
         "fields_per_dist": args.fields_per_dist,
         "dist_weights": dist_weights,
         "n": args.n,
@@ -864,7 +925,10 @@ def main(argv=None) -> None:
                 args.seed + iteration * 100003, safe, args.workers,
                 args.gamma, args.lam, args.center_rewards,
                 args.center_advantages, rollout_weights,
-                dirichlet_concentration=args.dirichlet_concentration)
+                dirichlet_concentration=args.dirichlet_concentration,
+                opponent_weights=opponent_weights,
+                opponent_penalty=args.opponent_penalty,
+                opponent_fraction=args.opponent_fraction)
             rollout_time = time.time() - rollout_start
 
             train_start = time.time()
@@ -898,8 +962,14 @@ def main(argv=None) -> None:
                 dro_weights = {name: value * dro_scale
                                for name, value in normalised.items()}
                 row["dro_next"] = dict(normalised)
-            do_val = (iteration % args.val_every == 0
-                      or iteration == args.iterations)
+            if args.no_validation:
+                ckpt = export_checkpoint(model, mean, std, temperature, safe,
+                                         meta_base)
+                best = {"selection": 0.0, "iteration": iteration,
+                        "checkpoint": ckpt, "val": None}
+            do_val = (not args.no_validation
+                      and (iteration % args.val_every == 0
+                           or iteration == args.iterations))
             if do_val:
                 model.eval()
                 ckpt = export_checkpoint(model, mean, std, temperature, safe,
@@ -944,8 +1014,11 @@ def main(argv=None) -> None:
                 from ipd.policies.rl import RLPolicy
                 save_json(args.out,
                           RLPolicy(best["checkpoint"]).export_policy_weights())
+                val_avg = (best["val"]["avg"]
+                           if best.get("val") else None)
                 print(f"  saved checkpoint (best iter {best['iteration']}, "
-                      f"val avg={best['val']['avg']:.2f})", flush=True)
+                      f"val avg={val_avg if val_avg is not None else 'none'})",
+                      flush=True)
 
     # Final export of the best validation policy.
     from ipd.policies.rl import RLPolicy

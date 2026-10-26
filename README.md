@@ -284,6 +284,13 @@ E2 新增 CVaR episode weighting、Dirichlet mixture 和 worst-family DRO
 E2 判 **No-Go**，不注册 `rl-risk`/`rl-dro`，`heldout_v4` 保留未用。
 详见 `results/risk_20261026/README.md`。
 
+P3 新增 frozen policy pool + red/exploiter 训练：85 维 `Red-RL-v1` 在全部
+held-out blue 上强于 E4 red（对 RL-Repair red 727.6 vs 703.8），red pool
+第一里程碑 Go。League-lite competitive blue response 把 E4 exploitability
+407.0→355.0（-12.8%），official 554.74 / blind 563.80；未达 -20% Gate，
+判 **No-Go**，不 promotion。E4 red 仍 100% 击败，anti-exploitation 未解决。
+详见 `results/red_pool_20261026/README.md`、`docs/p3-red-league.md`。
+
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
 逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`，透视表见
@@ -302,6 +309,7 @@ E2 判 **No-Go**，不注册 `rl-risk`/`rl-dro`，`heldout_v4` 保留未用。
 | [docs/e0-league-plan.md](docs/e0-league-plan.md) | E0 评估/元博弈计划 |
 | [docs/e1-robust-finetune.md](docs/e1-robust-finetune.md) | E1 domain-randomized / repair fine-tune |
 | [docs/e2-risk-ppo.md](docs/e2-risk-ppo.md) | E2 CVaR / risk-sensitive PPO |
+| [docs/p3-red-league.md](docs/p3-red-league.md) | P3 red/exploiter pool + league-lite |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

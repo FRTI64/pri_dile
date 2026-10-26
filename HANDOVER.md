@@ -128,6 +128,15 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   均未达 +10%/+0.02 Gate；official validation 也没有超过 RL-Repair。
   E2 **No-Go**，不注册 `rl-risk`/`rl-dro`，不消耗 heldout_v4。
   结果见 `results/risk_20261026/`、`docs/e2-risk-ppo.md`。
+- **P3 red/exploiter pool（2026-10-26，red pool Go / league-lite No-Go）**：
+  新增 frozen policy pool + `--opponent-weights/--opponent-fraction/
+  --opponent-penalty`，训练 85 维 `Red-RL-v1`（from scratch, safe=False）。
+  Red-RL-v1 在全部 held-out blue 上都强于 E4 red（对 RL-Repair red 727.6
+  vs 703.8，对 Adv-RL 666.6 vs 611.8，red win 100%），red pool 第一
+  里程碑 Go。League-lite competitive blue response（50% official/repair +
+  50% red pool，reward=own-opponent）把 E4 exploitability 407.0→355.0
+  （-12.8%），official 554.74、blind 563.80，未达 -20% Gate，判 No-Go。
+  不 promotion；E4 red 仍 100% 击败。结果见 `results/red_pool_20261026/`。
 
 复现入口：
 

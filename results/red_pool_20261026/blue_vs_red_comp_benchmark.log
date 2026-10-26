@@ -1,0 +1,30 @@
+progress 4/80 field tasks
+progress 8/80 field tasks
+progress 12/80 field tasks
+progress 16/80 field tasks
+progress 20/80 field tasks
+progress 24/80 field tasks
+progress 28/80 field tasks
+progress 32/80 field tasks
+progress 36/80 field tasks
+progress 40/80 field tasks
+progress 44/80 field tasks
+progress 48/80 field tasks
+progress 52/80 field tasks
+progress 56/80 field tasks
+progress 60/80 field tasks
+progress 64/80 field tasks
+progress 68/80 field tasks
+progress 72/80 field tasks
+progress 76/80 field tasks
+progress 80/80 field tasks
+RL-PPO             original  mean= 557.55 min= 514.74
+RL-PPO             late      mean= 548.95 min= 521.21
+RL-PPO             grim30    mean= 553.04 min= 543.27
+RL-PPO             wide      mean= 559.44 min= 531.71
+
+Summary (mean score per opponent):
+strategy              original      late    grim30      wide       avg     worst       min
+RL-PPO                  557.55    548.95    553.04    559.44    554.74    548.95    514.74
+
+written results/red_pool_20261026/blue_vs_red_comp_benchmark.json

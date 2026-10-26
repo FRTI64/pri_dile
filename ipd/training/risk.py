@@ -69,6 +69,17 @@ def dirichlet_weights(base: Mapping[str, float], rng: random.Random,
     return {name: g / total_gamma for name, g in zip(names, gammas)}
 
 
+def competitive_reward(own: float, opponent: float,
+                       coef: float = 0.0) -> float:
+    """Own payoff minus a penalty on the opponent's payoff.
+
+    ``coef=0`` is the normal IPD return; ``coef=1`` optimises the score
+    difference, which is useful for training an anti-exploitation blue
+    response rather than a pure own-score best response.
+    """
+    return float(own) - float(coef) * float(opponent)
+
+
 def dro_update_weights(weights: Mapping[str, float],
                        means: Mapping[str, float], *, eta: float = 0.5,
                        quantile: float = 0.5, blend: float = 0.5,
@@ -113,4 +124,5 @@ def dro_update_weights(weights: Mapping[str, float],
 
 __all__ = [
     "cvar_episode_weights", "dirichlet_weights", "dro_update_weights",
+    "competitive_reward",
 ]

@@ -74,6 +74,7 @@ ipd/
 │   ├── opponent_suite.py  冻结评估 suite（含 heldout_v2/v3 新家族/参数）
 │   ├── metagame.py        cross-play 矩阵、Nash averaging、Elo、exploitability
 │   ├── league.py          E0 联赛 harness（cross-play / suite / red）
+│   ├── policy_pool.py     P3 frozen blue/red policy pool
 │   └── robust.py          E1 robust / repair domain-randomized 训练对手分布
 ├── training/              训练/搜索代码（只通过 registry 和 distributions 取策略/对手）
 │   ├── common.py          统一参数、seed、JSON 产物
@@ -309,6 +310,7 @@ tests/test_metagame.py     Nash averaging、Elo、exploitability
 tests/test_league.py       E0 cross-play/suite/red harness、heldout_v2/v3
 tests/test_robust.py       E1 domain-randomized 训练分布
 tests/test_risk.py         E2 CVaR episode weights / Dirichlet mixture
+tests/test_policy_pool.py  P3 frozen blue/red policy pool
 tests/test_training.py     训练任务可导入、统一参数、JSON 工具
 ```
 

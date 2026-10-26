@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 next
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -418,3 +418,18 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
 - 诊断：episode-level CVaR 和训练分布 DRO 都没有直接约束 held-out
   family 尾部。下一步应直接用 family-level CVaR/exploitability 目标，
   或转 P3 red/exploiter league。
+
+## 14. P3 red/exploiter pool（2026-10-26）
+
+- 新增 `ipd/evaluation/policy_pool.py` 和 RL 训练 flags
+  `--opponent-weights/--opponent-fraction/--opponent-penalty`。
+- 85 维 `Red-RL-v1`（from scratch, safe=False）对 RL-PPO/A60/RL-Repair
+  frozen pool 训练 20 iter；训练 reward 146.9→715.5。
+- Red-RL-v1 在全部 held-out blue 上强于 E4 red（RL-Repair 727.6 vs
+  703.8；Adv-RL 666.6 vs 611.8；red win 100%）→ red pool 第一里程碑 Go。
+- League-lite blue response：50% official/repair + 50% red pool，
+  reward=own-opponent；best iter 10。E4 exploitability 407.0→355.0
+  （-12.8%），official 554.74、blind 563.80；未达 -20% Gate → **No-Go**。
+- 不 promotion；E4 red 仍 100% 击败。`heldout_v4` 仍未使用。
+- 下一步：扩大 red 池（Adv/SelfPlay exploiters、多 checkpoint）+ PSRO/
+  meta-Nash 权重，而不是单 red response。

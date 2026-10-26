@@ -114,6 +114,13 @@ blind +0.80，held-out v3 final +3.91，判 **Go candidate**。权重
 `weights/rl_policy_weights_repair.json` 注册为 `rl-repair`，但主权重
 未替换。详见 `docs/e1-robust-finetune.md`。
 
+P3 新增 frozen policy pool 训练入口：
+`--opponent-weights path1,path2` 让 RL learner 直接对 RL/Neural/GRU/SelfPlay
+权重训练；`--opponent-fraction` 控制 official 分布与 frozen pool 的混合；
+`--opponent-penalty λ` 把 reward 改成 `own - λ*opponent`，用于
+anti-exploitation blue response。`--no-validation` 适合 red best response
+（固定预算、不做官方分布选模）。详见 `docs/p3-red-league.md`。
+
 ### 3.4 并行与设备
 
 - 24 个标准库 worker 生成 rollout（不导入 PyTorch）；

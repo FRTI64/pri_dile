@@ -1,0 +1,655 @@
+{
+  "schema": "ipd-league-report-v1",
+  "created": "2026-10-26T13:54:13",
+  "seconds": 6.21,
+  "name": "blue_vs_red_comp_eval_20261026",
+  "note": "Evaluate the competitive/mixed blue response against training red and held-out E4 red.",
+  "config": "/home/frti64/pri_dile/configs/eval/blue_vs_red_comp_eval.json",
+  "config_sha256": "68e3770a3bd427f6907b2053c52609444ef238a0268000cb7e6f8b8b280e0a7d",
+  "baseline": "RL-PPO",
+  "suite_names": [],
+  "candidates": {
+    "Final-tuned": {
+      "spec": {
+        "kind": "final-tuned",
+        "name": "Final-tuned",
+        "params": {}
+      },
+      "group": "rule",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 340.925,
+        "red_mean": 620.925,
+        "diff_mean": 279.99999999999994,
+        "red_win_rate": 1.0,
+        "blue_min": 200.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 286.49999999999994,
+        "normalized_vs_baseline": 1.0747950819672132
+      },
+      "params": null
+    },
+    "Triple-majority": {
+      "spec": {
+        "kind": "triple-majority",
+        "name": "Triple-majority",
+        "params": {}
+      },
+      "group": "rule",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 333.4,
+        "red_mean": 598.9,
+        "diff_mean": 265.5,
+        "red_win_rate": 1.0,
+        "blue_min": 295.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 289.00000000000006,
+        "normalized_vs_baseline": 1.0510718789407314
+      },
+      "params": null
+    },
+    "RL-PPO": {
+      "spec": {
+        "kind": "rl",
+        "name": "RL-PPO",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/rl_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      "group": "blue",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 317.2,
+        "red_mean": 673.95,
+        "diff_mean": 356.75000000000006,
+        "red_win_rate": 1.0,
+        "blue_min": 273.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 380.5,
+        "normalized_vs_baseline": 1.0
+      },
+      "params": {
+        "deployable": 7617,
+        "with_critic": 7617
+      }
+    },
+    "RL-PPO-Hard60": {
+      "spec": {
+        "kind": "rl-hard60",
+        "name": "RL-PPO-Hard60",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/rl_policy_weights_hard60.json",
+          "mode": "sample"
+        }
+      },
+      "group": "blue",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 320.975,
+        "red_mean": 689.475,
+        "diff_mean": 368.5,
+        "red_win_rate": 1.0,
+        "blue_min": 266.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 384.50000000000006,
+        "normalized_vs_baseline": 1.0119010088272384
+      },
+      "params": null
+    },
+    "RL-Repair": {
+      "spec": {
+        "kind": "rl-repair",
+        "name": "RL-Repair",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/rl_policy_weights_repair.json",
+          "mode": "sample"
+        }
+      },
+      "group": "blue",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 304.45,
+        "red_mean": 715.7,
+        "diff_mean": 411.25000000000006,
+        "red_win_rate": 1.0,
+        "blue_min": 255.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 415.5,
+        "normalized_vs_baseline": 0.9598045397225725
+      },
+      "params": null
+    },
+    "Blue-vs-Red-Comp": {
+      "spec": {
+        "kind": "rl",
+        "name": "Blue-vs-Red-Comp",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/red_pool/blue_vs_red_comp_v1.json",
+          "mode": "sample"
+        }
+      },
+      "group": "blue",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 317.475,
+        "red_mean": 686.975,
+        "diff_mean": 369.5,
+        "red_win_rate": 1.0,
+        "blue_min": 280.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 384.0,
+        "normalized_vs_baseline": 1.0008669609079446
+      },
+      "params": {
+        "deployable": 7617,
+        "with_critic": 7617
+      }
+    },
+    "Adv-RL": {
+      "spec": {
+        "kind": "adv-rl",
+        "name": "Adv-RL",
+        "params": {
+          "config": "/home/frti64/pri_dile/configs/adversarial_rl_policy_config_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "group": "blue",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 332.8,
+        "red_mean": 637.3,
+        "diff_mean": 304.49999999999994,
+        "red_win_rate": 0.975,
+        "blue_min": 293.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 325.99999999999994,
+        "normalized_vs_baseline": 1.0491803278688525
+      },
+      "params": {
+        "deployable": 7617,
+        "with_critic": 7617
+      }
+    },
+    "SelfPlay-GRU": {
+      "spec": {
+        "kind": "selfplay",
+        "name": "SelfPlay-GRU",
+        "params": {
+          "weights": "/home/frti64/pri_dile/weights/selfplay_gru_policy.json",
+          "mode": "sample"
+        }
+      },
+      "group": "blue",
+      "tags": [],
+      "suites": {},
+      "overall": {
+        "n": 0,
+        "mean": 0.0,
+        "families": {},
+        "min_family_raw": 0.0,
+        "argmin_family": null,
+        "min_norm_family": null,
+        "cvar10_family": 0.0,
+        "cvar10_item": 0.0,
+        "sigma_family": 0.0,
+        "max_minus_min": 0.0,
+        "top_family": null,
+        "top_family_share": 0.0,
+        "per_opponent": {},
+        "family_counts": {}
+      },
+      "red": {
+        "n": 40,
+        "blue_mean": 312.05,
+        "red_mean": 684.05,
+        "diff_mean": 371.99999999999994,
+        "red_win_rate": 1.0,
+        "blue_min": 263.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 382.00000000000006,
+        "normalized_vs_baseline": 0.9837641866330392
+      },
+      "params": {
+        "deployable": 43777,
+        "with_critic": 45890
+      }
+    }
+  },
+  "suites": {},
+  "cross_play": {},
+  "red": {
+    "pairs": {
+      "Adv-RL|E4-red-BC": {
+        "blue": "Adv-RL",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 325.55,
+        "red_mean": 608.55,
+        "diff_mean": 282.99999999999994,
+        "red_win_rate": 0.95,
+        "draw_rate": 0.0,
+        "blue_min": 293.0
+      },
+      "Adv-RL|Red-RL-v1": {
+        "blue": "Adv-RL",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 340.05,
+        "red_mean": 666.05,
+        "diff_mean": 325.99999999999994,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 314.0
+      },
+      "Blue-vs-Red-Comp|E4-red-BC": {
+        "blue": "Blue-vs-Red-Comp",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 311.45,
+        "red_mean": 666.45,
+        "diff_mean": 355.00000000000006,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 280.0
+      },
+      "Blue-vs-Red-Comp|Red-RL-v1": {
+        "blue": "Blue-vs-Red-Comp",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 323.5,
+        "red_mean": 707.5,
+        "diff_mean": 384.0,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 287.0
+      },
+      "Final-tuned|E4-red-BC": {
+        "blue": "Final-tuned",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 334.05,
+        "red_mean": 607.55,
+        "diff_mean": 273.49999999999994,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 200.0
+      },
+      "Final-tuned|Red-RL-v1": {
+        "blue": "Final-tuned",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 347.8,
+        "red_mean": 634.3,
+        "diff_mean": 286.49999999999994,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 319.0
+      },
+      "RL-PPO|E4-red-BC": {
+        "blue": "RL-PPO",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 309.25,
+        "red_mean": 642.25,
+        "diff_mean": 333.0,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 273.0
+      },
+      "RL-PPO|Red-RL-v1": {
+        "blue": "RL-PPO",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 325.15,
+        "red_mean": 705.65,
+        "diff_mean": 380.5,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 282.0
+      },
+      "RL-PPO-Hard60|E4-red-BC": {
+        "blue": "RL-PPO-Hard60",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 309.75,
+        "red_mean": 662.25,
+        "diff_mean": 352.5,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 266.0
+      },
+      "RL-PPO-Hard60|Red-RL-v1": {
+        "blue": "RL-PPO-Hard60",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 332.2,
+        "red_mean": 716.7,
+        "diff_mean": 384.50000000000006,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 286.0
+      },
+      "RL-Repair|E4-red-BC": {
+        "blue": "RL-Repair",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 296.8,
+        "red_mean": 703.8,
+        "diff_mean": 406.99999999999994,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 255.0
+      },
+      "RL-Repair|Red-RL-v1": {
+        "blue": "RL-Repair",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 312.1,
+        "red_mean": 727.6,
+        "diff_mean": 415.5,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 273.0
+      },
+      "SelfPlay-GRU|E4-red-BC": {
+        "blue": "SelfPlay-GRU",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 301.65,
+        "red_mean": 663.65,
+        "diff_mean": 362.0,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 263.0
+      },
+      "SelfPlay-GRU|Red-RL-v1": {
+        "blue": "SelfPlay-GRU",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 322.45,
+        "red_mean": 704.45,
+        "diff_mean": 382.00000000000006,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 286.0
+      },
+      "Triple-majority|E4-red-BC": {
+        "blue": "Triple-majority",
+        "red": "E4-red-BC",
+        "n": 20,
+        "blue_mean": 335.85,
+        "red_mean": 577.85,
+        "diff_mean": 242.0,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 295.0
+      },
+      "Triple-majority|Red-RL-v1": {
+        "blue": "Triple-majority",
+        "red": "Red-RL-v1",
+        "n": 20,
+        "blue_mean": 330.95,
+        "red_mean": 619.95,
+        "diff_mean": 289.00000000000006,
+        "red_win_rate": 1.0,
+        "draw_rate": 0.0,
+        "blue_min": 302.0
+      }
+    },
+    "blues": {
+      "Final-tuned": {
+        "n": 40,
+        "blue_mean": 340.925,
+        "red_mean": 620.925,
+        "diff_mean": 279.99999999999994,
+        "red_win_rate": 1.0,
+        "blue_min": 200.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 286.49999999999994,
+        "normalized_vs_baseline": 1.0747950819672132
+      },
+      "Triple-majority": {
+        "n": 40,
+        "blue_mean": 333.4,
+        "red_mean": 598.9,
+        "diff_mean": 265.5,
+        "red_win_rate": 1.0,
+        "blue_min": 295.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 289.00000000000006,
+        "normalized_vs_baseline": 1.0510718789407314
+      },
+      "RL-PPO": {
+        "n": 40,
+        "blue_mean": 317.2,
+        "red_mean": 673.95,
+        "diff_mean": 356.75000000000006,
+        "red_win_rate": 1.0,
+        "blue_min": 273.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 380.5,
+        "normalized_vs_baseline": 1.0
+      },
+      "RL-PPO-Hard60": {
+        "n": 40,
+        "blue_mean": 320.975,
+        "red_mean": 689.475,
+        "diff_mean": 368.5,
+        "red_win_rate": 1.0,
+        "blue_min": 266.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 384.50000000000006,
+        "normalized_vs_baseline": 1.0119010088272384
+      },
+      "RL-Repair": {
+        "n": 40,
+        "blue_mean": 304.45,
+        "red_mean": 715.7,
+        "diff_mean": 411.25000000000006,
+        "red_win_rate": 1.0,
+        "blue_min": 255.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 415.5,
+        "normalized_vs_baseline": 0.9598045397225725
+      },
+      "Blue-vs-Red-Comp": {
+        "n": 40,
+        "blue_mean": 317.475,
+        "red_mean": 686.975,
+        "diff_mean": 369.5,
+        "red_win_rate": 1.0,
+        "blue_min": 280.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 384.0,
+        "normalized_vs_baseline": 1.0008669609079446
+      },
+      "Adv-RL": {
+        "n": 40,
+        "blue_mean": 332.8,
+        "red_mean": 637.3,
+        "diff_mean": 304.49999999999994,
+        "red_win_rate": 0.975,
+        "blue_min": 293.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 325.99999999999994,
+        "normalized_vs_baseline": 1.0491803278688525
+      },
+      "SelfPlay-GRU": {
+        "n": 40,
+        "blue_mean": 312.05,
+        "red_mean": 684.05,
+        "diff_mean": 371.99999999999994,
+        "red_win_rate": 1.0,
+        "blue_min": 263.0,
+        "worst_red": "Red-RL-v1",
+        "max_red_gain": 382.00000000000006,
+        "normalized_vs_baseline": 0.9837641866330392
+      }
+    }
+  },
+  "seeds": {
+    "cross_play": [
+      20561026
+    ],
+    "red": [
+      20561026,
+      20568945,
+      20576864,
+      20584783,
+      20592702,
+      20600621,
+      20608540,
+      20616459,
+      20624378,
+      20632297,
+      20640216,
+      20648135,
+      20656054,
+      20663973,
+      20671892,
+      20679811,
+      20687730,
+      20695649,
+      20703568,
+      20711487
+    ],
+    "suites": {}
+  },
+  "gate": {
+    "data_complete": true,
+    "cross_play_complete": false,
+    "red_complete": true,
+    "missing": [],
+    "status": "INCOMPLETE"
+  },
+  "fingerprint": "3dd8666ef6d4921fa3c5e61c60e3451550050144ac883913aa018e92fb7d61eb"
+}

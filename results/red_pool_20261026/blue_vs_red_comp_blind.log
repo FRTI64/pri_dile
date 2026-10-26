@@ -1,0 +1,26 @@
+field 1/20 seed=20261025 RL-PPO:24
+field 2/20 seed=20268944 RL-PPO:1
+field 3/20 seed=20276863 RL-PPO:1
+field 4/20 seed=20284782 RL-PPO:1
+field 5/20 seed=20292701 RL-PPO:1
+field 6/20 seed=20300620 RL-PPO:1
+field 7/20 seed=20308539 RL-PPO:1
+field 8/20 seed=20316458 RL-PPO:23
+field 9/20 seed=20324377 RL-PPO:1
+field 10/20 seed=20332296 RL-PPO:25
+field 11/20 seed=20340215 RL-PPO:1
+field 12/20 seed=20348134 RL-PPO:1
+field 13/20 seed=20356053 RL-PPO:1
+field 14/20 seed=20363972 RL-PPO:1
+field 15/20 seed=20371891 RL-PPO:1
+field 16/20 seed=20379810 RL-PPO:1
+field 17/20 seed=20387729 RL-PPO:1
+field 18/20 seed=20395648 RL-PPO:1
+field 19/20 seed=20403567 RL-PPO:1
+field 20/20 seed=20411486 RL-PPO:27
+
+Blind test over 20 unseen 299-player fields:
+strategy                   score   mean rank   rank1   top10   worst
+RL-PPO                    563.80        5.75   16/20   16/20      27
+
+written results/red_pool_20261026/blue_vs_red_comp_blind.json

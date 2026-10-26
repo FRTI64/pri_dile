@@ -1,0 +1,25 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=blue_pool val_dists=original,late,grim30,wide fields/iter/dist=20 n=80 iterations=20 safe=True risk=none dirichlet=0 blue_pool=1
+initialised from weights/rl_policy_checkpoint_repair.json
+using reference-policy KL penalty (coef=0.05)
+initial val avg=555.26 worst=547.30 original=547.86 late=556.79 grim30=547.30 wide=569.08
+iter   1 reward= 322.89 pi=-0.0005 v=0.0211 H=0.1799 kl=0.0010 bckl=0.0010 clip=0.011 ev=+0.991 (4.5s+3.1s)
+iter   2 reward= 323.82 pi=-0.0006 v=0.0151 H=0.1807 kl=0.0008 bckl=0.0035 clip=0.007 ev=+0.989 (4.5s+0.4s)
+iter   3 reward= 326.57 pi=-0.0015 v=0.0095 H=0.1817 kl=0.0010 bckl=0.0084 clip=0.012 ev=+0.989 (4.6s+0.4s)
+iter   4 reward= 327.30 pi=-0.0019 v=0.0069 H=0.1773 kl=0.0011 bckl=0.0157 clip=0.013 ev=+0.989 (4.5s+0.4s)
+iter   5 reward= 329.14 pi=-0.0019 v=0.0054 H=0.1762 kl=0.0010 bckl=0.0254 clip=0.012 ev=+0.989 (4.9s+0.3s)
+      train blue_pool=329.14 | val avg=554.49 worst=546.83 original=546.83 late=556.79 grim30=547.43 wide=566.89
+iter   6 reward= 331.33 pi=-0.0020 v=0.0047 H=0.1719 kl=0.0012 bckl=0.0384 clip=0.015 ev=+0.990 (4.7s+0.3s)
+iter   7 reward= 332.55 pi=-0.0018 v=0.0039 H=0.1699 kl=0.0011 bckl=0.0534 clip=0.015 ev=+0.991 (4.6s+0.4s)
+iter   8 reward= 334.19 pi=-0.0017 v=0.0037 H=0.1684 kl=0.0011 bckl=0.0692 clip=0.012 ev=+0.991 (4.9s+0.4s)
+iter   9 reward= 335.72 pi=-0.0021 v=0.0037 H=0.1621 kl=0.0011 bckl=0.0832 clip=0.015 ev=+0.991 (5.1s+0.3s)
+iter  10 reward= 337.00 pi=-0.0019 v=0.0034 H=0.1590 kl=0.0011 bckl=0.1019 clip=0.013 ev=+0.992 (4.9s+0.4s)
+      train blue_pool=337.00 | val avg=553.28 worst=545.97 original=545.97 late=556.98 grim30=547.71 wide=562.47
+  saved checkpoint (best iter 0, val avg=555.2595)
+iter  11 reward= 338.09 pi=-0.0021 v=0.0032 H=0.1543 kl=0.0011 bckl=0.1239 clip=0.012 ev=+0.993 (5.3s+0.4s)
+iter  12 reward= 338.91 pi=-0.0013 v=0.0032 H=0.1532 kl=0.0009 bckl=0.1429 clip=0.010 ev=+0.993 (5.1s+0.5s)
+iter  13 reward= 340.02 pi=-0.0017 v=0.0031 H=0.1521 kl=0.0010 bckl=0.1648 clip=0.010 ev=+0.993 (5.0s+0.3s)
+iter  14 reward= 341.12 pi=-0.0018 v=0.0031 H=0.1506 kl=0.0009 bckl=0.1836 clip=0.009 ev=+0.993 (5.0s+0.3s)
+iter  15 reward= 341.74 pi=-0.0023 v=0.0029 H=0.1503 kl=0.0009 bckl=0.2080 clip=0.009 ev=+0.993 (5.0s+0.4s)
+      train blue_pool=341.74 | val avg=552.39 worst=544.68 original=544.68 late=557.01 grim30=547.73 wide=560.13
+iter  16 reward= 343.29 pi=-0.0011 v=0.0029 H=0.1503 kl=0.0007 bckl=0.2276 clip=0.004 ev=+0.993 (5.1s+0.4s)
