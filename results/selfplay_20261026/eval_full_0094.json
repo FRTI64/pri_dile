@@ -1,0 +1,2073 @@
+{
+  "mean": 483.24313725490197,
+  "families": {
+    "good": 599.22,
+    "top": 594.5333333333333,
+    "noisy": 497.48,
+    "extort": 431.9714285714286,
+    "random": 300.8,
+    "special": 360.55,
+    "heldout": 599.55
+  },
+  "min_family": 300.8,
+  "sigma": 113.72506085694815,
+  "vs_final": 593.5,
+  "vs_triple": 594.0,
+  "worst": 85.0,
+  "n": 255,
+  "rows": [
+    {
+      "name": "TFT",
+      "family": "good",
+      "seed": 20261026,
+      "score": 602,
+      "opponent_score": 592,
+      "opponent": "TFT"
+    },
+    {
+      "name": "TFT",
+      "family": "good",
+      "seed": 20268945,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "TFT"
+    },
+    {
+      "name": "TFT",
+      "family": "good",
+      "seed": 20276864,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "TFT"
+    },
+    {
+      "name": "TFT",
+      "family": "good",
+      "seed": 20284783,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "TFT"
+    },
+    {
+      "name": "TFT",
+      "family": "good",
+      "seed": 20292702,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "TFT"
+    },
+    {
+      "name": "Pavlov",
+      "family": "good",
+      "seed": 20261026,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "Pavlov"
+    },
+    {
+      "name": "Pavlov",
+      "family": "good",
+      "seed": 20268945,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "Pavlov"
+    },
+    {
+      "name": "Pavlov",
+      "family": "good",
+      "seed": 20276864,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "Pavlov"
+    },
+    {
+      "name": "Pavlov",
+      "family": "good",
+      "seed": 20284783,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Pavlov"
+    },
+    {
+      "name": "Pavlov",
+      "family": "good",
+      "seed": 20292702,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Pavlov"
+    },
+    {
+      "name": "Grim",
+      "family": "good",
+      "seed": 20261026,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Grim"
+    },
+    {
+      "name": "Grim",
+      "family": "good",
+      "seed": 20268945,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Grim"
+    },
+    {
+      "name": "Grim",
+      "family": "good",
+      "seed": 20276864,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Grim"
+    },
+    {
+      "name": "Grim",
+      "family": "good",
+      "seed": 20284783,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Grim"
+    },
+    {
+      "name": "Grim",
+      "family": "good",
+      "seed": 20292702,
+      "score": 593,
+      "opponent_score": 593,
+      "opponent": "Grim"
+    },
+    {
+      "name": "TFT-lastD",
+      "family": "good",
+      "seed": 20261026,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "TFT-lastD"
+    },
+    {
+      "name": "TFT-lastD",
+      "family": "good",
+      "seed": 20268945,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "TFT-lastD"
+    },
+    {
+      "name": "TFT-lastD",
+      "family": "good",
+      "seed": 20276864,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "TFT-lastD"
+    },
+    {
+      "name": "TFT-lastD",
+      "family": "good",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "TFT-lastD"
+    },
+    {
+      "name": "TFT-lastD",
+      "family": "good",
+      "seed": 20292702,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "TFT-lastD"
+    },
+    {
+      "name": "ContriteTFT",
+      "family": "good",
+      "seed": 20261026,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "ContriteTFT"
+    },
+    {
+      "name": "ContriteTFT",
+      "family": "good",
+      "seed": 20268945,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "ContriteTFT"
+    },
+    {
+      "name": "ContriteTFT",
+      "family": "good",
+      "seed": 20276864,
+      "score": 600,
+      "opponent_score": 590,
+      "opponent": "ContriteTFT"
+    },
+    {
+      "name": "ContriteTFT",
+      "family": "good",
+      "seed": 20284783,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "ContriteTFT"
+    },
+    {
+      "name": "ContriteTFT",
+      "family": "good",
+      "seed": 20292702,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "ContriteTFT"
+    },
+    {
+      "name": "GTFT.hold.02",
+      "family": "good",
+      "seed": 20261026,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "GTFT(g=0.02,lastD)"
+    },
+    {
+      "name": "GTFT.hold.02",
+      "family": "good",
+      "seed": 20268945,
+      "score": 593,
+      "opponent_score": 593,
+      "opponent": "GTFT(g=0.02,lastD)"
+    },
+    {
+      "name": "GTFT.hold.02",
+      "family": "good",
+      "seed": 20276864,
+      "score": 593,
+      "opponent_score": 593,
+      "opponent": "GTFT(g=0.02,lastD)"
+    },
+    {
+      "name": "GTFT.hold.02",
+      "family": "good",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "GTFT(g=0.02,lastD)"
+    },
+    {
+      "name": "GTFT.hold.02",
+      "family": "good",
+      "seed": 20292702,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "GTFT(g=0.02,lastD)"
+    },
+    {
+      "name": "GTFT.hold.42",
+      "family": "good",
+      "seed": 20261026,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "GTFT(g=0.42,lastD)"
+    },
+    {
+      "name": "GTFT.hold.42",
+      "family": "good",
+      "seed": 20268945,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "GTFT(g=0.42,lastD)"
+    },
+    {
+      "name": "GTFT.hold.42",
+      "family": "good",
+      "seed": 20276864,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "GTFT(g=0.42,lastD)"
+    },
+    {
+      "name": "GTFT.hold.42",
+      "family": "good",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "GTFT(g=0.42,lastD)"
+    },
+    {
+      "name": "GTFT.hold.42",
+      "family": "good",
+      "seed": 20292702,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "GTFT(g=0.42,lastD)"
+    },
+    {
+      "name": "ForgiveTFT.hold",
+      "family": "good",
+      "seed": 20261026,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "ForgiveTFT(m=2)"
+    },
+    {
+      "name": "ForgiveTFT.hold",
+      "family": "good",
+      "seed": 20268945,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "ForgiveTFT(m=2)"
+    },
+    {
+      "name": "ForgiveTFT.hold",
+      "family": "good",
+      "seed": 20276864,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "ForgiveTFT(m=2)"
+    },
+    {
+      "name": "ForgiveTFT.hold",
+      "family": "good",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "ForgiveTFT(m=2)"
+    },
+    {
+      "name": "ForgiveTFT.hold",
+      "family": "good",
+      "seed": 20292702,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "ForgiveTFT(m=2)"
+    },
+    {
+      "name": "TFT2.hold",
+      "family": "good",
+      "seed": 20261026,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "TFT2"
+    },
+    {
+      "name": "TFT2.hold",
+      "family": "good",
+      "seed": 20268945,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "TFT2"
+    },
+    {
+      "name": "TFT2.hold",
+      "family": "good",
+      "seed": 20276864,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "TFT2"
+    },
+    {
+      "name": "TFT2.hold",
+      "family": "good",
+      "seed": 20284783,
+      "score": 608,
+      "opponent_score": 588,
+      "opponent": "TFT2"
+    },
+    {
+      "name": "TFT2.hold",
+      "family": "good",
+      "seed": 20292702,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "TFT2"
+    },
+    {
+      "name": "Majority5.hold",
+      "family": "good",
+      "seed": 20261026,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "Majority5"
+    },
+    {
+      "name": "Majority5.hold",
+      "family": "good",
+      "seed": 20268945,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "Majority5"
+    },
+    {
+      "name": "Majority5.hold",
+      "family": "good",
+      "seed": 20276864,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "Majority5"
+    },
+    {
+      "name": "Majority5.hold",
+      "family": "good",
+      "seed": 20284783,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "Majority5"
+    },
+    {
+      "name": "Majority5.hold",
+      "family": "good",
+      "seed": 20292702,
+      "score": 608,
+      "opponent_score": 588,
+      "opponent": "Majority5"
+    },
+    {
+      "name": "Final-tuned",
+      "family": "top",
+      "seed": 20261026,
+      "score": 592,
+      "opponent_score": 602,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned",
+      "family": "top",
+      "seed": 20268945,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned",
+      "family": "top",
+      "seed": 20276864,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned",
+      "family": "top",
+      "seed": 20284783,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned",
+      "family": "top",
+      "seed": 20292702,
+      "score": 592,
+      "opponent_score": 602,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Triple-majority",
+      "family": "top",
+      "seed": 20261026,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority",
+      "family": "top",
+      "seed": 20268945,
+      "score": 592,
+      "opponent_score": 602,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority",
+      "family": "top",
+      "seed": 20276864,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority",
+      "family": "top",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority",
+      "family": "top",
+      "seed": 20292702,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "RL-final",
+      "family": "top",
+      "seed": 20261026,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final",
+      "family": "top",
+      "seed": 20268945,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final",
+      "family": "top",
+      "seed": 20276864,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final",
+      "family": "top",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final",
+      "family": "top",
+      "seed": 20292702,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "Final-tuned.2",
+      "family": "top",
+      "seed": 20261026,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned.2",
+      "family": "top",
+      "seed": 20268945,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned.2",
+      "family": "top",
+      "seed": 20276864,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned.2",
+      "family": "top",
+      "seed": 20284783,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Final-tuned.2",
+      "family": "top",
+      "seed": 20292702,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "Final-tuned"
+    },
+    {
+      "name": "Triple-majority.2",
+      "family": "top",
+      "seed": 20261026,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority.2",
+      "family": "top",
+      "seed": 20268945,
+      "score": 592,
+      "opponent_score": 602,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority.2",
+      "family": "top",
+      "seed": 20276864,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority.2",
+      "family": "top",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "Triple-majority.2",
+      "family": "top",
+      "seed": 20292702,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "Triple-majority"
+    },
+    {
+      "name": "RL-final.2",
+      "family": "top",
+      "seed": 20261026,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final.2",
+      "family": "top",
+      "seed": 20268945,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final.2",
+      "family": "top",
+      "seed": 20276864,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final.2",
+      "family": "top",
+      "seed": 20284783,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "RL-final.2",
+      "family": "top",
+      "seed": 20292702,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "RL-final"
+    },
+    {
+      "name": "NoisyTFT.hold.0.01",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "NoisyTFT(0.01)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.01",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 593,
+      "opponent_score": 593,
+      "opponent": "NoisyTFT(0.01)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.01",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 588,
+      "opponent_score": 608,
+      "opponent": "NoisyTFT(0.01)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.01",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "NoisyTFT(0.01)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.01",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 576,
+      "opponent_score": 616,
+      "opponent": "NoisyTFT(0.01)"
+    },
+    {
+      "name": "NoisyTFT.02",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 588,
+      "opponent_score": 608,
+      "opponent": "NoisyTFT(0.02)"
+    },
+    {
+      "name": "NoisyTFT.02",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "NoisyTFT(0.02)"
+    },
+    {
+      "name": "NoisyTFT.02",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 586,
+      "opponent_score": 606,
+      "opponent": "NoisyTFT(0.02)"
+    },
+    {
+      "name": "NoisyTFT.02",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 582,
+      "opponent_score": 612,
+      "opponent": "NoisyTFT(0.02)"
+    },
+    {
+      "name": "NoisyTFT.02",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 576,
+      "opponent_score": 616,
+      "opponent": "NoisyTFT(0.02)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.035",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 587,
+      "opponent_score": 597,
+      "opponent": "NoisyTFT(0.035)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.035",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "NoisyTFT(0.035)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.035",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 566,
+      "opponent_score": 616,
+      "opponent": "NoisyTFT(0.035)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.035",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 579,
+      "opponent_score": 599,
+      "opponent": "NoisyTFT(0.035)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.035",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 574,
+      "opponent_score": 614,
+      "opponent": "NoisyTFT(0.035)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.06",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 568,
+      "opponent_score": 618,
+      "opponent": "NoisyTFT(0.06)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.06",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 588,
+      "opponent_score": 608,
+      "opponent": "NoisyTFT(0.06)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.06",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 541,
+      "opponent_score": 631,
+      "opponent": "NoisyTFT(0.06)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.06",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 574,
+      "opponent_score": 614,
+      "opponent": "NoisyTFT(0.06)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.06",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 556,
+      "opponent_score": 626,
+      "opponent": "NoisyTFT(0.06)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.1",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 538,
+      "opponent_score": 638,
+      "opponent": "NoisyTFT(0.1)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.1",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 552,
+      "opponent_score": 632,
+      "opponent": "NoisyTFT(0.1)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.1",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 515,
+      "opponent_score": 625,
+      "opponent": "NoisyTFT(0.1)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.1",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 540,
+      "opponent_score": 640,
+      "opponent": "NoisyTFT(0.1)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.1",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 520,
+      "opponent_score": 650,
+      "opponent": "NoisyTFT(0.1)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.15",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 504,
+      "opponent_score": 664,
+      "opponent": "NoisyTFT(0.15)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.15",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 512,
+      "opponent_score": 652,
+      "opponent": "NoisyTFT(0.15)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.15",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 499,
+      "opponent_score": 659,
+      "opponent": "NoisyTFT(0.15)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.15",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 520,
+      "opponent_score": 650,
+      "opponent": "NoisyTFT(0.15)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.15",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 483,
+      "opponent_score": 663,
+      "opponent": "NoisyTFT(0.15)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.22",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 450,
+      "opponent_score": 680,
+      "opponent": "NoisyTFT(0.22)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.22",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 482,
+      "opponent_score": 672,
+      "opponent": "NoisyTFT(0.22)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.22",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 471,
+      "opponent_score": 671,
+      "opponent": "NoisyTFT(0.22)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.22",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 464,
+      "opponent_score": 684,
+      "opponent": "NoisyTFT(0.22)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.22",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 446,
+      "opponent_score": 666,
+      "opponent": "NoisyTFT(0.22)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.28",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 413,
+      "opponent_score": 713,
+      "opponent": "NoisyTFT(0.28)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.28",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 442,
+      "opponent_score": 692,
+      "opponent": "NoisyTFT(0.28)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.28",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 436,
+      "opponent_score": 676,
+      "opponent": "NoisyTFT(0.28)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.28",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 448,
+      "opponent_score": 698,
+      "opponent": "NoisyTFT(0.28)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.28",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 427,
+      "opponent_score": 677,
+      "opponent": "NoisyTFT(0.28)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.35",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 370,
+      "opponent_score": 730,
+      "opponent": "NoisyTFT(0.35)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.35",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 393,
+      "opponent_score": 703,
+      "opponent": "NoisyTFT(0.35)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.35",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 396,
+      "opponent_score": 696,
+      "opponent": "NoisyTFT(0.35)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.35",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 405,
+      "opponent_score": 715,
+      "opponent": "NoisyTFT(0.35)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.35",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 345,
+      "opponent_score": 725,
+      "opponent": "NoisyTFT(0.35)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.45",
+      "family": "noisy",
+      "seed": 20261026,
+      "score": 299,
+      "opponent_score": 749,
+      "opponent": "NoisyTFT(0.45)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.45",
+      "family": "noisy",
+      "seed": 20268945,
+      "score": 337,
+      "opponent_score": 717,
+      "opponent": "NoisyTFT(0.45)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.45",
+      "family": "noisy",
+      "seed": 20276864,
+      "score": 377,
+      "opponent_score": 727,
+      "opponent": "NoisyTFT(0.45)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.45",
+      "family": "noisy",
+      "seed": 20284783,
+      "score": 363,
+      "opponent_score": 733,
+      "opponent": "NoisyTFT(0.45)"
+    },
+    {
+      "name": "NoisyTFT.hold.0.45",
+      "family": "noisy",
+      "seed": 20292702,
+      "score": 321,
+      "opponent_score": 741,
+      "opponent": "NoisyTFT(0.45)"
+    },
+    {
+      "name": "Extort.hold.1.2",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 542,
+      "opponent_score": 622,
+      "opponent": "Extort1.2"
+    },
+    {
+      "name": "Extort.hold.1.2",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 564,
+      "opponent_score": 624,
+      "opponent": "Extort1.2"
+    },
+    {
+      "name": "Extort.hold.1.2",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 544,
+      "opponent_score": 634,
+      "opponent": "Extort1.2"
+    },
+    {
+      "name": "Extort.hold.1.2",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 503,
+      "opponent_score": 653,
+      "opponent": "Extort1.2"
+    },
+    {
+      "name": "Extort.hold.1.2",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 552,
+      "opponent_score": 632,
+      "opponent": "Extort1.2"
+    },
+    {
+      "name": "Extort.hold.1.35",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 494,
+      "opponent_score": 654,
+      "opponent": "Extort1.35"
+    },
+    {
+      "name": "Extort.hold.1.35",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 540,
+      "opponent_score": 640,
+      "opponent": "Extort1.35"
+    },
+    {
+      "name": "Extort.hold.1.35",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 520,
+      "opponent_score": 650,
+      "opponent": "Extort1.35"
+    },
+    {
+      "name": "Extort.hold.1.35",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 478,
+      "opponent_score": 678,
+      "opponent": "Extort1.35"
+    },
+    {
+      "name": "Extort.hold.1.35",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 538,
+      "opponent_score": 638,
+      "opponent": "Extort1.35"
+    },
+    {
+      "name": "Extort.hold.1.75",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 453,
+      "opponent_score": 673,
+      "opponent": "Extort1.75"
+    },
+    {
+      "name": "Extort.hold.1.75",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 508,
+      "opponent_score": 658,
+      "opponent": "Extort1.75"
+    },
+    {
+      "name": "Extort.hold.1.75",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 439,
+      "opponent_score": 689,
+      "opponent": "Extort1.75"
+    },
+    {
+      "name": "Extort.hold.1.75",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 419,
+      "opponent_score": 689,
+      "opponent": "Extort1.75"
+    },
+    {
+      "name": "Extort.hold.1.75",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 436,
+      "opponent_score": 686,
+      "opponent": "Extort1.75"
+    },
+    {
+      "name": "Extort.hold.2.5",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 392,
+      "opponent_score": 702,
+      "opponent": "Extort2.5"
+    },
+    {
+      "name": "Extort.hold.2.5",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 344,
+      "opponent_score": 734,
+      "opponent": "Extort2.5"
+    },
+    {
+      "name": "Extort.hold.2.5",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 347,
+      "opponent_score": 727,
+      "opponent": "Extort2.5"
+    },
+    {
+      "name": "Extort.hold.2.5",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 321,
+      "opponent_score": 721,
+      "opponent": "Extort2.5"
+    },
+    {
+      "name": "Extort.hold.2.5",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 367,
+      "opponent_score": 697,
+      "opponent": "Extort2.5"
+    },
+    {
+      "name": "Extort.hold.3.2",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 382,
+      "opponent_score": 692,
+      "opponent": "Extort3.2"
+    },
+    {
+      "name": "Extort.hold.3.2",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 317,
+      "opponent_score": 747,
+      "opponent": "Extort3.2"
+    },
+    {
+      "name": "Extort.hold.3.2",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 254,
+      "opponent_score": 644,
+      "opponent": "Extort3.2"
+    },
+    {
+      "name": "Extort.hold.3.2",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 271,
+      "opponent_score": 711,
+      "opponent": "Extort3.2"
+    },
+    {
+      "name": "Extort.hold.3.2",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 280,
+      "opponent_score": 660,
+      "opponent": "Extort3.2"
+    },
+    {
+      "name": "Extort.hold.3.6",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 365,
+      "opponent_score": 715,
+      "opponent": "Extort3.6"
+    },
+    {
+      "name": "Extort.hold.3.6",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 301,
+      "opponent_score": 741,
+      "opponent": "Extort3.6"
+    },
+    {
+      "name": "Extort.hold.3.6",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 254,
+      "opponent_score": 624,
+      "opponent": "Extort3.6"
+    },
+    {
+      "name": "Extort.hold.3.6",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 247,
+      "opponent_score": 727,
+      "opponent": "Extort3.6"
+    },
+    {
+      "name": "Extort.hold.3.6",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 281,
+      "opponent_score": 651,
+      "opponent": "Extort3.6"
+    },
+    {
+      "name": "Bully",
+      "family": "extort",
+      "seed": 20261026,
+      "score": 574,
+      "opponent_score": 614,
+      "opponent": "Bully"
+    },
+    {
+      "name": "Bully",
+      "family": "extort",
+      "seed": 20268945,
+      "score": 570,
+      "opponent_score": 620,
+      "opponent": "Bully"
+    },
+    {
+      "name": "Bully",
+      "family": "extort",
+      "seed": 20276864,
+      "score": 578,
+      "opponent_score": 608,
+      "opponent": "Bully"
+    },
+    {
+      "name": "Bully",
+      "family": "extort",
+      "seed": 20284783,
+      "score": 570,
+      "opponent_score": 620,
+      "opponent": "Bully"
+    },
+    {
+      "name": "Bully",
+      "family": "extort",
+      "seed": 20292702,
+      "score": 574,
+      "opponent_score": 614,
+      "opponent": "Bully"
+    },
+    {
+      "name": "Random.hold.0.03",
+      "family": "random",
+      "seed": 20261026,
+      "score": 99,
+      "opponent_score": 239,
+      "opponent": "Random(0.03)"
+    },
+    {
+      "name": "Random.hold.0.03",
+      "family": "random",
+      "seed": 20268945,
+      "score": 100,
+      "opponent_score": 180,
+      "opponent": "Random(0.03)"
+    },
+    {
+      "name": "Random.hold.0.03",
+      "family": "random",
+      "seed": 20276864,
+      "score": 143,
+      "opponent_score": 193,
+      "opponent": "Random(0.03)"
+    },
+    {
+      "name": "Random.hold.0.03",
+      "family": "random",
+      "seed": 20284783,
+      "score": 115,
+      "opponent_score": 205,
+      "opponent": "Random(0.03)"
+    },
+    {
+      "name": "Random.hold.0.03",
+      "family": "random",
+      "seed": 20292702,
+      "score": 105,
+      "opponent_score": 315,
+      "opponent": "Random(0.03)"
+    },
+    {
+      "name": "Random.hold.0.12",
+      "family": "random",
+      "seed": 20261026,
+      "score": 182,
+      "opponent_score": 312,
+      "opponent": "Random(0.12)"
+    },
+    {
+      "name": "Random.hold.0.12",
+      "family": "random",
+      "seed": 20268945,
+      "score": 184,
+      "opponent_score": 364,
+      "opponent": "Random(0.12)"
+    },
+    {
+      "name": "Random.hold.0.12",
+      "family": "random",
+      "seed": 20276864,
+      "score": 208,
+      "opponent_score": 268,
+      "opponent": "Random(0.12)"
+    },
+    {
+      "name": "Random.hold.0.12",
+      "family": "random",
+      "seed": 20284783,
+      "score": 167,
+      "opponent_score": 237,
+      "opponent": "Random(0.12)"
+    },
+    {
+      "name": "Random.hold.0.12",
+      "family": "random",
+      "seed": 20292702,
+      "score": 184,
+      "opponent_score": 414,
+      "opponent": "Random(0.12)"
+    },
+    {
+      "name": "Random.hold.0.27",
+      "family": "random",
+      "seed": 20261026,
+      "score": 259,
+      "opponent_score": 539,
+      "opponent": "Random(0.27)"
+    },
+    {
+      "name": "Random.hold.0.27",
+      "family": "random",
+      "seed": 20268945,
+      "score": 238,
+      "opponent_score": 598,
+      "opponent": "Random(0.27)"
+    },
+    {
+      "name": "Random.hold.0.27",
+      "family": "random",
+      "seed": 20276864,
+      "score": 247,
+      "opponent_score": 537,
+      "opponent": "Random(0.27)"
+    },
+    {
+      "name": "Random.hold.0.27",
+      "family": "random",
+      "seed": 20284783,
+      "score": 274,
+      "opponent_score": 394,
+      "opponent": "Random(0.27)"
+    },
+    {
+      "name": "Random.hold.0.27",
+      "family": "random",
+      "seed": 20292702,
+      "score": 243,
+      "opponent_score": 583,
+      "opponent": "Random(0.27)"
+    },
+    {
+      "name": "Random.hold.0.45",
+      "family": "random",
+      "seed": 20261026,
+      "score": 331,
+      "opponent_score": 721,
+      "opponent": "Random(0.45)"
+    },
+    {
+      "name": "Random.hold.0.45",
+      "family": "random",
+      "seed": 20268945,
+      "score": 302,
+      "opponent_score": 752,
+      "opponent": "Random(0.45)"
+    },
+    {
+      "name": "Random.hold.0.45",
+      "family": "random",
+      "seed": 20276864,
+      "score": 311,
+      "opponent_score": 631,
+      "opponent": "Random(0.45)"
+    },
+    {
+      "name": "Random.hold.0.45",
+      "family": "random",
+      "seed": 20284783,
+      "score": 297,
+      "opponent_score": 717,
+      "opponent": "Random(0.45)"
+    },
+    {
+      "name": "Random.hold.0.45",
+      "family": "random",
+      "seed": 20292702,
+      "score": 354,
+      "opponent_score": 714,
+      "opponent": "Random(0.45)"
+    },
+    {
+      "name": "Random.hold.0.63",
+      "family": "random",
+      "seed": 20261026,
+      "score": 425,
+      "opponent_score": 695,
+      "opponent": "Random(0.63)"
+    },
+    {
+      "name": "Random.hold.0.63",
+      "family": "random",
+      "seed": 20268945,
+      "score": 398,
+      "opponent_score": 708,
+      "opponent": "Random(0.63)"
+    },
+    {
+      "name": "Random.hold.0.63",
+      "family": "random",
+      "seed": 20276864,
+      "score": 351,
+      "opponent_score": 731,
+      "opponent": "Random(0.63)"
+    },
+    {
+      "name": "Random.hold.0.63",
+      "family": "random",
+      "seed": 20284783,
+      "score": 345,
+      "opponent_score": 715,
+      "opponent": "Random(0.63)"
+    },
+    {
+      "name": "Random.hold.0.63",
+      "family": "random",
+      "seed": 20292702,
+      "score": 421,
+      "opponent_score": 701,
+      "opponent": "Random(0.63)"
+    },
+    {
+      "name": "Random.hold.0.92",
+      "family": "random",
+      "seed": 20261026,
+      "score": 555,
+      "opponent_score": 615,
+      "opponent": "Random(0.92)"
+    },
+    {
+      "name": "Random.hold.0.92",
+      "family": "random",
+      "seed": 20268945,
+      "score": 564,
+      "opponent_score": 624,
+      "opponent": "Random(0.92)"
+    },
+    {
+      "name": "Random.hold.0.92",
+      "family": "random",
+      "seed": 20276864,
+      "score": 550,
+      "opponent_score": 630,
+      "opponent": "Random(0.92)"
+    },
+    {
+      "name": "Random.hold.0.92",
+      "family": "random",
+      "seed": 20284783,
+      "score": 520,
+      "opponent_score": 650,
+      "opponent": "Random(0.92)"
+    },
+    {
+      "name": "Random.hold.0.92",
+      "family": "random",
+      "seed": 20292702,
+      "score": 552,
+      "opponent_score": 632,
+      "opponent": "Random(0.92)"
+    },
+    {
+      "name": "LateD.hold.2",
+      "family": "special",
+      "seed": 20261026,
+      "score": 589,
+      "opponent_score": 599,
+      "opponent": "LateD2"
+    },
+    {
+      "name": "LateD.hold.2",
+      "family": "special",
+      "seed": 20268945,
+      "score": 590,
+      "opponent_score": 590,
+      "opponent": "LateD2"
+    },
+    {
+      "name": "LateD.hold.2",
+      "family": "special",
+      "seed": 20276864,
+      "score": 592,
+      "opponent_score": 602,
+      "opponent": "LateD2"
+    },
+    {
+      "name": "LateD.hold.2",
+      "family": "special",
+      "seed": 20284783,
+      "score": 589,
+      "opponent_score": 599,
+      "opponent": "LateD2"
+    },
+    {
+      "name": "LateD.hold.2",
+      "family": "special",
+      "seed": 20292702,
+      "score": 589,
+      "opponent_score": 599,
+      "opponent": "LateD2"
+    },
+    {
+      "name": "LateD.hold.8",
+      "family": "special",
+      "seed": 20261026,
+      "score": 556,
+      "opponent_score": 596,
+      "opponent": "LateD8"
+    },
+    {
+      "name": "LateD.hold.8",
+      "family": "special",
+      "seed": 20268945,
+      "score": 555,
+      "opponent_score": 605,
+      "opponent": "LateD8"
+    },
+    {
+      "name": "LateD.hold.8",
+      "family": "special",
+      "seed": 20276864,
+      "score": 559,
+      "opponent_score": 599,
+      "opponent": "LateD8"
+    },
+    {
+      "name": "LateD.hold.8",
+      "family": "special",
+      "seed": 20284783,
+      "score": 556,
+      "opponent_score": 596,
+      "opponent": "LateD8"
+    },
+    {
+      "name": "LateD.hold.8",
+      "family": "special",
+      "seed": 20292702,
+      "score": 556,
+      "opponent_score": 596,
+      "opponent": "LateD8"
+    },
+    {
+      "name": "LateD.hold.18",
+      "family": "special",
+      "seed": 20261026,
+      "score": 501,
+      "opponent_score": 591,
+      "opponent": "LateD18"
+    },
+    {
+      "name": "LateD.hold.18",
+      "family": "special",
+      "seed": 20268945,
+      "score": 501,
+      "opponent_score": 591,
+      "opponent": "LateD18"
+    },
+    {
+      "name": "LateD.hold.18",
+      "family": "special",
+      "seed": 20276864,
+      "score": 501,
+      "opponent_score": 591,
+      "opponent": "LateD18"
+    },
+    {
+      "name": "LateD.hold.18",
+      "family": "special",
+      "seed": 20284783,
+      "score": 501,
+      "opponent_score": 591,
+      "opponent": "LateD18"
+    },
+    {
+      "name": "LateD.hold.18",
+      "family": "special",
+      "seed": 20292702,
+      "score": 502,
+      "opponent_score": 582,
+      "opponent": "LateD18"
+    },
+    {
+      "name": "LateD.hold.33",
+      "family": "special",
+      "seed": 20261026,
+      "score": 422,
+      "opponent_score": 552,
+      "opponent": "LateD33"
+    },
+    {
+      "name": "LateD.hold.33",
+      "family": "special",
+      "seed": 20268945,
+      "score": 420,
+      "opponent_score": 570,
+      "opponent": "LateD33"
+    },
+    {
+      "name": "LateD.hold.33",
+      "family": "special",
+      "seed": 20276864,
+      "score": 423,
+      "opponent_score": 543,
+      "opponent": "LateD33"
+    },
+    {
+      "name": "LateD.hold.33",
+      "family": "special",
+      "seed": 20284783,
+      "score": 423,
+      "opponent_score": 543,
+      "opponent": "LateD33"
+    },
+    {
+      "name": "LateD.hold.33",
+      "family": "special",
+      "seed": 20292702,
+      "score": 423,
+      "opponent_score": 543,
+      "opponent": "LateD33"
+    },
+    {
+      "name": "LateD.hold.47",
+      "family": "special",
+      "seed": 20261026,
+      "score": 348,
+      "opponent_score": 518,
+      "opponent": "LateD47"
+    },
+    {
+      "name": "LateD.hold.47",
+      "family": "special",
+      "seed": 20268945,
+      "score": 348,
+      "opponent_score": 518,
+      "opponent": "LateD47"
+    },
+    {
+      "name": "LateD.hold.47",
+      "family": "special",
+      "seed": 20276864,
+      "score": 351,
+      "opponent_score": 491,
+      "opponent": "LateD47"
+    },
+    {
+      "name": "LateD.hold.47",
+      "family": "special",
+      "seed": 20284783,
+      "score": 347,
+      "opponent_score": 527,
+      "opponent": "LateD47"
+    },
+    {
+      "name": "LateD.hold.47",
+      "family": "special",
+      "seed": 20292702,
+      "score": 345,
+      "opponent_score": 545,
+      "opponent": "LateD47"
+    },
+    {
+      "name": "LateD.hold.68",
+      "family": "special",
+      "seed": 20261026,
+      "score": 237,
+      "opponent_score": 467,
+      "opponent": "LateD68"
+    },
+    {
+      "name": "LateD.hold.68",
+      "family": "special",
+      "seed": 20268945,
+      "score": 238,
+      "opponent_score": 458,
+      "opponent": "LateD68"
+    },
+    {
+      "name": "LateD.hold.68",
+      "family": "special",
+      "seed": 20276864,
+      "score": 242,
+      "opponent_score": 422,
+      "opponent": "LateD68"
+    },
+    {
+      "name": "LateD.hold.68",
+      "family": "special",
+      "seed": 20284783,
+      "score": 235,
+      "opponent_score": 485,
+      "opponent": "LateD68"
+    },
+    {
+      "name": "LateD.hold.68",
+      "family": "special",
+      "seed": 20292702,
+      "score": 238,
+      "opponent_score": 458,
+      "opponent": "LateD68"
+    },
+    {
+      "name": "LateD.hold.88",
+      "family": "special",
+      "seed": 20261026,
+      "score": 141,
+      "opponent_score": 331,
+      "opponent": "LateD88"
+    },
+    {
+      "name": "LateD.hold.88",
+      "family": "special",
+      "seed": 20268945,
+      "score": 141,
+      "opponent_score": 331,
+      "opponent": "LateD88"
+    },
+    {
+      "name": "LateD.hold.88",
+      "family": "special",
+      "seed": 20276864,
+      "score": 140,
+      "opponent_score": 340,
+      "opponent": "LateD88"
+    },
+    {
+      "name": "LateD.hold.88",
+      "family": "special",
+      "seed": 20284783,
+      "score": 139,
+      "opponent_score": 349,
+      "opponent": "LateD88"
+    },
+    {
+      "name": "LateD.hold.88",
+      "family": "special",
+      "seed": 20292702,
+      "score": 144,
+      "opponent_score": 304,
+      "opponent": "LateD88"
+    },
+    {
+      "name": "AllD.hold",
+      "family": "special",
+      "seed": 20261026,
+      "score": 88,
+      "opponent_score": 208,
+      "opponent": "AllD"
+    },
+    {
+      "name": "AllD.hold",
+      "family": "special",
+      "seed": 20268945,
+      "score": 91,
+      "opponent_score": 181,
+      "opponent": "AllD"
+    },
+    {
+      "name": "AllD.hold",
+      "family": "special",
+      "seed": 20276864,
+      "score": 85,
+      "opponent_score": 235,
+      "opponent": "AllD"
+    },
+    {
+      "name": "AllD.hold",
+      "family": "special",
+      "seed": 20284783,
+      "score": 87,
+      "opponent_score": 217,
+      "opponent": "AllD"
+    },
+    {
+      "name": "AllD.hold",
+      "family": "special",
+      "seed": 20292702,
+      "score": 89,
+      "opponent_score": 199,
+      "opponent": "AllD"
+    },
+    {
+      "name": "MirrorAdaptive.2",
+      "family": "heldout",
+      "seed": 20261026,
+      "score": 593,
+      "opponent_score": 593,
+      "opponent": "MirrorW2"
+    },
+    {
+      "name": "MirrorAdaptive.2",
+      "family": "heldout",
+      "seed": 20268945,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "MirrorW2"
+    },
+    {
+      "name": "MirrorAdaptive.2",
+      "family": "heldout",
+      "seed": 20276864,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "MirrorW2"
+    },
+    {
+      "name": "MirrorAdaptive.2",
+      "family": "heldout",
+      "seed": 20284783,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "MirrorW2"
+    },
+    {
+      "name": "MirrorAdaptive.2",
+      "family": "heldout",
+      "seed": 20292702,
+      "score": 599,
+      "opponent_score": 589,
+      "opponent": "MirrorW2"
+    },
+    {
+      "name": "MirrorAdaptive.9",
+      "family": "heldout",
+      "seed": 20261026,
+      "score": 598,
+      "opponent_score": 598,
+      "opponent": "MirrorW9"
+    },
+    {
+      "name": "MirrorAdaptive.9",
+      "family": "heldout",
+      "seed": 20268945,
+      "score": 603,
+      "opponent_score": 583,
+      "opponent": "MirrorW9"
+    },
+    {
+      "name": "MirrorAdaptive.9",
+      "family": "heldout",
+      "seed": 20276864,
+      "score": 595,
+      "opponent_score": 595,
+      "opponent": "MirrorW9"
+    },
+    {
+      "name": "MirrorAdaptive.9",
+      "family": "heldout",
+      "seed": 20284783,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "MirrorW9"
+    },
+    {
+      "name": "MirrorAdaptive.9",
+      "family": "heldout",
+      "seed": 20292702,
+      "score": 594,
+      "opponent_score": 604,
+      "opponent": "MirrorW9"
+    },
+    {
+      "name": "DelayedGrim.1",
+      "family": "heldout",
+      "seed": 20261026,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "DelayedGrim1"
+    },
+    {
+      "name": "DelayedGrim.1",
+      "family": "heldout",
+      "seed": 20268945,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "DelayedGrim1"
+    },
+    {
+      "name": "DelayedGrim.1",
+      "family": "heldout",
+      "seed": 20276864,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "DelayedGrim1"
+    },
+    {
+      "name": "DelayedGrim.1",
+      "family": "heldout",
+      "seed": 20284783,
+      "score": 608,
+      "opponent_score": 588,
+      "opponent": "DelayedGrim1"
+    },
+    {
+      "name": "DelayedGrim.1",
+      "family": "heldout",
+      "seed": 20292702,
+      "score": 608,
+      "opponent_score": 588,
+      "opponent": "DelayedGrim1"
+    },
+    {
+      "name": "DelayedGrim.3",
+      "family": "heldout",
+      "seed": 20261026,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "DelayedGrim3"
+    },
+    {
+      "name": "DelayedGrim.3",
+      "family": "heldout",
+      "seed": 20268945,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "DelayedGrim3"
+    },
+    {
+      "name": "DelayedGrim.3",
+      "family": "heldout",
+      "seed": 20276864,
+      "score": 604,
+      "opponent_score": 594,
+      "opponent": "DelayedGrim3"
+    },
+    {
+      "name": "DelayedGrim.3",
+      "family": "heldout",
+      "seed": 20284783,
+      "score": 600,
+      "opponent_score": 600,
+      "opponent": "DelayedGrim3"
+    },
+    {
+      "name": "DelayedGrim.3",
+      "family": "heldout",
+      "seed": 20292702,
+      "score": 608,
+      "opponent_score": 588,
+      "opponent": "DelayedGrim3"
+    }
+  ],
+  "heldout_red": {
+    "mean": 577.8,
+    "worst": 254.0
+  },
+  "passes_thresholds": false,
+  "threshold_checks": {
+    "tft": true,
+    "bully": false,
+    "noisy02": true,
+    "alld": false,
+    "min_family": false
+  },
+  "selection": 999.9430155410057
+}

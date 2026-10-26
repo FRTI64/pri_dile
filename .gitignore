@@ -4,3 +4,4 @@ __pycache__/
 neural_demo
 ipd_demo
 demo
+*.pt

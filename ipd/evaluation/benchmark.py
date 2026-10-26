@@ -32,7 +32,7 @@ from .distributions import DISTS
 
 SCHEMA = "ipd-benchmark-v1"
 _LEGACY_ARCHES = ("mlp", "gru", "rl", "adversarial", "adv-rl",
-                  "adv-mlp", "adv-gru")
+                  "adv-mlp", "adv-gru", "selfplay")
 _ARCH_OUT = {
     "mlp": "neural_benchmark.json",
     "gru": "gru_benchmark.json",
@@ -41,6 +41,7 @@ _ARCH_OUT = {
     "adv-mlp": "adversarial_benchmark.json",
     "adv-gru": "adversarial_gru_benchmark.json",
     "adv-rl": "adversarial_rl_benchmark.json",
+    "selfplay": "selfplay_benchmark.json",
 }
 
 

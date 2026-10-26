@@ -1,0 +1,26 @@
+{
+  "seed": 20261026,
+  "device": "auto",
+  "envs": 8,
+  "rounds": 100,
+  "total_episodes": 200,
+  "red_league_size": 4,
+  "red_update_every": 1,
+  "red_snapshot_every": 1,
+  "results_dir": "results/selfplay_smoke",
+  "out": "weights/selfplay_smoke_policy.json",
+  "checkpoint_out": "weights/selfplay_smoke_checkpoint.pt",
+  "ppo": {
+    "epochs": 2,
+    "batch_episodes": 4
+  },
+  "evaluation": {
+    "fast_every_episodes": 50,
+    "fast_opponents": 6,
+    "fast_seeds": 1,
+    "full_every_episodes": 100,
+    "full_seeds": 1,
+    "final_seeds": 1,
+    "warmup_episodes": 0
+  }
+}

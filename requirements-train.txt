@@ -3,3 +3,4 @@
 # Inference (ipd.policies.neural / ipd.policies.rl / C++) has no third-party deps.
 # On Ascend NPU install the matching torch_npu adapter as well.
 torch>=2.7
+numpy>=2.0

@@ -113,6 +113,11 @@ python3 -m ipd train gru --device auto
 python3 -m ipd train adversarial --arch mlp --seed 20261026
 python3 -m ipd train rl --device auto --iterations 100 \
   --dist-weights 1,1,1,2 --bc-kl-coef 0.1
+# 非对称自博弈（蓝/红 GRU，三阶段课程）
+python3 -m ipd train selfplay --config configs/selfplay/full.json \
+  --device auto --final-test
+# 可选：将现有 RL-PPO 蒸馏为 21 维 GRU，再做 self-play 微调
+python3 -m ipd train selfplay-bc --device auto --episodes 4000 --epochs 10
 ```
 
 训练文件也支持直接执行，例如：
@@ -139,6 +144,10 @@ python3 -m ipd blind --candidates core,adv-mlp \
 python3 -m ipd blind --candidates core,rl --fields 10 --workers 12
 python3 -m ipd blind --candidates core,adv-rl \
   --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
+python3 -m ipd benchmark --candidates selfplay \
+  --weights weights/selfplay_gru_policy.json --fields 20 --workers 20
+python3 -m ipd blind --candidates selfplay \
+  --weights weights/selfplay_gru_policy.json --fields 10 --workers 12
 ```
 
 按策略/模型拆分参数并输出独立结果文件：
@@ -211,6 +220,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 |---|---:|---:|
 | **RL-PPO（从零 + hard，最终）** | **553.33** | **563.23 / 8.00** |
 | **Adv-RL 激进（RL + 约束剥削）** | **554.29** | **562.91 / 8.00** |
+| **SelfPlay-GRU（21 维，BC 蒸馏）** | **550.76** | **560.43 / 8.10** |
 | RL-PPO（从零 base） | 551.87 | 559.27 / 8.30 |
 | RL-PPO（BC 初始化 + hard） | 550.50 | 558.60 / 8.30 |
 | Adv-MLP 激进 | 552.24 | 559.51 / 8.10 |
@@ -220,6 +230,16 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | Neural MLP | 548.15 | 555.10 / 8.30 |
 | Triple-majority | 547.51 | 552.52 / 9.20 |
 | Final-tuned | 546.35 | 549.39 / 10.40 |
+
+新增的 21 维 SelfPlay-GRU（BC 蒸馏 + self-play 训练器）在 20-field 四分布上
+550.76、blind 560.43 / 8.10；纯从零 15k self-play 为 524.77（2 fields）/
+504.57 final test。2026-10-26 的改进 A/B（BC+red fine-tune、red best
+response）为 **No-Go**：E1a 仅 +0.43 mean / +0.016 min_norm，E1b 崩坏，
+red best response 100% 击败 BC/RL/Adv；详见
+`results/selfplay_improvement/final_decision.md`。最终 sanity check（2026-10-26）：
+benchmark/blind 完全复现，权重 checksum 与冻结建议见
+`results/selfplay_improvement/sanity/README.md`；主提交建议 RL-PPO，21 维备选
+SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
@@ -234,6 +254,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | [HANDOVER.md](HANDOVER.md) | 交接总览、推荐方案、参数、风险、检查清单 |
 | [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口 |
 | [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md) | 按策略/模型/对手拆分评估 |
+| [docs/SELFPLAY.md](docs/SELFPLAY.md) | 非对称自博弈：21 维观测、对手池、red league、验证拆分 |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

@@ -60,6 +60,36 @@ python3 -m ipd self-test --candidates all
 - 本轮大部分训练/测试在 24 核 CPU + RTX 5090 Laptop 上完成；最终从零 + hard
   的 RL 在 CPU 上完成。NPU 代码路径已实现但未实机验证。
 
+### 2026-10-26 新增：21 维 SelfPlay-GRU
+
+本轮实现了 `docs/ipd-selfplay-plan.md` 的完整非对称自博弈训练器
+（`ipd/training/selfplay/`）：21 维冻结观测、32-env lock-step、参数化对手池、
+red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和测试。
+
+| 策略 | 四分布 | blind | held-out final |
+|---|---:|---:|---:|
+| **SelfPlay-GRU（最终，BC 蒸馏）** | **550.76（20 fields）** | **560.43 / 8.10** | **505.06** |
+| Self-play 从零 15k | 524.77（2 fields） | - | 504.57 |
+| 现有 RL-PPO | 553.33（20 fields） | 563.23 / 8.00 | - |
+
+- 最终权重：`weights/selfplay_gru_policy.json`；推理包装
+  `ipd.policies.selfplay_gru.SelfPlayGRUPolicy`，注册名 `selfplay`。
+- 最终策略在 held-out validation 上：TFT 604、Bully 878、
+  NoisyTFT.02 604、AllD 99、min_family 370、held-out red 595。
+- 纯从零 self-play 15k 在“合作/收割”之间不稳定；最终提交使用
+  `selfplay-bc` 把现有 RL-PPO 蒸馏到 21 维 GRU（4000 episodes，动作一致率
+  99.35%），再用同一套 self-play 训练器/red league 作为可选微调路径。
+- 结果与复现：`results/selfplay_final/README.md`、`docs/SELFPLAY.md`。
+- **改进实验 No-Go（2026-10-26）**：同 suite/seeds 对照下 BC-only 与 RL-PPO
+  基本打平；BC+red fine-tune E1a 仅 +0.43 mean / +0.016 min_norm，E1b 崩坏；
+  针对 frozen blue 的 red best response 能 100% 击败 BC/RL/Adv。因此停止
+  self-play 方向，不替换现有权重。详见
+  `results/selfplay_improvement/final_decision.md`。
+- **最终 sanity check（2026-10-26）**：三个候选的 benchmark/blind 均完全复现；
+  权重 checksum、冻结建议和 E4 负结果见
+  `results/selfplay_improvement/sanity/README.md`。主提交建议 RL-PPO，
+  21 维备选 SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
+
 复现入口：
 
 ```bash
@@ -130,6 +160,7 @@ python3 -m ipd blind --arch adv-rl \
 | 方案 | 复杂度 | 盲测均分 | 盲测平均排名 | 适用 |
 |---|---:|---:|---:|---|
 | **RL-PPO（从零 + hard，最终）** | 中 | **563.23** | **8.00** | **最高盲测，最佳单网络策略** |
+| **SelfPlay-GRU（21 维，BC 蒸馏）** | 中 | **560.43** | **8.10** | 21 维观测，推理无 PyTorch |
 | **Adv-RL 激进** | 中 | **562.91** | **8.00** | **最高四分布，RL 权重+配置** |
 | Adv-RL 保守 | 中 | 561.05 | 8.20 | RL 版，逐类型风险略小 |
 | **Adv-MLP 激进** | 中 | 559.51 | 8.10 | 此前最高分，需权重+配置 |
@@ -148,6 +179,8 @@ python3 -m ipd blind --arch adv-rl \
 
 - 如果**盲测分数**是主要指标，且想用单一网络：优先 **RL-PPO 从零 + hard**
   （553.33 / 563.23 / 8.00）；它没有外层规则，是当前最高盲测；
+- 如果想要固定 21 维观测、推理无 PyTorch 的单一 GRU：用
+  **SelfPlay-GRU**（550.76 / 560.43 / 8.10，`weights/selfplay_gru_policy.json`）；
 - 如果**四分布均值**是主要指标：优先 **Adv-RL 激进**（554.29 / 562.91 / 8.00），
   base 使用 `weights/rl_policy_weights_bc.json`；
 - 想要更低逐类型风险：**Adv-RL 保守**（553.73 / 561.05 / 8.20）；

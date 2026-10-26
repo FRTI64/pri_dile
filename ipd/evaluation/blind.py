@@ -25,7 +25,7 @@ from .distributions import sample_blind_field
 
 SCHEMA = "ipd-blind-v1"
 _LEGACY_ARCHES = ("mlp", "gru", "rl", "adversarial", "adv-rl",
-                  "adv-mlp", "adv-gru")
+                  "adv-mlp", "adv-gru", "selfplay")
 _ARCH_OUT = {
     "mlp": "blind_neural_results.json",
     "gru": "blind_gru_results.json",
@@ -34,6 +34,7 @@ _ARCH_OUT = {
     "adv-mlp": "blind_adversarial_results.json",
     "adv-gru": "blind_adversarial_gru_results.json",
     "adv-rl": "blind_adversarial_rl_results.json",
+    "selfplay": "blind_selfplay_results.json",
 }
 
 

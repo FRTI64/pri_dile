@@ -1,0 +1,77 @@
+{
+  "seed": 20261026,
+  "device": "auto",
+  "envs": 32,
+  "rounds": 100,
+  "total_episodes": 6000,
+  "red_league_size": 8,
+  "red_update_every": 1,
+  "red_snapshot_every": 1,
+  "results_dir": "results/selfplay_improvement/E4_red",
+  "out": "weights/selfplay_improvement/E4_blue_frozen.json",
+  "checkpoint_out": "weights/selfplay_improvement/E4_red_checkpoint.pt",
+  "ppo": {
+    "hidden": 64,
+    "gru_layers": 2,
+    "actor_hidden": 32,
+    "gamma": 1.0,
+    "lam": 0.95,
+    "clip": 0.2,
+    "value_coef": 0.5,
+    "entropy_coef": 0.01,
+    "max_grad_norm": 0.5,
+    "epochs": 4,
+    "batch_episodes": 8,
+    "blue_lr": 0.0002,
+    "red_lr": 0.0002,
+    "final_lr": 1e-05,
+    "reward_scale": 0.01,
+    "target_kl": 0.05,
+    "center_advantages": true,
+    "entropy_by_phase": {
+      "2": 0.01,
+      "3": 0.005
+    },
+    "bc_kl_coef": 0.2
+  },
+  "evaluation": {
+    "fast_every_episodes": 200,
+    "fast_opponents": 12,
+    "fast_seeds": 3,
+    "full_every_episodes": 1000,
+    "full_seeds": 5,
+    "final_seeds": 20,
+    "warmup_episodes": 1000,
+    "heldout_red_weights": "weights/rl_policy_checkpoint_bc.json",
+    "red_calibration_every_full": true,
+    "tft_min": 590.0,
+    "bully_min": 650.0,
+    "noisy02_min": 560.0,
+    "alld_min": 95.0,
+    "min_family_min": 350.0,
+    "heldout_red_min": 430.0,
+    "failures_before_action": 3
+  },
+  "phases": [
+    {
+      "name": "2",
+      "until_episodes": 3000,
+      "red_fraction": [
+        0.3,
+        0.4
+      ],
+      "alpha": 0.85,
+      "lam": 5.0
+    },
+    {
+      "name": "3",
+      "until_episodes": 6000,
+      "red_fraction": [
+        0.3,
+        0.4
+      ],
+      "alpha": 0.9,
+      "lam": 10.0
+    }
+  ]
+}

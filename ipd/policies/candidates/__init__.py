@@ -27,6 +27,7 @@ MODULES = {
     "adv-mlp": "adv_mlp",
     "adv-gru": "adv_gru",
     "adv-rl": "adv_rl",
+    "selfplay": "selfplay",
 }
 
 

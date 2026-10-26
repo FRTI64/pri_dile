@@ -1,0 +1,110 @@
+[
+  {
+    "rank": 1,
+    "iteration": 250,
+    "selection": 1110.4739963552504,
+    "summary": {
+      "mean": 504.81960784313725,
+      "families": {
+        "good": 599.38,
+        "top": 595.6333333333333,
+        "noisy": 509.62,
+        "extort": 444.8285714285714,
+        "random": 434.56666666666666,
+        "special": 369.275,
+        "heldout": 601.65
+      },
+      "min_family": 369.275,
+      "sigma": 87.36655574394347,
+      "vs_final": 597.0,
+      "vs_triple": 594.5,
+      "worst": 97.0,
+      "n": 255,
+      "heldout_red": {
+        "mean": 595.5,
+        "worst": 594.0
+      },
+      "passes_thresholds": true,
+      "threshold_checks": {
+        "tft": true,
+        "bully": true,
+        "noisy02": true,
+        "alld": true,
+        "min_family": true
+      },
+      "selection": 1110.4739963552504
+    }
+  },
+  {
+    "rank": 2,
+    "iteration": 188,
+    "selection": 1108.0461426872253,
+    "summary": {
+      "mean": 504.17254901960786,
+      "families": {
+        "good": 597.34,
+        "top": 594.0,
+        "noisy": 515.08,
+        "extort": 446.1142857142857,
+        "random": 428.1,
+        "special": 368.15,
+        "heldout": 597.0
+      },
+      "min_family": 368.15,
+      "sigma": 87.1007031661914,
+      "vs_final": 594.0,
+      "vs_triple": 594.0,
+      "worst": 97.0,
+      "n": 255,
+      "heldout_red": {
+        "mean": 594.0,
+        "worst": 594.0
+      },
+      "passes_thresholds": true,
+      "threshold_checks": {
+        "tft": true,
+        "bully": true,
+        "noisy02": true,
+        "alld": true,
+        "min_family": true
+      },
+      "selection": 1108.0461426872253
+    }
+  },
+  {
+    "rank": 3,
+    "iteration": 125,
+    "selection": 1099.3571700024665,
+    "summary": {
+      "mean": 500.14509803921567,
+      "families": {
+        "good": 597.56,
+        "top": 594.0,
+        "noisy": 509.86,
+        "extort": 426.1142857142857,
+        "random": 424.76666666666665,
+        "special": 368.725,
+        "heldout": 597.0
+      },
+      "min_family": 368.725,
+      "sigma": 89.5752140183745,
+      "vs_final": 594.0,
+      "vs_triple": 594.0,
+      "worst": 99.0,
+      "n": 255,
+      "heldout_red": {
+        "mean": 594.0,
+        "worst": 594.0
+      },
+      "passes_thresholds": true,
+      "threshold_checks": {
+        "tft": true,
+        "bully": true,
+        "noisy02": true,
+        "alld": true,
+        "min_family": true
+      },
+      "selection": 1099.3571700024665
+    }
+  }
+]

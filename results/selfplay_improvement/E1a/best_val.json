@@ -1,0 +1,31 @@
+{
+  "mean": 504.81960784313725,
+  "families": {
+    "good": 599.38,
+    "top": 595.6333333333333,
+    "noisy": 509.62,
+    "extort": 444.8285714285714,
+    "random": 434.56666666666666,
+    "special": 369.275,
+    "heldout": 601.65
+  },
+  "min_family": 369.275,
+  "sigma": 87.36655574394347,
+  "vs_final": 597.0,
+  "vs_triple": 594.5,
+  "worst": 97.0,
+  "n": 255,
+  "heldout_red": {
+    "mean": 595.5,
+    "worst": 594.0
+  },
+  "passes_thresholds": true,
+  "threshold_checks": {
+    "tft": true,
+    "bully": true,
+    "noisy02": true,
+    "alld": true,
+    "min_family": true
+  },
+  "selection": 1110.4739963552504
+}
