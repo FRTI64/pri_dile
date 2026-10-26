@@ -1,0 +1,167 @@
+{
+  "epoch": 80,
+  "n": 13400,
+  "classes": [
+    "adaptive",
+    "cooperative",
+    "defect",
+    "forgiving",
+    "late",
+    "noisy",
+    "punitive",
+    "random",
+    "wild"
+  ],
+  "class_counts": {
+    "adaptive": 1800,
+    "cooperative": 2600,
+    "defect": 1200,
+    "forgiving": 1600,
+    "late": 1200,
+    "noisy": 1200,
+    "punitive": 1400,
+    "random": 2000,
+    "wild": 400
+  },
+  "train_accuracy": 0.5026119402985074,
+  "loss": 1.7675906419754028,
+  "val_accuracy": 0.42583333333333334,
+  "gate": {
+    "epoch": 200,
+    "n": 13400,
+    "classes": [
+      "allow",
+      "deny"
+    ],
+    "class_counts": {
+      "allow": 4400,
+      "deny": 9000
+    },
+    "train_accuracy": 0.8963432835820896,
+    "loss": 0.39138951897621155,
+    "val_accuracy": 0.8655555555555555
+  },
+  "next_action": {
+    "epoch": 300,
+    "val_accuracy": 0.8194444444444444,
+    "train_accuracy": 0.8197761194029851,
+    "n": 13400,
+    "classes": [
+      "C",
+      "D"
+    ],
+    "class_counts": {
+      "C": 10985,
+      "D": 2415
+    },
+    "loss": 0.2412772961021674
+  },
+  "validation_types": [
+    "Extort2",
+    "Responsive",
+    "TFT2",
+    "TFT-last5D",
+    "AllC-lastD",
+    "EarlyD10",
+    "GTFT.50",
+    "TwoStrike3",
+    "LateD25",
+    "LateD15",
+    "NoisyTFT.20",
+    "NoisyTFT.10",
+    "OmegaTFT-lite",
+    "Mistrust",
+    "Random.50",
+    "Alternator",
+    "Periodic4",
+    "MemOne-rand"
+  ],
+  "suite_eval": {
+    "heldout_v2": {
+      "n": 7400,
+      "accuracy": 0.3212162162162162,
+      "per_class": {
+        "accuracy": {
+          "adaptive": 0.049375,
+          "cooperative": 0.82,
+          "late": 0.269,
+          "noisy": 0.07888888888888888,
+          "punitive": 0.01,
+          "random": 0.76875
+        },
+        "counts": {
+          "adaptive": 1600,
+          "cooperative": 1300,
+          "late": 2000,
+          "noisy": 900,
+          "punitive": 800,
+          "random": 800
+        },
+        "confusion": {
+          "adaptive": {
+            "adaptive": 79,
+            "cooperative": 536,
+            "defect": 90,
+            "late": 172,
+            "noisy": 126,
+            "punitive": 100,
+            "random": 280,
+            "wild": 217
+          },
+          "cooperative": {
+            "adaptive": 13,
+            "cooperative": 1066,
+            "late": 208,
+            "punitive": 13
+          },
+          "late": {
+            "adaptive": 211,
+            "cooperative": 660,
+            "defect": 27,
+            "late": 538,
+            "noisy": 66,
+            "punitive": 50,
+            "random": 252,
+            "wild": 196
+          },
+          "noisy": {
+            "adaptive": 127,
+            "cooperative": 8,
+            "defect": 2,
+            "late": 35,
+            "noisy": 71,
+            "punitive": 13,
+            "random": 182,
+            "wild": 462
+          },
+          "punitive": {
+            "adaptive": 8,
+            "cooperative": 656,
+            "late": 128,
+            "punitive": 8
+          },
+          "random": {
+            "adaptive": 9,
+            "cooperative": 1,
+            "defect": 40,
+            "late": 15,
+            "noisy": 2,
+            "punitive": 58,
+            "random": 615,
+            "wild": 60
+          }
+        }
+      },
+      "gate": {
+        "n": 7400,
+        "accuracy": 0.705945945945946,
+        "precision": 0.7023346303501945,
+        "recall": 0.3867857142857143,
+        "true_positive": 1083,
+        "false_positive": 459,
+        "false_negative": 1717,
+        "true_negative": 4141
+      }
+    }
+  }
+}

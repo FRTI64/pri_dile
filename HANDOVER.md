@@ -152,13 +152,23 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   `ipd/policies/belief_planner.py`（38 类 opponent particle filter +
   finite-horizon planning + RL-Repair fallback）和
   `ipd/evaluation/planner_eval.py` / `python -m ipd planner-eval`。
-  激进配置伤 extort/noisy（validation -12.65、heldout_v2 -4.36）；
-  保守配置（horizon 4, fallback 0.9, margin 10）heldout_v2 +3.11、
-  random +30、adaptive +7.6，但 noisy -11.7、temporal -6.8；
-  held-out red E4 blue +6.6、v5 +0.95、v6 +2.95，均低于 Gate C 的 +10。
-  判 **No-Go**，不注册、不改主权重；下一步 C2 auxiliary opponent
-  prediction 或 C3 classifier + MoE。详见
-  `docs/p2-c1-belief-planner.md`、`results/p2_belief_20261026/`。
+  fair-RNG 复跑（base/planner 使用独立同 seed 实例）：激进配置
+  validation -12.11、heldout_v2 -16.15；保守配置（horizon 4,
+  fallback 0.9, margin 10）validation -2.19、heldout_v2 +2.06、
+  noisy -3.0、temporal +8.7；held-out red E4 +0.35、v5 0.00、
+  v6 -0.10。判 **No-Go**，不注册、不改主权重。
+- **P2 C2/C3 opponent model + gate（2026-10-26，offline No-Go）**：
+  新增 `ipd/training/opponent_model.py`，训练 family MLP（9 类）、
+  binary gate MLP（allow/deny）和 next-action linear model。
+  gate 在 held-out types 86.6%、heldout_v2 70.6%（precision 70.2%，
+  recall 38.7%）；false positives 全部来自 adaptive/noisy。
+  gated conservative（horizon 4, gate 0.7）validation 0.00、
+  heldout_v2 +1.20、min_norm 0.999、held-out red 无变化；
+  gated aggressive heldout_v2 -21.91、extort -107.6。
+  **No-Go**；下一步用 exploratory/counterfactual 轨迹训练 opponent
+  model，或三路 `safe/risky/unknown` gate + MoE。
+  详见 `docs/p2-c2c3-opponent-model.md`、
+  `results/p2_opponent_model_20261026/`。
 
 复现入口：
 

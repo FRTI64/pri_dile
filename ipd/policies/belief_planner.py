@@ -55,6 +55,10 @@ class PlannerStats:
     overrides: int = 0
     fallback_low_confidence: int = 0
     fallback_margin: int = 0
+    gate_checks: int = 0
+    fallback_gate: int = 0
+    gate_label: str = ""
+    gate_confidence: float = 0.0
     top_name: str = ""
     top_weight: float = 0.0
     action_probability_d: float = 0.5
@@ -67,6 +71,10 @@ class PlannerStats:
                               if self.rounds else 0.0),
             "fallback_low_confidence": self.fallback_low_confidence,
             "fallback_margin": self.fallback_margin,
+            "gate_checks": self.gate_checks,
+            "fallback_gate": self.fallback_gate,
+            "gate_label": self.gate_label,
+            "gate_confidence": self.gate_confidence,
             "top_name": self.top_name,
             "top_weight": self.top_weight,
             "action_probability_d": self.action_probability_d,
@@ -90,8 +98,10 @@ class BeliefPlanner:
         margin: float = 0.0,
         seed: int = 20261024,
         name: str | None = None,
+        gate=None,
     ):
         self.base = base
+        self.gate = gate
         self.horizon = max(1, int(horizon))
         self.top_k = max(1, int(top_k))
         self.max_hypotheses = max(1, int(max_hypotheses))
@@ -112,6 +122,9 @@ class BeliefPlanner:
 
     def reset(self) -> None:
         self.base.reset()
+        gate_reset = getattr(self.gate, "reset", None)
+        if gate_reset is not None:
+            gate_reset()
         self.particles: list[_Particle] = []
         for i, spec in enumerate(self.specs):
             rng = random.Random(self.rng.randrange(1 << 30) + i)
@@ -234,6 +247,14 @@ class BeliefPlanner:
         base_action = int(self.base.act(t, mine, theirs))
         if t >= 99:
             return D
+        if self.gate is not None:
+            self.stats.gate_checks += 1
+            allowed, info = self.gate(t, mine, theirs)
+            self.stats.gate_label = str(info.get("label", ""))
+            self.stats.gate_confidence = float(info.get("confidence", 0.0))
+            if not allowed:
+                self.stats.fallback_gate += 1
+                return base_action
         if confidence < self.fallback_confidence:
             self.stats.fallback_low_confidence += 1
             return base_action

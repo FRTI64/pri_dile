@@ -1,0 +1,21 @@
+suite validation: 51 opponents x 1 seeds
+  base    mean=511.88 cvar=367.00 min=367.00
+  planner mean=504.47 delta=-7.40 min_norm=0.9167709637046307 override=0.025
+    extort            456.57 ->  418.57 (-38.00)
+    good              600.40 ->  600.40 (+0.00)
+    heldout           599.50 ->  599.50 (+0.00)
+    noisy             524.00 ->  521.30 (-2.70)
+    random            440.67 ->  431.17 (-9.50)
+    special           367.00 ->  365.38 (-1.62)
+    top               595.00 ->  595.00 (+0.00)
+suite heldout_v2: 74 opponents x 1 seeds
+  base    mean=509.09 cvar=411.22 min=411.22
+  planner mean=487.18 delta=-21.91 min_norm=0.7679870654810024 override=0.026
+    adaptive_v2       581.00 ->  588.50 (+7.50)
+    extort_v2         463.88 ->  356.25 (-107.62)
+    noisy_v2          411.22 ->  417.00 (+5.78)
+    punitive_v2       600.62 ->  600.62 (+0.00)
+    random_v2         455.75 ->  418.62 (-37.12)
+    reciprocal_v2     599.15 ->  599.15 (+0.00)
+    temporal_v2       452.00 ->  430.10 (-21.90)
+written results/p2_opponent_model_20261026/planner_gated_aggressive.json

@@ -75,6 +75,10 @@ def evaluate_policy(policy, items, seeds: Sequence[int], rounds: int = 100,
             "fallback_margin": sum(d["fallback_margin"] for d in diagnostics),
             "override_rate": (sum(d["overrides"] for d in diagnostics)
                               / max(1, sum(d["rounds"] for d in diagnostics))),
+            "gate_checks": sum(d.get("gate_checks", 0)
+                               for d in diagnostics),
+            "fallback_gate": sum(d.get("fallback_gate", 0)
+                                 for d in diagnostics),
         }
     return summary
 
@@ -113,18 +117,43 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--match-prob", type=float, default=0.85)
     ap.add_argument("--margin", type=float, default=0.0)
     ap.add_argument("--policy-seed", type=int, default=20261024)
+    ap.add_argument("--gate-model", default="",
+                    help="optional opponent-family model JSON")
+    ap.add_argument("--gate-allowed", default="allow",
+                    help="comma-separated opponent classes allowed to override")
+    ap.add_argument("--gate-threshold", type=float, default=0.6)
+    ap.add_argument("--gate-min-day", type=int, default=3)
+    ap.add_argument("--require-next-d", action="store_true",
+                    help="also require the next-action model to predict D")
+    ap.add_argument("--next-model", default="",
+                    help="optional next-action model JSON")
     ap.add_argument("--out", default=result_path("planner_eval.json"))
     args = ap.parse_args(argv)
 
     seed_values = [args.seed_base + i for i in range(max(1, args.seeds))]
     suites = [x.strip() for x in args.suite.split(",") if x.strip()]
     base = NeuralPolicy(args.weights, seed=args.policy_seed, mode="sample")
+    planner_base = NeuralPolicy(args.weights, seed=args.policy_seed,
+                                mode="sample")
+    gate = None
+    if args.gate_model:
+        from ipd.training.opponent_model import OpponentGate, load_opponent_model
+
+        allowed = tuple(x.strip() for x in args.gate_allowed.split(",")
+                        if x.strip())
+        next_model = (load_opponent_model(args.next_model)
+                      if args.next_model else None)
+        gate = OpponentGate(
+            load_opponent_model(args.gate_model),
+            allowed=allowed, threshold=args.gate_threshold,
+            min_day=args.gate_min_day, require_next_d=args.require_next_d,
+            next_model=next_model)
     planner = BeliefPlanner(
-        base, horizon=args.horizon, top_k=args.top_k,
+        planner_base, horizon=args.horizon, top_k=args.top_k,
         max_hypotheses=args.max_hypotheses,
         fallback_confidence=args.fallback_confidence,
         match_prob=args.match_prob, margin=args.margin,
-        seed=args.policy_seed)
+        seed=args.policy_seed, gate=gate)
     report: dict[str, Any] = {
         "schema": "ipd-planner-eval-v1",
         "weights": args.weights,
@@ -138,6 +167,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             "fallback_confidence": args.fallback_confidence,
             "match_prob": args.match_prob,
             "margin": args.margin,
+            "gate_model": args.gate_model or None,
+            "gate_allowed": args.gate_allowed if args.gate_model else None,
+            "gate_threshold": args.gate_threshold if args.gate_model else None,
+            "gate_min_day": args.gate_min_day if args.gate_model else None,
+            "require_next_d": args.require_next_d if args.gate_model else None,
         },
     }
     for suite in suites:

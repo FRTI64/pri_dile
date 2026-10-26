@@ -298,11 +298,17 @@ exploitability 从 390.33 降到 367.33（**-5.9%**），且 `validation:extort`
 `docs/p3-expansion-plan.md`。
 
 P2 C1 首版实现 Bayesian belief + finite-horizon planner（离线，不注册、
-不改权重）。激进版伤 extort/noisy；保守 fallback 版 heldout_v2 +3.11、
-random +30，但 noisy -11.7、temporal -6.8，held-out red E4 只 +6.6，
-未达 Gate C 的 +10。判 **No-Go**，下一步 C2 auxiliary opponent prediction
-或 C3 classifier + MoE。详见 `docs/p2-c1-belief-planner.md`、
-`results/p2_belief_20261026/README.md`。
+不改权重）。fair-RNG 复跑后，激进版 validation -12.11 / heldout_v2 -16.15；
+保守 fallback 版 heldout_v2 +2.06，但 validation -2.19、noisy -3.0，
+held-out red E4 仅 +0.35，未达 Gate C 的 +10。判 **No-Go**。
+P2 C2/C3 又训练了 family / binary gate / next-action 三个 opponent model；
+gate 在 held-out type 上 86.6%，但 heldout_v2 只有 70.6% 且 false positives
+集中在 adaptive/noisy。gated conservative 仅 heldout_v2 +1.20、red 不变；
+gated aggressive 因 extort -107.6 崩坏。C2/C3 也判 **No-Go**。下一步应
+用 exploratory/counterfactual 轨迹训练 opponent model，或做三路
+`safe/risky/unknown` gate + MoE。详见 `docs/p2-c1-belief-planner.md`、
+`docs/p2-c2c3-opponent-model.md`、`results/p2_belief_20261026/`、
+`results/p2_opponent_model_20261026/`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
@@ -325,6 +331,7 @@ random +30，但 noisy -11.7、temporal -6.8，held-out red E4 只 +6.6，
 | [docs/p3-red-league.md](docs/p3-red-league.md) | P3 red/exploiter pool + league-lite |
 | [docs/p3-expansion-plan.md](docs/p3-expansion-plan.md) | P3 multi-red + PSRO-lite（No-Go） |
 | [docs/p2-c1-belief-planner.md](docs/p2-c1-belief-planner.md) | P2 C1 Bayesian belief planner（offline No-Go） |
+| [docs/p2-c2c3-opponent-model.md](docs/p2-c2c3-opponent-model.md) | P2 C2/C3 learned opponent model + gate（offline No-Go） |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

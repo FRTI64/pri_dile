@@ -19,7 +19,7 @@
         "argmin_family": "special",
         "cvar10_family": 367.0,
         "min_norm": null,
-        "seconds": 0.43,
+        "seconds": 0.41,
         "rows": [
           {
             "family": "good",
@@ -382,21 +382,21 @@
       },
       "planner": {
         "n": 51,
-        "mean": 499.22465986394553,
+        "mean": 499.76683673469387,
         "families": {
           "good": 600.4,
           "top": 595.0,
-          "noisy": 511.5,
-          "extort": 386.7142857142857,
-          "random": 433.3333333333333,
+          "noisy": 519.7,
+          "extort": 383.14285714285717,
+          "random": 432.5,
           "special": 368.125,
           "heldout": 599.5
         },
         "min_family": 368.125,
         "argmin_family": "special",
         "cvar10_family": 368.125,
-        "min_norm": 0.8469962453066333,
-        "seconds": 38.89,
+        "min_norm": 0.8391739674593243,
+        "seconds": 37.4,
         "rows": [
           {
             "family": "good",
@@ -528,8 +528,8 @@
             "family": "noisy",
             "opponent": "NoisyTFT.hold.0.035",
             "seed": 1000,
-            "score": 579,
-            "opponent_score": 599
+            "score": 584,
+            "opponent_score": 604
           },
           {
             "family": "noisy",
@@ -570,22 +570,22 @@
             "family": "noisy",
             "opponent": "NoisyTFT.hold.0.35",
             "seed": 1000,
-            "score": 365,
-            "opponent_score": 685
+            "score": 424,
+            "opponent_score": 584
           },
           {
             "family": "noisy",
             "opponent": "NoisyTFT.hold.0.45",
             "seed": 1000,
-            "score": 413,
-            "opponent_score": 493
+            "score": 431,
+            "opponent_score": 571
           },
           {
             "family": "extort",
             "opponent": "Extort.hold.1.2",
             "seed": 1000,
-            "score": 548,
-            "opponent_score": 628
+            "score": 543,
+            "opponent_score": 623
           },
           {
             "family": "extort",
@@ -612,8 +612,8 @@
             "family": "extort",
             "opponent": "Extort.hold.3.2",
             "seed": 1000,
-            "score": 146,
-            "opponent_score": 256
+            "score": 126,
+            "opponent_score": 226
           },
           {
             "family": "extort",
@@ -647,8 +647,8 @@
             "family": "random",
             "opponent": "Random.hold.0.27",
             "seed": 1000,
-            "score": 323,
-            "opponent_score": 113
+            "score": 318,
+            "opponent_score": 128
           },
           {
             "family": "random",
@@ -758,43 +758,45 @@
         ],
         "diagnostics": {
           "matches": 51,
-          "overrides": 480,
+          "overrides": 517,
           "rounds": 5100,
-          "fallback_low_confidence": 177,
+          "fallback_low_confidence": 162,
           "fallback_margin": 0,
-          "override_rate": 0.09411764705882353
+          "override_rate": 0.10137254901960785,
+          "gate_checks": 0,
+          "fallback_gate": 0
         },
         "family_delta": {
           "good": 0.0,
           "top": 0.0,
-          "noisy": -12.5,
-          "extort": -69.85714285714283,
-          "random": -7.333333333333371,
+          "noisy": -4.2999999999999545,
+          "extort": -73.42857142857139,
+          "random": -8.166666666666686,
           "special": 1.125,
           "heldout": 0.0
         },
-        "mean_delta": -12.652210884353735,
+        "mean_delta": -12.1100340136054,
         "cvar_delta": 1.125
       }
     },
     "heldout_v2": {
       "base": {
         "n": 74,
-        "mean": 507.78705738705736,
+        "mean": 509.08943833943835,
         "families": {
           "reciprocal_v2": 599.1538461538462,
           "punitive_v2": 600.625,
-          "noisy_v2": 431.55555555555554,
-          "extort_v2": 459.625,
-          "random_v2": 422.625,
-          "temporal_v2": 458.8,
-          "adaptive_v2": 582.125
+          "noisy_v2": 411.22222222222223,
+          "extort_v2": 463.875,
+          "random_v2": 455.75,
+          "temporal_v2": 452.0,
+          "adaptive_v2": 581.0
         },
-        "min_family": 422.625,
-        "argmin_family": "random_v2",
-        "cvar10_family": 422.625,
+        "min_family": 411.22222222222223,
+        "argmin_family": "noisy_v2",
+        "cvar10_family": 411.22222222222223,
         "min_norm": null,
-        "seconds": 0.55,
+        "seconds": 0.52,
         "rows": [
           {
             "family": "reciprocal_v2",
@@ -947,43 +949,43 @@
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.23",
             "seed": 1000,
-            "score": 457,
-            "opponent_score": 677
+            "score": 492,
+            "opponent_score": 592
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.27",
             "seed": 1000,
-            "score": 438,
-            "opponent_score": 668
+            "score": 439,
+            "opponent_score": 689
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.3",
             "seed": 1000,
-            "score": 397,
-            "opponent_score": 707
+            "score": 403,
+            "opponent_score": 693
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.33",
             "seed": 1000,
-            "score": 429,
-            "opponent_score": 359
+            "score": 368,
+            "opponent_score": 698
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.37",
             "seed": 1000,
-            "score": 433,
-            "opponent_score": 273
+            "score": 400,
+            "opponent_score": 380
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.43",
             "seed": 1000,
-            "score": 471,
-            "opponent_score": 251
+            "score": 317,
+            "opponent_score": 677
           },
           {
             "family": "noisy_v2",
@@ -996,22 +998,22 @@
             "family": "noisy_v2",
             "opponent": "Joss.v2.0.29",
             "seed": 1000,
-            "score": 451,
-            "opponent_score": 681
+            "score": 456,
+            "opponent_score": 676
           },
           {
             "family": "noisy_v2",
             "opponent": "Joss.v2.0.39",
             "seed": 1000,
-            "score": 338,
-            "opponent_score": 678
+            "score": 356,
+            "opponent_score": 696
           },
           {
             "family": "extort_v2",
             "opponent": "Prober.v2",
             "seed": 1000,
-            "score": 530,
-            "opponent_score": 110
+            "score": 527,
+            "opponent_score": 107
           },
           {
             "family": "extort_v2",
@@ -1024,8 +1026,8 @@
             "family": "extort_v2",
             "opponent": "Extort.v2.1.05",
             "seed": 1000,
-            "score": 562,
-            "opponent_score": 602
+            "score": 567,
+            "opponent_score": 607
           },
           {
             "family": "extort_v2",
@@ -1038,50 +1040,50 @@
             "family": "extort_v2",
             "opponent": "Extort.v2.2.15",
             "seed": 1000,
-            "score": 369,
-            "opponent_score": 699
+            "score": 370,
+            "opponent_score": 690
           },
           {
             "family": "extort_v2",
             "opponent": "Extort.v2.2.4",
             "seed": 1000,
-            "score": 355,
-            "opponent_score": 705
+            "score": 363,
+            "opponent_score": 693
           },
           {
             "family": "extort_v2",
             "opponent": "Extort.v2.3.1",
             "seed": 1000,
-            "score": 269,
-            "opponent_score": 699
+            "score": 283,
+            "opponent_score": 713
           },
           {
             "family": "extort_v2",
             "opponent": "Extort.v2.3.8",
             "seed": 1000,
-            "score": 255,
-            "opponent_score": 685
+            "score": 264,
+            "opponent_score": 704
           },
           {
             "family": "random_v2",
             "opponent": "Periodic.v2",
             "seed": 1000,
-            "score": 390,
-            "opponent_score": 700
+            "score": 623,
+            "opponent_score": 103
           },
           {
             "family": "random_v2",
             "opponent": "Random.v2.0.02",
             "seed": 1000,
-            "score": 117,
-            "opponent_score": 107
+            "score": 116,
+            "opponent_score": 116
           },
           {
             "family": "random_v2",
             "opponent": "Random.v2.0.11",
             "seed": 1000,
-            "score": 159,
-            "opponent_score": 309
+            "score": 183,
+            "opponent_score": 153
           },
           {
             "family": "random_v2",
@@ -1101,8 +1103,8 @@
             "family": "random_v2",
             "opponent": "Random.v2.0.47",
             "seed": 1000,
-            "score": 561,
-            "opponent_score": 81
+            "score": 558,
+            "opponent_score": 78
           },
           {
             "family": "random_v2",
@@ -1115,8 +1117,8 @@
             "family": "random_v2",
             "opponent": "Random.v2.0.84",
             "seed": 1000,
-            "score": 766,
-            "opponent_score": 96
+            "score": 778,
+            "opponent_score": 78
           },
           {
             "family": "temporal_v2",
@@ -1129,8 +1131,8 @@
             "family": "temporal_v2",
             "opponent": "LateD.v2.7",
             "seed": 1000,
-            "score": 563,
-            "opponent_score": 583
+            "score": 562,
+            "opponent_score": 592
           },
           {
             "family": "temporal_v2",
@@ -1157,36 +1159,36 @@
             "family": "temporal_v2",
             "opponent": "LateD.v2.44",
             "seed": 1000,
-            "score": 377,
-            "opponent_score": 407
+            "score": 376,
+            "opponent_score": 416
           },
           {
             "family": "temporal_v2",
             "opponent": "LateD.v2.57",
             "seed": 1000,
-            "score": 310,
-            "opponent_score": 360
+            "score": 311,
+            "opponent_score": 351
           },
           {
             "family": "temporal_v2",
             "opponent": "LateD.v2.63",
             "seed": 1000,
-            "score": 280,
-            "opponent_score": 330
+            "score": 282,
+            "opponent_score": 312
           },
           {
             "family": "temporal_v2",
             "opponent": "LateD.v2.79",
             "seed": 1000,
-            "score": 197,
-            "opponent_score": 277
+            "score": 179,
+            "opponent_score": 439
           },
           {
             "family": "temporal_v2",
             "opponent": "LateD.v2.91",
             "seed": 1000,
-            "score": 122,
-            "opponent_score": 352
+            "score": 127,
+            "opponent_score": 307
           },
           {
             "family": "temporal_v2",
@@ -1199,29 +1201,29 @@
             "family": "temporal_v2",
             "opponent": "Harvest.v2.89H",
             "seed": 1000,
-            "score": 542,
-            "opponent_score": 572
+            "score": 543,
+            "opponent_score": 563
           },
           {
             "family": "temporal_v2",
             "opponent": "Harvest.v2.93R",
             "seed": 1000,
-            "score": 579,
-            "opponent_score": 589
+            "score": 587,
+            "opponent_score": 577
           },
           {
             "family": "temporal_v2",
             "opponent": "DynamicW.v2.11",
             "seed": 1000,
-            "score": 531,
-            "opponent_score": 631
+            "score": 535,
+            "opponent_score": 625
           },
           {
             "family": "temporal_v2",
             "opponent": "DynamicW.v2.13",
             "seed": 1000,
-            "score": 385,
-            "opponent_score": 645
+            "score": 247,
+            "opponent_score": 337
           },
           {
             "family": "temporal_v2",
@@ -1234,22 +1236,22 @@
             "family": "temporal_v2",
             "opponent": "ProbePhase.v2.9",
             "seed": 1000,
-            "score": 540,
-            "opponent_score": 560
+            "score": 535,
+            "opponent_score": 555
           },
           {
             "family": "temporal_v2",
             "opponent": "Kamikaze.v2.6",
             "seed": 1000,
-            "score": 222,
-            "opponent_score": 242
+            "score": 224,
+            "opponent_score": 224
           },
           {
             "family": "temporal_v2",
             "opponent": "Kamikaze.v2.26",
             "seed": 1000,
-            "score": 446,
-            "opponent_score": 226
+            "score": 450,
+            "opponent_score": 220
           },
           {
             "family": "temporal_v2",
@@ -1290,8 +1292,8 @@
             "family": "adaptive_v2",
             "opponent": "TFTProbe.v2",
             "seed": 1000,
-            "score": 501,
-            "opponent_score": 481
+            "score": 492,
+            "opponent_score": 482
           },
           {
             "family": "adaptive_v2",
@@ -1318,21 +1320,21 @@
       },
       "planner": {
         "n": 74,
-        "mean": 503.43070818070817,
+        "mean": 492.9418192918193,
         "families": {
           "reciprocal_v2": 599.1538461538462,
           "punitive_v2": 600.625,
-          "noisy_v2": 402.1111111111111,
-          "extort_v2": 432.375,
-          "random_v2": 435.0,
-          "temporal_v2": 467.0,
-          "adaptive_v2": 587.75
+          "noisy_v2": 405.8888888888889,
+          "extort_v2": 392.625,
+          "random_v2": 415.75,
+          "temporal_v2": 450.05,
+          "adaptive_v2": 586.5
         },
-        "min_family": 402.1111111111111,
-        "argmin_family": "noisy_v2",
-        "cvar10_family": 402.1111111111111,
-        "min_norm": 0.9317713697219361,
-        "seconds": 55.98,
+        "min_family": 392.625,
+        "argmin_family": "extort_v2",
+        "cvar10_family": 392.625,
+        "min_norm": 0.8464025869037995,
+        "seconds": 54.74,
         "rows": [
           {
             "family": "reciprocal_v2",
@@ -1506,22 +1508,22 @@
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.33",
             "seed": 1000,
-            "score": 403,
-            "opponent_score": 513
+            "score": 406,
+            "opponent_score": 516
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.37",
             "seed": 1000,
-            "score": 354,
-            "opponent_score": 734
+            "score": 351,
+            "opponent_score": 751
           },
           {
             "family": "noisy_v2",
             "opponent": "NoisyTFT.v2.0.43",
             "seed": 1000,
-            "score": 444,
-            "opponent_score": 564
+            "score": 465,
+            "opponent_score": 465
           },
           {
             "family": "noisy_v2",
@@ -1541,15 +1543,15 @@
             "family": "noisy_v2",
             "opponent": "Joss.v2.0.39",
             "seed": 1000,
-            "score": 346,
-            "opponent_score": 686
+            "score": 359,
+            "opponent_score": 699
           },
           {
             "family": "extort_v2",
             "opponent": "Prober.v2",
             "seed": 1000,
-            "score": 541,
-            "opponent_score": 71
+            "score": 537,
+            "opponent_score": 77
           },
           {
             "family": "extort_v2",
@@ -1576,15 +1578,15 @@
             "family": "extort_v2",
             "opponent": "Extort.v2.2.15",
             "seed": 1000,
-            "score": 401,
-            "opponent_score": 701
+            "score": 101,
+            "opponent_score": 141
           },
           {
             "family": "extort_v2",
             "opponent": "Extort.v2.2.4",
             "seed": 1000,
-            "score": 398,
-            "opponent_score": 718
+            "score": 384,
+            "opponent_score": 724
           },
           {
             "family": "extort_v2",
@@ -1604,8 +1606,8 @@
             "family": "random_v2",
             "opponent": "Periodic.v2",
             "seed": 1000,
-            "score": 556,
-            "opponent_score": 256
+            "score": 404,
+            "opponent_score": 664
           },
           {
             "family": "random_v2",
@@ -1639,8 +1641,8 @@
             "family": "random_v2",
             "opponent": "Random.v2.0.47",
             "seed": 1000,
-            "score": 467,
-            "opponent_score": 357
+            "score": 465,
+            "opponent_score": 345
           },
           {
             "family": "random_v2",
@@ -1681,8 +1683,8 @@
             "family": "temporal_v2",
             "opponent": "LateD.v2.27",
             "seed": 1000,
-            "score": 460,
-            "opponent_score": 510
+            "score": 461,
+            "opponent_score": 501
           },
           {
             "family": "temporal_v2",
@@ -1716,8 +1718,8 @@
             "family": "temporal_v2",
             "opponent": "LateD.v2.79",
             "seed": 1000,
-            "score": 199,
-            "opponent_score": 259
+            "score": 198,
+            "opponent_score": 268
           },
           {
             "family": "temporal_v2",
@@ -1730,8 +1732,8 @@
             "family": "temporal_v2",
             "opponent": "Harvest.v2.8R",
             "seed": 1000,
-            "score": 726,
-            "opponent_score": 206
+            "score": 833,
+            "opponent_score": 133
           },
           {
             "family": "temporal_v2",
@@ -1758,22 +1760,22 @@
             "family": "temporal_v2",
             "opponent": "DynamicW.v2.13",
             "seed": 1000,
-            "score": 389,
-            "opponent_score": 569
+            "score": 229,
+            "opponent_score": 319
           },
           {
             "family": "temporal_v2",
             "opponent": "ProbePhase.v2.7",
             "seed": 1000,
-            "score": 662,
-            "opponent_score": 52
+            "score": 658,
+            "opponent_score": 58
           },
           {
             "family": "temporal_v2",
             "opponent": "ProbePhase.v2.9",
             "seed": 1000,
-            "score": 535,
-            "opponent_score": 575
+            "score": 537,
+            "opponent_score": 577
           },
           {
             "family": "temporal_v2",
@@ -1786,8 +1788,8 @@
             "family": "temporal_v2",
             "opponent": "Kamikaze.v2.26",
             "seed": 1000,
-            "score": 734,
-            "opponent_score": 384
+            "score": 450,
+            "opponent_score": 220
           },
           {
             "family": "temporal_v2",
@@ -1828,8 +1830,8 @@
             "family": "adaptive_v2",
             "opponent": "TFTProbe.v2",
             "seed": 1000,
-            "score": 575,
-            "opponent_score": 575
+            "score": 565,
+            "opponent_score": 565
           },
           {
             "family": "adaptive_v2",
@@ -1855,23 +1857,25 @@
         ],
         "diagnostics": {
           "matches": 74,
-          "overrides": 527,
+          "overrides": 508,
           "rounds": 7400,
-          "fallback_low_confidence": 260,
+          "fallback_low_confidence": 244,
           "fallback_margin": 0,
-          "override_rate": 0.07121621621621621
+          "override_rate": 0.06864864864864866,
+          "gate_checks": 0,
+          "fallback_gate": 0
         },
         "family_delta": {
           "reciprocal_v2": 0.0,
           "punitive_v2": 0.0,
-          "noisy_v2": -29.444444444444457,
-          "extort_v2": -27.25,
-          "random_v2": 12.375,
-          "temporal_v2": 8.199999999999989,
-          "adaptive_v2": 5.625
+          "noisy_v2": -5.333333333333314,
+          "extort_v2": -71.25,
+          "random_v2": -40.0,
+          "temporal_v2": -1.9499999999999886,
+          "adaptive_v2": 5.5
         },
-        "mean_delta": -4.3563492063491935,
-        "cvar_delta": -20.513888888888914
+        "mean_delta": -16.14761904761906,
+        "cvar_delta": -18.59722222222223
       }
     }
   },
@@ -1885,6 +1889,11 @@
     "max_hypotheses": 48,
     "fallback_confidence": 0.75,
     "match_prob": 0.85,
-    "margin": 0.0
+    "margin": 0.0,
+    "gate_model": null,
+    "gate_allowed": null,
+    "gate_threshold": null,
+    "gate_min_day": null,
+    "require_next_d": null
   }
 }

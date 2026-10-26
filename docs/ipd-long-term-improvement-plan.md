@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1 offline No-Go
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -458,16 +458,32 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
   Bayesian belief update、finite-horizon planning，RL-Repair 作为默认
   base/fallback；新增 `ipd/evaluation/planner_eval.py` 和
   `python -m ipd planner-eval`。
-- 激进版（horizon 6, top-k 8, confidence 0.75）：validation -12.65、
-  heldout_v2 -4.36，extort/noisy 严重回退。
+- **fair-RNG 复跑**（base 与 planner 使用独立同 seed 实例；早期共享 RNG
+  的 E4 +6.6 是伪影）：激进版（horizon 6, top-k 8, confidence 0.75）
+  validation -12.11、heldout_v2 -16.15，extort 严重回退。
 - 保守版（horizon 4, top-k 6, confidence 0.9, margin 10）：
-  validation -1.85、heldout_v2 +3.11、random +30、adaptive +7.6，
-  但 noisy -11.7、temporal -6.8；held-out red E4 blue +6.6、
-  v5 +0.95、v6 +2.95，均低于 Gate C 的 +10。
+  validation -2.19、heldout_v2 +2.06、noisy -3.0、temporal +8.7；
+  held-out red E4 +0.35、v5 0.00、v6 -0.10，均低于 Gate C 的 +10。
 - 诊断：模型库无法区分 noisy/extort 与 non-responsive exploiter，
   planning 本身不是瓶颈。判 **No-Go**，不注册、不改权重。
-- 下一步：C2 auxiliary opponent prediction（learned next-action /
-  responsiveness head）或 C3 classifier + MoE，用学习到的 gating
-  限制 planner override；不要继续加深 horizon。
 - 文档：`docs/p2-c1-belief-planner.md`；
   结果：`results/p2_belief_20261026/`。
+
+## 17. P2 C2/C3 learned opponent model + gate（2026-10-26，offline No-Go）
+
+- 新增 `ipd/training/opponent_model.py`：family MLP（9 类）、binary
+  gate MLP（allow/deny）、next-action linear；训练数据仅 `TYPE_BANK`，
+  `heldout_v2` 只做评估。
+- 指标：family MLP val 42.6% / heldout_v2 32.1%；gate MLP val 86.6% /
+  heldout_v2 70.6%（precision 70.2%，recall 38.7%）；next-action 81.9%。
+- heldout_v2 gate 的 false positives 全部来自 adaptive/noisy；
+  random/late precision 1.0，但 recall 只有 75%/24%。
+- fair-RNG planner：ungated conservative validation -2.19 / heldout_v2
+  +2.06；gated conservative validation 0.00 / heldout_v2 +1.20 /
+  min_norm 0.999 / held-out red 无变化；gated aggressive
+  heldout_v2 -21.91、extort -107.6。
+- Gate C 未达到（+10 缺失），判 **No-Go**。下一步用
+  exploratory/counterfactual 轨迹训练 opponent model，或三路
+  `safe/risky/unknown` gate + MoE；unknown 回退 RL-Repair。
+- 文档：`docs/p2-c2c3-opponent-model.md`；
+  结果：`results/p2_opponent_model_20261026/`。

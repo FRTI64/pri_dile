@@ -28,6 +28,8 @@ TASKS = {
     "neural": ("ipd.training.neural", "MLP behaviour cloning + DAgger"),
     "gru": ("ipd.training.gru", "GRU-Net behaviour cloning + DAgger"),
     "rl": ("ipd.training.rl", "PPO reinforcement learning"),
+    "opponent-model": ("ipd.training.opponent_model",
+                       "offline opponent classifier / gate"),
     "selfplay": ("ipd.training.selfplay.train",
                  "asymmetric self-play PPO (blue/red GRU)"),
     "selfplay-bc": ("ipd.training.selfplay.bc",
