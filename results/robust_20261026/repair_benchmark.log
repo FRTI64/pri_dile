@@ -1,0 +1,30 @@
+progress 4/80 field tasks
+progress 8/80 field tasks
+progress 12/80 field tasks
+progress 16/80 field tasks
+progress 20/80 field tasks
+progress 24/80 field tasks
+progress 28/80 field tasks
+progress 32/80 field tasks
+progress 36/80 field tasks
+progress 40/80 field tasks
+progress 44/80 field tasks
+progress 48/80 field tasks
+progress 52/80 field tasks
+progress 56/80 field tasks
+progress 60/80 field tasks
+progress 64/80 field tasks
+progress 68/80 field tasks
+progress 72/80 field tasks
+progress 76/80 field tasks
+progress 80/80 field tasks
+RL-Repair          original  mean= 557.26 min= 512.66
+RL-Repair          late      mean= 549.39 min= 520.70
+RL-Repair          grim30    mean= 552.28 min= 542.95
+RL-Repair          wide      mean= 560.12 min= 534.73
+
+Summary (mean score per opponent):
+strategy              original      late    grim30      wide       avg     worst       min
+RL-Repair               557.26    549.39    552.28    560.12    554.76    549.39    512.66
+
+written results/robust_20261026/repair_benchmark_20fields.json

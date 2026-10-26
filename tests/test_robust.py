@@ -6,7 +6,8 @@ import unittest
 
 from ipd.evaluation.distributions import TRAIN_DISTS, build_train_dist_field
 from ipd.evaluation.robust import (
-    ROBUST_OPPONENTS, build_robust_field,
+    REPAIR_OPPONENTS, ROBUST_OPPONENTS, build_repair_field,
+    build_robust_field,
 )
 
 
@@ -63,6 +64,23 @@ class RobustDistributionTests(unittest.TestCase):
         self.assertIn("Grim", names)
         self.assertIn("AllD", names)
         self.assertIn("AllC", names)
+
+    def test_repair_distribution_is_registered_and_balanced(self):
+        self.assertIn("repair", TRAIN_DISTS)
+        field = build_train_dist_field("repair", 54321, 25)
+        self.assertEqual(len(field), 25)
+        weights = {name: weight for name, weight, _ in REPAIR_OPPONENTS}
+        self.assertGreater(weights["Random"], weights["Extort"])
+        for anchor in ("TFT", "GTFT", "Pavlov", "AllC", "Grim", "AllD"):
+            self.assertIn(anchor, weights)
+
+    def test_repair_field_is_deterministic(self):
+        a = build_repair_field(777, 40)
+        b = build_repair_field(777, 40)
+        self.assertEqual([type(x).__name__ for x in a],
+                         [type(x).__name__ for x in b])
+        self.assertEqual([getattr(x, "name", "") for x in a],
+                         [getattr(x, "name", "") for x in b])
 
 
 if __name__ == "__main__":

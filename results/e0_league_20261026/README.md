@@ -119,8 +119,9 @@ cross-play 重复运行两次 fingerprint 均为
 
 1. **E1**：从 A60 做 domain-randomized fine-tune（`robust` 训练分布已实现并有测试）。
    选模只看官方 validation；heldout_v2 作为 validation；**新建 heldout_v3**
-   做一次性 final test。E1a/E1b 均未通过 validation Gate，因此 heldout_v3
-   截至本次仍未运行（保留给下一个候选）。
+   做一次性 final test。E1a/E1b 未通过 validation Gate；E1c 通过，
+   heldout_v3 final 为 RL-Repair 509.88 vs A60 505.97（+3.91），
+   `heldout_v3` 已被 E1c 使用。
 2. E1 若 Go，再考虑 E2 CVaR/robust PPO 或 E3 multi-teacher。
 3. P3 league 不能只做蓝军 cross-play；必须加入 red/exploiter 池，否则
    当前均衡退化为“互相合作”。

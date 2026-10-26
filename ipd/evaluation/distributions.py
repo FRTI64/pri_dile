@@ -19,7 +19,7 @@ from ..policies.opponents import ALL_SPECS, SMART, TUNED_SMART
 
 N_PLAYERS = 299
 DISTS = ("original", "late", "grim30", "wide")
-TRAIN_DISTS = DISTS + ("hard", "hard2", "robust")
+TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair")
 
 # Base weights for a fixed high-Grim population.  Late harvesters remain a
 # significant block, so raising Grim tests the safety/exploitation tradeoff.
@@ -186,6 +186,9 @@ def build_train_dist_field(dist: str, seed: int, n: int):
     if dist == "robust":
         from .robust import build_robust_field
         return build_robust_field(seed, n)
+    if dist == "repair":
+        from .robust import build_repair_field
+        return build_repair_field(seed, n)
     if dist != "hard":
         return build_dist_field(dist, seed, n)
     rng = random.Random(seed)

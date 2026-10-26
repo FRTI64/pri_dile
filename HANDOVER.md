@@ -52,11 +52,13 @@ python3 -m ipd self-test --candidates all
   worker 生成 rollout，GPU 只做更新，推理仍不需要 PyTorch。
 - RL 默认保留“不主动探测”的安全规则，并用 wide 加权、BC KL 正则和 hard 对手
   挖掘压低尾部风险；`--allow-probe` 可关闭安全规则做对照。
-- **最终的单独 RL**（从零 + hard）四分布 553.33、盲测 **563.23 / 8.00**，
-  是目前最高盲测，也是最好的单网络策略。
+- **当前主基线**仍是单独 RL（从零 + hard）：四分布 553.33、盲测
+  563.23 / 8.00；`weights/rl_policy_weights.json` 未替换。
+- **RL-Repair（E1c，候选）**：官方 554.76、盲测 **564.61 / 5.75**、
+  heldout v2 503.17（A60 +3.10）、heldout v3 509.88（A60 +3.91）；
+  已注册 `rl-repair`，但尚未替换主权重。
 - **Adv-RL** 把 BC 初始化的 RL 作为 base，再套用两条约束剥削规则；四分布
-  **554.29**、盲测 562.91 / 8.00，是最高四分布。两者都超过此前最好的
-  Adv-MLP（552.24 / 559.51）。
+  554.29、盲测 562.91 / 8.00。它的 E4 red blue 仍高于 RL-Repair。
 - 本轮大部分训练/测试在 24 核 CPU + RTX 5090 Laptop 上完成；最终从零 + hard
   的 RL 在 CPU 上完成。NPU 代码路径已实现但未实机验证。
 
@@ -106,18 +108,18 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   略降），E4 red blue 299.20（RL-PPO 310.55）。cross-play 所有候选互相合作
   （594–595），Elo/Nash 不可区分，P3 必须加入 red/exploiter 池。E0 不改主权重；
   报告 `results/e0_league_20261026/README.md`。
-- **E1 domain-randomized A60（2026-10-26，No-Go）**：新增训练分布 `robust`
-  （`ipd/evaluation/robust.py`，已有测试），从 A60 checkpoint 做参数随机化
-  fine-tune。best iter 40 官方 validation 558.87→559.07；E0 风格评估：
-  official 554.71（A60 554.27）、blind 564.63（563.87）、heldout v2
-  501.43（500.07，+1.36）、min_norm 0.9964（0.9928）、CVaR10 388.98
-  （391.13）、E4 red blue 311.70（299.20）。held-out +1.36 / min_norm
-  +0.0036 未达 +3 / +0.02 Gate，**No-Go**；per-family 是 extort +16.3、
-  random -6.1 的 trade-off。E1b（KL 0.05, lr 2e-4）selection run heldout
-  +3.05，但 full run 只有 +1.94，min_norm 0.9892、CVaR 388.81，random
-  -6.3；两次 validation 不一致，仍判 **No-Go**。不注册、不 promotion；
-  `heldout_v3` 未运行，留给下一个稳定通过 validation 的候选。结果见
-  `results/robust_20261026/`。
+- **E1 domain-randomized / repair fine-tune（2026-10-26）**：新增 `robust`
+  和 `repair` 训练分布（`ipd/evaluation/robust.py`，已有测试）。
+  E1a（+1.36）/E1b（+1.94，selection +3.05）均 No-Go；E1c 从 E1b 出发用
+  `repair` 分布修复 random 尾部，heldout_v2 503.17（A60 500.07，+3.10；
+  selection +4.90），official 554.72（+0.45）、blind 564.68（+0.80）、
+  min_norm 0.9930、CVaR10 390.39、E4 red blue 303.45（+4.25）。
+  **heldout_v3 final：RL-Repair 509.88 vs A60 505.97（+3.91）**，
+  per-family extort +23.4、random +4.7；min_norm/CVaR 基本持平；
+  E4 red 仍 100% 击败。标准 CLI：benchmark 20 fields 554.76、
+  blind 564.61 / 5.75。E1c 判 **Go candidate**，注册 `rl-repair`，
+  但不覆盖主权重；`heldout_v3` 已被使用，后续需新建 heldout_v4。
+  结果见 `results/robust_20261026/` 和 `docs/e1-robust-finetune.md`。
 
 复现入口：
 
@@ -188,10 +190,11 @@ python3 -m ipd blind --arch adv-rl \
 
 | 方案 | 复杂度 | 盲测均分 | 盲测平均排名 | 适用 |
 |---|---:|---:|---:|---|
-| **RL-PPO（从零 + hard，最终）** | 中 | **563.23** | **8.00** | **最高盲测，最佳单网络策略** |
+| **RL-PPO（从零 + hard，主基线）** | 中 | 563.23 | 8.00 | 当前主权重/fallback |
 | **RL-PPO-Hard60（hard×2 fine-tune，候选）** | 中 | **564.17** | **5.75** | 20-field blind；官方 554.36，held-out 改善 |
+| **RL-Repair（E1c repair，候选）** | 中 | **564.61** | **5.75** | 官方 554.76；heldout v2 +3.10 / v3 +3.91 vs A60 |
 | **SelfPlay-GRU（21 维，BC 蒸馏）** | 中 | **560.43** | **8.10** | 21 维观测，推理无 PyTorch |
-| **Adv-RL 激进** | 中 | **562.91** | **8.00** | **最高四分布，RL 权重+配置** |
+| **Adv-RL 激进** | 中 | 562.91 | 8.00 | 高四分布，RL 权重+配置 |
 | Adv-RL 保守 | 中 | 561.05 | 8.20 | RL 版，逐类型风险略小 |
 | **Adv-MLP 激进** | 中 | 559.51 | 8.10 | 此前最高分，需权重+配置 |
 | RL-PPO（从零 base） | 中 | 559.27 | 8.30 | 从零训练的中间阶段 |
@@ -207,8 +210,12 @@ python3 -m ipd blind --arch adv-rl \
 
 **建议：**
 
-- 如果**盲测分数**是主要指标，且想用单一网络：优先 **RL-PPO 从零 + hard**
-  （553.33 / 563.23 / 8.00）；它没有外层规则，是当前最高盲测；
+- 如果**盲测分数**是主要指标，且想用单一网络：优先 **RL-Repair**
+  （554.76 / 564.61 / 5.75，20 fields）或 **RL-PPO-Hard60**
+  （554.36 / 564.17 / 5.75）；两者都是 85 维 RL-PPO，无外层规则。
+  RL-Repair 的 heldout v2/v3 更高，但仍需最终确认是否替换主权重；
+- 如果坚持当前主基线不变：保留 **RL-PPO 从零 + hard**
+  （553.33 / 563.23 / 8.00）作为 fallback；
 - 如果想要固定 21 维观测、推理无 PyTorch 的单一 GRU：用
   **SelfPlay-GRU**（550.76 / 560.43 / 8.10，`weights/selfplay_gru_policy.json`）；
 - 如果**四分布均值**是主要指标：优先 **Adv-RL 激进**（554.29 / 562.91 / 8.00），
@@ -524,7 +531,8 @@ MDP：
 盲测：563.23 / 8.00（BC 555.10 / 8.30）
 ```
 
-这是目前最高盲测和最好的单网络策略。训练路径：
+这是 E1c 之前的最高盲测/最佳单网络策略；现在 RL-Repair 在该指标上更高，
+但主权重仍保留 RL-PPO。训练路径：
 
 ```text
 run3（BC + wide + KL）        549.55 / 557.95
@@ -561,8 +569,8 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 盲测：562.91 / 8.00（7/10 第一，7/10 前 10）
 ```
 
-这是最高四分布候选，已经超过 Adv-MLP 激进（552.24 / 559.51）。保守版为
-553.73 / 561.05 / 8.20，逐类型风险略小。
+这是 E1c 之前的最高四分布候选，超过 Adv-MLP 激进（552.24 / 559.51）。
+保守版为 553.73 / 561.05 / 8.20，逐类型风险略小。
 
 把规则套到最终 scratch-hard 单独 RL 上：保守版 553.73 / 562.79，激进版四分布
 553.08，均不如 BC base；所以正式 Adv-RL 配置仍使用

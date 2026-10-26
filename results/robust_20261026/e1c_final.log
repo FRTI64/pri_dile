@@ -1,0 +1,40 @@
+E0 league: candidates=['Final-tuned', 'Triple-majority', 'RL-PPO', 'RL-PPO-Hard60', 'RL-Repair', 'Adv-RL'] suites=['heldout_v3'] workers=20
+  suite:heldout_v3 49/498 tasks (0.1s)
+  suite:heldout_v3 98/498 tasks (0.1s)
+  suite:heldout_v3 147/498 tasks (0.4s)
+  suite:heldout_v3 196/498 tasks (0.8s)
+  suite:heldout_v3 245/498 tasks (1.4s)
+  suite:heldout_v3 294/498 tasks (1.9s)
+  suite:heldout_v3 343/498 tasks (2.3s)
+  suite:heldout_v3 392/498 tasks (2.8s)
+  suite:heldout_v3 441/498 tasks (3.1s)
+  suite:heldout_v3 490/498 tasks (3.8s)
+  suite:heldout_v3 498/498 tasks (3.8s)
+  cross-play 3/36 tasks (0.1s)
+  cross-play 6/36 tasks (0.1s)
+  cross-play 9/36 tasks (0.1s)
+  cross-play 12/36 tasks (0.1s)
+  cross-play 15/36 tasks (0.1s)
+  cross-play 18/36 tasks (0.1s)
+  cross-play 21/36 tasks (0.1s)
+  cross-play 24/36 tasks (0.1s)
+  cross-play 27/36 tasks (0.1s)
+  cross-play 30/36 tasks (0.1s)
+  cross-play 33/36 tasks (0.1s)
+  cross-play 36/36 tasks (0.1s)
+  red 1/6 tasks (3.0s)
+  red 2/6 tasks (3.1s)
+  red 3/6 tasks (3.3s)
+  red 4/6 tasks (3.3s)
+  red 5/6 tasks (3.3s)
+  red 6/6 tasks (3.3s)
+written results/robust_20261026/e1c_final_v3.json
+written results/robust_20261026/e1c_final_v3.md
+fingerprint 8a96c3a85c4e047edf6b05919bcb3f294a233807a3a2771953fb66ebc7307ca0
+Final-tuned          mean=  489.77 min_norm=  0.8989 red_blue=  341.85
+Triple-majority      mean=  492.29 min_norm=  0.8791 red_blue=  334.70
+RL-PPO               mean=  502.31 min_norm=  1.0000 red_blue=  295.60
+RL-PPO-Hard60        mean=  505.97 min_norm=  0.9999 red_blue=  310.00
+RL-Repair            mean=  509.88 min_norm=  0.9996 red_blue=  306.35
+Adv-RL               mean=  504.84 min_norm=  0.9807 red_blue=  328.30
+gate: PASS

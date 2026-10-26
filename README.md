@@ -2,8 +2,9 @@
 
 本项目实现并比较了多类 100 天迭代囚徒困境（IPD）策略：规则策略、贝叶斯策略、
 多数投票融合策略，可导出到 C++ 的 MLP / GRU-Net 神经策略、约束对抗剥削版本，
-以及直接用比赛收益训练的完整 PPO 强化学习策略。最终从零训练的 RL 是最高盲测，
-加上约束剥削规则（Adv-RL）后是最高四分布。
+以及直接用比赛收益训练的完整 PPO 强化学习策略。当前主基线是从零训练的
+RL-PPO；E1c `RL-Repair` 是目前最强候选（官方 554.76、blind 564.61 / 5.75、
+heldout v2/v3 均高于 A60），但主权重尚未替换。
 
 当前推荐版本和完整实验结论见 **[HANDOVER.md](HANDOVER.md)**。
 
@@ -225,6 +226,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 |---|---:|---:|
 | **RL-PPO（从零 + hard，最终）** | **553.33** | **563.23 / 8.00** |
 | **RL-PPO-Hard60（hard×2 fine-tune，候选）** | **554.36** | **564.17 / 5.75（20 fields）** |
+| **RL-Repair（E1c repair，候选）** | **554.76** | **564.61 / 5.75（20 fields）** |
 | **Adv-RL 激进（RL + 约束剥削）** | **554.29** | **562.91 / 8.00** |
 | **SelfPlay-GRU（21 维，BC 蒸馏）** | **550.76** | **560.43 / 8.10** |
 | RL-PPO（从零 base） | 551.87 | 559.27 / 8.30 |
@@ -264,16 +266,16 @@ held-out v2 **500.07**（RL-PPO 494.97），CVaR10 391.13（RL-PPO 387.26）；
 无法区分，说明 P3 必须加入 red/exploiter 池。E0 Gate PASS，主权重未替换，
 结论与明细见 `results/e0_league_20261026/README.md`。
 
-E1 从 A60 做 domain-randomized `robust` fine-tune（`ipd/evaluation/robust.py`）。
-best iter 40 官方 validation 558.87→559.07；E0 风格评估 official 554.71、
-blind 564.63、held-out v2 501.43（A60 500.07，+1.36）、min_norm 0.9964
-（0.9928）、CVaR10 388.98（391.13）、E4 red blue 311.70（299.20）。
-held-out +1.36 / min_norm +0.0036 未达 +3 / +0.02 Gate，判 **No-Go**；
-per-family 是 extort +16.3、random -6.1 的 trade-off。E1b（KL 0.05, lr 2e-4）
-selection run held-out +3.05，但 full run 只有 +1.94，min_norm 0.9892、
-CVaR 388.81、random -6.3；两次 validation 不一致，仍判 **No-Go**。
-未注册、未 promotion，`heldout_v3` 保留未用。详见
-`results/robust_20261026/README.md`。
+E1 从 A60 做 domain-randomized `robust` / `repair` fine-tune
+（`ipd/evaluation/robust.py`）。E1a（held-out +1.36）与 E1b（+1.94，
+selection +3.05）均 No-Go；**E1c `RL-Repair` Go candidate**：
+heldout_v2 503.17（A60 500.07，+3.10；selection +4.90）、official 554.72、
+blind 564.68、min_norm 0.9930、CVaR10 390.39、E4 red blue 303.45。
+**heldout_v3 final：509.88 vs A60 505.97（+3.91）**，两次 validation 与
+final 方向一致；per-family extort +23.4、random +4.7，无 family 崩塌。
+已注册 `rl-repair`（`weights/rl_policy_weights_repair.json`），但**未覆盖
+主权重**；A60/RL-PPO 仍是 fallback。`heldout_v3` 已被使用，后续需
+heldout_v4。详见 `results/robust_20261026/README.md`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手

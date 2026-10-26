@@ -74,7 +74,7 @@ ipd/
 │   ├── opponent_suite.py  冻结评估 suite（含 heldout_v2/v3 新家族/参数）
 │   ├── metagame.py        cross-play 矩阵、Nash averaging、Elo、exploitability
 │   ├── league.py          E0 联赛 harness（cross-play / suite / red）
-│   └── robust.py          E1 domain-randomized 训练对手分布
+│   └── robust.py          E1 robust / repair domain-randomized 训练对手分布
 ├── training/              训练/搜索代码（只通过 registry 和 distributions 取策略/对手）
 │   ├── common.py          统一参数、seed、JSON 产物
 │   ├── cli.py             python3 -m ipd train <task>

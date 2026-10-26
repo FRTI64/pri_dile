@@ -104,10 +104,11 @@ See `results/e0_league_20261026/README.md` for the full table. Key points:
 - No weights were replaced.
 
 E1 used the same harness for the domain-randomized A60 fine-tune. E1a was a
-No-Go (held-out v2 +1.36, min_norm +0.0036, CVaR -2.15 vs A60). E1b's
-selection run reached +3.05 but the full validation run reached only +1.94,
-with min_norm -0.0036 and CVaR -2.32; it was also a No-Go. See
-`results/robust_20261026/README.md`.
+No-Go (held-out v2 +1.36), and E1b was also a No-Go (selection +3.05 but full
++1.94). E1c repaired the random family: held-out v2 +3.10, official +0.45,
+blind +0.80, red blue +4.25, and the one-shot held-out v3 final was +3.91 vs
+A60. E1c is a **Go candidate** (`rl-repair`); the main weight is unchanged.
+See `results/robust_20261026/README.md`.
 
 ## 6. Tests
 

@@ -25,6 +25,7 @@ MODULES = {
     "gru": "gru",
     "rl": "rl",
     "rl-hard60": "rl_hard60",
+    "rl-repair": "rl_repair",
     "adv-mlp": "adv_mlp",
     "adv-gru": "adv_gru",
     "adv-rl": "adv_rl",

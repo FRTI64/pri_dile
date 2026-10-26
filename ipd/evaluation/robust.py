@@ -11,7 +11,8 @@ import random
 from typing import Callable
 
 from ipd.core.opponents import (
-    AllC, AllD, Bully, Grim, Joss, LateDefector, NoisyTFT, RandomMoves, TFT,
+    AllC, AllD, Bully, GenerousTFT, Grim, Joss, LateDefector, NoisyTFT,
+    Pavlov, RandomMoves, TFT,
 )
 from ipd.core.opponents.zero_determinant import ExtortZD
 from ipd.core.primitives import Strategy
@@ -27,6 +28,16 @@ def _extort(rng: random.Random) -> Strategy:
 
 def _random(rng: random.Random) -> Strategy:
     return RandomMoves(rng.uniform(0.01, 0.95), rng)
+
+
+def _random_repair(rng: random.Random) -> Strategy:
+    # Narrower than ``robust``: avoid the near-AllC/near-AllD extremes when
+    # repairing the random-family regression.
+    return RandomMoves(rng.uniform(0.08, 0.92), rng)
+
+
+def _gtft(rng: random.Random) -> Strategy:
+    return GenerousTFT(rng.uniform(0.05, 0.35), True, rng)
 
 
 def _late(rng: random.Random) -> Strategy:
@@ -81,12 +92,35 @@ ROBUST_OPPONENTS: list[tuple[str, float, Factory]] = [
 ]
 
 
-def build_robust_field(seed: int, n: int) -> list[Strategy]:
-    """Sample ``n`` opponents, randomizing every non-anchor parameter."""
+# E1c repair mixture: keep some extort pressure, but strongly reweight the
+# random/noisy/adaptive tail and add more cooperative anchors.  Starting point
+# is the E1b checkpoint, not A60.
+REPAIR_OPPONENTS: list[tuple[str, float, Factory]] = [
+    ("Random", 5.0, _random_repair),
+    ("NoisyTFT", 3.0, _noisy),
+    ("Joss", 2.0, _joss),
+    ("DynamicWindow", 2.0, _dynamic),
+    ("LateD", 2.0, _late),
+    ("Extort", 1.5, _extort),
+    ("Kamikaze", 1.0, _kamikaze),
+    ("Harvest", 1.0, _harvest),
+    ("TFT", 3.0, lambda rng: TFT(rng)),
+    ("GTFT", 2.0, _gtft),
+    ("Pavlov", 2.0, lambda rng: Pavlov(rng)),
+    ("AllC", 2.0, lambda rng: AllC(rng)),
+    ("Grim", 1.0, lambda rng: Grim(rng)),
+    ("AllD", 1.0, lambda rng: AllD(rng)),
+    ("Bully", 1.0, lambda rng: Bully(rng)),
+]
+
+
+def _build_field(seed: int, n: int,
+                 opponents: list[tuple[str, float, Factory]]
+                 ) -> list[Strategy]:
     rng = random.Random(seed)
-    names = [name for name, _, _ in ROBUST_OPPONENTS]
-    weights = [weight for _, weight, _ in ROBUST_OPPONENTS]
-    factories = [factory for _, _, factory in ROBUST_OPPONENTS]
+    names = [name for name, _, _ in opponents]
+    weights = [weight for _, weight, _ in opponents]
+    factories = [factory for _, _, factory in opponents]
     field = []
     for _ in range(n):
         index = rng.choices(range(len(names)), weights=weights, k=1)[0]
@@ -96,4 +130,17 @@ def build_robust_field(seed: int, n: int) -> list[Strategy]:
     return field
 
 
-__all__ = ["ROBUST_OPPONENTS", "build_robust_field"]
+def build_robust_field(seed: int, n: int) -> list[Strategy]:
+    """Sample ``n`` opponents, randomizing every non-anchor parameter."""
+    return _build_field(seed, n, ROBUST_OPPONENTS)
+
+
+def build_repair_field(seed: int, n: int) -> list[Strategy]:
+    """E1c repair mixture: random/noisy-heavy with cooperative anchors."""
+    return _build_field(seed, n, REPAIR_OPPONENTS)
+
+
+__all__ = [
+    "ROBUST_OPPONENTS", "REPAIR_OPPONENTS", "build_robust_field",
+    "build_repair_field",
+]

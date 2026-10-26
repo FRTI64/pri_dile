@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1 domain-randomized A60 No-Go; E1b/E2 next
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2/P3 next
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -386,3 +386,20 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
 - 下一步：E1c 调整 robust mixture（降低 random 权重/收窄 random 区间/
   加 cooperative anchor）或 E2 CVaR/worst-family 辅助目标；仍用
   heldout_v2 做 validation，连续两次过 Gate 才跑 heldout_v3。
+
+### E1c repair（Go candidate）
+
+- 从 E1b checkpoint 初始化。
+- 新 `repair` 分布：Random 5.0（p∈[0.08,0.92]）、NoisyTFT 3.0、
+  Joss 2.0、Dynamic 2.0、LateD 2.0、Extort 1.5、Kamikaze 1.0、
+  Harvest 1.0；anchor TFT 3.0、GTFT 2.0、Pavlov 2.0、AllC 2.0、
+  Grim/AllD/Bully 1.0。
+- 20 iter、lr 1e-4、KL 0.05；heldout_v2 选 iter 20。
+- E1c full：official 554.72、blind 564.68、validation 509.93、
+  heldout_v2 503.17（+3.10 vs A60）、min_norm 0.9930、CVaR10 390.39、
+  red blue 303.45。
+- **heldout_v3 final：RL-Repair 509.88 vs A60 505.97（+3.91）**；
+  extort +23.4、random +4.7，min_norm/CVaR 基本持平。
+- 判定 **Go candidate**；注册 `rl-repair`，不覆盖主权重。
+  `heldout_v3` 已使用，后续候选需 heldout_v4。
+- 下一步：E2 CVaR/worst-family，或 P3 red/exploiter league。

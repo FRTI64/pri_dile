@@ -108,10 +108,11 @@ hard 只用于训练，验证始终是四个官方分布。
 `--train-dists ...,robust` 是 E1 新增的 **domain-randomized** 训练分布
 （`ipd/evaluation/robust.py`）：Extort/Random/LateD/NoisyTFT/Joss/
 DynamicWindow/Kamikaze/Harvest 的参数每次采样，另有 TFT/Grim/AllD/Bully/AllC
-anchor。E1a 从 A60 fine-tune 40 iter 后 held-out v2 仅 +1.36、min_norm
-+0.0036、CVaR -2.15；E1b（更强更新）selection +3.05 但 full 仅 +1.94，
-min_norm 0.9892、CVaR 388.81。两者都未过 Gate，判 **No-Go**；权重只保留
-为研究 artifact。详见 `docs/e1-robust-finetune.md`。
+anchor。E1a/E1b 未过 Gate（held-out +1.36/+1.94）；E1c 从 E1b 出发用
+`repair` 分布修复 random 尾部，held-out v2 +3.10、official +0.45、
+blind +0.80，held-out v3 final +3.91，判 **Go candidate**。权重
+`weights/rl_policy_weights_repair.json` 注册为 `rl-repair`，但主权重
+未替换。详见 `docs/e1-robust-finetune.md`。
 
 ### 3.4 并行与设备
 

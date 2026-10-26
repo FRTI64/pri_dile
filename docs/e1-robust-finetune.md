@@ -1,10 +1,11 @@
 # E1 — Domain-randomized A60 fine-tune
 
-- **Status:** E1a No-Go; E1b borderline No-Go（两次 validation 不一致）
+- **Status:** E1a/E1b No-Go; **E1c Go candidate**（`rl-repair`）
 - **Parent:** `RL-PPO-Hard60` / `weights/rl_policy_checkpoint_hard60.json`
-- **New training distribution:** `robust` (`ipd/evaluation/robust.py`)
-- **Artifacts:** `weights/rl_policy_weights_robust*.json`（研究用，未注册/未 promotion）
-- **Final test:** `heldout_v3` 未运行，保留给下一个稳定通过 validation 的候选
+- **New training distributions:** `robust` + `repair` (`ipd/evaluation/robust.py`)
+- **Candidate:** `weights/rl_policy_weights_repair.json`（registered as `rl-repair`）
+- **Final test:** `heldout_v3` used once by E1c（+3.91 vs A60）
+- **Promotion:** not promoted; `weights/rl_policy_weights.json` unchanged
 
 ## 1. Hypothesis
 
@@ -50,7 +51,7 @@ python3 -m ipd train rl --device auto --seed 20261030 \
 Selection uses official validation only. `heldout_v2`/red are report-only for
 the first E1 screen. Because `heldout_v2` is now used by E0/E1 comparison, a
 separate one-shot final test uses the new **`heldout_v3`** suite
-(`configs/eval/e1_final_league.json`, seed base 21061026). Do not iterate on
+(`configs/eval/e1c_final_league.json`, seed base 21061026). Do not iterate on
 `heldout_v3`.
 
 ### First training run (seed 20261030)
@@ -99,6 +100,45 @@ E1b 的 selection run 刚好 +3.05，但 full run 只有 +1.94；两次 validati
 不一致，min_norm/CVaR 下降，random 仍回退。按保守规则判 **No-Go**，
 不运行 heldout_v3。red blue +11.7 是正向信号，但 E4 red 仍 100% 击败。
 
+### E1c repair（Go candidate）
+
+从 E1b checkpoint 出发，用新的 `repair` 训练分布修复 random/adaptive 尾部：
+
+```text
+Random 5.0 (p 收窄到 [0.08, 0.92])
+NoisyTFT 3.0, Joss 2.0, DynamicWindow 2.0, LateD 2.0
+Extort 1.5, Kamikaze 1.0, Harvest 1.0
+TFT 3.0, GTFT 2.0, Pavlov 2.0, AllC 2.0
+Grim 1.0, AllD 1.0, Bully 1.0
+```
+
+训练 20 iter，lr 1e-4，KL 0.05。官方 validation 554.39→554.88；
+脚本按 official 选 iter 15，但 heldout_v2 validation 选 **iter 20**。
+
+```text
+checkpoint selection (heldout_v2, fixed policy seed):
+  A60 499.50 | E1b 502.54 | E1c-020 504.40  (+4.90 vs A60)
+full E1c evaluation:
+  official 554.72, blind 564.68, validation 509.93, heldout_v2 503.17
+  min_norm 0.9930, CVaR10 390.39, red blue 303.45
+  vs A60: +0.45 / +0.80 / +2.08 / +3.10 / +0.0002 / -0.74 / +4.25
+standard CLI (independent policy seed):
+  benchmark 20 fields 554.76; blind 564.61 / 5.75
+heldout_v2 per-family: extort +25.6, random +0.6, noisy +4.0,
+  temporal -0.1, adaptive -1.9
+heldout_v3 final (one-shot):
+  RL-Repair 509.88 vs A60 505.97 (+3.91)
+  min_norm 0.9996 vs 0.9999; CVaR10 405.58 vs 405.65
+  per-family: extort +23.4, random +4.7, noisy +2.5, temporal +2.2,
+  adaptive -0.2, anchor -0.1
+  red blue 306.35 vs 310.00; E4 red win 100%
+```
+
+**判定：Go candidate。** 两次 validation（+4.90 / +3.10）和一次 final
+（+3.91）方向一致，官方/blind 不降，无 family 崩塌。注册 `rl-repair`，
+但不覆盖主权重；anti-exploitation 仍未解决。`heldout_v3` 已被使用，
+后续候选需要 heldout_v4。
+
 ## 4. Gate E1
 
 Go only if all of the following hold:
@@ -116,23 +156,25 @@ overwrite `weights/rl_policy_weights.json` from this experiment.
 
 Observed results:
 
-| Condition | E1a | E1b |
-|---|---|---|
-| +3 mean or +0.02 min_norm | FAIL (+1.36 / +0.0036) | FAIL (+1.94 / -0.0036) |
-| official not down >2 | PASS (+0.44) | PASS (+0.38) |
-| no family collapse | PASS (random -6.1) | PASS (random -6.3) |
-| red blue not worse >10 | PASS (+12.5) | PASS (+11.7) |
+| Condition | E1a | E1b | E1c |
+|---|---|---|---|
+| +3 mean or +0.02 min_norm | FAIL (+1.36 / +0.0036) | FAIL (+1.94 / -0.0036) | **PASS (+3.10 / +0.0002)** |
+| official not down >2 | PASS (+0.44) | PASS (+0.38) | PASS (+0.45) |
+| no family collapse | PASS (random -6.1) | PASS (random -6.3) | PASS (adaptive -1.9) |
+| red blue not worse >10 | PASS (+12.5) | PASS (+11.7) | PASS (+4.25) |
+| heldout_v3 final direction | not run | not run | **PASS (+3.91)** |
 
-Both are No-Go; `heldout_v3` remains unused.
+E1c is a Go candidate; E1a/E1b are No-Go. `rl-repair` is registered but the
+main weight is unchanged.
 
 After the E1 candidate is frozen (no further tuning), run the one-shot final
 test once:
 
 ```bash
-python3 -m ipd league --config configs/eval/e1_final_league.json \
+python3 -m ipd league --config configs/eval/e1c_final_league.json \
   --workers 20 \
-  --out results/robust_20261026/final_heldout_v3.json \
-  --md-out results/robust_20261026/final_heldout_v3.md
+  --out results/robust_20261026/e1c_final_v3.json \
+  --md-out results/robust_20261026/e1c_final_v3.md
 ```
 
 ## 5. Required report
