@@ -120,6 +120,13 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   blind 564.61 / 5.75。E1c 判 **Go candidate**，注册 `rl-repair`，
   但不覆盖主权重；`heldout_v3` 已被使用，后续需新建 heldout_v4。
   结果见 `results/robust_20261026/` 和 `docs/e1-robust-finetune.md`。
+- **E2 CVaR / risk PPO（2026-10-26，No-Go）**：新增 `ipd/training/risk.py`
+  （CVaR episode weights + Dirichlet mixture），从 RL-Repair 训练 E2a
+  （coef 1.0/q 0.2）和 E2b（coef 3.0/q 0.1）。heldout_v2 最好 mean
+  505.30/505.78（RL-Repair 504.40），CVaR item 仅 +1.2%/+0.5%，
+  min_norm +0.0001/+0.0027，均未达 +10%/+0.02 Gate；official validation
+  也没有超过 RL-Repair。E2 **No-Go**，不注册 `rl-risk`，不消耗 heldout_v4。
+  结果见 `results/risk_20261026/`、`docs/e2-risk-ppo.md`。
 
 复现入口：
 

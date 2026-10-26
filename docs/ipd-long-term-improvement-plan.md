@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2/P3 next
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 next
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -403,3 +403,16 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
 - 判定 **Go candidate**；注册 `rl-repair`，不覆盖主权重。
   `heldout_v3` 已使用，后续候选需 heldout_v4。
 - 下一步：E2 CVaR/worst-family，或 P3 red/exploiter league。
+
+## 13. E2 执行状态（2026-10-26，No-Go）
+
+- 新增 `ipd/training/risk.py`：CVaR episode weights（worst quantile 加权，
+  mean=1）和 Dirichlet mixture；`ipd/training/rl.py` 新增
+  `--risk-objective/--risk-coef/--risk-quantile/--dirichlet-concentration`。
+- E2a（coef 1.0/q 0.2）和 E2b（coef 3.0/q 0.1）从 RL-Repair 训练 20 iter。
+- heldout_v2 最好 mean 505.30/505.78（RL-Repair 504.40）；
+  CVaR item 仅 +1.2%/+0.5%，min_norm +0.0001/+0.0027；
+  official validation 未超过 RL-Repair。**No-Go**。
+- 不注册 `rl-risk`；保留 RL-Repair；`heldout_v4` 未运行。
+- 诊断：episode-level CVaR 加权没有直接约束 held-out family 尾部。
+  下一步应做 worst-family / DRO 重加权，或 family-level CVaR 约束。

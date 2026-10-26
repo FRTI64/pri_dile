@@ -110,6 +110,10 @@ blind +0.80, red blue +4.25, and the one-shot held-out v3 final was +3.91 vs
 A60. E1c is a **Go candidate** (`rl-repair`); the main weight is unchanged.
 See `results/robust_20261026/README.md`.
 
+E2 added CVaR episode weighting and Dirichlet mixtures, but E2a/E2b failed to
+improve held-out CVaR (only +0.5% to +1.2%) and were No-Go. See
+`results/risk_20261026/README.md`.
+
 ## 6. Tests
 
 ```bash

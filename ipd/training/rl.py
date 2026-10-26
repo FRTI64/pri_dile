@@ -65,6 +65,7 @@ from ipd.core.simulator import C, D, payoff
 from ipd.evaluation.distributions import DISTS, TRAIN_DISTS, build_train_dist_field
 from ipd.policies.neural import FEATURE_VERSION, extract_features
 from ipd.training.neural import describe_device, resolve_device
+from ipd.training.risk import cvar_episode_weights, dirichlet_weights
 
 N_FEATURES = len(extract_features([], []))
 REWARD_SCALE = 0.01  # payoff / 100; keeps value targets near 5.5
@@ -390,6 +391,26 @@ def train_ppo(model, payload: dict[str, Any], mean: list[float],
         advantages = advantages - advantages.mean()
 
     n = x.shape[0]
+    episode_scores = [float(v) for v in payload.get("scores", [])]
+    cvar_return = None
+    risk_weight_max = 1.0
+    risk_weight_min = 1.0
+    if (getattr(args, "risk_objective", "none") == "cvar"
+            and float(getattr(args, "risk_coef", 0.0)) > 0.0
+            and episode_scores):
+        q = float(getattr(args, "risk_quantile", 0.2))
+        episode_weights = cvar_episode_weights(
+            episode_scores, quantile=q, coef=float(args.risk_coef))
+        if len(episode_scores) * 100 == n:
+            step_weights = torch.repeat_interleave(
+                torch.tensor(episode_weights, dtype=torch.float32,
+                             device=device), 100)
+            advantages = advantages * step_weights
+            risk_weight_max = max(episode_weights)
+            risk_weight_min = min(episode_weights)
+        k = max(1, int(math.ceil(min(1.0, max(0.0, q))
+                                 * len(episode_scores))))
+        cvar_return = statistics.fmean(sorted(episode_scores)[:k])
     batch_size = min(args.batch_size, n)
     epochs = args.epochs
     policy_losses = []
@@ -471,6 +492,9 @@ def train_ppo(model, payload: dict[str, Any], mean: list[float],
         "bc_kl": statistics.fmean(bc_kls) if bc_kls else 0.0,
         "explained_var": explained,
         "n_steps": int(n),
+        "cvar_return": cvar_return,
+        "risk_weight_max": risk_weight_max,
+        "risk_weight_min": risk_weight_min,
     }
 
 
@@ -498,11 +522,21 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
                      gamma: float, lam: float,
                      center_rewards: bool = False,
                      center_advantages: bool = True,
-                     dist_weights: dict[str, float] | None = None) -> dict[str, Any]:
+                     dist_weights: dict[str, float] | None = None,
+                     dirichlet_concentration: float = 0.0) -> dict[str, Any]:
     rng = random.Random(seed)
+    base = {dist: (1.0 if dist_weights is None
+                   else float(dist_weights.get(dist, 1.0)))
+            for dist in dists}
+    base_total = sum(base.values()) or float(len(dists))
+    if dirichlet_concentration > 0.0:
+        sampled = dirichlet_weights(base, rng, dirichlet_concentration)
+        mixture = {dist: sampled[dist] * base_total for dist in dists}
+    else:
+        mixture = base
     tasks = []
     for dist in dists:
-        weight = 1.0 if dist_weights is None else dist_weights.get(dist, 1.0)
+        weight = mixture.get(dist, 1.0)
         n_fields = max(1, int(round(fields_per_dist * weight)))
         for _ in range(n_fields):
             tasks.append({
@@ -520,7 +554,9 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
                 "center_advantages": center_advantages,
             })
     results = list(pool.map(rollout_task, tasks, chunksize=1))
-    return _concat_payloads(results)
+    payload = _concat_payloads(results)
+    payload["mixture"] = mixture
+    return payload
 
 
 def validate(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
@@ -613,6 +649,15 @@ def main(argv=None) -> None:
     ap.add_argument("--ent-coef", type=float, default=0.01)
     ap.add_argument("--bc-kl-coef", type=float, default=0.0,
                     help="KL penalty towards the initial (BC) policy")
+    ap.add_argument("--risk-objective", default="none",
+                    choices=("none", "cvar"),
+                    help="tail-risk surrogate; cvar upweights worst episodes")
+    ap.add_argument("--risk-coef", type=float, default=0.0,
+                    help="extra advantage weight for worst episodes")
+    ap.add_argument("--risk-quantile", type=float, default=0.2,
+                    help="fraction of worst episodes for CVaR weighting")
+    ap.add_argument("--dirichlet-concentration", type=float, default=0.0,
+                    help="sample per-iteration dist mixture; 0 disables")
     ap.add_argument("--freeze-policy-trunk", action="store_true",
                     help="only train the policy head (and the value network)")
     ap.add_argument("--max-grad-norm", type=float, default=0.5)
@@ -673,7 +718,9 @@ def main(argv=None) -> None:
     print(f"train_dists={','.join(train_dists)} "
           f"val_dists={','.join(val_dists)} "
           f"fields/iter/dist={args.fields_per_dist} "
-          f"n={args.n} iterations={args.iterations} safe={not args.allow_probe}",
+          f"n={args.n} iterations={args.iterations} safe={not args.allow_probe} "
+          f"risk={args.risk_objective}:{args.risk_coef:g}@{args.risk_quantile:g} "
+          f"dirichlet={args.dirichlet_concentration:g}",
           flush=True)
 
     torch.manual_seed(args.seed)
@@ -745,6 +792,10 @@ def main(argv=None) -> None:
         "vf_coef": args.vf_coef,
         "ent_coef": args.ent_coef,
         "bc_kl_coef": args.bc_kl_coef,
+        "risk_objective": args.risk_objective,
+        "risk_coef": args.risk_coef,
+        "risk_quantile": args.risk_quantile,
+        "dirichlet_concentration": args.dirichlet_concentration,
         "freeze_policy_trunk": args.freeze_policy_trunk,
         "select_metric": args.select_metric,
         "save_all_checkpoints": args.save_all_checkpoints,
@@ -785,7 +836,8 @@ def main(argv=None) -> None:
                 pool, ckpt, train_dists, args.fields_per_dist, args.n,
                 args.seed + iteration * 100003, safe, args.workers,
                 args.gamma, args.lam, args.center_rewards,
-                args.center_advantages, dist_weights)
+                args.center_advantages, dist_weights,
+                dirichlet_concentration=args.dirichlet_concentration)
             rollout_time = time.time() - rollout_start
 
             train_start = time.time()
@@ -808,6 +860,7 @@ def main(argv=None) -> None:
                 "rollout_s": rollout_time,
                 "train_s": train_time,
                 "lr": args.optimizer.param_groups[0]["lr"],
+                "mixture": payload.get("mixture"),
                 **metrics,
             }
             do_val = (iteration % args.val_every == 0

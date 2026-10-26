@@ -427,6 +427,130 @@ def build_heldout_v3_suite() -> list[SuiteItem]:
     return suite
 
 
+def build_heldout_v4_suite() -> list[SuiteItem]:
+    """Third fresh suite, reserved for the next post-E1c final test."""
+    suite: list[SuiteItem] = []
+
+    reciprocal: list[SuiteItem] = [
+        _item("TFT.v4", "reciprocal_v4", lambda r: TFT(r)),
+        _item("TFT2.v4", "reciprocal_v4", lambda r: TFT2(r)),
+        _item("TFT-lastD.v4", "reciprocal_v4", lambda r: TFTLastD(r)),
+        _item("Pavlov.v4", "reciprocal_v4", lambda r: Pavlov(r)),
+        _item("Contrite.v4", "reciprocal_v4", lambda r: ContriteTFT(r)),
+        _item("WSLS2.v4", "reciprocal_v4", lambda r: WinStayLoseShift2(r)),
+        _item("DelayedTFT.v4.3", "reciprocal_v4",
+              lambda r: DelayedTFT(3, r)),
+        _item("WindowTFT.v4.6", "reciprocal_v4",
+              lambda r: WindowTFT(6, 0.86, 0.28, r)),
+        _item("WindowTFT.v4.10", "reciprocal_v4",
+              lambda r: WindowTFT(10, 0.78, 0.40, r)),
+    ]
+    for g in (0.12, 0.25, 0.41, 0.48):
+        reciprocal.append(_item(
+            f"GTFT.v4.{g:g}", "reciprocal_v4",
+            lambda r, g=g: GenerousTFT(g, True, r)))
+    suite += reciprocal
+
+    punitive: list[SuiteItem] = [
+        _item("Grim.v4", "punitive_v4", lambda r: Grim(r)),
+        _item("Grudge2.v4", "punitive_v4", lambda r: Grudge2(r)),
+        _item("Grudger2.v4", "punitive_v4", lambda r: Grudger2(r)),
+        _item("GrudgerK1.v4", "punitive_v4", lambda r: GrudgerK(1, r)),
+        _item("GrudgerK5.v4", "punitive_v4", lambda r: GrudgerK(5, r)),
+        _item("TwoStrike.v4", "punitive_v4",
+              lambda r: TwoStrike(4, True, r)),
+        _item("FirmButFair.v4", "punitive_v4", lambda r: FirmButFair(r)),
+        _item("ProbGrim.v4.1", "punitive_v4",
+              lambda r: ProbabilisticGrim(1, 0.75, r)),
+        _item("ResetGrim.v4.3", "punitive_v4",
+              lambda r: ResetGrim(3, 9, r)),
+        _item("SpitefulGrim.v4", "punitive_v4",
+              lambda r: SpitefulGrim(2, r)),
+    ]
+    suite += punitive
+
+    noisy: list[SuiteItem] = []
+    for p in (0.06, 0.12, 0.21, 0.32, 0.44, 0.47):
+        noisy.append(_item(f"NoisyTFT.v4.{p:g}", "noisy_v4",
+                           lambda r, p=p: NoisyTFT(p, r)))
+    for p in (0.11, 0.26, 0.36, 0.45):
+        noisy.append(_item(f"Joss.v4.{p:g}", "noisy_v4",
+                           lambda r, p=p: Joss(p, r)))
+    suite += noisy
+
+    extort: list[SuiteItem] = [
+        _item("Prober.v4", "extort_v4", lambda r: Prober(r)),
+        _item("Bully.v4", "extort_v4", lambda r: Bully(r)),
+    ]
+    for chi in (1.12, 1.42, 1.85, 2.12, 2.62, 3.18, 3.72):
+        extort.append(_item(f"Extort.v4.{chi:g}", "extort_v4",
+                            lambda r, chi=chi: ExtortZD(chi, r)))
+    suite += extort
+
+    random_suite: list[SuiteItem] = [
+        _item("Periodic.v4", "random_v4",
+              lambda r: Periodic((C, D, C, D, C), 3, r)),
+    ]
+    for p in (0.04, 0.13, 0.26, 0.35, 0.44, 0.61, 0.76, 0.87, 0.97):
+        random_suite.append(_item(f"Random.v4.{p:g}", "random_v4",
+                                  lambda r, p=p: RandomMoves(p, r)))
+    suite += random_suite
+
+    temporal: list[SuiteItem] = []
+    for k in (5, 9, 19, 25, 34, 47, 59, 69, 81, 93):
+        temporal.append(_item(f"LateD.v4.{k}", "temporal_v4",
+                              lambda r, k=k: LateDefector(k, r)))
+    temporal += [
+        _item("Harvest.v4.11R", "temporal_v4",
+              lambda r: _Harvest(11, True, r)),
+        _item("Harvest.v4.63H", "temporal_v4",
+              lambda r: _Harvest(63, False, r)),
+        _item("Harvest.v4.87R", "temporal_v4",
+              lambda r: _Harvest(87, True, r)),
+        _item("DynamicW.v4.6", "temporal_v4",
+              lambda r: _DynamicWindow(6, 0.18, 0.92, 0.12, r)),
+        _item("DynamicW.v4.14", "temporal_v4",
+              lambda r: _DynamicWindow(14, 0.30, 0.75, 0.38, r)),
+        _item("ProbePhase.v4.3", "temporal_v4",
+              lambda r: _ProbePhase(3, 0.45, "tft", 58, r)),
+        _item("ProbePhase.v4.11", "temporal_v4",
+              lambda r: _ProbePhase(11, 0.65, "harvest", 76, r)),
+        _item("Kamikaze.v4.9", "temporal_v4",
+              lambda r: _Kamikaze(9, 0.90, r)),
+        _item("Kamikaze.v4.21", "temporal_v4",
+              lambda r: _Kamikaze(21, 0.70, r)),
+        _item("DelayedPunisher.v4", "temporal_v4",
+              lambda r: DelayedPunisher(4, 7, r)),
+    ]
+    suite += temporal
+
+    adaptive: list[SuiteItem] = [
+        _item("AdaptiveProbe.v4", "adaptive_v4",
+              lambda r: AdaptiveProbe(58, 4, True, r)),
+        _item("Resp2.v4", "adaptive_v4",
+              lambda r: Responsive2(0.85, 0.18, 2, 6, 2, 0.29, True, 4, r)),
+        _item("Resp3.v4", "adaptive_v4",
+              lambda r: Responsive3(0.52, 0.36, 0.93, 5, 3, 0.37, 0.19,
+                                    True, 2, 9, r)),
+        _item("TFTNoisyForgive.v4", "adaptive_v4",
+              lambda r: TFTNoisyForgive(0.35, r)),
+        _item("TFTProbe.v4", "adaptive_v4",
+              lambda r: TFTProbe(70, 2, True, r)),
+        _item("OmegaTFT.v4", "adaptive_v4",
+              lambda r: OmegaTFTLite(rng=r)),
+        _item("Mistrust.v4", "adaptive_v4", lambda r: Mistrust(r)),
+        _item("Tester.v4", "adaptive_v4", lambda r: Tester(r)),
+    ]
+    suite += adaptive
+
+    suite += [
+        _item("AllC.v4", "anchor_v4", lambda r: AllC(r)),
+        _item("AllD.v4", "anchor_v4", lambda r: AllD(r)),
+        _item("RandomMid.v4", "anchor_v4", lambda r: RandomMoves(0.50, r)),
+    ]
+    return suite
+
+
 # Small local versions of the training temporal opponents.  Keeping them here
 # makes the evaluation suite independent of the training module.
 class _Harvest(Strategy):
@@ -541,6 +665,7 @@ _BUILDERS: dict[str, Callable[[], list[SuiteItem]]] = {
     "final": build_final_suite,
     "heldout_v2": build_heldout_v2_suite,
     "heldout_v3": build_heldout_v3_suite,
+    "heldout_v4": build_heldout_v4_suite,
 }
 
 
@@ -563,6 +688,7 @@ def materialize(items: Sequence[SuiteItem], seeds: Sequence[int]
 __all__ = [
     "SuiteItem", "WindowTFT", "ProbabilisticGrim", "ResetGrim",
     "SpitefulGrim", "DelayedPunisher", "build_heldout_v2_suite",
-    "build_heldout_v3_suite", "build_validation_suite", "build_final_suite",
-    "build_suite", "suite_names", "materialize",
+    "build_heldout_v3_suite", "build_heldout_v4_suite",
+    "build_validation_suite", "build_final_suite", "build_suite",
+    "suite_names", "materialize",
 ]

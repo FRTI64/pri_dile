@@ -308,6 +308,7 @@ tests/test_evaluation.py   run_match、并行任务、三个评估 CLI
 tests/test_metagame.py     Nash averaging、Elo、exploitability
 tests/test_league.py       E0 cross-play/suite/red harness、heldout_v2/v3
 tests/test_robust.py       E1 domain-randomized 训练分布
+tests/test_risk.py         E2 CVaR episode weights / Dirichlet mixture
 tests/test_training.py     训练任务可导入、统一参数、JSON 工具
 ```
 

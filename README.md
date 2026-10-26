@@ -277,6 +277,12 @@ final 方向一致；per-family extort +23.4、random +4.7，无 family 崩塌�
 主权重**；A60/RL-PPO 仍是 fallback。`heldout_v3` 已被使用，后续需
 heldout_v4。详见 `results/robust_20261026/README.md`。
 
+E2 新增 CVaR episode weighting + Dirichlet mixture（`ipd/training/risk.py`）。
+E2a（coef 1.0）和 E2b（coef 3.0）在 heldout_v2 上最好 mean 505.78，
+CVaR item 仅 +0.5%~+1.2%，min_norm +0.003，未达 +10%/+0.02 Gate；
+official validation 也未超过 RL-Repair。E2 判 **No-Go**，不注册
+`rl-risk`，`heldout_v4` 保留未用。详见 `results/risk_20261026/README.md`。
+
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
 逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`，透视表见
@@ -293,7 +299,8 @@ heldout_v4。详见 `results/robust_20261026/README.md`。
 | [docs/SELFPLAY.md](docs/SELFPLAY.md) | 非对称自博弈：21 维观测、对手池、red league、验证拆分 |
 | [docs/E0_LEAGUE.md](docs/E0_LEAGUE.md) | E0 cross-play / Nash / exploitability harness |
 | [docs/e0-league-plan.md](docs/e0-league-plan.md) | E0 评估/元博弈计划 |
-| [docs/e1-robust-finetune.md](docs/e1-robust-finetune.md) | E1 domain-randomized A60 fine-tune |
+| [docs/e1-robust-finetune.md](docs/e1-robust-finetune.md) | E1 domain-randomized / repair fine-tune |
+| [docs/e2-risk-ppo.md](docs/e2-risk-ppo.md) | E2 CVaR / risk-sensitive PPO |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

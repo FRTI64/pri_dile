@@ -31,6 +31,7 @@ class OpponentSuiteTests(unittest.TestCase):
         self.assertIn("final", suite_names())
         self.assertIn("heldout_v2", suite_names())
         self.assertIn("heldout_v3", suite_names())
+        self.assertIn("heldout_v4", suite_names())
         self.assertGreater(len(build_suite("validation")), 0)
 
     def test_heldout_v3_is_disjoint_from_v2(self):
@@ -45,6 +46,19 @@ class OpponentSuiteTests(unittest.TestCase):
         families3 = {item.family for item in v3}
         self.assertFalse(families2 & families3)
         self.assertGreaterEqual(len(families3), 5)
+
+    def test_heldout_v4_is_disjoint_from_v3(self):
+        v3 = build_suite("heldout_v3")
+        v4 = build_suite("heldout_v4")
+        self.assertGreaterEqual(len(v4), 50)
+        names3 = {item.name for item in v3}
+        names4 = [item.name for item in v4]
+        self.assertEqual(len(names4), len(set(names4)))
+        self.assertFalse(names3 & set(names4))
+        families3 = {item.family for item in v3}
+        families4 = {item.family for item in v4}
+        self.assertFalse(families3 & families4)
+        self.assertGreaterEqual(len(families4), 5)
 
     def test_factory_is_seed_deterministic(self):
         item = build_suite("heldout_v2")[0]

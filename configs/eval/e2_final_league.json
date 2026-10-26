@@ -1,0 +1,93 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "e2_final_heldout_v4_20261026",
+  "note": "One-shot E2 final test on the new heldout_v4 suite. Do not use for model selection.",
+  "baseline": "RL-PPO",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20,
+    "cross_play_seeds": 20,
+    "red_seeds": 20
+  },
+  "suites": {
+    "heldout_v4": {
+      "kind": "opponents",
+      "suite": "heldout_v4",
+      "seeds": 20,
+      "seed_base": 21461026
+    }
+  },
+  "cross_play": {
+    "seeds": 20,
+    "seed_base": 21561026,
+    "policy_seed_base": 21661026
+  },
+  "red": {
+    "seeds": 20,
+    "seed_base": 21561026,
+    "policy_seed_base": 21761026
+  },
+  "candidates": [
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "group": "rule"
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "group": "rule"
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "group": "learned",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "group": "learned",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-Risk",
+      "kind": "rl",
+      "group": "learned",
+      "params": {
+        "weights": "weights/rl_policy_weights_risk.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL",
+      "kind": "adv-rl",
+      "group": "learned",
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": [
+    {
+      "name": "E4-red-BC",
+      "kind": "selfplay",
+      "group": "red",
+      "params": {
+        "weights": "weights/selfplay_improvement/E4_red_policy.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}
