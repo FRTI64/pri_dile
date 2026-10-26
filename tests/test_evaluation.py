@@ -99,6 +99,36 @@ class MatchTests(unittest.TestCase):
             self.assertTrue(suite_csv.is_file())
             self.assertIn("original", suite_csv.read_text(encoding="utf-8"))
 
+    def test_matchup_spec_config_and_family_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_path = root / "config.json"
+            config_path.write_text(json.dumps({
+                "name": "matchup-smoke",
+                "candidates": [
+                    {"name": "Final-tuned", "kind": "final-tuned"},
+                    {"name": "Resp3-tuned", "kind": "resp3-tuned"},
+                ],
+            }), encoding="utf-8")
+            out = root / "matchup.csv"
+            code = matchup_main([
+                "--spec-config", str(config_path),
+                "--opponent-set", "core",
+                "--reps", "1", "--workers", "4",
+                "--out", str(out),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(
+                out.with_suffix(".json").read_text(encoding="utf-8"))
+            self.assertEqual(len(payload["candidates"]), 2)
+            self.assertIn("nice", payload["family_means"]["Final-tuned"])
+            self.assertIn("family_means",
+                          payload["candidate_summary"]["Resp3-tuned"])
+            family_csv = out.with_name(out.stem + "_families.csv")
+            self.assertTrue(family_csv.is_file())
+            self.assertIn("Final-tuned",
+                          family_csv.read_text(encoding="utf-8"))
+
     def test_pivot_matchup_tables(self):
         from ipd.tools.pivot_matchup import pivot
         with tempfile.TemporaryDirectory() as tmp:

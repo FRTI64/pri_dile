@@ -1,0 +1,605 @@
+{
+  "schema": "ipd-eval-split-config-v1",
+  "name": "sweep_all_weights_20261026",
+  "note": "Every deployable rule strategy, learned model weight and adversarial wrapper variant for the all-opponent-family matchup sweep. Checkpoints are excluded because they duplicate the exported *_weights/*_policy files.",
+  "defaults": {
+    "benchmark": {
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026,
+      "workers": 20,
+      "rounds": 100
+    },
+    "blind": {
+      "fields": 10,
+      "n": 299,
+      "seed": 20261025,
+      "workers": 10,
+      "rounds": 100
+    }
+  },
+  "candidates": [
+    {
+      "name": "Final-base",
+      "kind": "final-base",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Resp3-base",
+      "kind": "resp3-base",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Resp3-tuned",
+      "kind": "resp3-tuned",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Bayes-base",
+      "kind": "bayes-base",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Bayes-tuned",
+      "kind": "bayes-tuned",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Final+Resp3",
+      "kind": "hybrid",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Harvest45",
+      "kind": "harvest45",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Harvest-tuned",
+      "kind": "harvest-tuned",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "GapStart",
+      "kind": "gap-start",
+      "tags": ["strategy:rule"]
+    },
+    {
+      "name": "Neural-main",
+      "kind": "neural",
+      "params": {
+        "weights": "weights/neural_policy_weights.json",
+        "mode": "sample"
+      },
+      "tags": ["model:mlp", "weight:main"]
+    },
+    {
+      "name": "Neural-retrain",
+      "kind": "neural",
+      "params": {
+        "weights": "weights/retrain_20261025/neural_policy_weights.json",
+        "mode": "sample"
+      },
+      "tags": ["model:mlp", "weight:retrain"]
+    },
+    {
+      "name": "GRU-main",
+      "kind": "gru",
+      "params": {
+        "weights": "weights/gru_policy_weights.json",
+        "mode": "sample"
+      },
+      "tags": ["model:gru", "weight:main"]
+    },
+    {
+      "name": "GRU-retrain",
+      "kind": "gru",
+      "params": {
+        "weights": "weights/retrain_20261025/gru_policy_weights.json",
+        "mode": "sample"
+      },
+      "tags": ["model:gru", "weight:retrain"]
+    },
+    {
+      "name": "RL-main",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:main"]
+    },
+    {
+      "name": "RL-BC",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_bc.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:bc"]
+    },
+    {
+      "name": "RL-scratch",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_scratch_base.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:scratch"]
+    },
+    {
+      "name": "RL-stage1",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_stage1.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:stage1"]
+    },
+    {
+      "name": "RL-Hard60",
+      "kind": "rl-hard60",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard60"]
+    },
+    {
+      "name": "RL-A30",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/A_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-A30"]
+    },
+    {
+      "name": "RL-B30",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/B_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-B30"]
+    },
+    {
+      "name": "RL-C30",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/C_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-C30"]
+    },
+    {
+      "name": "RL-A30-s2",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/A_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-A30-seed2"]
+    },
+    {
+      "name": "RL-B30-s2",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/B_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-B30-seed2"]
+    },
+    {
+      "name": "RL-C30-s2",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/C_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-C30-seed2"]
+    },
+    {
+      "name": "RL-A60-s2",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/A60_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:rl", "weight:hard2-A60-seed2"]
+    },
+    {
+      "name": "SelfPlay-main",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_gru_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:main"]
+    },
+    {
+      "name": "SelfPlay-BC",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_bc_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:bc"]
+    },
+    {
+      "name": "SelfPlay-scratch",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_scratch_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:scratch"]
+    },
+    {
+      "name": "SelfPlay-E1a",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_improvement/E1a_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:E1a"]
+    },
+    {
+      "name": "SelfPlay-E1b",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_improvement/E1b_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:E1b"]
+    },
+    {
+      "name": "SelfPlay-E4-blue",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_improvement/E4_blue_frozen.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:E4-blue"]
+    },
+    {
+      "name": "SelfPlay-E4-red",
+      "kind": "selfplay",
+      "params": {
+        "weights": "weights/selfplay_improvement/E4_red_policy.json",
+        "mode": "sample"
+      },
+      "tags": ["model:selfplay-gru", "weight:E4-red"]
+    },
+    {
+      "name": "Adv-MLP-main-agg",
+      "kind": "adv-mlp",
+      "params": {
+        "weights": "weights/neural_policy_weights.json",
+        "config": "configs/adversarial_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-mlp", "weight:main", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-MLP-main-cons",
+      "kind": "adv-mlp",
+      "params": {
+        "weights": "weights/neural_policy_weights.json",
+        "config": "configs/adversarial_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-mlp", "weight:main", "rule:conservative"]
+    },
+    {
+      "name": "Adv-MLP-retrain-agg",
+      "kind": "adv-mlp",
+      "params": {
+        "weights": "weights/retrain_20261025/neural_policy_weights.json",
+        "config": "configs/retrain_20261025/adversarial_policy_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-mlp", "weight:retrain", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-MLP-retrain-cons",
+      "kind": "adv-mlp",
+      "params": {
+        "weights": "weights/retrain_20261025/neural_policy_weights.json",
+        "config": "configs/adversarial_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-mlp", "weight:retrain", "rule:conservative"]
+    },
+    {
+      "name": "Adv-GRU-main-agg",
+      "kind": "adv-gru",
+      "params": {
+        "weights": "weights/gru_policy_weights.json",
+        "config": "configs/adversarial_gru_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-gru", "weight:main", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-GRU-main-cons",
+      "kind": "adv-gru",
+      "params": {
+        "weights": "weights/gru_policy_weights.json",
+        "config": "configs/adversarial_gru_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-gru", "weight:main", "rule:conservative"]
+    },
+    {
+      "name": "Adv-GRU-retrain-agg",
+      "kind": "adv-gru",
+      "params": {
+        "weights": "weights/retrain_20261025/gru_policy_weights.json",
+        "config": "configs/retrain_20261025/adversarial_gru_policy_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-gru", "weight:retrain", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-GRU-retrain-cons",
+      "kind": "adv-gru",
+      "params": {
+        "weights": "weights/retrain_20261025/gru_policy_weights.json",
+        "config": "configs/adversarial_gru_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-gru", "weight:retrain", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-main-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:main", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-main-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:main", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-BC-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_bc.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:bc", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-BC-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_bc.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:bc", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-scratch-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_scratch_base.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:scratch", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-scratch-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_scratch_base.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:scratch", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-stage1-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_stage1.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:stage1", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-stage1-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_stage1.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:stage1", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-hard60-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard60", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-hard60-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard60", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-A30-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/A_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-A30", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-A30-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/A_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-A30", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-B30-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/B_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-B30", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-B30-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/B_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-B30", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-C30-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/C_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-C30", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-C30-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/C_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-C30", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-A30-s2-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/A_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-A30-seed2", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-A30-s2-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/A_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-A30-seed2", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-B30-s2-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/B_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-B30-seed2", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-B30-s2-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/B_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-B30-seed2", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-C30-s2-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/C_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-C30-seed2", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-C30-s2-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/C_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-C30-seed2", "rule:conservative"]
+    },
+    {
+      "name": "Adv-RL-A60-s2-agg",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/A60_policy.json",
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-A60-seed2", "rule:aggressive"]
+    },
+    {
+      "name": "Adv-RL-A60-s2-cons",
+      "kind": "adv-rl",
+      "params": {
+        "weights": "weights/hard2_20261026/seed2/A60_policy.json",
+        "config": "configs/adversarial_rl_policy_config.json",
+        "mode": "sample"
+      },
+      "tags": ["model:adv-rl", "weight:hard2-A60-seed2", "rule:conservative"]
+    }
+  ]
+}

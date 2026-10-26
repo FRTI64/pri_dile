@@ -94,6 +94,11 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   （RL-PPO 506.49），held-out family 无回退。注册名 `rl-hard60`；
   权重 `weights/rl_policy_weights_hard60.json`；报告
   `results/hard2_20261026/README.md`。尚未替换主权重。
+- **全策略/模型/权重 × 全对手族对战（2026-10-26）**：66 个候选 × 158 类对手
+  × 16 次，逐类型/家族/9 测试集加权结果见 `results/sweep_20261026/README.md`。
+  `RL-Hard60`（556.79）与 `Adv-RL-BC-agg`（556.79）并列总加权第一；
+  hard2 A/B/C 及 seed2 全部优于原 RL-main；对抗规则只在 BC/stage1 基座正收益，
+  套到 hard2/RL-main 基座会掉分；SelfPlay 仍为 No-Go。
 
 复现入口：
 

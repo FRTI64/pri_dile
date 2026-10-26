@@ -112,7 +112,29 @@ python3 -m ipd eval-split --config configs/eval/retrain_20261025.json \
 - blind 的 `count` 是 `fields × 每场副本数`；
 - `by_opponent/<opponent>.json` 只保留统计量，不重复保存原始分数，便于跨候选比较。
 
-## 5. 与旧脚本的关系
+## 5. 用拆分配置跑逐对手/逐家族对阵
+
+`matchup` 可以直接复用 `configs/eval/*.json`，因此每个候选可以带自己的权重和
+对抗配置；不同模型、不同权重不需要拆成多次命令：
+
+```bash
+python3 -m ipd matchup \
+  --spec-config configs/eval/sweep_all_weights_20261026.json \
+  --opponent-set all --reps 16 --workers 24 \
+  --out results/sweep_20261026/matchup.csv
+```
+
+新增输出：
+
+- `matchup_families.csv`：候选 × 对手家族均值（另有 `--family-out` 可改路径）；
+- `matchup_suite_weighted.csv`：候选 × 9 个测试集加权；
+- `matchup.json` 中的 `family_means` 和
+  `candidate_summary.<candidate>.family_means`。
+
+`--only` 可按候选名或 `kind` 过滤。`--spec-config` 与 `--candidates` 不能同时使用。
+完整示例和 66 候选结果见 `results/sweep_20261026/README.md`。
+
+## 6. 与旧脚本的关系
 
 `results/retrain_20261025/evaluate.py` 仍保留为历史的一次性合并评估脚本。
 新的拆分评估请使用 `python3 -m ipd eval-split`。

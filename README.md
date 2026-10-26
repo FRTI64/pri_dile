@@ -89,6 +89,11 @@ python3 -m ipd suite --fields 12 --workers 24
 python3 -m ipd matchup --candidates base --reps 16
 python3 -m ipd matchup --candidates all --opponent-set all --reps 16
 # 全策略 × 158 对手 + 9 个测试集加权
+python3 -m ipd matchup \
+  --spec-config configs/eval/sweep_all_weights_20261026.json \
+  --opponent-set all --reps 16 --workers 24 \
+  --out results/sweep_20261026/matchup.csv
+# 66 个策略/模型/权重 × 158 对手 × 10 家族；结果见 results/sweep_20261026/
 ```
 
 ### 神经策略推理（不需要 PyTorch）
