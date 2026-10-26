@@ -1,0 +1,26 @@
+{
+  "E4-red-BC": {
+    "base_blue": 294.35,
+    "planner_blue": 300.95,
+    "blue_delta": 6.599999999999966,
+    "base_diff": 415.5,
+    "planner_diff": 403.0,
+    "override_rate": 0.001
+  },
+  "Red-RL-v5-heldout": {
+    "base_blue": 378.55,
+    "planner_blue": 379.5,
+    "blue_delta": 0.9499999999999886,
+    "base_diff": 333.0,
+    "planner_diff": 335.0,
+    "override_rate": 0.0005
+  },
+  "Red-RL-v6-heldout": {
+    "base_blue": 314.85,
+    "planner_blue": 317.8,
+    "blue_delta": 2.9499999999999886,
+    "base_diff": 428.5,
+    "planner_diff": 424.0,
+    "override_rate": 0.0
+  }
+}

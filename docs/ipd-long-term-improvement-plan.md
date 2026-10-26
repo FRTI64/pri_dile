@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; next P2 C1
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1 offline No-Go
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -451,3 +451,23 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
   下一步 P2 C1 Bayesian belief planner 离线评估；不要继续调 E2。
 - 报告：`results/p3_league_20261026/README.md`；
   计划/结果：`docs/p3-expansion-plan.md`。
+
+## 16. P2 C1 Bayesian belief planner（2026-10-26，offline No-Go）
+
+- 新增 `ipd/policies/belief_planner.py`：38 类 opponent particle filter、
+  Bayesian belief update、finite-horizon planning，RL-Repair 作为默认
+  base/fallback；新增 `ipd/evaluation/planner_eval.py` 和
+  `python -m ipd planner-eval`。
+- 激进版（horizon 6, top-k 8, confidence 0.75）：validation -12.65、
+  heldout_v2 -4.36，extort/noisy 严重回退。
+- 保守版（horizon 4, top-k 6, confidence 0.9, margin 10）：
+  validation -1.85、heldout_v2 +3.11、random +30、adaptive +7.6，
+  但 noisy -11.7、temporal -6.8；held-out red E4 blue +6.6、
+  v5 +0.95、v6 +2.95，均低于 Gate C 的 +10。
+- 诊断：模型库无法区分 noisy/extort 与 non-responsive exploiter，
+  planning 本身不是瓶颈。判 **No-Go**，不注册、不改权重。
+- 下一步：C2 auxiliary opponent prediction（learned next-action /
+  responsiveness head）或 C3 classifier + MoE，用学习到的 gating
+  限制 planner override；不要继续加深 horizon。
+- 文档：`docs/p2-c1-belief-planner.md`；
+  结果：`results/p2_belief_20261026/`。

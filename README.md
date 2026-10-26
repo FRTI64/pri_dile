@@ -297,6 +297,13 @@ exploitability 从 390.33 降到 367.33（**-5.9%**），且 `validation:extort`
 `results/p3_league_20261026/README.md`、`docs/p3-red-league.md`、
 `docs/p3-expansion-plan.md`。
 
+P2 C1 首版实现 Bayesian belief + finite-horizon planner（离线，不注册、
+不改权重）。激进版伤 extort/noisy；保守 fallback 版 heldout_v2 +3.11、
+random +30，但 noisy -11.7、temporal -6.8，held-out red E4 只 +6.6，
+未达 Gate C 的 +10。判 **No-Go**，下一步 C2 auxiliary opponent prediction
+或 C3 classifier + MoE。详见 `docs/p2-c1-belief-planner.md`、
+`results/p2_belief_20261026/README.md`。
+
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
 逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`，透视表见
@@ -317,6 +324,7 @@ exploitability 从 390.33 降到 367.33（**-5.9%**），且 `validation:extort`
 | [docs/e2-risk-ppo.md](docs/e2-risk-ppo.md) | E2 CVaR / risk-sensitive PPO |
 | [docs/p3-red-league.md](docs/p3-red-league.md) | P3 red/exploiter pool + league-lite |
 | [docs/p3-expansion-plan.md](docs/p3-expansion-plan.md) | P3 multi-red + PSRO-lite（No-Go） |
+| [docs/p2-c1-belief-planner.md](docs/p2-c1-belief-planner.md) | P2 C1 Bayesian belief planner（offline No-Go） |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

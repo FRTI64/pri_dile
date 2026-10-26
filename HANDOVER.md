@@ -148,6 +148,17 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   `rl-meta`，RL-Repair 仍是候选，`heldout_v4` 未用。结果见
   `results/p3_league_20261026/`、`docs/p3-expansion-plan.md`。下一步转
   P2 C1 Bayesian belief planner 的离线评估。
+- **P2 C1 belief planner（2026-10-26，offline No-Go）**：新增
+  `ipd/policies/belief_planner.py`（38 类 opponent particle filter +
+  finite-horizon planning + RL-Repair fallback）和
+  `ipd/evaluation/planner_eval.py` / `python -m ipd planner-eval`。
+  激进配置伤 extort/noisy（validation -12.65、heldout_v2 -4.36）；
+  保守配置（horizon 4, fallback 0.9, margin 10）heldout_v2 +3.11、
+  random +30、adaptive +7.6，但 noisy -11.7、temporal -6.8；
+  held-out red E4 blue +6.6、v5 +0.95、v6 +2.95，均低于 Gate C 的 +10。
+  判 **No-Go**，不注册、不改主权重；下一步 C2 auxiliary opponent
+  prediction 或 C3 classifier + MoE。详见
+  `docs/p2-c1-belief-planner.md`、`results/p2_belief_20261026/`。
 
 复现入口：
 
