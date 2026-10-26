@@ -129,6 +129,10 @@ python3 -m ipd train opponent-model --data-mode mixed \
   --episodes 2 --explore-episodes 2 --counterfactual-episodes 1 \
   --counterfactual-branches 8 --counterfactual-horizon 6 \
   --counterfactual-prefix explore,base
+# C3 三路 gate + MoE 离线评估
+python3 -m ipd moe-eval --suite validation,heldout_v2 --seeds 3 \
+  --gate-model weights/opponent_gate_threeway.json \
+  --safe-expert alld --safe-threshold 0.6 --min-day 10
 ```
 
 训练文件也支持直接执行，例如：
@@ -319,11 +323,20 @@ cooperative/forgiving 从 0% 提到 56.9%/48.6%；counterfactual C/D 分支
 77.1%，responsiveness head 71.8%；但部署轨迹 excitation 仍不足，
 adaptive/noisy false positives 仍在，conservative planner 3-seed 只有
 +0.88、held-out red 0.00，gated aggressive 仍崩坏。**数据层 Go，
-planner 仍 No-Go**。下一步做 `safe/risky/unknown` 三路 gate + MoE，
-或 early-game active probe。详见 `docs/p2-c1-belief-planner.md`、
+planner 仍 No-Go**。
+
+随后实现三路 `safe/risky/unknown` gate + MoE（2026-10-26）：safe →
+AllD / conservative planner，risky/unknown → RL-Repair。三路 gate
+validation 94.3%，heldout_v2 safe precision/recall 65.6%/20.7%；
+MoE safe→AllD 5-seed heldout_v2 +4.04、validation +0.53，best-validation
+配置 +0.90/+1.41，仍远低于 Gate C 的 +10，且 seed 方差大；safe→planner
+3-seed heldout_v2 -1.28；held-out red 全部 0.00。无条件 early probe
+成本 screen 为 -10.7~-20.8，暂不实现。**C3 三路 gate + MoE 也判
+No-Go**，不改主权重。详见 `docs/p2-c1-belief-planner.md`、
 `docs/p2-c2c3-opponent-model.md`、`docs/p2-c2c3-excitation.md`、
-`results/p2_belief_20261026/`、`results/p2_opponent_model_20261026/`、
-`results/p2_excitation_20261026/`。
+`docs/p2-c3-threeway-moe.md`、`results/p2_belief_20261026/`、
+`results/p2_opponent_model_20261026/`、`results/p2_excitation_20261026/`、
+`results/p2_threeway_moe_20261026/`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
@@ -348,6 +361,7 @@ planner 仍 No-Go**。下一步做 `safe/risky/unknown` 三路 gate + MoE，
 | [docs/p2-c1-belief-planner.md](docs/p2-c1-belief-planner.md) | P2 C1 Bayesian belief planner（offline No-Go） |
 | [docs/p2-c2c3-opponent-model.md](docs/p2-c2c3-opponent-model.md) | P2 C2/C3 learned opponent model + gate（offline No-Go） |
 | [docs/p2-c2c3-excitation.md](docs/p2-c2c3-excitation.md) | P2 C2/C3 exploratory / counterfactual 数据（data Go / planner No-Go） |
+| [docs/p2-c3-threeway-moe.md](docs/p2-c3-threeway-moe.md) | P2 C3 three-way gate + MoE（offline No-Go） |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

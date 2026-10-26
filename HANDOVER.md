@@ -182,6 +182,17 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   gate + MoE，或 early-game active probe。
   详见 `docs/p2-c2c3-excitation.md`、
   `results/p2_excitation_20261026/`。
+- **P2 C3 three-way gate + MoE（2026-10-26，offline No-Go）**：
+  新增 `ThreeWayGate` / `ThreeWayMoE` / `python -m ipd moe-eval`。
+  三路 gate validation 94.3%，heldout_v2 base safe precision/recall
+  65.6%/20.7%；MoE safe→AllD 5-seed heldout_v2 **+4.04**、
+  validation +0.53，best-validation 配置 +0.90/+1.41，seed 方差大，
+  未达 Gate C 的 +10；safe→planner 3-seed heldout_v2 -1.28；
+  held-out red 全部 0.00。无条件 early probe 成本 -10.7~-20.8，
+  暂不实现。**No-Go**，不注册、不改主权重；下一步做 repeated
+  counterfactual 校准或 Bayesian expected-value probe。
+  详见 `docs/p2-c3-threeway-moe.md`、
+  `results/p2_threeway_moe_20261026/`。
 
 复现入口：
 
@@ -234,6 +245,9 @@ python3 -m ipd train rl --device auto --iterations 40 \
 
 # C2/C3 exploratory / counterfactual opponent model + planner screens
 bash results/p2_excitation_20261026/run.sh
+
+# C3 three-way gate + MoE screens
+bash results/p2_threeway_moe_20261026/run.sh
 
 python3 -m ipd benchmark --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20

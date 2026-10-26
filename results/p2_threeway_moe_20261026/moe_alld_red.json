@@ -1,0 +1,32 @@
+{
+  "E4-red-BC": {
+    "base_blue": 296.6,
+    "moe_blue": 296.6,
+    "blue_delta": 0.0,
+    "base_diff": 413.5,
+    "moe_diff": 413.5,
+    "safe_rate": 0.0,
+    "risky_rate": 0.636,
+    "unknown_rate": 0.364
+  },
+  "Red-RL-v5-heldout": {
+    "base_blue": 375.1,
+    "moe_blue": 375.1,
+    "blue_delta": 0.0,
+    "base_diff": 342.0,
+    "moe_diff": 342.0,
+    "safe_rate": 0.0,
+    "risky_rate": 0.576,
+    "unknown_rate": 0.424
+  },
+  "Red-RL-v6-heldout": {
+    "base_blue": 313.35,
+    "moe_blue": 313.35,
+    "blue_delta": 0.0,
+    "base_diff": 434.0,
+    "moe_diff": 434.0,
+    "safe_rate": 0.0,
+    "risky_rate": 0.6445,
+    "unknown_rate": 0.3555
+  }
+}

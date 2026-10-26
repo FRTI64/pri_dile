@@ -66,19 +66,25 @@ def evaluate_policy(policy, items, seeds: Sequence[int], rounds: int = 100,
     summary["seconds"] = round(time.time() - started, 2)
     summary["rows"] = rows
     if collect_diagnostics:
+        rounds = sum(d["rounds"] for d in diagnostics)
         summary["diagnostics"] = {
             "matches": len(diagnostics),
             "overrides": sum(d["overrides"] for d in diagnostics),
-            "rounds": sum(d["rounds"] for d in diagnostics),
+            "rounds": rounds,
             "fallback_low_confidence": sum(
                 d["fallback_low_confidence"] for d in diagnostics),
             "fallback_margin": sum(d["fallback_margin"] for d in diagnostics),
             "override_rate": (sum(d["overrides"] for d in diagnostics)
-                              / max(1, sum(d["rounds"] for d in diagnostics))),
+                              / max(1, rounds)),
             "gate_checks": sum(d.get("gate_checks", 0)
                                for d in diagnostics),
             "fallback_gate": sum(d.get("fallback_gate", 0)
                                  for d in diagnostics),
+            "safe": sum(d.get("safe", 0) for d in diagnostics),
+            "risky": sum(d.get("risky", 0) for d in diagnostics),
+            "unknown": sum(d.get("unknown", 0) for d in diagnostics),
+            "safe_rate": (sum(d.get("safe", 0) for d in diagnostics)
+                          / max(1, rounds)),
         }
     return summary
 

@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -508,3 +508,22 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
   probe；不要继续加 planner horizon。
 - 文档：`docs/p2-c2c3-excitation.md`；
   结果：`results/p2_excitation_20261026/`。
+
+## 19. P2 C3 three-way gate + MoE（2026-10-26，offline No-Go）
+
+- 新增 `ThreeWayGate`（safe/risky/unknown）、`ThreeWayMoE`、
+  `python -m ipd moe-eval`；safe→AllD 或 conservative planner，
+  risky/unknown→RL-Repair。
+- 三路 gate validation 94.3%；heldout_v2 base safe precision/recall
+  65.6%/20.7%，explore 82.1%/36.9%，counterfactual 82.6%/31.7%。
+- safe→AllD 1-seed heldout_v2 +3.64、3-seed +0.51、5-seed +4.04
+  （validation +0.53）；best-validation 配置 +0.90/+1.41。
+  safe→planner 3-seed heldout_v2 -1.28。Held-out red 全部 0.00。
+- 诊断：三路 gate 在兴奋态 precision 够，但 safe recall 太低；
+  MoE 收益集中在 random/noisy 且 seed 方差大；AllD 对 false positive
+  极敏感。Gate C +10 未达到，判 **No-Go**。
+- 无条件 early probe 成本 -10.7~-20.8（reciprocal/punitive
+  单 family -35~-74），暂不实现；后续若做 probe，需要 Bayesian
+  expected-value / information-gain 版本。
+- 文档：`docs/p2-c3-threeway-moe.md`；
+  结果：`results/p2_threeway_moe_20261026/`。

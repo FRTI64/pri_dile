@@ -121,7 +121,9 @@ The first next step was implemented in
   rarely defects early.
 - Next: three-way `safe/risky/unknown` gate + MoE, and/or an
   early-game active probe that creates response events before
-  enabling exploitation.
+  enabling exploitation.  The three-way follow-up is now also
+  **No-Go**: see `docs/p2-c3-threeway-moe.md`; unconditional early
+  probing costs -10.7~-20.8 on heldout_v2.
 
 ## 7. Reproduction
 

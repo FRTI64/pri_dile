@@ -123,3 +123,13 @@ weights/opponent_responsiveness.json
 results/p2_excitation_20261026/
 docs/p2-c2c3-excitation.md
 ```
+
+## 9. C3 follow-up
+
+The next step, a three-way `safe/risky/unknown` gate + MoE, was implemented
+and screened in `docs/p2-c3-threeway-moe.md` /
+`results/p2_threeway_moe_20261026/`.  It improves precision on excited
+states (safe precision 82.1%/82.6%) but abstains too often on deployment
+trajectories (safe recall 20.7%).  The AllD MoE reaches 5-seed heldout_v2
++4.04 but validation only +0.53, with large seed variance; held-out red
+is 0.00.  It remains **No-Go** for Gate C.

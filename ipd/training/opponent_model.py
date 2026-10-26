@@ -40,6 +40,7 @@ EXPLORATION_TEMPLATES = (
     "late_block", "cooperate",
 )
 RESPONSE_CLASSES = ("unresponsive", "responsive")
+THREE_WAY_CLASSES = ("safe", "risky", "unknown")
 SUITE_FAMILY_MAP = {
     "reciprocal_v2": "cooperative",
     "punitive_v2": "punitive",
@@ -75,6 +76,25 @@ def suite_class(family: str) -> str | None:
 def allow_label(label: str) -> str:
     """Binary gate label: allow overrides for defect/late/random only."""
     return "allow" if label in ALLOW_CLASSES else "deny"
+
+
+def three_way_gate_label(label: str,
+                         features: Sequence[float]) -> str:
+    """Map a family label plus the excitation indicator to a MoE route.
+
+    ``features[35]`` is the 85-dim ``n_c >= 5 and n_d >= 3`` indicator.  With
+    enough response evidence, allowed families become ``safe`` and the rest
+    ``risky``; low-evidence states abstain to ``unknown``.
+    """
+    if len(features) <= 35 or float(features[35]) <= 0.0:
+        return "unknown"
+    return "safe" if allow_label(label) == "allow" else "risky"
+
+
+def three_way_labels(labels: Sequence[str],
+                     features: Sequence[Sequence[float]]) -> list[str]:
+    return [three_way_gate_label(label, row)
+            for label, row in zip(labels, features)]
 
 
 def load_opponent_model(path: str | Path):
@@ -956,6 +976,93 @@ class OpponentGate:
         }
 
 
+class ThreeWayGate:
+    """Route states to ``safe`` / ``risky`` / ``unknown``.
+
+    The wrapped model is a 3-class MLP.  ``safe`` requires the family label and
+    the excitation evidence to agree; low confidence abstains to ``unknown``.
+    An optional C2 response model can veto a ``safe`` route and turn it into
+    ``risky`` when the opponent is predicted to react to our action.
+    """
+
+    def __init__(self, model, *, safe_threshold: float = 0.6,
+                 risky_threshold: float = 0.6, min_day: int = 3,
+                 response_model=None,
+                 max_response_probability: float | None = None,
+                 fallback: str = "unknown"):
+        if fallback not in THREE_WAY_CLASSES:
+            raise ValueError(f"invalid fallback route {fallback!r}")
+        self.model = model
+        self.safe_threshold = float(safe_threshold)
+        self.risky_threshold = float(risky_threshold)
+        self.min_day = int(min_day)
+        self.response_model = response_model
+        self.max_response_probability = (
+            None if max_response_probability is None
+            else float(max_response_probability))
+        self.fallback = fallback
+        self.calls = 0
+        self.safe_calls = 0
+        self.risky_calls = 0
+        self.unknown_calls = 0
+
+    def reset(self) -> None:
+        self.calls = 0
+        self.safe_calls = 0
+        self.risky_calls = 0
+        self.unknown_calls = 0
+
+    def __call__(self, t: int, mine: Sequence[int],
+                 theirs: Sequence[int]) -> tuple[str, dict[str, Any]]:
+        self.calls += 1
+        if t < self.min_day:
+            self.unknown_calls += 1
+            return self.fallback, {
+                "reason": "warmup", "label": "", "confidence": 0.0,
+                "response_probability": None,
+            }
+        features = extract_features(mine, theirs)
+        label, confidence = self.model.predict(features)
+        info: dict[str, Any] = {
+            "label": label, "confidence": confidence,
+            "response_probability": None,
+        }
+        route = label if label in ("safe", "risky") else "unknown"
+        if route == "safe" and confidence < self.safe_threshold:
+            route = "unknown"
+        if route == "risky" and confidence < self.risky_threshold:
+            route = "unknown"
+        if route == "safe" and self.response_model is not None \
+                and self.max_response_probability is not None:
+            probs = self.response_model.probabilities(features)
+            p_resp = probs[self.response_model.classes.index("responsive")]
+            info["response_probability"] = p_resp
+            if p_resp > self.max_response_probability:
+                route = "risky"
+        if route == "safe":
+            self.safe_calls += 1
+        elif route == "risky":
+            self.risky_calls += 1
+        else:
+            self.unknown_calls += 1
+        info["route"] = route
+        return route, info
+
+    def diagnostics(self) -> dict[str, Any]:
+        return {
+            "calls": self.calls,
+            "safe_calls": self.safe_calls,
+            "risky_calls": self.risky_calls,
+            "unknown_calls": self.unknown_calls,
+            "safe_rate": (self.safe_calls / self.calls
+                          if self.calls else 0.0),
+            "risky_rate": (self.risky_calls / self.calls
+                           if self.calls else 0.0),
+            "unknown_rate": (self.unknown_calls / self.calls
+                             if self.calls else 0.0),
+        }
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -1075,9 +1182,20 @@ def _response_metrics(model, features: Sequence[Sequence[float]],
     }
 
 
+class _SafeOnlyModel:
+    """Adapt a 3-class gate to the binary allow/deny metric helper."""
+
+    def __init__(self, model):
+        self.model = model
+
+    def predict(self, features):
+        label, confidence = self.model.predict(features)
+        return ("allow" if label == "safe" else "deny"), confidence
+
+
 def _add_suite_eval(report: dict[str, Any], key: str,
                     data: dict[str, Any], model, gate_model,
-                    response_model) -> None:
+                    response_model, threeway_model=None) -> None:
     keep = [i for i, label in enumerate(data["labels"])
             if label is not None]
     if not keep:
@@ -1093,6 +1211,16 @@ def _add_suite_eval(report: dict[str, Any], key: str,
         "gate": _binary_metrics(gate_model, eval_features, gate_labels,
                                 groups=eval_labels),
     }
+    if threeway_model is not None:
+        truth_three = three_way_labels(eval_labels, eval_features)
+        entry["threeway_gate"] = {
+            "accuracy": accuracy(threeway_model, eval_features, truth_three),
+            "per_class": per_class_accuracy(
+                threeway_model, eval_features, truth_three),
+            "safe": _binary_metrics(
+                _SafeOnlyModel(threeway_model), eval_features,
+                gate_labels, groups=eval_labels),
+        }
     if data.get("stats") is not None:
         entry["excitation"] = data["stats"]
     if response_model is not None and data.get("response") is not None:
@@ -1105,6 +1233,14 @@ def _add_suite_eval(report: dict[str, Any], key: str,
           f"gate accuracy: {entry['gate']['accuracy']:.3f}; "
           f"gate precision: {entry['gate']['precision']:.3f}",
           flush=True)
+    if "threeway_gate" in entry:
+        print(f"{key} three-way accuracy: "
+              f"{entry['threeway_gate']['accuracy']:.3f}; "
+              f"safe precision: "
+              f"{entry['threeway_gate']['safe']['precision']:.3f}; "
+              f"safe recall: "
+              f"{entry['threeway_gate']['safe']['recall']:.3f}",
+              flush=True)
     if "response" in entry:
         print(f"{key} response accuracy: "
               f"{entry['response']['accuracy']:.3f}", flush=True)
@@ -1138,6 +1274,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--eval-episodes", type=int, default=1)
     ap.add_argument("--out", default=weights_path("opponent_classifier.json"))
     ap.add_argument("--gate-out", default=weights_path("opponent_gate.json"))
+    ap.add_argument("--threeway-out", default=weights_path(
+        "opponent_gate_threeway.json"),
+        help="3-class safe/risky/unknown gate output; empty to disable")
     ap.add_argument("--next-out", default=weights_path(
         "opponent_next_action.json"))
     ap.add_argument("--response-out", default=weights_path(
@@ -1175,6 +1314,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"gate MLP: train={gate_report['train_accuracy']:.3f} "
           f"val={gate_report['val_accuracy']:.3f} -> {args.gate_out}",
           flush=True)
+
+    threeway_model = None
+    threeway_report = None
+    if args.threeway_out:
+        train_three_labels = three_way_labels(
+            train_data.labels, train_data.features)
+        val_three_labels = three_way_labels(
+            val_data.labels, val_data.features)
+        three_validation = None
+        if set(val_three_labels) >= set(THREE_WAY_CLASSES):
+            three_validation = (val_data.features, val_three_labels)
+        threeway_model, threeway_report = train_mlp(
+            train_data.features, train_three_labels,
+            classes=list(THREE_WAY_CLASSES), epochs=args.epochs,
+            lr=args.lr, l2=args.l2, seed=args.seed + 3,
+            validation=three_validation)
+        threeway_model.save(args.threeway_out)
+        print(f"three-way gate: train={threeway_report['train_accuracy']:.3f} "
+              f"val={threeway_report.get('val_accuracy', 0.0):.3f} -> "
+              f"{args.threeway_out}", flush=True)
 
     next_model, next_report = train_softmax(
         train_data.features,
@@ -1214,6 +1373,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     }
     report["gate"] = gate_report
     report["next_action"] = next_report
+    if threeway_report is not None:
+        report["threeway_gate"] = threeway_report
     if response_report is not None:
         report["response"] = response_report
     report["validation_types"] = [spec.name for spec in val_specs]
@@ -1234,7 +1395,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             key = args.eval_suite if mode == "base" else \
                 f"{args.eval_suite}:{mode}"
             _add_suite_eval(report, key, data, model, gate_model,
-                            response_model)
+                            response_model, threeway_model)
     out = Path(args.report_out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2),
@@ -1328,11 +1489,12 @@ def _collect_suite_dataset(items: Sequence[Any], *, episodes: int = 1,
 
 __all__ = [
     "CLASSES", "ALLOW_CLASSES", "SUITE_FAMILY_MAP", "EXPLORATION_TEMPLATES",
-    "RESPONSE_CLASSES", "coarse_class", "suite_class", "allow_label",
+    "RESPONSE_CLASSES", "THREE_WAY_CLASSES", "coarse_class", "suite_class",
+    "allow_label", "three_way_gate_label", "three_way_labels",
     "Dataset", "ResponseDataset", "concat_datasets", "collect_dataset",
     "exploration_actions", "collect_exploratory_dataset",
     "collect_counterfactual_dataset", "split_specs",
     "LinearOpponentModel", "MLPOpponentModel", "train_softmax", "train_mlp",
-    "accuracy", "per_class_accuracy", "OpponentGate", "load_opponent_model",
-    "DATA_MODES", "EVAL_MODES", "main",
+    "accuracy", "per_class_accuracy", "OpponentGate", "ThreeWayGate",
+    "load_opponent_model", "DATA_MODES", "EVAL_MODES", "main",
 ]

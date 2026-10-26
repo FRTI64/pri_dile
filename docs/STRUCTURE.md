@@ -60,6 +60,7 @@ ipd/
 │   ├── gru.py             GRU-Net 推理（纯标准库）
 │   ├── rl.py              PPO actor-critic 推理
 │   ├── adversarial.py     约束剥削包装
+│   ├── moe.py             safe/risky/unknown 三路 MoE 路由
 │   ├── tuned.py           从 results/ 读取 tuned 参数，带内置回退值
 │   └── registry.py        候选名称、CandidateSpec、make_policy
 ├── evaluation/            测试/评估代码（不实现策略）
@@ -74,6 +75,7 @@ ipd/
 │   ├── opponent_suite.py  冻结评估 suite（含 heldout_v2/v3 新家族/参数）
 │   ├── metagame.py        cross-play 矩阵、Nash averaging、Elo、exploitability
 │   ├── league.py          E0 联赛 harness（cross-play / suite / red）
+│   ├── moe_eval.py        P2 C3 three-way gate + MoE 离线评估
 │   ├── policy_pool.py     P3 frozen blue/red policy pool
 │   └── robust.py          E1 robust / repair domain-randomized 训练对手分布
 ├── training/              训练/搜索代码（只通过 registry 和 distributions 取策略/对手）
