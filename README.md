@@ -253,6 +253,28 @@ SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
 `weights/rl_policy_weights_hard60.json`；报告见
 `results/hard2_20261026/README.md`。当前未替换主权重，作为下一提交候选。
 
+### E0：cross-play / Nash / exploitability（2026-10-26）
+
+新增 `python3 -m ipd league` 冻结评估 harness（`docs/E0_LEAGUE.md`）。
+9 个候选在官方四分布、blind 20 fields、validation、**新 held-out v2** 和
+E4 red 上使用同一 suite/seeds：A60 overall **552.11**（RL-PPO 550.80），
+held-out v2 **500.07**（RL-PPO 494.97），CVaR10 391.13（RL-PPO 387.26）；
+但 A60 的 min_norm 0.9928（blind wild 略降），E4 red blue 299.20
+（RL-PPO 310.55）。cross-play 所有候选互相合作（594–595），Elo/Nash
+无法区分，说明 P3 必须加入 red/exploiter 池。E0 Gate PASS，主权重未替换，
+结论与明细见 `results/e0_league_20261026/README.md`。
+
+E1 从 A60 做 domain-randomized `robust` fine-tune（`ipd/evaluation/robust.py`）。
+best iter 40 官方 validation 558.87→559.07；E0 风格评估 official 554.71、
+blind 564.63、held-out v2 501.43（A60 500.07，+1.36）、min_norm 0.9964
+（0.9928）、CVaR10 388.98（391.13）、E4 red blue 311.70（299.20）。
+held-out +1.36 / min_norm +0.0036 未达 +3 / +0.02 Gate，判 **No-Go**；
+per-family 是 extort +16.3、random -6.1 的 trade-off。E1b（KL 0.05, lr 2e-4）
+selection run held-out +3.05，但 full run 只有 +1.94，min_norm 0.9892、
+CVaR 388.81、random -6.3；两次 validation 不一致，仍判 **No-Go**。
+未注册、未 promotion，`heldout_v3` 保留未用。详见
+`results/robust_20261026/README.md`。
+
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
 逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`，透视表见
@@ -267,6 +289,9 @@ SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
 | [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口 |
 | [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md) | 按策略/模型/对手拆分评估 |
 | [docs/SELFPLAY.md](docs/SELFPLAY.md) | 非对称自博弈：21 维观测、对手池、red league、验证拆分 |
+| [docs/E0_LEAGUE.md](docs/E0_LEAGUE.md) | E0 cross-play / Nash / exploitability harness |
+| [docs/e0-league-plan.md](docs/e0-league-plan.md) | E0 评估/元博弈计划 |
+| [docs/e1-robust-finetune.md](docs/e1-robust-finetune.md) | E1 domain-randomized A60 fine-tune |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

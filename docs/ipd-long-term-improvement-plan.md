@@ -1,9 +1,10 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** proposed / research + competition roadmap
+- **Status:** E0 PASS; E1 domain-randomized A60 No-Go; E1b/E2 next
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
+- **E0 harness:** `python3 -m ipd league` / `docs/E0_LEAGUE.md`
 - **目标:** 在未知对手分布、一次固定提交的比赛中，最大化期望总分，同时控制 worst-case / 被针对性剥削的风险。
 
 ---
@@ -345,3 +346,43 @@ E0 评估/PSRO
 
 如果只能做一条主线：**E0 + E1 + C1**。  
 E0 保证判断可信，E1 是最快见效，C1 是最高上限。
+
+---
+
+## 11. E0 执行状态（2026-10-26）
+
+- 新增 `python3 -m ipd league`：cross-play / Nash averaging / Elo /
+  exploitability / 冻结 suite / held-out red。
+- 新 held-out v2（74 对手、7 个新 family）已用于 E0；后续作为 validation。
+  另新增 held-out v3，用于 E1 一次性 final test。
+- E0 Gate PASS；主权重未替换。结果：
+  - A60 overall 552.11 / held-out v2 500.07 / CVaR10 391.13；
+  - RL-PPO 550.80 / 494.97 / 387.26；
+  - A60 min_norm 0.9928（blind wild -0.72%），E4 red blue 299.20；
+  - Adv-RL held-out v2 502.39，但 red/tail 更弱；
+  - SelfPlay-GRU/BC 仍为 No-Go（min_norm 0.949）。
+- 重要负结果：cross-play 蓝军池退化为互相合作（594–595），Elo/Nash
+  不可区分；P3 league 必须加入 red/exploiter checkpoint 池。
+- 详细报告：`results/e0_league_20261026/README.md`；
+  harness 说明：`docs/E0_LEAGUE.md`。
+- 下一阶段：E1 domain-randomized A60（`robust` 训练分布已实现并有测试），
+  选模用官方 validation + heldout_v2；heldout_v3 final test 只跑一次。
+  E1a 已完成并判 No-Go，见 §12。
+
+## 12. E1 执行状态（2026-10-26，No-Go）
+
+- `robust` 训练分布已实现（`ipd/evaluation/robust.py`，4 个测试）。
+- 从 A60 fine-tune 40 iter：官方 validation 558.87→559.07。
+- E0 风格评估：official 554.71、blind 564.63、heldout v2 501.43
+  （A60 500.07，+1.36）、min_norm 0.9964（0.9928）、CVaR10 388.98
+  （391.13）、E4 red blue 311.70（299.20）。
+- 未达到预注册 Gate（held-out +3 或 min_norm +0.02），判 **No-Go**。
+  per-family：extort +16.3、noisy +3.8，但 random -6.1、adaptive -1.7。
+- E1b（KL 0.05, lr 2e-4）selection run heldout +3.05，但 full run +1.94，
+  min_norm 0.9892、CVaR 388.81、random -6.3；两次 validation 不一致，
+  仍判 **No-Go**。
+- 不注册、不 promotion；权重保留为研究 artifact。
+- **heldout_v3 未运行**，留给下一个稳定通过 validation 的候选。
+- 下一步：E1c 调整 robust mixture（降低 random 权重/收窄 random 区间/
+  加 cooperative anchor）或 E2 CVaR/worst-family 辅助目标；仍用
+  heldout_v2 做 validation，连续两次过 Gate 才跑 heldout_v3。

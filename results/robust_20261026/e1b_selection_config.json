@@ -1,0 +1,131 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "e1b_checkpoint_selection",
+  "note": "Validation-only checkpoint selection on heldout_v2 with a fixed policy seed. Intermediate checkpoints were not committed; selected iter 40 equals weights/rl_policy_checkpoint_robust_b.json.",
+  "baseline": "RL-PPO-Hard60",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20
+  },
+  "suites": {
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 20,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 1
+  },
+  "red": {
+    "seeds": 1
+  },
+  "candidates": [
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "group": "baseline",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "group": "baseline",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-005",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_005.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-010",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_010.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-015",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_015.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-020",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_020.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-025",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_025.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-030",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_030.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-035",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_035.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E1b-040",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/robust_20261026/E1b_checkpoints/iter_040.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": []
+}

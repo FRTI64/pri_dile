@@ -1,0 +1,76 @@
+E0 league: candidates=['Final-tuned', 'Resp3-tuned', 'Triple-majority', 'RL-PPO', 'RL-PPO-Hard60', 'RL-BC', 'Adv-RL', 'SelfPlay-GRU', 'SelfPlay-BC'] suites=['official', 'blind', 'validation', 'heldout_v2'] workers=20
+  suite:official 72/720 tasks (0.5s)
+  suite:official 144/720 tasks (0.7s)
+  suite:official 216/720 tasks (2.9s)
+  suite:official 288/720 tasks (7.8s)
+  suite:official 360/720 tasks (13.7s)
+  suite:official 432/720 tasks (19.1s)
+  suite:official 504/720 tasks (25.3s)
+  suite:official 576/720 tasks (82.6s)
+  suite:official 648/720 tasks (307.4s)
+  suite:official 720/720 tasks (483.6s)
+  suite:blind 18/180 tasks (0.2s)
+  suite:blind 36/180 tasks (0.3s)
+  suite:blind 54/180 tasks (1.4s)
+  suite:blind 72/180 tasks (4.0s)
+  suite:blind 90/180 tasks (5.8s)
+  suite:blind 108/180 tasks (7.9s)
+  suite:blind 126/180 tasks (9.8s)
+  suite:blind 144/180 tasks (67.8s)
+  suite:blind 162/180 tasks (123.4s)
+  suite:blind 180/180 tasks (126.4s)
+  suite:validation 45/459 tasks (0.9s)
+  suite:validation 90/459 tasks (0.9s)
+  suite:validation 135/459 tasks (0.9s)
+  suite:validation 180/459 tasks (1.2s)
+  suite:validation 225/459 tasks (1.8s)
+  suite:validation 270/459 tasks (2.4s)
+  suite:validation 315/459 tasks (2.6s)
+  suite:validation 360/459 tasks (6.5s)
+  suite:validation 405/459 tasks (14.2s)
+  suite:validation 450/459 tasks (22.2s)
+  suite:validation 459/459 tasks (24.7s)
+  suite:heldout_v2 66/666 tasks (0.1s)
+  suite:heldout_v2 132/666 tasks (0.1s)
+  suite:heldout_v2 198/666 tasks (0.4s)
+  suite:heldout_v2 264/666 tasks (1.1s)
+  suite:heldout_v2 330/666 tasks (1.6s)
+  suite:heldout_v2 396/666 tasks (2.2s)
+  suite:heldout_v2 462/666 tasks (2.9s)
+  suite:heldout_v2 528/666 tasks (7.2s)
+  suite:heldout_v2 594/666 tasks (18.9s)
+  suite:heldout_v2 660/666 tasks (33.3s)
+  suite:heldout_v2 666/666 tasks (33.5s)
+  cross-play 8/81 tasks (0.1s)
+  cross-play 16/81 tasks (4.0s)
+  cross-play 24/81 tasks (4.0s)
+  cross-play 32/81 tasks (4.0s)
+  cross-play 40/81 tasks (4.0s)
+  cross-play 48/81 tasks (4.0s)
+  cross-play 56/81 tasks (4.0s)
+  cross-play 64/81 tasks (4.0s)
+  cross-play 72/81 tasks (7.3s)
+  cross-play 80/81 tasks (10.5s)
+  cross-play 81/81 tasks (10.6s)
+  red 1/9 tasks (3.4s)
+  red 2/9 tasks (3.4s)
+  red 3/9 tasks (3.5s)
+  red 4/9 tasks (3.7s)
+  red 5/9 tasks (3.7s)
+  red 6/9 tasks (3.7s)
+  red 7/9 tasks (3.7s)
+  red 8/9 tasks (6.3s)
+  red 9/9 tasks (6.3s)
+written results/e0_league_20261026/report.json
+written results/e0_league_20261026/README.md
+fingerprint 43dfe26acea1d5bc9021bd27d562e9b22ae2502a837f0ba2ea9ce1f27e2dde13
+Final-tuned          mean=  542.24 min_norm=  0.8540 red_blue=  334.05
+Resp3-tuned          mean=  541.83 min_norm=  0.8698 red_blue=  326.20
+Triple-majority      mean=  543.80 min_norm=  0.8739 red_blue=  337.55
+RL-PPO               mean=  550.80 min_norm=  1.0000 red_blue=  310.55
+RL-PPO-Hard60        mean=  552.11 min_norm=  0.9928 red_blue=  299.20
+RL-BC                mean=  548.16 min_norm=  0.9589 red_blue=  333.95
+Adv-RL               mean=  551.69 min_norm=  0.9815 red_blue=  325.55
+SelfPlay-GRU         mean=  548.60 min_norm=  0.9494 red_blue=  301.65
+SelfPlay-BC          mean=  548.46 min_norm=  0.9489 red_blue=  303.60
+gate: PASS

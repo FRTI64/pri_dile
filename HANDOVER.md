@@ -99,6 +99,25 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   `RL-Hard60`（556.79）与 `Adv-RL-BC-agg`（556.79）并列总加权第一；
   hard2 A/B/C 及 seed2 全部优于原 RL-main；对抗规则只在 BC/stage1 基座正收益，
   套到 hard2/RL-main 基座会掉分；SelfPlay 仍为 No-Go。
+- **E0 cross-play / Nash / exploitability（2026-10-26，PASS）**：新增
+  `python3 -m ipd league` 冻结评估（`docs/E0_LEAGUE.md`）。9 个候选同一
+  suite/seeds：A60 overall 552.11（RL-PPO 550.80）、held-out v2 500.07
+  （494.97）、CVaR10 391.13（387.26）；A60 min_norm 0.9928（blind wild
+  略降），E4 red blue 299.20（RL-PPO 310.55）。cross-play 所有候选互相合作
+  （594–595），Elo/Nash 不可区分，P3 必须加入 red/exploiter 池。E0 不改主权重；
+  报告 `results/e0_league_20261026/README.md`。
+- **E1 domain-randomized A60（2026-10-26，No-Go）**：新增训练分布 `robust`
+  （`ipd/evaluation/robust.py`，已有测试），从 A60 checkpoint 做参数随机化
+  fine-tune。best iter 40 官方 validation 558.87→559.07；E0 风格评估：
+  official 554.71（A60 554.27）、blind 564.63（563.87）、heldout v2
+  501.43（500.07，+1.36）、min_norm 0.9964（0.9928）、CVaR10 388.98
+  （391.13）、E4 red blue 311.70（299.20）。held-out +1.36 / min_norm
+  +0.0036 未达 +3 / +0.02 Gate，**No-Go**；per-family 是 extort +16.3、
+  random -6.1 的 trade-off。E1b（KL 0.05, lr 2e-4）selection run heldout
+  +3.05，但 full run 只有 +1.94，min_norm 0.9892、CVaR 388.81，random
+  -6.3；两次 validation 不一致，仍判 **No-Go**。不注册、不 promotion；
+  `heldout_v3` 未运行，留给下一个稳定通过 validation 的候选。结果见
+  `results/robust_20261026/`。
 
 复现入口：
 

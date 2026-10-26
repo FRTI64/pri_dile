@@ -9,7 +9,7 @@
 ipd/
 ├── __init__.py            包入口（C/D、Strategy、Policy）
 ├── __main__.py            python3 -m ipd
-├── cli.py                 统一命令行：benchmark / blind / eval-split / suite / matchup / train / export
+├── cli.py                 统一命令行：benchmark / blind / eval-split / suite / matchup / league / train / export
 ├── paths.py               仓库路径解析
 ├── self_test.py           统一策略接口自检
 ├── core/                  与比赛成绩无关的模拟内核
@@ -70,7 +70,11 @@ ipd/
 │   ├── split.py           按候选/对手拆分的评估驱动
 │   ├── split_config.py    每个候选独立参数配置
 │   ├── suite.py           9 个族权重测试集
-│   └── matchup.py         逐对手类型矩阵 + 9 个测试集家族加权
+│   ├── matchup.py         逐对手类型矩阵 + 9 个测试集家族加权
+│   ├── opponent_suite.py  冻结评估 suite（含 heldout_v2/v3 新家族/参数）
+│   ├── metagame.py        cross-play 矩阵、Nash averaging、Elo、exploitability
+│   ├── league.py          E0 联赛 harness（cross-play / suite / red）
+│   └── robust.py          E1 domain-randomized 训练对手分布
 ├── training/              训练/搜索代码（只通过 registry 和 distributions 取策略/对手）
 │   ├── common.py          统一参数、seed、JSON 产物
 │   ├── cli.py             python3 -m ipd train <task>
@@ -301,6 +305,9 @@ tests/test_core.py         模拟器、对手库、分布
 tests/test_policies.py     PolicyAdapter、registry、边界、RL 导出一致性
 tests/test_candidates.py   候选文件独立性、参数与历史实现等价性
 tests/test_evaluation.py   run_match、并行任务、三个评估 CLI
+tests/test_metagame.py     Nash averaging、Elo、exploitability
+tests/test_league.py       E0 cross-play/suite/red harness、heldout_v2/v3
+tests/test_robust.py       E1 domain-randomized 训练分布
 tests/test_training.py     训练任务可导入、统一参数、JSON 工具
 ```
 

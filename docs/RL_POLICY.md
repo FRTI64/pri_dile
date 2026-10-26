@@ -105,6 +105,14 @@ Extort1.5/3, MemOne-rand, NoisyTFT.20, Joss.20, Grim
 
 hard 只用于训练，验证始终是四个官方分布。
 
+`--train-dists ...,robust` 是 E1 新增的 **domain-randomized** 训练分布
+（`ipd/evaluation/robust.py`）：Extort/Random/LateD/NoisyTFT/Joss/
+DynamicWindow/Kamikaze/Harvest 的参数每次采样，另有 TFT/Grim/AllD/Bully/AllC
+anchor。E1a 从 A60 fine-tune 40 iter 后 held-out v2 仅 +1.36、min_norm
++0.0036、CVaR -2.15；E1b（更强更新）selection +3.05 但 full 仅 +1.94，
+min_norm 0.9892、CVaR 388.81。两者都未过 Gate，判 **No-Go**；权重只保留
+为研究 artifact。详见 `docs/e1-robust-finetune.md`。
+
 ### 3.4 并行与设备
 
 - 24 个标准库 worker 生成 rollout（不导入 PyTorch）；
