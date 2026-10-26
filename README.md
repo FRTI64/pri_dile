@@ -332,11 +332,22 @@ MoE safe→AllD 5-seed heldout_v2 +4.04、validation +0.53，best-validation
 配置 +0.90/+1.41，仍远低于 Gate C 的 +10，且 seed 方差大；safe→planner
 3-seed heldout_v2 -1.28；held-out red 全部 0.00。无条件 early probe
 成本 screen 为 -10.7~-20.8，暂不实现。**C3 三路 gate + MoE 也判
-No-Go**，不改主权重。详见 `docs/p2-c1-belief-planner.md`、
-`docs/p2-c2c3-opponent-model.md`、`docs/p2-c2c3-excitation.md`、
-`docs/p2-c3-threeway-moe.md`、`results/p2_belief_20261026/`、
+No-Go**。
+
+随后做 repeated counterfactual 校准（2026-10-26）：每个 branch state
+重复 10 次 C/D，得到 `p(response)` 并训练 calibrated
+safe/risky/unknown gate。heldout counterfactual safe precision/recall
+**74.7%/62.1%**（旧 82.6%/31.7%）；但 no-veto AllD MoE 在 extort
+上崩坏（day5 heldout -25.87、extort -137.12）。加 response veto 0.2
+后 5-seed validation **-0.31**、heldout_v2 **+2.93**、min_norm 0.9988，
+safe rate 只有 2.5%；held-out red E4 +0.35、v5/v6 0.00。One-shot
+Bayesian/EV probe best 1-seed +1.29、3-seed -5.22。**C3 calibration
+和 EV probe screen 均 No-Go**，不改主权重。详见
+`docs/p2-c1-belief-planner.md`、`docs/p2-c2c3-opponent-model.md`、
+`docs/p2-c2c3-excitation.md`、`docs/p2-c3-threeway-moe.md`、
+`docs/p2-c3-repeated-calib.md`、`results/p2_belief_20261026/`、
 `results/p2_opponent_model_20261026/`、`results/p2_excitation_20261026/`、
-`results/p2_threeway_moe_20261026/`。
+`results/p2_threeway_moe_20261026/`、`results/p2_repeated_calib_20261026/`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
@@ -362,6 +373,7 @@ No-Go**，不改主权重。详见 `docs/p2-c1-belief-planner.md`、
 | [docs/p2-c2c3-opponent-model.md](docs/p2-c2c3-opponent-model.md) | P2 C2/C3 learned opponent model + gate（offline No-Go） |
 | [docs/p2-c2c3-excitation.md](docs/p2-c2c3-excitation.md) | P2 C2/C3 exploratory / counterfactual 数据（data Go / planner No-Go） |
 | [docs/p2-c3-threeway-moe.md](docs/p2-c3-threeway-moe.md) | P2 C3 three-way gate + MoE（offline No-Go） |
+| [docs/p2-c3-repeated-calib.md](docs/p2-c3-repeated-calib.md) | P2 C3 repeated counterfactual 校准（offline No-Go） |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

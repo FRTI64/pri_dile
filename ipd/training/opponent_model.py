@@ -20,7 +20,7 @@ import json
 import math
 import random
 import statistics
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Iterable, Sequence
 
@@ -97,6 +97,26 @@ def three_way_labels(labels: Sequence[str],
             for label, row in zip(labels, features)]
 
 
+def three_way_calibrated_label(probability: float,
+                               safe_threshold: float = 0.0,
+                               risky_threshold: float = 0.5) -> str:
+    """Map a repeated-counterfactual response probability to a route."""
+    value = float(probability)
+    if value <= float(safe_threshold):
+        return "safe"
+    if value >= float(risky_threshold):
+        return "risky"
+    return "unknown"
+
+
+def three_way_calibrated_labels(
+    probabilities: Sequence[float], safe_threshold: float = 0.0,
+    risky_threshold: float = 0.5,
+) -> list[str]:
+    return [three_way_calibrated_label(
+        value, safe_threshold, risky_threshold) for value in probabilities]
+
+
 def load_opponent_model(path: str | Path):
     """Load either the linear or MLP opponent model schema."""
     with open(path, encoding="utf-8") as fh:
@@ -137,6 +157,7 @@ class ResponseDataset:
     labels: list[str]
     truth: list[str]
     names: list[str]
+    response_probabilities: list[float] = field(default_factory=list)
 
     def __len__(self) -> int:
         return len(self.features)
@@ -288,7 +309,7 @@ def _record_excitation(stats: dict[str, Any], label: str, mine: Sequence[int],
         "defection_opportunities": 0, "defection_responses": 0,
         "sum_n_c": 0.0, "sum_n_d": 0.0,
         "pairs": 0, "responsive": 0, "unresponsive": 0,
-        "sum_abs_delta": 0.0,
+        "sum_abs_delta": 0.0, "sum_response_probability": 0.0,
     })
     row["samples"] += 1
     row["excited_samples"] += int(excited)
@@ -388,6 +409,7 @@ def _select_branch_days(rng: random.Random, rounds: int,
 def collect_counterfactual_dataset(
     specs: Iterable[Any], *, episodes: int = 1, rounds: int = 100,
     seed: int = 20261024, branches: int = 8, horizon: int = 6,
+    repeats: int = 1, reseed_branches: bool = False,
     prefix_modes: Sequence[str] = ("explore", "base"),
     include_prefix: bool = True, base_weights: str | None = None,
     label_fn: Callable[[Any], str | None] | None = None,
@@ -398,6 +420,9 @@ def collect_counterfactual_dataset(
     or D at ``t`` and cooperates for the next ``horizon`` rounds.  The pair
     shares the opponent's RNG stream, so the difference in the reply sequence
     is caused by blue's action rather than by a different random draw.
+
+    ``repeats > 1`` reseeds the common opponent RNG for each repeat, producing
+    an independent estimate of the response probability at the same state.
     """
     features: list[list[float]] = []
     labels: list[str] = []
@@ -407,12 +432,14 @@ def collect_counterfactual_dataset(
     response_labels: list[str] = []
     response_truth: list[str] = []
     response_names: list[str] = []
+    response_probabilities: list[float] = []
     stats = _new_excitation_stats()
     stats.update({
         "prefix_modes": list(prefix_modes),
         "branch_pairs": 0,
         "responsive_pairs": 0,
         "unresponsive_pairs": 0,
+        "repeats": max(1, int(repeats)),
         "by_class": {},
     })
     prefix_modes = tuple(prefix_modes) or ("explore",)
@@ -447,53 +474,71 @@ def collect_counterfactual_dataset(
             theirs: list[int] = []
             for t in range(rounds):
                 if t in branch_set:
-                    opp_c = copy.deepcopy(opponent)
-                    opp_d = copy.deepcopy(opponent)
-                    reply_c = int(opp_c.act(t, theirs, mine))
-                    reply_d = int(opp_d.act(t, theirs, mine))
-                    branch_replies: dict[int, list[int]] = {}
-                    for branch_action, branch_opp, branch_reply in (
-                            (C, opp_c, reply_c), (D, opp_d, reply_d)):
-                        bm = mine + [branch_action]
-                        bt = theirs + [branch_reply]
-                        replies: list[int] = []
-                        for u in range(t + 1, min(rounds, t + 1 + horizon)):
-                            features.append(extract_features(bm, bt))
-                            reply = int(branch_opp.act(u, bt, bm))
-                            labels.append(label)
-                            next_actions.append(reply)
-                            names.append(spec.name)
-                            _record_excitation(stats, label, bm, reply)
-                            replies.append(reply)
-                            bm.append(C)
-                            bt.append(reply)
-                        branch_replies[branch_action] = replies
-                    if branch_replies.get(C) is not None \
-                            and branch_replies.get(D) is not None:
-                        delta = (sum(branch_replies[D])
-                                 - sum(branch_replies[C]))
-                        responsive = delta != 0
-                        stats["branch_pairs"] += 1
-                        stats["responsive_pairs"] += int(responsive)
-                        stats["unresponsive_pairs"] += int(not responsive)
-                        response_features.append(
-                            extract_features(mine, theirs))
-                        response_labels.append(
-                            "responsive" if responsive else "unresponsive")
-                        response_truth.append(label)
-                        response_names.append(spec.name)
-                        row = stats["by_class"].setdefault(label, {
-                            "pairs": 0, "responsive": 0,
-                            "unresponsive": 0, "sum_abs_delta": 0.0,
-                            "samples": 0, "excited_samples": 0,
-                            "defection_opportunities": 0,
-                            "defection_responses": 0,
-                            "sum_n_c": 0.0, "sum_n_d": 0.0,
-                        })
-                        row["pairs"] += 1
-                        row["responsive"] += int(responsive)
-                        row["unresponsive"] += int(not responsive)
-                        row["sum_abs_delta"] += abs(delta)
+                    repeat_count = max(1, int(repeats))
+                    deltas: list[int] = []
+                    for repeat in range(repeat_count):
+                        opp_c = copy.deepcopy(opponent)
+                        opp_d = copy.deepcopy(opponent)
+                        if repeat_count > 1 or reseed_branches:
+                            branch_seed = (episode_seed + t * 131
+                                           + repeat * 17 + 999)
+                            if hasattr(opp_c, "rng"):
+                                opp_c.rng = random.Random(branch_seed)
+                            if hasattr(opp_d, "rng"):
+                                opp_d.rng = random.Random(branch_seed)
+                        reply_c = int(opp_c.act(t, theirs, mine))
+                        reply_d = int(opp_d.act(t, theirs, mine))
+                        branch_replies: dict[int, list[int]] = {}
+                        for branch_action, branch_opp, branch_reply in (
+                                (C, opp_c, reply_c), (D, opp_d, reply_d)):
+                            bm = mine + [branch_action]
+                            bt = theirs + [branch_reply]
+                            replies: list[int] = []
+                            for u in range(t + 1,
+                                           min(rounds, t + 1 + horizon)):
+                                feature = extract_features(bm, bt)
+                                reply = int(branch_opp.act(u, bt, bm))
+                                if repeat == 0:
+                                    features.append(feature)
+                                    labels.append(label)
+                                    next_actions.append(reply)
+                                    names.append(spec.name)
+                                    _record_excitation(stats, label, bm, reply)
+                                replies.append(reply)
+                                bm.append(C)
+                                bt.append(reply)
+                            branch_replies[branch_action] = replies
+                        deltas.append(sum(branch_replies[D])
+                                      - sum(branch_replies[C]))
+                    response_probability = (
+                        sum(1 for delta in deltas if delta != 0)
+                        / len(deltas))
+                    responsive = response_probability >= 0.5
+                    stats["branch_pairs"] += 1
+                    stats["responsive_pairs"] += int(responsive)
+                    stats["unresponsive_pairs"] += int(not responsive)
+                    response_features.append(
+                        extract_features(mine, theirs))
+                    response_labels.append(
+                        "responsive" if responsive else "unresponsive")
+                    response_truth.append(label)
+                    response_names.append(spec.name)
+                    response_probabilities.append(response_probability)
+                    row = stats["by_class"].setdefault(label, {
+                        "pairs": 0, "responsive": 0,
+                        "unresponsive": 0, "sum_abs_delta": 0.0,
+                        "sum_response_probability": 0.0,
+                        "samples": 0, "excited_samples": 0,
+                        "defection_opportunities": 0,
+                        "defection_responses": 0,
+                        "sum_n_c": 0.0, "sum_n_d": 0.0,
+                    })
+                    row["pairs"] += 1
+                    row["responsive"] += int(responsive)
+                    row["unresponsive"] += int(not responsive)
+                    row["sum_abs_delta"] += (
+                        statistics.fmean(abs(delta) for delta in deltas))
+                    row["sum_response_probability"] += response_probability
                 if prefix_mode == "base":
                     assert base is not None
                     normal_action = int(base.act(t, mine, theirs))
@@ -513,10 +558,17 @@ def collect_counterfactual_dataset(
                                  if row.get("pairs") else 0.0)
         row["mean_abs_delta"] = (row["sum_abs_delta"] / row["pairs"]
                                 if row.get("pairs") else 0.0)
+        row["mean_response_probability"] = (
+            row["sum_response_probability"] / row["pairs"]
+            if row.get("pairs") else 0.0)
+    stats["mean_response_probability"] = (
+        statistics.fmean(response_probabilities)
+        if response_probabilities else 0.0)
     _finalise_excitation_stats(stats)
     return (Dataset(features, labels, next_actions, names),
             ResponseDataset(response_features, response_labels,
-                            response_truth, response_names), stats)
+                            response_truth, response_names,
+                            response_probabilities), stats)
 
 
 def split_specs(specs: Sequence[Any], validation_fraction: float = 0.2,
@@ -1102,6 +1154,7 @@ def _collect_training_data(specs: Sequence[Any], args: argparse.Namespace,
             rounds=args.rounds, seed=seed,
             branches=args.counterfactual_branches,
             horizon=args.counterfactual_horizon,
+            repeats=args.counterfactual_repeats,
             prefix_modes=tuple(
                 x.strip() for x in args.counterfactual_prefix.split(",")
                 if x.strip()))
@@ -1131,11 +1184,12 @@ def _collect_suite_data(items: Sequence[Any], mode: str,
             items, episodes=args.eval_episodes, rounds=args.rounds,
             seed=seed, branches=args.counterfactual_branches,
             horizon=args.counterfactual_horizon,
+            repeats=args.counterfactual_repeats,
             prefix_modes=tuple(
                 x.strip() for x in args.counterfactual_prefix.split(",")
                 if x.strip()), label_fn=label_fn)
         response = (response_data.features, response_data.labels,
-                    response_data.truth)
+                    response_data.truth, response_data.response_probabilities)
     else:
         raise ValueError(f"unknown evaluation mode {mode!r}")
     name_to_family = {item.name: item.family for item in items}
@@ -1195,7 +1249,10 @@ class _SafeOnlyModel:
 
 def _add_suite_eval(report: dict[str, Any], key: str,
                     data: dict[str, Any], model, gate_model,
-                    response_model, threeway_model=None) -> None:
+                    response_model, threeway_model=None,
+                    threeway_source: str = "family",
+                    calibrated_safe_threshold: float = 0.0,
+                    calibrated_risky_threshold: float = 0.5) -> None:
     keep = [i for i, label in enumerate(data["labels"])
             if label is not None]
     if not keep:
@@ -1211,7 +1268,7 @@ def _add_suite_eval(report: dict[str, Any], key: str,
         "gate": _binary_metrics(gate_model, eval_features, gate_labels,
                                 groups=eval_labels),
     }
-    if threeway_model is not None:
+    if threeway_model is not None and threeway_source == "family":
         truth_three = three_way_labels(eval_labels, eval_features)
         entry["threeway_gate"] = {
             "accuracy": accuracy(threeway_model, eval_features, truth_three),
@@ -1223,11 +1280,26 @@ def _add_suite_eval(report: dict[str, Any], key: str,
         }
     if data.get("stats") is not None:
         entry["excitation"] = data["stats"]
-    if response_model is not None and data.get("response") is not None:
-        rf, rl, rt = data["response"]
-        if rl:
+    if data.get("response") is not None:
+        rf, rl, rt, rp = data["response"]
+        if rl and response_model is not None:
             entry["response"] = _response_metrics(
                 response_model, rf, rl, rt)
+        if threeway_model is not None and rp:
+            cal_labels = three_way_calibrated_labels(
+                rp, calibrated_safe_threshold, calibrated_risky_threshold)
+            cal_binary = ["allow" if label == "safe" else "deny"
+                          for label in cal_labels]
+            entry["threeway_calibrated"] = {
+                "n": len(cal_labels),
+                "accuracy": accuracy(
+                    threeway_model, rf, cal_labels),
+                "per_class": per_class_accuracy(
+                    threeway_model, rf, cal_labels),
+                "safe": _binary_metrics(
+                    _SafeOnlyModel(threeway_model), rf, cal_binary,
+                    groups=rt),
+            }
     report["suite_eval"][key] = entry
     print(f"{key} classifier accuracy: {entry['accuracy']:.3f}; "
           f"gate accuracy: {entry['gate']['accuracy']:.3f}; "
@@ -1241,6 +1313,12 @@ def _add_suite_eval(report: dict[str, Any], key: str,
               f"safe recall: "
               f"{entry['threeway_gate']['safe']['recall']:.3f}",
               flush=True)
+    if "threeway_calibrated" in entry:
+        cal = entry["threeway_calibrated"]
+        print(f"{key} calibrated three-way accuracy: "
+              f"{cal['accuracy']:.3f}; safe precision: "
+              f"{cal['safe']['precision']:.3f}; safe recall: "
+              f"{cal['safe']['recall']:.3f}", flush=True)
     if "response" in entry:
         print(f"{key} response accuracy: "
               f"{entry['response']['accuracy']:.3f}", flush=True)
@@ -1265,8 +1343,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--counterfactual-episodes", type=int, default=1)
     ap.add_argument("--counterfactual-branches", type=int, default=8)
     ap.add_argument("--counterfactual-horizon", type=int, default=6)
+    ap.add_argument("--counterfactual-repeats", type=int, default=1,
+                    help="independent C/D branch repeats per state")
     ap.add_argument("--counterfactual-prefix", default="explore,base",
                     help="comma-separated prefix modes: explore,base")
+    ap.add_argument("--threeway-source", choices=("family", "counterfactual"),
+                    default="family",
+                    help="train the 3-way gate from family+excitation or "
+                         "repeated-counterfactual response probabilities")
+    ap.add_argument("--calibrated-safe-threshold", type=float, default=0.0,
+                    help="p(response) at or below this is safe")
+    ap.add_argument("--calibrated-risky-threshold", type=float, default=0.5,
+                    help="p(response) at or above this is risky")
     ap.add_argument("--eval-suite", default="heldout_v2",
                     help="optional held-out suite for classification accuracy")
     ap.add_argument("--eval-mode", choices=EVAL_MODES, default="base",
@@ -1318,20 +1406,39 @@ def main(argv: Sequence[str] | None = None) -> int:
     threeway_model = None
     threeway_report = None
     if args.threeway_out:
-        train_three_labels = three_way_labels(
-            train_data.labels, train_data.features)
-        val_three_labels = three_way_labels(
-            val_data.labels, val_data.features)
+        if args.threeway_source == "counterfactual":
+            if train_response is None or val_response is None:
+                raise ValueError(
+                    "--threeway-source counterfactual requires "
+                    "--data-mode counterfactual/base+counterfactual/mixed")
+            three_train_features = train_response.features
+            three_train_labels = three_way_calibrated_labels(
+                train_response.response_probabilities,
+                args.calibrated_safe_threshold,
+                args.calibrated_risky_threshold)
+            three_val_features = val_response.features
+            three_val_labels = three_way_calibrated_labels(
+                val_response.response_probabilities,
+                args.calibrated_safe_threshold,
+                args.calibrated_risky_threshold)
+        else:
+            three_train_features = train_data.features
+            three_train_labels = three_way_labels(
+                train_data.labels, train_data.features)
+            three_val_features = val_data.features
+            three_val_labels = three_way_labels(
+                val_data.labels, val_data.features)
         three_validation = None
-        if set(val_three_labels) >= set(THREE_WAY_CLASSES):
-            three_validation = (val_data.features, val_three_labels)
+        if set(three_val_labels) >= set(THREE_WAY_CLASSES):
+            three_validation = (three_val_features, three_val_labels)
         threeway_model, threeway_report = train_mlp(
-            train_data.features, train_three_labels,
+            three_train_features, three_train_labels,
             classes=list(THREE_WAY_CLASSES), epochs=args.epochs,
             lr=args.lr, l2=args.l2, seed=args.seed + 3,
             validation=three_validation)
         threeway_model.save(args.threeway_out)
-        print(f"three-way gate: train={threeway_report['train_accuracy']:.3f} "
+        print(f"three-way gate ({args.threeway_source}): "
+              f"train={threeway_report['train_accuracy']:.3f} "
               f"val={threeway_report.get('val_accuracy', 0.0):.3f} -> "
               f"{args.threeway_out}", flush=True)
 
@@ -1394,8 +1501,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 suite, mode, args, seed=args.seed + 2)
             key = args.eval_suite if mode == "base" else \
                 f"{args.eval_suite}:{mode}"
-            _add_suite_eval(report, key, data, model, gate_model,
-                            response_model, threeway_model)
+            _add_suite_eval(
+                report, key, data, model, gate_model, response_model,
+                threeway_model, args.threeway_source,
+                args.calibrated_safe_threshold,
+                args.calibrated_risky_threshold)
     out = Path(args.report_out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2),
@@ -1491,6 +1601,7 @@ __all__ = [
     "CLASSES", "ALLOW_CLASSES", "SUITE_FAMILY_MAP", "EXPLORATION_TEMPLATES",
     "RESPONSE_CLASSES", "THREE_WAY_CLASSES", "coarse_class", "suite_class",
     "allow_label", "three_way_gate_label", "three_way_labels",
+    "three_way_calibrated_label", "three_way_calibrated_labels",
     "Dataset", "ResponseDataset", "concat_datasets", "collect_dataset",
     "exploration_actions", "collect_exploratory_dataset",
     "collect_counterfactual_dataset", "split_specs",

@@ -90,6 +90,11 @@ high-precision safe gate or a Bayesian probe-value model.
 - Keep RL-Repair as fallback; do not change main weights; `heldout_v4`
   remains unused.
 
+The repeated-counterfactual calibration follow-up is also **No-Go**:
+`docs/p2-c3-repeated-calib.md`.  It raises safe recall to 62.1% but the
+remaining extort false positives still collapse AllD; a response veto
+leaves only a 2.5% safe rate and +2.93 heldout_v2.
+
 ## 7. Reproduction
 
 ```bash

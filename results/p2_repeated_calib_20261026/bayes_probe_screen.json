@@ -1,0 +1,187 @@
+{
+  "suite": "heldout_v2",
+  "base": {
+    "reciprocal_v2": 599.1538461538462,
+    "punitive_v2": 600.625,
+    "noisy_v2": 436.3333333333333,
+    "extort_v2": 462.25,
+    "random_v2": 450.5,
+    "temporal_v2": 454.25,
+    "adaptive_v2": 581.125
+  },
+  "base_mean": 512.0338827838829,
+  "cases": {
+    "h6_day10": {
+      "seeds": [
+        1000
+      ],
+      "config": {
+        "probe_days": [
+          10
+        ],
+        "horizon": 6,
+        "top_k": 8,
+        "confidence": 0.75,
+        "margin": 0.0
+      },
+      "families": {
+        "reciprocal_v2": 599.1538461538462,
+        "punitive_v2": 600.625,
+        "noisy_v2": 436.3333333333333,
+        "extort_v2": 462.875,
+        "random_v2": 445.125,
+        "temporal_v2": 454.25,
+        "adaptive_v2": 581.125
+      },
+      "mean": 511.35531135531136,
+      "delta": -0.6785714285715017,
+      "family_delta": {
+        "reciprocal_v2": 0.0,
+        "punitive_v2": 0.0,
+        "noisy_v2": 0.0,
+        "extort_v2": 0.625,
+        "random_v2": -5.375,
+        "temporal_v2": 0.0,
+        "adaptive_v2": 0.0
+      }
+    },
+    "h6_day20": {
+      "seeds": [
+        1000
+      ],
+      "config": {
+        "probe_days": [
+          20
+        ],
+        "horizon": 6,
+        "top_k": 8,
+        "confidence": 0.75,
+        "margin": 0.0
+      },
+      "families": {
+        "reciprocal_v2": 599.1538461538462,
+        "punitive_v2": 600.625,
+        "noisy_v2": 436.3333333333333,
+        "extort_v2": 463.25,
+        "random_v2": 451.875,
+        "temporal_v2": 453.65,
+        "adaptive_v2": 581.125
+      },
+      "mean": 512.2874542124542,
+      "delta": 0.2535714285713766,
+      "family_delta": {
+        "reciprocal_v2": 0.0,
+        "punitive_v2": 0.0,
+        "noisy_v2": 0.0,
+        "extort_v2": 1.0,
+        "random_v2": 1.375,
+        "temporal_v2": -0.6000000000000227,
+        "adaptive_v2": 0.0
+      }
+    },
+    "h6_day30": {
+      "seeds": [
+        1000
+      ],
+      "config": {
+        "probe_days": [
+          30
+        ],
+        "horizon": 6,
+        "top_k": 8,
+        "confidence": 0.75,
+        "margin": 0.0
+      },
+      "families": {
+        "reciprocal_v2": 599.1538461538462,
+        "punitive_v2": 600.625,
+        "noisy_v2": 441.8888888888889,
+        "extort_v2": 466.625,
+        "random_v2": 449.75,
+        "temporal_v2": 454.1,
+        "adaptive_v2": 581.125
+      },
+      "mean": 513.3239621489622,
+      "delta": 1.2900793650793503,
+      "family_delta": {
+        "reciprocal_v2": 0.0,
+        "punitive_v2": 0.0,
+        "noisy_v2": 5.5555555555556,
+        "extort_v2": 4.375,
+        "random_v2": -0.75,
+        "temporal_v2": -0.14999999999997726,
+        "adaptive_v2": 0.0
+      }
+    },
+    "h6_day30_seeds3": {
+      "seeds": [
+        1000,
+        1001,
+        1002
+      ],
+      "config": {
+        "probe_days": [
+          30
+        ],
+        "horizon": 6,
+        "top_k": 8,
+        "confidence": 0.75,
+        "margin": 0.0
+      },
+      "families": {
+        "reciprocal_v2": 599.1538461538462,
+        "punitive_v2": 600.625,
+        "noisy_v2": 430.5925925925926,
+        "extort_v2": 466.3333333333333,
+        "random_v2": 417.4166666666667,
+        "temporal_v2": 452.45,
+        "adaptive_v2": 581.125
+      },
+      "mean": 506.81377696377695,
+      "delta": -5.220105820105914,
+      "family_delta": {
+        "reciprocal_v2": 0.0,
+        "punitive_v2": 0.0,
+        "noisy_v2": -5.740740740740705,
+        "extort_v2": 4.083333333333314,
+        "random_v2": -33.083333333333314,
+        "temporal_v2": -1.8000000000000114,
+        "adaptive_v2": 0.0
+      }
+    },
+    "h4_day30": {
+      "seeds": [
+        1000
+      ],
+      "config": {
+        "probe_days": [
+          30
+        ],
+        "horizon": 4,
+        "top_k": 6,
+        "confidence": 0.9,
+        "margin": 10.0
+      },
+      "families": {
+        "reciprocal_v2": 599.1538461538462,
+        "punitive_v2": 600.625,
+        "noisy_v2": 436.3333333333333,
+        "extort_v2": 462.25,
+        "random_v2": 450.5,
+        "temporal_v2": 454.15,
+        "adaptive_v2": 581.125
+      },
+      "mean": 512.019597069597,
+      "delta": -0.014285714285847462,
+      "family_delta": {
+        "reciprocal_v2": 0.0,
+        "punitive_v2": 0.0,
+        "noisy_v2": 0.0,
+        "extort_v2": 0.0,
+        "random_v2": 0.0,
+        "temporal_v2": -0.10000000000002274,
+        "adaptive_v2": 0.0
+      }
+    }
+  }
+}

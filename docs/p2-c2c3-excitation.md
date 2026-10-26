@@ -133,3 +133,9 @@ states (safe precision 82.1%/82.6%) but abstains too often on deployment
 trajectories (safe recall 20.7%).  The AllD MoE reaches 5-seed heldout_v2
 +4.04 but validation only +0.53, with large seed variance; held-out red
 is 0.00.  It remains **No-Go** for Gate C.
+
+Repeated counterfactual calibration (10 repeats per branch state) is also
+**No-Go**: it raises safe recall from 31.7% to 62.1%, but the remaining
+extort false positives collapse an AllD MoE.  A response veto 0.2 leaves
+only a 2.5% safe rate and +2.93 heldout_v2 (validation -0.31).  See
+`docs/p2-c3-repeated-calib.md`.

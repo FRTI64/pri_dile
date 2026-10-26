@@ -189,10 +189,22 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   validation +0.53，best-validation 配置 +0.90/+1.41，seed 方差大，
   未达 Gate C 的 +10；safe→planner 3-seed heldout_v2 -1.28；
   held-out red 全部 0.00。无条件 early probe 成本 -10.7~-20.8，
-  暂不实现。**No-Go**，不注册、不改主权重；下一步做 repeated
-  counterfactual 校准或 Bayesian expected-value probe。
+  暂不实现。**No-Go**，不注册、不改主权重。
   详见 `docs/p2-c3-threeway-moe.md`、
   `results/p2_threeway_moe_20261026/`。
+- **P2 C3 repeated counterfactual 校准（2026-10-26，offline No-Go）**：
+  每个 branch state 重复 10 次 C/D，得到 `p(response)`，训练
+  calibrated safe/risky/unknown gate。heldout counterfactual safe
+  precision/recall **74.7%/62.1%**（旧 82.6%/31.7%）；no-veto AllD
+  MoE 在 extort 崩坏（day5 heldout -25.87、extort -137.12）。加
+  response veto 0.2 后 5-seed validation **-0.31**、heldout_v2
+  **+2.93**、min_norm 0.9988、safe rate 2.5%；held-out red E4 +0.35、
+  v5/v6 0.00。One-shot Bayesian/EV probe best 1-seed +1.29、
+  3-seed -5.22；无条件 early probe -10.7~-20.8。**No-Go**，不注册、
+  不改主权重；下一步若继续 C3，需要显式 value-of-information probe，
+  而不是继续调 threshold。
+  详见 `docs/p2-c3-repeated-calib.md`、
+  `results/p2_repeated_calib_20261026/`。
 
 复现入口：
 
@@ -248,6 +260,9 @@ bash results/p2_excitation_20261026/run.sh
 
 # C3 three-way gate + MoE screens
 bash results/p2_threeway_moe_20261026/run.sh
+
+# C3 repeated counterfactual calibration + EV probe screen
+bash results/p2_repeated_calib_20261026/run.sh
 
 python3 -m ipd benchmark --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20

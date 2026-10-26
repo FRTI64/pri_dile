@@ -14,7 +14,7 @@ from ipd.training.opponent_model import (
     allow_label, coarse_class, collect_counterfactual_dataset,
     collect_dataset, collect_exploratory_dataset, concat_datasets,
     exploration_actions, per_class_accuracy, split_specs, suite_class,
-    train_mlp, train_softmax,
+    three_way_calibrated_labels, train_mlp, train_softmax,
 )
 
 
@@ -151,6 +151,25 @@ class CounterfactualDataTests(unittest.TestCase):
         self.assertGreater(stats["responsive_pairs"], 0)
         self.assertTrue(all(label == "responsive"
                             for label in response.labels))
+
+    def test_repeated_counterfactual_probabilities(self):
+        spec = [spec for spec in TYPE_BANK if spec.name == "TFT"][0]
+        data, response, stats = collect_counterfactual_dataset(
+            [spec], episodes=1, rounds=30, seed=5, branches=4, horizon=4,
+            repeats=3, prefix_modes=("explore",))
+        self.assertEqual(stats["branch_pairs"], len(response))
+        self.assertEqual(len(response.response_probabilities), len(response))
+        self.assertTrue(all(0.0 <= p <= 1.0
+                            for p in response.response_probabilities))
+        self.assertTrue(all(p == 1.0
+                            for p in response.response_probabilities))
+        self.assertGreater(len(data), 0)
+
+    def test_calibrated_three_way_labels(self):
+        labels = three_way_calibrated_labels(
+            [0.0, 0.1, 0.5, 0.9],
+            safe_threshold=0.0, risky_threshold=0.5)
+        self.assertEqual(labels, ["safe", "unknown", "risky", "risky"])
 
 
 def _synthetic():

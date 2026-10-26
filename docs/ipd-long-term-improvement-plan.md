@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -527,3 +527,24 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
   expected-value / information-gain 版本。
 - 文档：`docs/p2-c3-threeway-moe.md`；
   结果：`results/p2_threeway_moe_20261026/`。
+
+## 20. P2 C3 repeated counterfactual 校准（2026-10-26，offline No-Go）
+
+- `collect_counterfactual_dataset` 新增 `repeats`：同一 branch state
+  重复 10 次独立 C/D（common RNG within pair），得到 `p(response)`；
+  新增 calibrated safe/risky/unknown gate。
+- heldout counterfactual safe precision/recall **74.7%/62.1%**
+  （旧 family+excitation 82.6%/31.7%）；calibration 提高 recall、
+  降低 precision。
+- no-veto AllD MoE 在 extort 崩坏：1-seed t0.6/day5 heldout -25.87、
+  extort -137.12；day10 -9.46、extort -51.88。
+- 加 C2 response veto 0.2：5-seed validation -0.31、heldout_v2 +2.93、
+  min_norm 0.9988、safe rate 2.5%；held-out red E4 +0.35、v5/v6 0.00。
+- One-shot Bayesian/EV probe screen：best 1-seed day30 +1.29、3-seed
+  -5.22（random -33.1）；无条件 early probe -10.7~-20.8。
+- 诊断：calibration 解决 recall 但不解决 precision；extort 的少量
+  false positive 足以让 AllD 崩坏。继续 C3 需要显式
+  value-of-information probe 或更好的后验/特征，而不是继续调
+  threshold。判 **No-Go**，不注册、不改主权重。
+- 文档：`docs/p2-c3-repeated-calib.md`；
+  结果：`results/p2_repeated_calib_20261026/`。
