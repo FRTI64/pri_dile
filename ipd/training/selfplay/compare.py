@@ -51,6 +51,9 @@ def _candidate_table(args) -> dict[str, CandidateSpec]:
     for name, path in args.extra.items():
         table[name] = CandidateSpec("selfplay", name,
                                     {**common, "weights": path})
+    for name, path in getattr(args, "extra_rl", {}).items():
+        table[name] = CandidateSpec("rl", name,
+                                    {**common, "weights": path})
     return {k: v for k, v in table.items() if k in args.names}
 
 
@@ -183,6 +186,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--candidates", default="bc,rl-ppo,adv-rl,scratch")
     ap.add_argument("--extra", default="",
                     help="comma-separated name=path self-play JSON candidates")
+    ap.add_argument("--extra-rl", default="",
+                    help="comma-separated name=path RL/MLP JSON candidates")
     ap.add_argument("--suite", default="final",
                     choices=("final", "validation"))
     ap.add_argument("--seeds", type=int, default=20)
@@ -214,6 +219,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                 continue
             name, path = item.split("=", 1)
             args.extra[name.strip()] = path.strip()
+    extra_rl_raw = args.extra_rl
+    args.extra_rl = {}
+    if extra_rl_raw:
+        for item in extra_rl_raw.split(","):
+            if not item.strip():
+                continue
+            name, path = item.split("=", 1)
+            args.extra_rl[name.strip()] = path.strip()
     table = _candidate_table(args)
     if not table:
         raise SystemExit("no candidates selected")

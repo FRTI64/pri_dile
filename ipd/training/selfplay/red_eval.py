@@ -21,7 +21,23 @@ from typing import Sequence
 
 from ipd.core.primitives import C, D, payoff
 from ipd.paths import weights_path
+from ipd.policies.neural import NeuralPolicy
+from ipd.policies.rl import RLPolicy
 from ipd.policies.selfplay_gru import SelfPlayGRUPolicy
+
+
+def _load_blue(path: str, seed: int):
+    """Load a self-play GRU, an RL checkpoint, or a deployable MLP policy."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            fmt = json.load(fh).get("format")
+    except (OSError, ValueError):
+        fmt = None
+    if fmt == "ipd-rl-policy-v1":
+        return RLPolicy(path, seed=seed, mode="sample")
+    if fmt == "ipd-neural-policy-v1":
+        return NeuralPolicy(path, seed=seed, mode="sample")
+    return SelfPlayGRUPolicy(path, seed=seed, mode="sample")
 
 
 def play_pair(blue, red, seed: int, rounds: int = 100) -> dict:
@@ -99,7 +115,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "blues": {},
     }
     for name, path in blues.items():
-        blue = SelfPlayGRUPolicy(path, seed=args.seed, mode="sample")
+        blue = _load_blue(path, args.seed)
         rows = [play_pair(blue, red, seed) for seed in seeds]
         out["blues"][name] = {"weights": path, **summarize(rows)}
         s = out["blues"][name]
