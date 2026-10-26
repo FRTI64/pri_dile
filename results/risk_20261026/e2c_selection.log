@@ -1,0 +1,22 @@
+E0 league: candidates=['RL-PPO-Hard60', 'RL-Repair', 'E2c-005', 'E2c-010', 'E2c-015', 'E2c-020'] suites=['heldout_v2'] workers=20
+  suite:heldout_v2 44/444 tasks (0.8s)
+  suite:heldout_v2 88/444 tasks (1.0s)
+  suite:heldout_v2 132/444 tasks (1.6s)
+  suite:heldout_v2 176/444 tasks (3.1s)
+  suite:heldout_v2 220/444 tasks (4.7s)
+  suite:heldout_v2 264/444 tasks (6.5s)
+  suite:heldout_v2 308/444 tasks (8.2s)
+  suite:heldout_v2 352/444 tasks (9.9s)
+  suite:heldout_v2 396/444 tasks (11.6s)
+  suite:heldout_v2 440/444 tasks (13.1s)
+  suite:heldout_v2 444/444 tasks (13.2s)
+written results/risk_20261026/e2c_selection.json
+written results/risk_20261026/e2c_selection.md
+fingerprint 7f0a6fcb09472c7e80a43c38452f8bdc6101c88cd86932b477a901ccfa7501b9
+RL-PPO-Hard60        mean=  499.50 min_norm=  1.0000 red_blue=       -
+RL-Repair            mean=  504.40 min_norm=  0.9972 red_blue=       -
+E2c-005              mean=  504.27 min_norm=  0.9998 red_blue=       -
+E2c-010              mean=  505.08 min_norm=  0.9998 red_blue=       -
+E2c-015              mean=  505.33 min_norm=  0.9997 red_blue=       -
+E2c-020              mean=  504.51 min_norm=  0.9958 red_blue=       -
+gate: INCOMPLETE

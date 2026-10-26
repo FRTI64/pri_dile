@@ -1,0 +1,39 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,repair val_dists=original,late,grim30,wide fields/iter/dist=5 n=80 iterations=20 safe=True risk=dro:eta=0.5,q=0.5,blend=0.5,floor=0.1 dirichlet=0
+initialised from weights/rl_policy_checkpoint_repair.json
+using reference-policy KL penalty (coef=0.05)
+initial val avg=553.62 worst=544.83 original=565.44 late=547.35 grim30=544.83 wide=556.84
+iter   1 reward= 548.04 pi=-0.0003 v=0.0631 H=0.0678 kl=0.0004 bckl=0.0003 clip=0.004 ev=+0.960 (5.6s+2.5s)
+iter   2 reward= 530.48 pi=-0.0009 v=0.0836 H=0.0706 kl=0.0004 bckl=0.0007 clip=0.004 ev=+0.948 (5.6s+0.7s)
+iter   3 reward= 531.24 pi=-0.0006 v=0.0696 H=0.0739 kl=0.0004 bckl=0.0016 clip=0.004 ev=+0.954 (6.1s+0.6s)
+iter   4 reward= 528.16 pi=+0.0004 v=0.0765 H=0.0729 kl=0.0003 bckl=0.0017 clip=0.003 ev=+0.951 (5.8s+0.8s)
+  new best at iter 5: avg=553.72 worst=544.68
+iter   5 reward= 531.25 pi=-0.0008 v=0.0770 H=0.0754 kl=0.0003 bckl=0.0026 clip=0.003 ev=+0.950 (5.7s+0.6s)
+      train original=570.25 late=546.25 grim30=558.33 wide=570.54 repair=494.53 | val avg=553.72 worst=544.68 original=565.22 late=546.91 grim30=544.68 wide=558.08
+iter   6 reward= 530.45 pi=-0.0006 v=0.0735 H=0.0690 kl=0.0003 bckl=0.0031 clip=0.003 ev=+0.952 (5.8s+0.8s)
+iter   7 reward= 529.42 pi=-0.0018 v=0.0734 H=0.0748 kl=0.0003 bckl=0.0032 clip=0.003 ev=+0.953 (5.8s+0.7s)
+iter   8 reward= 526.84 pi=-0.0007 v=0.0748 H=0.0688 kl=0.0003 bckl=0.0032 clip=0.003 ev=+0.952 (5.8s+0.7s)
+iter   9 reward= 528.41 pi=-0.0003 v=0.0748 H=0.0719 kl=0.0002 bckl=0.0034 clip=0.002 ev=+0.951 (5.7s+0.6s)
+  new best at iter 10: avg=553.85 worst=544.80
+iter  10 reward= 531.96 pi=+0.0003 v=0.0756 H=0.0690 kl=0.0002 bckl=0.0043 clip=0.002 ev=+0.951 (5.8s+0.6s)
+      train original=551.17 late=555.51 grim30=550.70 wide=561.69 repair=504.59 | val avg=553.85 worst=544.80 original=566.15 late=546.92 grim30=544.80 wide=557.54
+  saved checkpoint (best iter 10, val avg=553.85)
+iter  11 reward= 530.66 pi=+0.0004 v=0.0652 H=0.0705 kl=0.0002 bckl=0.0051 clip=0.001 ev=+0.957 (5.9s+0.6s)
+iter  12 reward= 525.68 pi=+0.0007 v=0.0774 H=0.0706 kl=0.0002 bckl=0.0047 clip=0.001 ev=+0.949 (5.9s+0.8s)
+iter  13 reward= 524.82 pi=+0.0006 v=0.0769 H=0.0695 kl=0.0001 bckl=0.0042 clip=0.001 ev=+0.950 (5.9s+0.9s)
+iter  14 reward= 532.32 pi=-0.0003 v=0.0713 H=0.0718 kl=0.0001 bckl=0.0051 clip=0.000 ev=+0.953 (5.8s+0.9s)
+  new best at iter 15: avg=553.91 worst=544.82
+iter  15 reward= 533.10 pi=+0.0005 v=0.0759 H=0.0695 kl=0.0002 bckl=0.0064 clip=0.001 ev=+0.952 (5.8s+0.7s)
+      train original=572.26 late=549.80 grim30=552.51 wide=576.87 repair=502.80 | val avg=553.91 worst=544.82 original=566.40 late=546.90 grim30=544.82 wide=557.50
+iter  16 reward= 529.78 pi=+0.0004 v=0.0692 H=0.0714 kl=0.0001 bckl=0.0071 clip=0.000 ev=+0.955 (5.9s+0.8s)
+iter  17 reward= 530.57 pi=-0.0003 v=0.0772 H=0.0689 kl=0.0000 bckl=0.0069 clip=0.000 ev=+0.950 (5.9s+0.7s)
+iter  18 reward= 529.59 pi=-0.0003 v=0.0762 H=0.0764 kl=0.0002 bckl=0.0066 clip=0.001 ev=+0.950 (5.9s+0.6s)
+iter  19 reward= 530.07 pi=+0.0007 v=0.0712 H=0.0754 kl=0.0000 bckl=0.0063 clip=0.000 ev=+0.953 (5.9s+0.7s)
+iter  20 reward= 519.27 pi=-0.0005 v=0.0759 H=0.0772 kl=0.0000 bckl=0.0065 clip=0.000 ev=+0.950 (6.0s+0.7s)
+      train original=553.41 late=555.00 grim30=534.04 wide=557.37 repair=485.28 | val avg=553.89 worst=544.83 original=566.36 late=546.90 grim30=544.83 wide=557.49
+  saved checkpoint (best iter 15, val avg=553.91)
+best iteration 15 val={'by_dist': {'original': 566.402, 'late': 546.9, 'grim30': 544.824, 'wide': 557.504}, 'avg': 553.9075, 'worst': 544.824, 'selection': 551.636625}
+written weights/rl_policy_checkpoint_risk_c.json
+written weights/rl_policy_weights_risk_c.json (249119 bytes)
+written results/risk_20261026/E2c_history.json
+vs AllC-until-90: C=92 D=8 score=548

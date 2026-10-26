@@ -65,7 +65,9 @@ from ipd.core.simulator import C, D, payoff
 from ipd.evaluation.distributions import DISTS, TRAIN_DISTS, build_train_dist_field
 from ipd.policies.neural import FEATURE_VERSION, extract_features
 from ipd.training.neural import describe_device, resolve_device
-from ipd.training.risk import cvar_episode_weights, dirichlet_weights
+from ipd.training.risk import (
+    cvar_episode_weights, dirichlet_weights, dro_update_weights,
+)
 
 N_FEATURES = len(extract_features([], []))
 REWARD_SCALE = 0.01  # payoff / 100; keeps value targets near 5.5
@@ -650,12 +652,21 @@ def main(argv=None) -> None:
     ap.add_argument("--bc-kl-coef", type=float, default=0.0,
                     help="KL penalty towards the initial (BC) policy")
     ap.add_argument("--risk-objective", default="none",
-                    choices=("none", "cvar"),
-                    help="tail-risk surrogate; cvar upweights worst episodes")
+                    choices=("none", "cvar", "dro"),
+                    help="tail-risk surrogate: cvar weights worst episodes; "
+                         "dro reweights worst distributions")
     ap.add_argument("--risk-coef", type=float, default=0.0,
                     help="extra advantage weight for worst episodes")
     ap.add_argument("--risk-quantile", type=float, default=0.2,
                     help="fraction of worst episodes for CVaR weighting")
+    ap.add_argument("--dro-eta", type=float, default=0.5,
+                    help="exponentiated-gradient step for DRO")
+    ap.add_argument("--dro-quantile", type=float, default=0.5,
+                    help="fraction of worst distributions for DRO blend")
+    ap.add_argument("--dro-blend", type=float, default=0.5,
+                    help="blend between EG and worst-set target")
+    ap.add_argument("--dro-floor", type=float, default=0.1,
+                    help="minimum mixture weight per distribution")
     ap.add_argument("--dirichlet-concentration", type=float, default=0.0,
                     help="sample per-iteration dist mixture; 0 disables")
     ap.add_argument("--freeze-policy-trunk", action="store_true",
@@ -715,11 +726,16 @@ def main(argv=None) -> None:
 
     device = resolve_device(args.device)
     print(f"device: {describe_device(device)}", flush=True)
+    risk_desc = (f"cvar:{args.risk_coef:g}@{args.risk_quantile:g}"
+                 if args.risk_objective == "cvar"
+                 else f"dro:eta={args.dro_eta:g},q={args.dro_quantile:g},"
+                      f"blend={args.dro_blend:g},floor={args.dro_floor:g}"
+                 if args.risk_objective == "dro" else "none")
     print(f"train_dists={','.join(train_dists)} "
           f"val_dists={','.join(val_dists)} "
           f"fields/iter/dist={args.fields_per_dist} "
           f"n={args.n} iterations={args.iterations} safe={not args.allow_probe} "
-          f"risk={args.risk_objective}:{args.risk_coef:g}@{args.risk_quantile:g} "
+          f"risk={risk_desc} "
           f"dirichlet={args.dirichlet_concentration:g}",
           flush=True)
 
@@ -775,6 +791,10 @@ def main(argv=None) -> None:
     val_rng = random.Random(args.seed + 900000)
     val_seeds = {d: [val_rng.randrange(1 << 30)
                      for _ in range(args.val_fields_per_dist)] for d in val_dists}
+    dro_scale = (sum(dist_weights.values()) if dist_weights
+                 else float(len(train_dists)))
+    dro_weights = (dict(dist_weights) if dist_weights
+                   else {d: 1.0 for d in train_dists})
 
     meta_base = {
         "algorithm": "ppo",
@@ -795,6 +815,10 @@ def main(argv=None) -> None:
         "risk_objective": args.risk_objective,
         "risk_coef": args.risk_coef,
         "risk_quantile": args.risk_quantile,
+        "dro_eta": args.dro_eta,
+        "dro_quantile": args.dro_quantile,
+        "dro_blend": args.dro_blend,
+        "dro_floor": args.dro_floor,
         "dirichlet_concentration": args.dirichlet_concentration,
         "freeze_policy_trunk": args.freeze_policy_trunk,
         "select_metric": args.select_metric,
@@ -832,11 +856,14 @@ def main(argv=None) -> None:
             model.eval()
             ckpt = export_checkpoint(model, mean, std, temperature, safe, meta_base)
             rollout_start = time.time()
+            rollout_weights = (dro_weights
+                               if args.risk_objective == "dro"
+                               else dist_weights)
             payload = collect_rollouts(
                 pool, ckpt, train_dists, args.fields_per_dist, args.n,
                 args.seed + iteration * 100003, safe, args.workers,
                 args.gamma, args.lam, args.center_rewards,
-                args.center_advantages, dist_weights,
+                args.center_advantages, rollout_weights,
                 dirichlet_concentration=args.dirichlet_concentration)
             rollout_time = time.time() - rollout_start
 
@@ -863,6 +890,14 @@ def main(argv=None) -> None:
                 "mixture": payload.get("mixture"),
                 **metrics,
             }
+            if args.risk_objective == "dro":
+                normalised = dro_update_weights(
+                    dro_weights, reward_by_dist, eta=args.dro_eta,
+                    quantile=args.dro_quantile, blend=args.dro_blend,
+                    floor=args.dro_floor)
+                dro_weights = {name: value * dro_scale
+                               for name, value in normalised.items()}
+                row["dro_next"] = dict(normalised)
             do_val = (iteration % args.val_every == 0
                       or iteration == args.iterations)
             if do_val:

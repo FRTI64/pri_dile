@@ -1,0 +1,91 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "e2c_checkpoint_selection",
+  "note": "Validation-only checkpoint selection on heldout_v2 with a fixed policy seed; E2c DRO (eta=0.5, q=0.5, blend=0.5).",
+  "baseline": "RL-PPO-Hard60",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "opponent_seeds": 20
+  },
+  "suites": {
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 20,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 1
+  },
+  "red": {
+    "seeds": 1
+  },
+  "candidates": [
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "group": "baseline",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-Repair",
+      "kind": "rl-repair",
+      "group": "baseline",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E2c-005",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/risk_20261026/E2c_checkpoints/iter_005.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E2c-010",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/risk_20261026/E2c_checkpoints/iter_010.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E2c-015",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/risk_20261026/E2c_checkpoints/iter_015.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "E2c-020",
+      "kind": "rl",
+      "group": "checkpoint",
+      "policy_seed": 20261024,
+      "params": {
+        "weights": "results/risk_20261026/E2c_checkpoints/iter_020.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": []
+}

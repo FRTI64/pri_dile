@@ -88,6 +88,10 @@ class TrainingInterfaceTests(unittest.TestCase):
                 cwd=ROOT, capture_output=True, text=True, timeout=60,
             )
             self.assertIn("--device", proc.stdout)
+            if task == "rl":
+                for flag in ("--risk-objective", "--dro-eta",
+                             "--dirichlet-concentration"):
+                    self.assertIn(flag, proc.stdout)
 
 
 if __name__ == "__main__":

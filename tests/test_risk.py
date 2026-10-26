@@ -4,7 +4,9 @@ from __future__ import annotations
 import random
 import unittest
 
-from ipd.training.risk import cvar_episode_weights, dirichlet_weights
+from ipd.training.risk import (
+    cvar_episode_weights, dirichlet_weights, dro_update_weights,
+)
 
 
 class CVaRWeightTests(unittest.TestCase):
@@ -51,6 +53,38 @@ class DirichletTests(unittest.TestCase):
         weights = dirichlet_weights(base, random.Random(1), concentration=0.0)
         self.assertAlmostEqual(weights["a"], 0.25)
         self.assertAlmostEqual(weights["b"], 0.75)
+
+
+class DROWeightTests(unittest.TestCase):
+    def test_upweights_worst_distribution(self):
+        base = {"a": 1.0, "b": 1.0, "c": 1.0, "d": 1.0}
+        means = {"a": 600.0, "b": 500.0, "c": 550.0, "d": 580.0}
+        weights = dro_update_weights(base, means, eta=1.0, quantile=0.25,
+                                     blend=0.5, floor=0.001)
+        self.assertAlmostEqual(sum(weights.values()), 1.0, places=9)
+        self.assertGreater(weights["b"], weights["a"])
+        self.assertGreater(weights["b"], weights["c"])
+        self.assertLess(weights["a"], weights["d"])
+
+    def test_floor_prevents_zero_weight(self):
+        base = {"a": 1.0, "b": 1.0, "c": 1.0}
+        means = {"a": 1000.0, "b": 900.0, "c": 0.0}
+        weights = dro_update_weights(base, means, eta=20.0, quantile=1.0,
+                                     blend=1.0, floor=0.2)
+        self.assertAlmostEqual(sum(weights.values()), 1.0, places=9)
+        self.assertTrue(all(v >= 0.2 - 1e-12 for v in weights.values()))
+
+    def test_zero_update_is_base(self):
+        base = {"a": 1.0, "b": 3.0}
+        means = {"a": 600.0, "b": 500.0}
+        weights = dro_update_weights(base, means, eta=0.0, quantile=0.5,
+                                     blend=0.0)
+        self.assertAlmostEqual(weights["a"], 0.25)
+        self.assertAlmostEqual(weights["b"], 0.75)
+
+    def test_empty_and_single(self):
+        self.assertEqual(dro_update_weights({}, {}), {})
+        self.assertEqual(dro_update_weights({"a": 2.0}, {"a": 1.0}), {"a": 1.0})
 
 
 if __name__ == "__main__":

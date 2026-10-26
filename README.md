@@ -277,11 +277,12 @@ final 方向一致；per-family extort +23.4、random +4.7，无 family 崩塌�
 主权重**；A60/RL-PPO 仍是 fallback。`heldout_v3` 已被使用，后续需
 heldout_v4。详见 `results/robust_20261026/README.md`。
 
-E2 新增 CVaR episode weighting + Dirichlet mixture（`ipd/training/risk.py`）。
-E2a（coef 1.0）和 E2b（coef 3.0）在 heldout_v2 上最好 mean 505.78，
-CVaR item 仅 +0.5%~+1.2%，min_norm +0.003，未达 +10%/+0.02 Gate；
-official validation 也未超过 RL-Repair。E2 判 **No-Go**，不注册
-`rl-risk`，`heldout_v4` 保留未用。详见 `results/risk_20261026/README.md`。
+E2 新增 CVaR episode weighting、Dirichlet mixture 和 worst-family DRO
+（`ipd/training/risk.py`）。E2a/E2b（CVaR）和 E2c（DRO）在 heldout_v2
+上最好 mean 505.78，CVaR item 只有 -0.5%~+1.2%，min_norm +0.003，
+未达 +10%/+0.02 Gate；official validation 也未超过 RL-Repair。
+E2 判 **No-Go**，不注册 `rl-risk`/`rl-dro`，`heldout_v4` 保留未用。
+详见 `results/risk_20261026/README.md`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手

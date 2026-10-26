@@ -409,10 +409,12 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
 - 新增 `ipd/training/risk.py`：CVaR episode weights（worst quantile 加权，
   mean=1）和 Dirichlet mixture；`ipd/training/rl.py` 新增
   `--risk-objective/--risk-coef/--risk-quantile/--dirichlet-concentration`。
-- E2a（coef 1.0/q 0.2）和 E2b（coef 3.0/q 0.1）从 RL-Repair 训练 20 iter。
-- heldout_v2 最好 mean 505.30/505.78（RL-Repair 504.40）；
-  CVaR item 仅 +1.2%/+0.5%，min_norm +0.0001/+0.0027；
+- E2a（cvar 1.0/q 0.2）、E2b（cvar 3.0/q 0.1）、E2c（DRO eta 0.5）
+  从 RL-Repair 训练 20 iter。
+- heldout_v2 最好 mean 505.30/505.78/505.33（RL-Repair 504.40）；
+  CVaR item +1.2%/+0.5%/-0.5%，min_norm +0.0001/+0.0027/+0.0025；
   official validation 未超过 RL-Repair。**No-Go**。
-- 不注册 `rl-risk`；保留 RL-Repair；`heldout_v4` 未运行。
-- 诊断：episode-level CVaR 加权没有直接约束 held-out family 尾部。
-  下一步应做 worst-family / DRO 重加权，或 family-level CVaR 约束。
+- 不注册 `rl-risk`/`rl-dro`；保留 RL-Repair；`heldout_v4` 未运行。
+- 诊断：episode-level CVaR 和训练分布 DRO 都没有直接约束 held-out
+  family 尾部。下一步应直接用 family-level CVaR/exploitability 目标，
+  或转 P3 red/exploiter league。

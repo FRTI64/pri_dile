@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import math
 import random
+import statistics
 from typing import Mapping, Sequence
 
 
@@ -68,4 +69,48 @@ def dirichlet_weights(base: Mapping[str, float], rng: random.Random,
     return {name: g / total_gamma for name, g in zip(names, gammas)}
 
 
-__all__ = ["cvar_episode_weights", "dirichlet_weights"]
+def dro_update_weights(weights: Mapping[str, float],
+                       means: Mapping[str, float], *, eta: float = 0.5,
+                       quantile: float = 0.5, blend: float = 0.5,
+                       floor: float = 0.1) -> dict[str, float]:
+    """Exponentiated-gradient / worst-family update of a mixture.
+
+    Low-scoring distributions receive more weight.  ``blend`` mixes the EG
+    update with a uniform distribution over the worst ``quantile`` fraction;
+    ``floor`` prevents any distribution from disappearing.
+    """
+    names = list(weights)
+    if not names:
+        return {}
+    if len(names) == 1:
+        return {names[0]: 1.0}
+    raw = [max(0.0, float(weights[name])) for name in names]
+    total = sum(raw)
+    if total <= 0.0:
+        base = [1.0 / len(names)] * len(names)
+    else:
+        base = [x / total for x in raw]
+    values = [float(means.get(name, 0.0)) for name in names]
+    mu = statistics.fmean(values)
+    sigma = statistics.pstdev(values) if len(values) > 1 else 0.0
+    scale = max(1.0, sigma)
+    eg = [base[i] * math.exp(-float(eta) * (values[i] - mu) / scale)
+          for i in range(len(names))]
+    eg_total = sum(eg)
+    eg = ([1.0 / len(names)] * len(names) if eg_total <= 0.0
+          else [x / eg_total for x in eg])
+    q = min(1.0, max(0.0, float(quantile)))
+    k = max(1, int(math.ceil(q * len(names))))
+    worst = set(sorted(range(len(names)), key=lambda i: values[i])[:k])
+    target = [1.0 / k if i in worst else 0.0 for i in range(len(names))]
+    b = min(1.0, max(0.0, float(blend)))
+    mixed = [(1.0 - b) * eg[i] + b * target[i] for i in range(len(names))]
+    floored = [max(float(floor), x) for x in mixed]
+    floored_total = sum(floored)
+    return {name: floored[i] / floored_total
+            for i, name in enumerate(names)}
+
+
+__all__ = [
+    "cvar_episode_weights", "dirichlet_weights", "dro_update_weights",
+]

@@ -1,0 +1,118 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "e2c_dro_league_20261026",
+  "note": "E2c DRO/worst-family full comparison. Same suites/seeds as E1c/E2a; heldout_v2 is validation.",
+  "baseline": "RL-PPO",
+  "nash_iterations": 20000,
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "n": 299,
+    "mode": "sample",
+    "fields": 20,
+    "blind_fields": 20,
+    "opponent_seeds": 20,
+    "cross_play_seeds": 20,
+    "red_seeds": 20
+  },
+  "suites": {
+    "official": {
+      "kind": "official",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261026
+    },
+    "blind": {
+      "kind": "blind",
+      "fields": 20,
+      "n": 299,
+      "seed": 20261025
+    },
+    "validation": {
+      "kind": "opponents",
+      "suite": "validation",
+      "seeds": 20,
+      "seed_base": 20261026
+    },
+    "heldout_v2": {
+      "kind": "opponents",
+      "suite": "heldout_v2",
+      "seeds": 20,
+      "seed_base": 20961026
+    }
+  },
+  "cross_play": {
+    "seeds": 20,
+    "seed_base": 20561026,
+    "policy_seed_base": 20461026
+  },
+  "red": {
+    "seeds": 20,
+    "seed_base": 20561026,
+    "policy_seed_base": 20361026
+  },
+  "candidates": [
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "group": "rule"
+    },
+    {
+      "name": "Resp3-tuned",
+      "kind": "resp3-tuned",
+      "group": "rule"
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "group": "rule"
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "group": "learned",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "group": "learned",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-DRO",
+      "kind": "rl",
+      "group": "learned",
+      "params": {
+        "weights": "weights/rl_policy_weights_risk_c.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL",
+      "kind": "adv-rl",
+      "group": "learned",
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red_policies": [
+    {
+      "name": "E4-red-BC",
+      "kind": "selfplay",
+      "group": "red",
+      "params": {
+        "weights": "weights/selfplay_improvement/E4_red_policy.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}
