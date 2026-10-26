@@ -127,6 +127,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                     help="also require the next-action model to predict D")
     ap.add_argument("--next-model", default="",
                     help="optional next-action model JSON")
+    ap.add_argument("--response-model", default="",
+                    help="optional counterfactual responsiveness model JSON")
+    ap.add_argument("--max-response-probability", type=float, default=0.5,
+                    help="veto when the response model predicts a higher "
+                         "probability of opponent responsiveness")
     ap.add_argument("--out", default=result_path("planner_eval.json"))
     args = ap.parse_args(argv)
 
@@ -143,11 +148,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                         if x.strip())
         next_model = (load_opponent_model(args.next_model)
                       if args.next_model else None)
+        response_model = (load_opponent_model(args.response_model)
+                          if args.response_model else None)
         gate = OpponentGate(
             load_opponent_model(args.gate_model),
             allowed=allowed, threshold=args.gate_threshold,
             min_day=args.gate_min_day, require_next_d=args.require_next_d,
-            next_model=next_model)
+            next_model=next_model, response_model=response_model,
+            max_response_probability=args.max_response_probability)
     planner = BeliefPlanner(
         planner_base, horizon=args.horizon, top_k=args.top_k,
         max_hypotheses=args.max_hypotheses,
@@ -172,6 +180,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             "gate_threshold": args.gate_threshold if args.gate_model else None,
             "gate_min_day": args.gate_min_day if args.gate_model else None,
             "require_next_d": args.require_next_d if args.gate_model else None,
+            "response_model": (args.response_model
+                               if args.gate_model else None),
+            "max_response_probability": (args.max_response_probability
+                                         if args.response_model else None),
         },
     }
     for suite in suites:

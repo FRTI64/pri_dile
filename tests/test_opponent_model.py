@@ -9,9 +9,12 @@ from pathlib import Path
 from ipd.core.opponents.bank import TYPE_BANK
 from ipd.core.primitives import C, D
 from ipd.training.opponent_model import (
-    CLASSES, LinearOpponentModel, MLPOpponentModel, OpponentGate, accuracy,
-    allow_label, coarse_class, collect_dataset, per_class_accuracy,
-    split_specs, suite_class, train_mlp, train_softmax,
+    CLASSES, EXPLORATION_TEMPLATES, RESPONSE_CLASSES,
+    LinearOpponentModel, MLPOpponentModel, OpponentGate, accuracy,
+    allow_label, coarse_class, collect_counterfactual_dataset,
+    collect_dataset, collect_exploratory_dataset, concat_datasets,
+    exploration_actions, per_class_accuracy, split_specs, suite_class,
+    train_mlp, train_softmax,
 )
 
 
@@ -62,6 +65,92 @@ class DatasetTests(unittest.TestCase):
         self.assertTrue(all(action in (C, D) for action in data.next_actions))
         self.assertEqual(set(data.labels),
                          {coarse_class(s.name, s.family) for s in specs})
+
+    def test_collect_dataset_with_stats(self):
+        specs = [spec for spec in TYPE_BANK
+                 if spec.name in ("AllC", "AllD", "TFT")]
+        data, stats = collect_dataset(
+            specs, episodes=1, rounds=12, seed=3, with_stats=True)
+        self.assertEqual(stats["samples"], len(data))
+        self.assertEqual(set(stats["by_class"]),
+                         {coarse_class(s.name, s.family) for s in specs})
+
+
+class ExploratoryDataTests(unittest.TestCase):
+    def test_exploration_templates_are_valid_and_exciting(self):
+        for template in EXPLORATION_TEMPLATES:
+            rng = random.Random(3)
+            actions, chosen = exploration_actions(rng, rounds=40,
+                                                  template=template)
+            self.assertEqual(chosen, template)
+            self.assertEqual(len(actions), 40)
+            self.assertTrue(all(action in (C, D) for action in actions))
+            if template == "cooperate":
+                self.assertEqual(sum(actions), 0)
+            else:
+                self.assertGreater(sum(actions), 0)
+
+    def test_exploration_is_deterministic(self):
+        a, _ = exploration_actions(random.Random(11), 60, "single_probes")
+        b, _ = exploration_actions(random.Random(11), 60, "single_probes")
+        self.assertEqual(a, b)
+
+    def test_exploratory_dataset_has_response_excitation(self):
+        specs = [spec for spec in TYPE_BANK
+                 if spec.name in ("AllC", "TFT", "Grim", "AllD",
+                                  "Random.50", "Extort2")]
+        data, stats = collect_exploratory_dataset(
+            specs, episodes=2, rounds=40, seed=3)
+        self.assertEqual(len(data), len(specs) * 2 * 40)
+        self.assertTrue(all(len(row) == 85 for row in data.features))
+        self.assertGreater(stats["excited_samples"], 0)
+        self.assertGreater(stats["excited_rate"], 0.1)
+        self.assertGreater(stats["defection_opportunities"], 0)
+        self.assertIn("adaptive", stats["by_class"])
+        self.assertGreater(
+            stats["by_class"]["adaptive"]["excited_samples"], 0)
+        self.assertTrue(any(row[35] > 0 for row in data.features))
+
+    def test_concat_datasets_preserves_rows(self):
+        specs = [spec for spec in TYPE_BANK if spec.name in ("AllC", "AllD")]
+        first = collect_dataset(specs, episodes=1, rounds=8, seed=2)
+        second, _ = collect_exploratory_dataset(
+            specs, episodes=1, rounds=8, seed=2)
+        combined = concat_datasets(first, second)
+        self.assertEqual(len(combined), len(first) + len(second))
+        self.assertEqual(combined.labels, first.labels + second.labels)
+        self.assertEqual(combined.next_actions,
+                         first.next_actions + second.next_actions)
+
+
+class CounterfactualDataTests(unittest.TestCase):
+    def _collect(self, name):
+        spec = [spec for spec in TYPE_BANK if spec.name == name][0]
+        return collect_counterfactual_dataset(
+            [spec], episodes=1, rounds=30, seed=5, branches=4, horizon=4,
+            prefix_modes=("explore",))
+
+    def test_counterfactual_shapes_and_branch_count(self):
+        data, response, stats = self._collect("TFT")
+        self.assertGreater(len(data), 0)
+        self.assertEqual(stats["branch_pairs"], len(response))
+        self.assertEqual(stats["branch_pairs"],
+                         stats["responsive_pairs"]
+                         + stats["unresponsive_pairs"])
+        self.assertTrue(set(response.labels) <= set(RESPONSE_CLASSES))
+
+    def test_cooperator_and_defector_are_unresponsive(self):
+        for name in ("AllC", "AllD", "Random.50"):
+            _, response, stats = self._collect(name)
+            self.assertEqual(stats["responsive_pairs"], 0, name)
+            self.assertTrue(all(label == "unresponsive"
+                                for label in response.labels), name)
+
+    def test_tft_is_responsive_to_counterfactual_action(self):
+        _, response, stats = self._collect("TFT")
+        self.assertGreater(stats["responsive_pairs"], 0)
+        self.assertTrue(all(label == "responsive"
+                            for label in response.labels))
 
 
 def _synthetic():
@@ -169,6 +258,34 @@ class GateTests(unittest.TestCase):
         allowed, info = gate(1, [C], [D])
         self.assertFalse(allowed)
         self.assertEqual(info["label"], "noisy")
+
+    def test_gate_response_model_veto(self):
+        class Dummy:
+            def predict(self, features):
+                return "defect", 0.9
+
+        class Response:
+            classes = ["unresponsive", "responsive"]
+
+            def __init__(self, p_responsive):
+                self.p_responsive = p_responsive
+
+            def probabilities(self, features):
+                return [1.0 - self.p_responsive, self.p_responsive]
+
+        gate = OpponentGate(
+            Dummy(), allowed=("defect",), threshold=0.6, min_day=0,
+            response_model=Response(0.7), max_response_probability=0.5)
+        allowed, info = gate(1, [C], [D])
+        self.assertFalse(allowed)
+        self.assertAlmostEqual(info["response_probability"], 0.7)
+
+        gate = OpponentGate(
+            Dummy(), allowed=("defect",), threshold=0.6, min_day=0,
+            response_model=Response(0.2), max_response_probability=0.5)
+        allowed, info = gate(1, [C], [D])
+        self.assertTrue(allowed)
+        self.assertAlmostEqual(info["response_probability"], 0.2)
 
 
 if __name__ == "__main__":

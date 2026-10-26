@@ -1,6 +1,7 @@
 # P2 C2/C3 — learned opponent model + confidence gate
 
-- **Status:** offline screen complete — **No-Go**（2026-10-26）
+- **Status:** offline screen complete — **No-Go**（2026-10-26）;
+  excitation follow-up: data-layer Go / planner still No-Go（2026-10-26）
 - **Code:** `ipd/training/opponent_model.py`,
   `ipd/policies/belief_planner.py`（gate hook）,
   `ipd/evaluation/planner_eval.py`
@@ -95,7 +96,34 @@ late/random, so it does not solve the problem by itself.
 4. Do not change the main weights.  Use `heldout_v4` only after a candidate
    passes validation and gets one-shot final approval.
 
-## 6. Reproduction
+## 6. Excitation follow-up（2026-10-26）
+
+The first next step was implemented in
+`results/p2_excitation_20261026/` and
+`docs/p2-c2c3-excitation.md`:
+
+- Open-loop exploratory schedules (`single_probes`, `block_probes`,
+  `random`, `alternating`, `late_block`) raise the overall `excited`
+  rate from 25.8% to 59.3%; cooperative/forgiving go from 0% to
+  56.9%/48.6%.
+- Counterfactual C/D branches (536 pairs) give a direct responsiveness
+  signal; cooperative/noisy are 80.8%/89.6% responsive, late/random
+  are 0%/10%.
+- Gate: base+explore 72.0/71.1/43.7 on heldout_v2 (old
+  70.6/70.2/38.7); mixed + counterfactual 73.1/69.0/52.7, and
+  77.1/73.7/61.5 on the counterfactual suite.  Responsiveness head
+  reaches 71.8% on heldout counterfactual.
+- Planner is still No-Go: mixed CF gate conservative is +0.88 on
+  heldout_v2 with 3 seeds (1-seed +3.04, temporal +11.0, but temporal
+  falls to +0.45 with 3 seeds); held-out red stays 0.00; aggressive
+  still collapses extort (-107.62).  Training excitation is fixed, but
+  deployment trajectories remain low-excitation because RL-Repair
+  rarely defects early.
+- Next: three-way `safe/risky/unknown` gate + MoE, and/or an
+  early-game active probe that creates response events before
+  enabling exploitation.
+
+## 7. Reproduction
 
 ```bash
 python3 -m ipd train opponent-model --episodes 2 --epochs 300 \
@@ -109,7 +137,7 @@ bash results/p2_opponent_model_20261026/run_planner_screens.sh
 PYTHONPATH=. .venv/bin/python results/p2_opponent_model_20261026/red_screen.py
 ```
 
-## 7. Artifacts
+## 8. Artifacts
 
 ```text
 ipd/training/opponent_model.py
@@ -130,6 +158,8 @@ results/p2_opponent_model_20261026/
   planner_gated_red.json
   run_planner_screens.sh / red_screen.py
   checksums.txt
+docs/p2-c2c3-excitation.md         # exploratory / counterfactual follow-up
+results/p2_excitation_20261026/    # data, gate/response reports, planner screens
 ```
 
 Main weights are unchanged.

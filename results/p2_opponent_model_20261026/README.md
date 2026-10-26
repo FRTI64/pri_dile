@@ -64,3 +64,7 @@ docs/p2-c2c3-opponent-model.md
 
 主权重 `weights/rl_policy_weights.json` sha256 仍为
 `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
+
+后续 exploratory / counterfactual 数据实验见
+`results/p2_excitation_20261026/` 和 `docs/p2-c2c3-excitation.md`：
+训练 excitation 已解决，gate 改善，但 planner 仍 No-Go。

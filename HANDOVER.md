@@ -165,10 +165,23 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   gated conservative（horizon 4, gate 0.7）validation 0.00、
   heldout_v2 +1.20、min_norm 0.999、held-out red 无变化；
   gated aggressive heldout_v2 -21.91、extort -107.6。
-  **No-Go**；下一步用 exploratory/counterfactual 轨迹训练 opponent
-  model，或三路 `safe/risky/unknown` gate + MoE。
+  **No-Go**；随后补做 exploratory/counterfactual 数据。
   详见 `docs/p2-c2c3-opponent-model.md`、
   `results/p2_opponent_model_20261026/`。
+- **P2 C2/C3 excitation 数据（2026-10-26，data Go / planner No-Go）**：
+  新增 open-loop exploratory schedules（single/block/random/alternating/
+  late）和 counterfactual C/D 分支采集；训练 `excited` 率 25.8%→59.3%，
+  cooperative/forgiving 0%→56.9%/48.6%；536 个 counterfactual pair，
+  43.7% responsive。gate heldout_v2 73.1/69.0/52.7（mixed），
+  counterfactual 77.1/73.7/61.5，responsiveness head 71.8%。
+  但部署轨迹 excitation 仍不足，adaptive/noisy false positives 仍在；
+  conservative planner 3-seed heldout_v2 **+0.88**、validation -0.44、
+  temporal +0.45；1-seed +3.04/+11.0 不复现；held-out red 0.00；
+  gated aggressive 仍 extort -107.6。**数据层 Go，planner Gate C
+  No-Go**；不注册、不改主权重。下一步三路 `safe/risky/unknown`
+  gate + MoE，或 early-game active probe。
+  详见 `docs/p2-c2c3-excitation.md`、
+  `results/p2_excitation_20261026/`。
 
 复现入口：
 
@@ -218,6 +231,9 @@ python3 -m ipd train rl --device auto --iterations 40 \
   --select-metric blind --out weights/rl_policy_weights.json \
   --checkpoint-out weights/rl_policy_checkpoint.json \
   --history-out results/rl_training_history.json
+
+# C2/C3 exploratory / counterfactual opponent model + planner screens
+bash results/p2_excitation_20261026/run.sh
 
 python3 -m ipd benchmark --arch adversarial \
   --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20

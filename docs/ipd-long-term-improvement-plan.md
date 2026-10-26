@@ -1,6 +1,6 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-PPO-Hard60` / `rl-hard60`（A60）
 - **Baseline:** `RL-PPO`（`rl`）
@@ -487,3 +487,24 @@ E0 保证判断可信，E1 是最快见效，C1 是最高上限。
   `safe/risky/unknown` gate + MoE；unknown 回退 RL-Repair。
 - 文档：`docs/p2-c2c3-opponent-model.md`；
   结果：`results/p2_opponent_model_20261026/`。
+
+## 18. P2 C2/C3 exploratory / counterfactual data（2026-10-26，data Go / planner No-Go）
+
+- 新增 open-loop exploratory schedules（single/block/random/alternating/
+  late/cooperate）和 common-RNG counterfactual C/D 分支采集。
+- 训练 `excited` 率 25.8%→59.3%；cooperative/forgiving 0%→56.9%/48.6%，
+  adaptive 23.7%→68.8%，noisy 33.9%→64.4%。536 个 counterfactual
+  pair，43.7% responsive；cooperative/noisy 80.8%/89.6%，late/random
+  0%/10%。
+- gate：base+explore heldout_v2 72.0/71.1/43.7（旧 70.6/70.2/38.7）；
+  mixed 73.1/69.0/52.7；counterfactual 77.1/73.7/61.5；responsiveness
+  head 71.8%。
+- Planner 仍 No-Go：mixed CF gate conservative 3-seed validation -0.44、
+  heldout_v2 +0.88、temporal +0.45；1-seed +3.04/+11.0 不复现；
+  held-out red 0.00；gated aggressive heldout_v2 -19.33、extort -107.6。
+- 诊断：training excitation 已解决，deployment excitation 没有；
+  RL-Repair 仍很少 early defect，adaptive/noisy false positives 仍在。
+  下一步三路 `safe/risky/unknown` gate + MoE，或 early-game active
+  probe；不要继续加 planner horizon。
+- 文档：`docs/p2-c2c3-excitation.md`；
+  结果：`results/p2_excitation_20261026/`。

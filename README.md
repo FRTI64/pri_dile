@@ -124,6 +124,11 @@ python3 -m ipd train selfplay --config configs/selfplay/full.json \
   --device auto --final-test
 # 可选：将现有 RL-PPO 蒸馏为 21 维 GRU，再做 self-play 微调
 python3 -m ipd train selfplay-bc --device auto --episodes 4000 --epochs 10
+# C2/C3：base + exploratory + counterfactual opponent-model 数据
+python3 -m ipd train opponent-model --data-mode mixed \
+  --episodes 2 --explore-episodes 2 --counterfactual-episodes 1 \
+  --counterfactual-branches 8 --counterfactual-horizon 6 \
+  --counterfactual-prefix explore,base
 ```
 
 训练文件也支持直接执行，例如：
@@ -304,11 +309,21 @@ held-out red E4 仅 +0.35，未达 Gate C 的 +10。判 **No-Go**。
 P2 C2/C3 又训练了 family / binary gate / next-action 三个 opponent model；
 gate 在 held-out type 上 86.6%，但 heldout_v2 只有 70.6% 且 false positives
 集中在 adaptive/noisy。gated conservative 仅 heldout_v2 +1.20、red 不变；
-gated aggressive 因 extort -107.6 崩坏。C2/C3 也判 **No-Go**。下一步应
-用 exploratory/counterfactual 轨迹训练 opponent model，或做三路
-`safe/risky/unknown` gate + MoE。详见 `docs/p2-c1-belief-planner.md`、
-`docs/p2-c2c3-opponent-model.md`、`results/p2_belief_20261026/`、
-`results/p2_opponent_model_20261026/`。
+gated aggressive 因 extort -107.6 崩坏。C2/C3 也判 **No-Go**。
+
+随后补做了 exploratory / counterfactual 数据（2026-10-26）：open-loop
+probe/block/random 轨迹把训练 `excited` 率从 25.8% 提到 59.3%，
+cooperative/forgiving 从 0% 提到 56.9%/48.6%；counterfactual C/D 分支
+给出 536 个 response pair（43.7% responsive）。gate 在 heldout_v2 提到
+73.1%（mixed，precision 69.0%、recall 52.7%），counterfactual 轨迹上
+77.1%，responsiveness head 71.8%；但部署轨迹 excitation 仍不足，
+adaptive/noisy false positives 仍在，conservative planner 3-seed 只有
++0.88、held-out red 0.00，gated aggressive 仍崩坏。**数据层 Go，
+planner 仍 No-Go**。下一步做 `safe/risky/unknown` 三路 gate + MoE，
+或 early-game active probe。详见 `docs/p2-c1-belief-planner.md`、
+`docs/p2-c2c3-opponent-model.md`、`docs/p2-c2c3-excitation.md`、
+`results/p2_belief_20261026/`、`results/p2_opponent_model_20261026/`、
+`results/p2_excitation_20261026/`。
 
 当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
 按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
@@ -332,6 +347,7 @@ gated aggressive 因 extort -107.6 崩坏。C2/C3 也判 **No-Go**。下一步�
 | [docs/p3-expansion-plan.md](docs/p3-expansion-plan.md) | P3 multi-red + PSRO-lite（No-Go） |
 | [docs/p2-c1-belief-planner.md](docs/p2-c1-belief-planner.md) | P2 C1 Bayesian belief planner（offline No-Go） |
 | [docs/p2-c2c3-opponent-model.md](docs/p2-c2c3-opponent-model.md) | P2 C2/C3 learned opponent model + gate（offline No-Go） |
+| [docs/p2-c2c3-excitation.md](docs/p2-c2c3-excitation.md) | P2 C2/C3 exploratory / counterfactual 数据（data Go / planner No-Go） |
 | [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
 | [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
 | [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |

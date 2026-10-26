@@ -15,13 +15,14 @@ Entry point::
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 import random
 import statistics
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Callable, Iterable, Sequence
 
 from ipd.core.opponents.bank import TYPE_BANK
 from ipd.core.primitives import C, D
@@ -34,6 +35,11 @@ CLASSES = (
 )
 NOISY_PREFIXES = ("NoisyTFT", "Joss")
 ALLOW_CLASSES = ("defect", "late", "random")
+EXPLORATION_TEMPLATES = (
+    "single_probes", "block_probes", "random", "alternating",
+    "late_block", "cooperate",
+)
+RESPONSE_CLASSES = ("unresponsive", "responsive")
 SUITE_FAMILY_MAP = {
     "reciprocal_v2": "cooperative",
     "punitive_v2": "punitive",
@@ -99,9 +105,46 @@ class Dataset:
         return len(self.features)
 
 
+@dataclass
+class ResponseDataset:
+    """Counterfactual responsiveness samples.
+
+    Each row is the history *before* a blue action, labelled by whether the
+    opponent's subsequent behaviour differs between an enforced C and D branch.
+    """
+
+    features: list[list[float]]
+    labels: list[str]
+    truth: list[str]
+    names: list[str]
+
+    def __len__(self) -> int:
+        return len(self.features)
+
+
+def _item_label(spec: Any, label_fn: Callable[[Any], str | None] | None
+                ) -> str | None:
+    if label_fn is not None:
+        return label_fn(spec)
+    return coarse_class(spec.name, spec.family)
+
+
+def concat_datasets(*datasets: Dataset) -> Dataset:
+    """Concatenate datasets while preserving order."""
+    return Dataset(
+        features=[row for data in datasets for row in data.features],
+        labels=[value for data in datasets for value in data.labels],
+        next_actions=[value for data in datasets
+                      for value in data.next_actions],
+        names=[value for data in datasets for value in data.names],
+    )
+
+
 def collect_dataset(specs: Iterable[Any], *, episodes: int = 2,
                     rounds: int = 100, seed: int = 20261024,
-                    base_weights: str | None = None) -> Dataset:
+                    base_weights: str | None = None,
+                    with_stats: bool = False
+                    ) -> Dataset | tuple[Dataset, dict[str, Any]]:
     """Collect (history features, family label, next action) samples."""
     base = NeuralPolicy(base_weights or weights_path(
         "rl_policy_weights_repair.json"), seed=seed, mode="sample")
@@ -109,6 +152,7 @@ def collect_dataset(specs: Iterable[Any], *, episodes: int = 2,
     labels: list[str] = []
     next_actions: list[int] = []
     names: list[str] = []
+    stats = _new_excitation_stats()
     specs = list(specs)
     for si, spec in enumerate(specs):
         label = coarse_class(spec.name, spec.family)
@@ -125,10 +169,334 @@ def collect_dataset(specs: Iterable[Any], *, episodes: int = 2,
                 labels.append(label)
                 next_actions.append(reply)
                 names.append(spec.name)
+                _record_excitation(stats, label, mine, reply)
                 action = int(base.act(t, mine, theirs))
                 mine.append(action)
                 theirs.append(reply)
-    return Dataset(features, labels, next_actions, names)
+    dataset = Dataset(features, labels, next_actions, names)
+    if with_stats:
+        return dataset, _finalise_excitation_stats(stats)
+    return dataset
+
+
+# ---------------------------------------------------------------------------
+# Exploratory / counterfactual data
+# ---------------------------------------------------------------------------
+
+
+def exploration_actions(rng: random.Random, rounds: int = 100,
+                        template: str | None = None
+                        ) -> tuple[list[int], str]:
+    """Return an open-loop exploratory blue action schedule.
+
+    The schedule is independent of the opponent, so the resulting histories are
+    not biased by the base policy's own policy.  Templates deliberately create
+    repeated C/D opportunities, which is what the 85-dim conditional-response
+    features need in order to estimate ``p(D | our C)`` and ``p(D | our D)``.
+    """
+    template = template or rng.choice(EXPLORATION_TEMPLATES)
+    if template not in EXPLORATION_TEMPLATES:
+        raise ValueError(f"unknown exploration template {template!r}")
+    rounds = max(1, int(rounds))
+    actions = [C] * rounds
+    if rounds < 3:
+        return actions, template
+
+    if template == "single_probes":
+        target = max(1, rounds // 10)
+        t = rng.randint(1, min(3, rounds - 2))
+        probes = 0
+        while t < rounds - 1 and probes < target:
+            actions[t] = D
+            probes += 1
+            t += rng.randint(3, 8)
+    elif template == "block_probes":
+        t = rng.randint(1, min(3, rounds - 2))
+        while t < rounds - 2:
+            length = rng.randint(2, 4)
+            for u in range(t, min(rounds - 1, t + length)):
+                actions[u] = D
+            t += length + rng.randint(2, 6)
+    elif template == "random":
+        p = rng.uniform(0.08, 0.35)
+        for t in range(1, rounds - 1):
+            if rng.random() < p:
+                actions[t] = D
+    elif template == "alternating":
+        start = rng.randint(1, max(1, rounds // 4))
+        end = min(rounds - 1, start + rng.randint(
+            max(3, rounds // 8), max(4, rounds // 3)))
+        for t in range(start, end):
+            actions[t] = D if (t - start) % 2 == 0 else C
+    elif template == "late_block":
+        start = rng.randint(max(1, int(rounds * 0.55)), max(1, rounds - 3))
+        end = min(rounds - 1, start + rng.randint(
+            3, max(4, rounds // 10)))
+        for t in range(start, end):
+            actions[t] = D
+    # "cooperate" intentionally leaves the all-C schedule untouched.
+    return actions, template
+
+
+def _new_excitation_stats() -> dict[str, Any]:
+    return {
+        "samples": 0,
+        "excited_samples": 0,
+        "defection_opportunities": 0,
+        "defection_responses": 0,
+        "sum_n_c": 0.0,
+        "sum_n_d": 0.0,
+        "by_class": {},
+    }
+
+
+def _record_excitation(stats: dict[str, Any], label: str, mine: Sequence[int],
+                       reply: int) -> None:
+    t = len(mine)
+    n_d = sum(int(x) for x in mine)
+    n_c = t - n_d
+    excited = n_d >= 3 and n_c >= 5
+    prev_d = bool(t and mine[-1] == D)
+    stats["samples"] += 1
+    stats["excited_samples"] += int(excited)
+    stats["sum_n_c"] += n_c
+    stats["sum_n_d"] += n_d
+    stats["defection_opportunities"] += int(prev_d)
+    stats["defection_responses"] += int(prev_d and reply == D)
+    row = stats["by_class"].setdefault(label, {
+        "samples": 0, "excited_samples": 0,
+        "defection_opportunities": 0, "defection_responses": 0,
+        "sum_n_c": 0.0, "sum_n_d": 0.0,
+        "pairs": 0, "responsive": 0, "unresponsive": 0,
+        "sum_abs_delta": 0.0,
+    })
+    row["samples"] += 1
+    row["excited_samples"] += int(excited)
+    row["sum_n_c"] += n_c
+    row["sum_n_d"] += n_d
+    row["defection_opportunities"] += int(prev_d)
+    row["defection_responses"] += int(prev_d and reply == D)
+
+
+def _finalise_excitation_stats(stats: dict[str, Any]) -> dict[str, Any]:
+    samples = max(1, int(stats["samples"]))
+    stats["excited_rate"] = stats["excited_samples"] / samples
+    stats["mean_n_c"] = stats["sum_n_c"] / samples
+    stats["mean_n_d"] = stats["sum_n_d"] / samples
+    stats["response_rate_given_d"] = (
+        stats["defection_responses"] / stats["defection_opportunities"]
+        if stats["defection_opportunities"] else 0.0)
+    for row in stats["by_class"].values():
+        n = max(1, int(row["samples"]))
+        row["excited_rate"] = row["excited_samples"] / n
+        row["mean_n_c"] = row["sum_n_c"] / n
+        row["mean_n_d"] = row["sum_n_d"] / n
+        row["response_rate_given_d"] = (
+            row["defection_responses"] / row["defection_opportunities"]
+            if row["defection_opportunities"] else 0.0)
+    return stats
+
+
+def collect_exploratory_dataset(
+    specs: Iterable[Any], *, episodes: int = 2, rounds: int = 100,
+    seed: int = 20261024,
+    templates: Sequence[str] = EXPLORATION_TEMPLATES,
+    label_fn: Callable[[Any], str | None] | None = None,
+) -> tuple[Dataset, dict[str, Any]]:
+    """Collect trajectories from open-loop exploratory blue schedules."""
+    features: list[list[float]] = []
+    labels: list[str] = []
+    next_actions: list[int] = []
+    names: list[str] = []
+    stats = _new_excitation_stats()
+    stats["templates"] = list(templates)
+    templates = tuple(templates) or EXPLORATION_TEMPLATES
+    specs = list(specs)
+    for si, spec in enumerate(specs):
+        label = _item_label(spec, label_fn)
+        if label is None:
+            continue
+        for episode in range(max(1, int(episodes))):
+            schedule_rng = random.Random(seed + si * 10007 + episode * 7919)
+            opponent_rng = random.Random(
+                seed + si * 10007 + episode * 7919 + 1)
+            template = templates[(si + episode) % len(templates)]
+            actions, template = exploration_actions(
+                schedule_rng, rounds, template)
+            opponent = spec.factory(opponent_rng)
+            opponent.reset()
+            mine: list[int] = []
+            theirs: list[int] = []
+            for t in range(rounds):
+                features.append(extract_features(mine, theirs))
+                reply = int(opponent.act(t, theirs, mine))
+                labels.append(label)
+                next_actions.append(reply)
+                names.append(spec.name)
+                _record_excitation(stats, label, mine, reply)
+                mine.append(int(actions[t]))
+                theirs.append(reply)
+    return Dataset(features, labels, next_actions, names), \
+        _finalise_excitation_stats(stats)
+
+
+def _select_branch_days(rng: random.Random, rounds: int,
+                        count: int) -> list[int]:
+    """Stratified branch days in ``[2, rounds - 2]``."""
+    lo, hi = 2, max(2, rounds - 1)
+    if hi <= lo or count <= 0:
+        return []
+    count = min(int(count), hi - lo)
+    buckets = 5
+    edges = [lo + (hi - lo) * i // buckets for i in range(buckets + 1)]
+    days: list[int] = []
+    for i in range(buckets):
+        a, b = max(lo, edges[i]), min(hi, edges[i + 1])
+        if b <= a:
+            continue
+        take = count // buckets + int(i < count % buckets)
+        take = min(take, b - a)
+        days.extend(rng.sample(range(a, b), take))
+    if len(days) < count:
+        chosen = set(days)
+        remaining = [d for d in range(lo, hi) if d not in chosen]
+        days.extend(rng.sample(remaining, min(count - len(days),
+                                               len(remaining))))
+    return sorted(days)
+
+
+def collect_counterfactual_dataset(
+    specs: Iterable[Any], *, episodes: int = 1, rounds: int = 100,
+    seed: int = 20261024, branches: int = 8, horizon: int = 6,
+    prefix_modes: Sequence[str] = ("explore", "base"),
+    include_prefix: bool = True, base_weights: str | None = None,
+    label_fn: Callable[[Any], str | None] | None = None,
+) -> tuple[Dataset, ResponseDataset, dict[str, Any]]:
+    """Collect paired C/D branches from identical opponent states.
+
+    For every branch day ``t`` the opponent is deep-copied, then blue plays C
+    or D at ``t`` and cooperates for the next ``horizon`` rounds.  The pair
+    shares the opponent's RNG stream, so the difference in the reply sequence
+    is caused by blue's action rather than by a different random draw.
+    """
+    features: list[list[float]] = []
+    labels: list[str] = []
+    next_actions: list[int] = []
+    names: list[str] = []
+    response_features: list[list[float]] = []
+    response_labels: list[str] = []
+    response_truth: list[str] = []
+    response_names: list[str] = []
+    stats = _new_excitation_stats()
+    stats.update({
+        "prefix_modes": list(prefix_modes),
+        "branch_pairs": 0,
+        "responsive_pairs": 0,
+        "unresponsive_pairs": 0,
+        "by_class": {},
+    })
+    prefix_modes = tuple(prefix_modes) or ("explore",)
+    specs = list(specs)
+    for si, spec in enumerate(specs):
+        label = _item_label(spec, label_fn)
+        if label is None:
+            continue
+        for episode in range(max(1, int(episodes))):
+            episode_seed = seed + si * 10007 + episode * 7919
+            schedule_rng = random.Random(episode_seed)
+            opponent_rng = random.Random(episode_seed + 1)
+            prefix_mode = prefix_modes[(si + episode) % len(prefix_modes)]
+            if prefix_mode == "explore":
+                prefix_actions, _ = exploration_actions(schedule_rng, rounds)
+                base = None
+            elif prefix_mode == "base":
+                prefix_actions = []
+                base = NeuralPolicy(
+                    base_weights or weights_path(
+                        "rl_policy_weights_repair.json"),
+                    seed=episode_seed + 2, mode="sample")
+                base.reset()
+            else:
+                raise ValueError(f"unknown counterfactual prefix {prefix_mode!r}")
+            branch_days = _select_branch_days(
+                schedule_rng, rounds, branches)
+            branch_set = set(branch_days)
+            opponent = spec.factory(opponent_rng)
+            opponent.reset()
+            mine: list[int] = []
+            theirs: list[int] = []
+            for t in range(rounds):
+                if t in branch_set:
+                    opp_c = copy.deepcopy(opponent)
+                    opp_d = copy.deepcopy(opponent)
+                    reply_c = int(opp_c.act(t, theirs, mine))
+                    reply_d = int(opp_d.act(t, theirs, mine))
+                    branch_replies: dict[int, list[int]] = {}
+                    for branch_action, branch_opp, branch_reply in (
+                            (C, opp_c, reply_c), (D, opp_d, reply_d)):
+                        bm = mine + [branch_action]
+                        bt = theirs + [branch_reply]
+                        replies: list[int] = []
+                        for u in range(t + 1, min(rounds, t + 1 + horizon)):
+                            features.append(extract_features(bm, bt))
+                            reply = int(branch_opp.act(u, bt, bm))
+                            labels.append(label)
+                            next_actions.append(reply)
+                            names.append(spec.name)
+                            _record_excitation(stats, label, bm, reply)
+                            replies.append(reply)
+                            bm.append(C)
+                            bt.append(reply)
+                        branch_replies[branch_action] = replies
+                    if branch_replies.get(C) is not None \
+                            and branch_replies.get(D) is not None:
+                        delta = (sum(branch_replies[D])
+                                 - sum(branch_replies[C]))
+                        responsive = delta != 0
+                        stats["branch_pairs"] += 1
+                        stats["responsive_pairs"] += int(responsive)
+                        stats["unresponsive_pairs"] += int(not responsive)
+                        response_features.append(
+                            extract_features(mine, theirs))
+                        response_labels.append(
+                            "responsive" if responsive else "unresponsive")
+                        response_truth.append(label)
+                        response_names.append(spec.name)
+                        row = stats["by_class"].setdefault(label, {
+                            "pairs": 0, "responsive": 0,
+                            "unresponsive": 0, "sum_abs_delta": 0.0,
+                            "samples": 0, "excited_samples": 0,
+                            "defection_opportunities": 0,
+                            "defection_responses": 0,
+                            "sum_n_c": 0.0, "sum_n_d": 0.0,
+                        })
+                        row["pairs"] += 1
+                        row["responsive"] += int(responsive)
+                        row["unresponsive"] += int(not responsive)
+                        row["sum_abs_delta"] += abs(delta)
+                if prefix_mode == "base":
+                    assert base is not None
+                    normal_action = int(base.act(t, mine, theirs))
+                else:
+                    normal_action = int(prefix_actions[t])
+                reply = int(opponent.act(t, theirs, mine))
+                if include_prefix:
+                    features.append(extract_features(mine, theirs))
+                    labels.append(label)
+                    next_actions.append(reply)
+                    names.append(spec.name)
+                    _record_excitation(stats, label, mine, reply)
+                mine.append(normal_action)
+                theirs.append(reply)
+    for row in stats["by_class"].values():
+        row["responsive_rate"] = (row["responsive"] / row["pairs"]
+                                 if row.get("pairs") else 0.0)
+        row["mean_abs_delta"] = (row["sum_abs_delta"] / row["pairs"]
+                                if row.get("pairs") else 0.0)
+    _finalise_excitation_stats(stats)
+    return (Dataset(features, labels, next_actions, names),
+            ResponseDataset(response_features, response_labels,
+                            response_truth, response_names), stats)
 
 
 def split_specs(specs: Sequence[Any], validation_fraction: float = 0.2,
@@ -536,7 +904,9 @@ class OpponentGate:
                  threshold: float = 0.6, min_day: int = 3,
                  require_next_d: bool = False,
                  next_model: LinearOpponentModel | None = None,
-                 next_threshold: float = 0.6):
+                 next_threshold: float = 0.6,
+                 response_model: LinearOpponentModel | None = None,
+                 max_response_probability: float = 0.5):
         self.model = model
         self.allowed = set(allowed)
         self.threshold = float(threshold)
@@ -544,6 +914,8 @@ class OpponentGate:
         self.require_next_d = bool(require_next_d)
         self.next_model = next_model
         self.next_threshold = float(next_threshold)
+        self.response_model = response_model
+        self.max_response_probability = float(max_response_probability)
         self.calls = 0
         self.allowed_calls = 0
 
@@ -559,13 +931,18 @@ class OpponentGate:
         features = extract_features(mine, theirs)
         label, confidence = self.model.predict(features)
         info = {"label": label, "confidence": confidence,
-                "next_probability_d": None}
+                "next_probability_d": None, "response_probability": None}
         allowed = label in self.allowed and confidence >= self.threshold
         if allowed and self.require_next_d and self.next_model is not None:
             p_d = self.next_model.probabilities(features)[
                 self.next_model.classes.index("D")]
             info["next_probability_d"] = p_d
             allowed = p_d >= self.next_threshold
+        if allowed and self.response_model is not None:
+            probs = self.response_model.probabilities(features)
+            p_resp = probs[self.response_model.classes.index("responsive")]
+            info["response_probability"] = p_resp
+            allowed = p_resp <= self.max_response_probability
         if allowed:
             self.allowed_calls += 1
         return allowed, info
@@ -584,11 +961,160 @@ class OpponentGate:
 # ---------------------------------------------------------------------------
 
 
+DATA_MODES = (
+    "base", "explore", "counterfactual", "base+explore",
+    "base+counterfactual", "mixed",
+)
+EVAL_MODES = ("base", "explore", "counterfactual", "both", "all")
+
+
+def _collect_training_data(specs: Sequence[Any], args: argparse.Namespace,
+                           *, seed: int, validation: bool
+                           ) -> tuple[Dataset, dict[str, Any],
+                                      ResponseDataset | None]:
+    datasets: list[Dataset] = []
+    stats: dict[str, Any] = {}
+    response: ResponseDataset | None = None
+    episodes = args.episodes if not validation else max(1, args.episodes)
+    if args.data_mode in ("base", "base+explore", "base+counterfactual",
+                          "mixed"):
+        data, data_stats = collect_dataset(
+            specs, episodes=episodes, rounds=args.rounds, seed=seed,
+            with_stats=True)
+        datasets.append(data)
+        stats["base"] = data_stats
+    if args.data_mode in ("explore", "base+explore", "mixed"):
+        data, data_stats = collect_exploratory_dataset(
+            specs, episodes=args.explore_episodes, rounds=args.rounds,
+            seed=seed)
+        datasets.append(data)
+        stats["exploration"] = data_stats
+    if args.data_mode in ("counterfactual", "base+counterfactual", "mixed"):
+        data, response, data_stats = collect_counterfactual_dataset(
+            specs, episodes=args.counterfactual_episodes,
+            rounds=args.rounds, seed=seed,
+            branches=args.counterfactual_branches,
+            horizon=args.counterfactual_horizon,
+            prefix_modes=tuple(
+                x.strip() for x in args.counterfactual_prefix.split(",")
+                if x.strip()))
+        datasets.append(data)
+        stats["counterfactual"] = data_stats
+    if not datasets:
+        raise ValueError(f"no data collected for mode {args.data_mode!r}")
+    return concat_datasets(*datasets), stats, response
+
+
+def _collect_suite_data(items: Sequence[Any], mode: str,
+                        args: argparse.Namespace, *, seed: int
+                        ) -> dict[str, Any]:
+    label_fn = lambda item: suite_class(item.family)
+    if mode == "base":
+        data = _collect_suite_dataset(
+            items, episodes=args.eval_episodes, rounds=args.rounds,
+            seed=seed)
+        return {**data, "stats": None, "response": None}
+    if mode == "explore":
+        data, stats = collect_exploratory_dataset(
+            items, episodes=args.eval_episodes, rounds=args.rounds,
+            seed=seed, label_fn=label_fn)
+        response = None
+    elif mode == "counterfactual":
+        data, response_data, stats = collect_counterfactual_dataset(
+            items, episodes=args.eval_episodes, rounds=args.rounds,
+            seed=seed, branches=args.counterfactual_branches,
+            horizon=args.counterfactual_horizon,
+            prefix_modes=tuple(
+                x.strip() for x in args.counterfactual_prefix.split(",")
+                if x.strip()), label_fn=label_fn)
+        response = (response_data.features, response_data.labels,
+                    response_data.truth)
+    else:
+        raise ValueError(f"unknown evaluation mode {mode!r}")
+    name_to_family = {item.name: item.family for item in items}
+    truth = [name_to_family.get(name, "") for name in data.names]
+    return {
+        "features": data.features,
+        "labels": data.labels,
+        "truth": truth,
+        "stats": stats,
+        "response": response,
+    }
+
+
+def _response_metrics(model, features: Sequence[Sequence[float]],
+                      labels: Sequence[str], truth: Sequence[str]
+                      ) -> dict[str, Any]:
+    by_truth: dict[str, list[int]] = {}
+    correct = 0
+    predicted_responsive = 0
+    for f, label, group in zip(features, labels, truth):
+        pred, _ = model.predict(f)
+        correct += int(pred == label)
+        predicted_responsive += int(pred == "responsive")
+        row = by_truth.setdefault(group, [0, 0, 0, 0])
+        row[0] += int(pred == label)
+        row[1] += 1
+        row[2] += int(label == "responsive")
+        row[3] += int(pred == "responsive")
+    total = len(labels)
+    return {
+        "n": total,
+        "accuracy": correct / total if total else 0.0,
+        "predicted_responsive_rate": (predicted_responsive / total
+                                      if total else 0.0),
+        "by_truth": {
+            name: {
+                "n": row[1],
+                "accuracy": row[0] / max(1, row[1]),
+                "responsive_rate": row[2] / max(1, row[1]),
+                "predicted_responsive_rate": row[3] / max(1, row[1]),
+            }
+            for name, row in sorted(by_truth.items())
+        },
+    }
+
+
+def _add_suite_eval(report: dict[str, Any], key: str,
+                    data: dict[str, Any], model, gate_model,
+                    response_model) -> None:
+    keep = [i for i, label in enumerate(data["labels"])
+            if label is not None]
+    if not keep:
+        return
+    eval_features = [data["features"][i] for i in keep]
+    eval_labels = [data["labels"][i] for i in keep]
+    metrics = per_class_accuracy(model, eval_features, eval_labels)
+    gate_labels = [allow_label(label) for label in eval_labels]
+    entry = {
+        "n": len(eval_labels),
+        "accuracy": accuracy(model, eval_features, eval_labels),
+        "per_class": metrics,
+        "gate": _binary_metrics(gate_model, eval_features, gate_labels,
+                                groups=eval_labels),
+    }
+    if data.get("stats") is not None:
+        entry["excitation"] = data["stats"]
+    if response_model is not None and data.get("response") is not None:
+        rf, rl, rt = data["response"]
+        if rl:
+            entry["response"] = _response_metrics(
+                response_model, rf, rl, rt)
+    report["suite_eval"][key] = entry
+    print(f"{key} classifier accuracy: {entry['accuracy']:.3f}; "
+          f"gate accuracy: {entry['gate']['accuracy']:.3f}; "
+          f"gate precision: {entry['gate']['precision']:.3f}",
+          flush=True)
+    if "response" in entry:
+        print(f"{key} response accuracy: "
+              f"{entry['response']['accuracy']:.3f}", flush=True)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Train an offline opponent family / next-action model.")
     ap.add_argument("--episodes", type=int, default=2,
-                    help="episodes per TYPE_BANK opponent")
+                    help="episodes per TYPE_BANK opponent for base data")
     ap.add_argument("--rounds", type=int, default=100)
     ap.add_argument("--validation-fraction", type=float, default=0.2,
                     help="fraction of whole types held out")
@@ -596,13 +1122,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--lr", type=float, default=0.1)
     ap.add_argument("--l2", type=float, default=1e-3)
     ap.add_argument("--seed", type=int, default=20261024)
+    ap.add_argument("--data-mode", choices=DATA_MODES, default="base",
+                    help="base RL-Repair trajectories, exploratory schedules, "
+                         "counterfactual C/D branches, or combinations")
+    ap.add_argument("--explore-episodes", type=int, default=2)
+    ap.add_argument("--counterfactual-episodes", type=int, default=1)
+    ap.add_argument("--counterfactual-branches", type=int, default=8)
+    ap.add_argument("--counterfactual-horizon", type=int, default=6)
+    ap.add_argument("--counterfactual-prefix", default="explore,base",
+                    help="comma-separated prefix modes: explore,base")
     ap.add_argument("--eval-suite", default="heldout_v2",
                     help="optional held-out suite for classification accuracy")
+    ap.add_argument("--eval-mode", choices=EVAL_MODES, default="base",
+                    help="evaluate base, exploratory or counterfactual traces")
     ap.add_argument("--eval-episodes", type=int, default=1)
     ap.add_argument("--out", default=weights_path("opponent_classifier.json"))
     ap.add_argument("--gate-out", default=weights_path("opponent_gate.json"))
     ap.add_argument("--next-out", default=weights_path(
         "opponent_next_action.json"))
+    ap.add_argument("--response-out", default=weights_path(
+        "opponent_responsiveness.json"))
     ap.add_argument("--report-out", default=result_path(
         "opponent_model_report.json"))
     args = ap.parse_args(argv)
@@ -612,10 +1151,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         seed=args.seed)
     print(f"opponent types: {len(train_specs)} train / "
           f"{len(val_specs)} validation", flush=True)
-    train_data = collect_dataset(train_specs, episodes=args.episodes,
-                                 rounds=args.rounds, seed=args.seed)
-    val_data = collect_dataset(val_specs, episodes=max(1, args.episodes),
-                               rounds=args.rounds, seed=args.seed + 1)
+    train_data, train_stats, train_response = _collect_training_data(
+        train_specs, args, seed=args.seed, validation=False)
+    val_data, val_stats, val_response = _collect_training_data(
+        val_specs, args, seed=args.seed + 1, validation=True)
     print(f"samples: {len(train_data)} train / {len(val_data)} validation",
           flush=True)
     model, report = train_mlp(
@@ -651,41 +1190,51 @@ def main(argv: Sequence[str] | None = None) -> int:
           f"val={next_report['val_accuracy']:.3f} -> {args.next_out}",
           flush=True)
 
+    response_model = None
+    response_report = None
+    if train_response is not None and val_response is not None \
+            and len(train_response.labels):
+        response_model, response_report = train_mlp(
+            train_response.features, train_response.labels,
+            classes=list(RESPONSE_CLASSES), epochs=args.epochs,
+            lr=args.lr, l2=args.l2, seed=args.seed + 2,
+            validation=(val_response.features, val_response.labels))
+        response_model.save(args.response_out)
+        print(f"response MLP: train="
+              f"{response_report['train_accuracy']:.3f} "
+              f"val={response_report['val_accuracy']:.3f} -> "
+              f"{args.response_out}", flush=True)
+
+    report["data"] = {
+        "mode": args.data_mode,
+        "train_samples": len(train_data),
+        "validation_samples": len(val_data),
+        "train": train_stats,
+        "validation": val_stats,
+    }
     report["gate"] = gate_report
     report["next_action"] = next_report
+    if response_report is not None:
+        report["response"] = response_report
     report["validation_types"] = [spec.name for spec in val_specs]
     report["suite_eval"] = {}
     if args.eval_suite:
         from ipd.evaluation.opponent_suite import build_suite
 
         suite = build_suite(args.eval_suite)
-        eval_specs = []
-        for item in suite:
-            eval_specs.append(item)
-        data = _collect_suite_dataset(
-            eval_specs, episodes=args.eval_episodes, rounds=args.rounds,
-            seed=args.seed + 2)
-        keep = [i for i, label in enumerate(data["labels"])
-                if label is not None]
-        if keep:
-            eval_features = [data["features"][i] for i in keep]
-            eval_labels = [data["labels"][i] for i in keep]
-            metrics = per_class_accuracy(model, eval_features, eval_labels)
-            gate_labels = [allow_label(label) for label in eval_labels]
-            report["suite_eval"][args.eval_suite] = {
-                "n": len(eval_labels),
-                "accuracy": accuracy(model, eval_features, eval_labels),
-                "per_class": metrics,
-                "gate": _binary_metrics(gate_model, eval_features,
-                                        gate_labels),
-            }
-            print(f"{args.eval_suite} classifier accuracy: "
-                  f"{report['suite_eval'][args.eval_suite]['accuracy']:.3f}; "
-                  f"gate accuracy: "
-                  f"{report['suite_eval'][args.eval_suite]['gate']['accuracy']:.3f}; "
-                  f"gate precision: "
-                  f"{report['suite_eval'][args.eval_suite]['gate']['precision']:.3f}",
-                  flush=True)
+        if args.eval_mode == "both":
+            eval_modes = ("base", "explore")
+        elif args.eval_mode == "all":
+            eval_modes = ("base", "explore", "counterfactual")
+        else:
+            eval_modes = (args.eval_mode,)
+        for mode in eval_modes:
+            data = _collect_suite_data(
+                suite, mode, args, seed=args.seed + 2)
+            key = args.eval_suite if mode == "base" else \
+                f"{args.eval_suite}:{mode}"
+            _add_suite_eval(report, key, data, model, gate_model,
+                            response_model)
     out = Path(args.report_out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2),
@@ -695,9 +1244,11 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 def _binary_metrics(model, features: Sequence[Sequence[float]],
-                    labels: Sequence[str]) -> dict[str, Any]:
+                    labels: Sequence[str],
+                    groups: Sequence[str] | None = None) -> dict[str, Any]:
     true_positive = false_positive = false_negative = true_negative = 0
-    for f, truth in zip(features, labels):
+    by_group: dict[str, dict[str, int]] = {}
+    for index, (f, truth) in enumerate(zip(features, labels)):
         pred, _ = model.predict(f)
         if pred == "allow" and truth == "allow":
             true_positive += 1
@@ -707,12 +1258,22 @@ def _binary_metrics(model, features: Sequence[Sequence[float]],
             false_negative += 1
         else:
             true_negative += 1
+        if groups is not None:
+            row = by_group.setdefault(groups[index], {
+                "n": 0, "allow": 0, "predicted_allow": 0,
+                "true_positive": 0, "false_positive": 0,
+            })
+            row["n"] += 1
+            row["allow"] += int(truth == "allow")
+            row["predicted_allow"] += int(pred == "allow")
+            row["true_positive"] += int(pred == "allow" and truth == "allow")
+            row["false_positive"] += int(pred == "allow" and truth == "deny")
     precision = (true_positive / (true_positive + false_positive)
                  if true_positive + false_positive else 0.0)
     recall = (true_positive / (true_positive + false_negative)
               if true_positive + false_negative else 0.0)
     total = len(labels)
-    return {
+    result = {
         "n": total,
         "accuracy": ((true_positive + true_negative) / total
                      if total else 0.0),
@@ -723,6 +1284,18 @@ def _binary_metrics(model, features: Sequence[Sequence[float]],
         "false_negative": false_negative,
         "true_negative": true_negative,
     }
+    if groups is not None:
+        for row in by_group.values():
+            row["allow_rate"] = row["allow"] / max(1, row["n"])
+            row["predicted_allow_rate"] = (
+                row["predicted_allow"] / max(1, row["n"]))
+            row["precision"] = (
+                row["true_positive"] / row["predicted_allow"]
+                if row["predicted_allow"] else 0.0)
+            row["recall"] = (row["true_positive"] / row["allow"]
+                             if row["allow"] else 0.0)
+        result["by_group"] = dict(sorted(by_group.items()))
+    return result
 
 
 def _collect_suite_dataset(items: Sequence[Any], *, episodes: int = 1,
@@ -754,9 +1327,12 @@ def _collect_suite_dataset(items: Sequence[Any], *, episodes: int = 1,
 
 
 __all__ = [
-    "CLASSES", "ALLOW_CLASSES", "SUITE_FAMILY_MAP", "coarse_class",
-    "suite_class", "allow_label", "Dataset", "collect_dataset", "split_specs",
+    "CLASSES", "ALLOW_CLASSES", "SUITE_FAMILY_MAP", "EXPLORATION_TEMPLATES",
+    "RESPONSE_CLASSES", "coarse_class", "suite_class", "allow_label",
+    "Dataset", "ResponseDataset", "concat_datasets", "collect_dataset",
+    "exploration_actions", "collect_exploratory_dataset",
+    "collect_counterfactual_dataset", "split_specs",
     "LinearOpponentModel", "MLPOpponentModel", "train_softmax", "train_mlp",
     "accuracy", "per_class_accuracy", "OpponentGate", "load_opponent_model",
-    "main",
+    "DATA_MODES", "EVAL_MODES", "main",
 ]
