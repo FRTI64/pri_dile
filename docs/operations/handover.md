@@ -9,7 +9,7 @@
 >   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 > - 最近完整测试为 v3 的 **204 tests OK**；v4 改动后未运行测试（按要求）。
 >   `python3 -m ipd list-policies`：20 个注册候选。
-> - **Protocol v4 已定义**：597 configs；50 Axelrod 策略 + 15 组合；
+> - **Protocol v4 已定义**：747 configs；12 complex 风格 + 50 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
 > - **v4 baseline 尚未运行**；v3 的 RL-Repair 484.32 / A60 476.54 /
@@ -301,13 +301,13 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 
 ### Protocol v4（2026-10-27）
 
-- 新 catalog 597 configs，manifest `d6a674aa...`；
-- 50 个 Axelrod 策略 + 15 个 AxelrodMix；6 个 complex family、10 个 policy
+- 新 catalog 747 configs，manifest `71492572...`；
+- 50 个 Axelrod 策略 + 15 个 AxelrodMix；12 个 complex family、10 个 policy
   opponent；
 - 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
 - **baseline 尚未运行**（按要求不做测试）；`test_v7` 未消费；
 - Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；
-- 文档：`docs/reference/protocol-v4.md`，ADR 0007。
+- 文档：`docs/reference/protocol-v4.md`，ADR 0007 / 0008。
 
 ### Protocol v3 baseline（legacy）
 

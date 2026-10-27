@@ -21,19 +21,20 @@ v4 增加：
 - 默认赛场扩大到 **2048 人（2000+）**，dev **30 fields**，test **50 fields**；
 - final 改为 `test_v7`。
 
-catalog 从 532 扩到 **约 597 个 config**。
+catalog 从 532 扩到 **747 个 config**，并新增 6 个复杂风格 family 和一批
+旧 family 的新对手。
 
 ## 2. 划分
 
 | 层 | 用途 | 组成 | 规模 |
 |---|---|---|---|
-| `train` | 训练 | 标准 + complex + policy + Axelrod + anchors | 251 + 74 + 4 + 45 + 5 |
-| `dev_param` | 选模：标准参数 held-out | 标准 family + Axelrod + anchors | 54 + 10 + 5 |
+| `train` | 训练 | 标准 + complex + policy + Axelrod + anchors | 292 + 140 + 4 + 45 + 5 |
+| `dev_param` | 选模：标准参数 held-out | 标准 family + Axelrod + anchors | 62 + 10 + 5 |
 | `dev_family` | 选模：family held-out | `mirror_adaptive` / `delayed_grim` | 14 + 5 |
-| `dev_complex` | 选模：复杂 family | complex families | 17 + 5 |
+| `dev_complex` | 选模：复杂 family | 12 个 complex family | 31 + 5 |
 | `dev_axelrod` | 选模：Axelrod | Axelrod 策略 + 组合 | 10 + 5 |
 | `dev_ood` | 选模：偏移混合 | dev / complex / family / Axelrod | - |
-| `test_v7` | 一次性 final | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 56 + 36 + 15 + 6 + 10 + 5 |
+| `test_v7` | 一次性 final | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 31 + 6 + 10 + 5 |
 
 固定 anchor：`AllC`、`AllD`、`TFT`、`Grim`、`Random.50`。
 
@@ -46,9 +47,35 @@ held-out family：
 complex families：
 
 ```text
-phase_switch  adaptive_mix  probe_exploit
-delayed_extort  memory_two  meta_mix
+phase_switch       adaptive_mix       probe_exploit
+delayed_extort     memory_two         meta_mix
+noise_adaptive     reputation_grim    contrition_cycle
+endgame_hunter     pattern_breaker    conditional_extort
 ```
+
+新增复杂风格：
+
+- `noise_adaptive`：对孤立噪声宽恕，对持续背叛惩罚；
+- `reputation_grim`：按累计合作率决定是否永久 Grim；
+- `contrition_cycle`：自己背叛后主动道歉/修复；
+- `endgame_hunter`：末局前 TFT，末局收割或抢先惩罚；
+- `pattern_breaker`：检测对手短周期并打反周期；
+- `conditional_extort`：只剥削高合作率对手，否则 TFT。
+
+旧 family 也加入了新对手：
+
+- `nice`：Majority k=4/6；
+- `forgiving`：ForgiveTFT missed=4、TFTNoisyForgive g=0.50、GenerousZD；
+- `punitive`：Gradual、ProbabilisticGrim、ResetGrim、SpitefulGrim、
+  DelayedPunisher、更多 GrimForgive；
+- `defect`：RandomThenTFT、更多 EarlyDefector；
+- `late`：LateD 98/99；
+- `random`：更多 Periodic 模式；
+- `wild`：更多 MemoryOne / Reactive / RandomFSM；
+- `adaptive`：TFTProbeImmediate、更多 TFTNoisyForgive；
+- `extort`：ExtortZD 1.0、GenerousZD 3.2/3.6；
+- `temporal`：更多 Harvest / Dynamic / Kamikaze / ProbePhase / WindowTFT；
+- `noisy`：NoisyTFT/Joss p=0.52/0.55。
 
 Axelrod 策略（50）：
 
@@ -110,7 +137,7 @@ python3 -m ipd protocol audit
 python3 -m ipd protocol manifest
 
 # manifest：configs/splits/protocol_v4/manifest.json
-# catalog sha256: d6a674aa...
+# catalog sha256: 71492572...
 # dev：默认 2048 人 × 30 fields
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \

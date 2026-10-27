@@ -2,7 +2,7 @@
 
 100 天迭代囚徒困境（IPD）策略工具包：规则状态机、贝叶斯推断、多数投票融合、
 MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估以
-**Protocol v4**（更大 catalog / complex / policy 对手 / train-dev-test 审计）
+**Protocol v4**（747 configs / 新风格集 / Axelrod / 2048 人赛场）
 为主，另保留 legacy 四分布、
 blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 
@@ -11,7 +11,8 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
 > - 最佳候选：`rl-repair`（RL-Repair），但**未 promotion**；
 > - fallback：`rl-hard60`（A60）；
-> - **Protocol v4**：597 configs；50 个 Axelrod 策略 + 15 个 AxelrodMix；
+> - **Protocol v4**：747 configs；12 个 complex 风格 + 50 个 Axelrod 策略 +
+>   15 个 AxelrodMix；
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 baseline **尚未运行**（按本次要求不做测试）；v3 的 299/20/40 结果
 >   只作 legacy；
@@ -88,7 +89,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 
 | 阶段 | 结论 |
 |---|---|
-| Protocol v4 split | **启用**；597 configs + Axelrod/complex/policy；test_v7 未消费 |
+| Protocol v4 split | **启用**；747 configs + 新风格/Axelrod/complex/policy；test_v7 未消费 |
 | Protocol v4 baseline | **未运行**（本次不测试）；v3 baseline 仅作 legacy |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

@@ -56,7 +56,9 @@ CC = 6, CD = 0, DC = 10, DD = 1
 - 默认 2048 人，dev 30 fields，test 50 fields。
 - 具体 config 不跨层；`test_v7` 的 test-only family 不出现在 train/dev。
 - complex family：`phase_switch`、`adaptive_mix`、`probe_exploit`、
-  `delayed_extort`、`memory_two`、`meta_mix`。
+  `delayed_extort`、`memory_two`、`meta_mix`、`noise_adaptive`、
+  `reputation_grim`、`contrition_cycle`、`endgame_hunter`、
+  `pattern_breaker`、`conditional_extort`。
 - Axelrod：50 个策略 + 15 个 `AxelrodMix` 组合，需安装
   `requirements-axelrod.txt`。
 - policy opponent：训练用 RL-BC / SelfPlay-BC / Neural / GRU；test 用

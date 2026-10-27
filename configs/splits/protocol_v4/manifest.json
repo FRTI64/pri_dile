@@ -2,9 +2,9 @@
   "schema": "ipd-protocol-v4",
   "protocol": "protocol_v4",
   "version": "4",
-  "created": "2026-10-27T16:35:04",
-  "catalog_sha256": "d6a674aaf025a586fb9aebf38b0f80f423e4d251936d003b01f30dbf5b479117",
-  "catalog_size": 597,
+  "created": "2026-10-27T16:49:56",
+  "catalog_sha256": "714925720174e57de6c8a2b7b6cb9ab1daca579f7182287de2c2f865690d3a19",
+  "catalog_size": 747,
   "tiers": [
     "train",
     "dev_param",
@@ -20,7 +20,13 @@
     "probe_exploit",
     "delayed_extort",
     "memory_two",
-    "meta_mix"
+    "meta_mix",
+    "noise_adaptive",
+    "reputation_grim",
+    "contrition_cycle",
+    "endgame_hunter",
+    "pattern_breaker",
+    "conditional_extort"
   ],
   "policy_families": [
     "policy"
@@ -240,15 +246,15 @@
     "dev": {
       "adaptive": 6,
       "defect": 2,
-      "extort": 5,
+      "extort": 6,
       "forgiving": 4,
       "late": 4,
       "nice": 2,
-      "noisy": 5,
-      "punitive": 2,
-      "random": 5,
-      "temporal": 15,
-      "wild": 4
+      "noisy": 6,
+      "punitive": 4,
+      "random": 6,
+      "temporal": 17,
+      "wild": 5
     },
     "dev_axelrod": {
       "axelrod": 8,
@@ -256,11 +262,17 @@
     },
     "dev_complex": {
       "adaptive_mix": 3,
+      "conditional_extort": 3,
+      "contrition_cycle": 1,
       "delayed_extort": 3,
+      "endgame_hunter": 2,
       "memory_two": 2,
       "meta_mix": 2,
+      "noise_adaptive": 5,
+      "pattern_breaker": 1,
       "phase_switch": 5,
-      "probe_exploit": 2
+      "probe_exploit": 2,
+      "reputation_grim": 2
     },
     "dev_family": {
       "delayed_grim": 6,
@@ -268,16 +280,16 @@
     },
     "test": {
       "adaptive": 6,
-      "defect": 1,
-      "extort": 6,
-      "forgiving": 4,
-      "late": 4,
+      "defect": 2,
+      "extort": 5,
+      "forgiving": 5,
+      "late": 5,
       "nice": 2,
       "noisy": 6,
       "punitive": 3,
       "random": 6,
-      "temporal": 14,
-      "wild": 4
+      "temporal": 16,
+      "wild": 5
     },
     "test_axelrod": {
       "axelrod": 7,
@@ -285,11 +297,17 @@
     },
     "test_complex": {
       "adaptive_mix": 2,
+      "conditional_extort": 2,
+      "contrition_cycle": 2,
       "delayed_extort": 2,
+      "endgame_hunter": 2,
       "memory_two": 1,
       "meta_mix": 2,
+      "noise_adaptive": 6,
+      "pattern_breaker": 2,
       "phase_switch": 6,
-      "probe_exploit": 2
+      "probe_exploit": 2,
+      "reputation_grim": 2
     },
     "test_only": {
       "adaptive_probe": 6,
@@ -303,17 +321,17 @@
       "policy": 6
     },
     "train": {
-      "adaptive": 27,
-      "defect": 7,
-      "extort": 24,
-      "forgiving": 18,
-      "late": 20,
-      "nice": 8,
-      "noisy": 25,
-      "punitive": 10,
-      "random": 25,
-      "temporal": 68,
-      "wild": 19
+      "adaptive": 29,
+      "defect": 10,
+      "extort": 27,
+      "forgiving": 21,
+      "late": 21,
+      "nice": 10,
+      "noisy": 28,
+      "punitive": 17,
+      "random": 28,
+      "temporal": 78,
+      "wild": 23
     },
     "train_axelrod": {
       "axelrod": 35,
@@ -321,11 +339,17 @@
     },
     "train_complex": {
       "adaptive_mix": 13,
+      "conditional_extort": 13,
+      "contrition_cycle": 6,
       "delayed_extort": 13,
+      "endgame_hunter": 8,
       "memory_two": 7,
       "meta_mix": 8,
+      "noise_adaptive": 25,
+      "pattern_breaker": 6,
       "phase_switch": 25,
-      "probe_exploit": 8
+      "probe_exploit": 8,
+      "reputation_grim": 8
     },
     "train_policy": {
       "policy": 4
@@ -380,11 +404,11 @@
       "anchor": true
     },
     {
-      "key": "adaptive:AdaptiveProbe:probe_round=12|recover=2",
+      "key": "adaptive:AdaptiveProbe:probe_round=4|recover=2",
       "family": "adaptive",
       "type": "AdaptiveProbe",
       "params": {
-        "probe_round": 12,
+        "probe_round": 4,
         "recover": 2
       },
       "tier": "dev",
@@ -392,50 +416,49 @@
       "anchor": false
     },
     {
-      "key": "adaptive:AdaptiveProbe:probe_round=30|recover=2",
+      "key": "adaptive:Responsive3:cooldown=14|g_mutual=0.2|g_resp=0.85|g_unprov=0.3|max_tests=4|min_c=3|min_d=5|rate=0.25|resp=0.5",
       "family": "adaptive",
-      "type": "AdaptiveProbe",
+      "type": "Responsive3",
       "params": {
-        "probe_round": 30,
-        "recover": 2
+        "cooldown": 14,
+        "g_mutual": 0.2,
+        "g_resp": 0.85,
+        "g_unprov": 0.3,
+        "max_tests": 4,
+        "min_c": 3,
+        "min_d": 5,
+        "rate": 0.25,
+        "resp": 0.5
       },
       "tier": "dev",
       "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "adaptive:Responsive:g=0.3|max_tests=3|min_c=5|min_d=2|rate=0.15|resp=0.4",
+      "key": "adaptive:Responsive3:cooldown=7|g_mutual=0.3|g_resp=0.9|g_unprov=0.45|max_tests=3|min_c=4|min_d=2|rate=0.18|resp=0.42",
       "family": "adaptive",
-      "type": "Responsive",
+      "type": "Responsive3",
       "params": {
-        "g": 0.3,
+        "cooldown": 7,
+        "g_mutual": 0.3,
+        "g_resp": 0.9,
+        "g_unprov": 0.45,
         "max_tests": 3,
-        "min_c": 5,
+        "min_c": 4,
         "min_d": 2,
-        "rate": 0.15,
-        "resp": 0.4
+        "rate": 0.18,
+        "resp": 0.42
       },
       "tier": "dev",
       "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "adaptive:TFTNoisyForgive:g=0.45",
-      "family": "adaptive",
-      "type": "TFTNoisyForgive",
-      "params": {
-        "g": 0.45
-      },
-      "tier": "dev",
-      "weight": 0.3333333333333333,
-      "anchor": false
-    },
-    {
-      "key": "adaptive:TFTProbe:probe_round=6|recover=2",
+      "key": "adaptive:TFTProbe:probe_round=12|recover=2",
       "family": "adaptive",
       "type": "TFTProbe",
       "params": {
-        "probe_round": 6,
+        "probe_round": 12,
         "recover": 2
       },
       "tier": "dev",
@@ -455,108 +478,133 @@
       "anchor": false
     },
     {
-      "key": "defect:EarlyDefector:k=10",
+      "key": "adaptive:TFTProbeImmediate:probe=1|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbeImmediate",
+      "params": {
+        "probe": 1,
+        "recover": 2
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=30",
       "family": "defect",
       "type": "EarlyDefector",
       "params": {
-        "k": 10
+        "k": 30
       },
       "tier": "dev",
       "weight": 0.75,
       "anchor": false
     },
     {
-      "key": "defect:RemorsefulProber",
+      "key": "defect:EarlyDefector:k=40",
       "family": "defect",
-      "type": "RemorsefulProber",
-      "params": {},
+      "type": "EarlyDefector",
+      "params": {
+        "k": 40
+      },
       "tier": "dev",
       "weight": 0.75,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=1.05",
+      "key": "extort:ExtortZD:chi=1.0",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 1.05
+        "chi": 1.0
       },
       "tier": "dev",
-      "weight": 0.36,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=1.15",
+      "key": "extort:ExtortZD:chi=1.55",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 1.15
+        "chi": 1.55
       },
       "tier": "dev",
-      "weight": 0.36,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=1.35",
+      "key": "extort:ExtortZD:chi=1.75",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 1.35
+        "chi": 1.75
       },
       "tier": "dev",
-      "weight": 0.36,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=2.45",
+      "key": "extort:ExtortZD:chi=3.65",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 2.45
+        "chi": 3.65
       },
       "tier": "dev",
-      "weight": 0.36,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=2.95",
+      "key": "extort:GenerousZD:chi=1.2",
       "family": "extort",
-      "type": "ExtortZD",
+      "type": "GenerousZD",
       "params": {
-        "chi": 2.95
+        "chi": 1.2
       },
       "tier": "dev",
-      "weight": 0.36,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "forgiving:ForgiveTFT:missed_limit=1",
+      "key": "extort:GenerousZD:chi=2.8",
+      "family": "extort",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 2.8
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:ForgiveTFT:missed_limit=3",
       "family": "forgiving",
       "type": "ForgiveTFT",
       "params": {
-        "missed_limit": 1
+        "missed_limit": 3
       },
       "tier": "dev",
       "weight": 0.5,
       "anchor": false
     },
     {
-      "key": "forgiving:GenerousTFT:g=0.09",
+      "key": "forgiving:ForgiveTFT:missed_limit=4",
       "family": "forgiving",
-      "type": "GenerousTFT",
+      "type": "ForgiveTFT",
       "params": {
-        "g": 0.09
+        "missed_limit": 4
       },
       "tier": "dev",
       "weight": 0.5,
       "anchor": false
     },
     {
-      "key": "forgiving:GenerousTFT:g=0.18",
+      "key": "forgiving:GenerousTFT:g=0.01",
       "family": "forgiving",
       "type": "GenerousTFT",
       "params": {
-        "g": 0.18
+        "g": 0.01
       },
       "tier": "dev",
       "weight": 0.5,
@@ -596,31 +644,31 @@
       "anchor": false
     },
     {
-      "key": "late:LateDefector:k=48",
+      "key": "late:LateDefector:k=60",
       "family": "late",
       "type": "LateDefector",
       "params": {
-        "k": 48
+        "k": 60
       },
       "tier": "dev",
       "weight": 0.5,
       "anchor": false
     },
     {
-      "key": "late:LateDefector:k=97",
+      "key": "late:LateDefector:k=99",
       "family": "late",
       "type": "LateDefector",
       "params": {
-        "k": 97
+        "k": 99
       },
       "tier": "dev",
       "weight": 0.5,
       "anchor": false
     },
     {
-      "key": "nice:TwoTitsForTat",
+      "key": "nice:TFTLastD",
       "family": "nice",
-      "type": "TwoTitsForTat",
+      "type": "TFTLastD",
       "params": {},
       "tier": "dev",
       "weight": 1.0,
@@ -636,80 +684,113 @@
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.16",
+      "key": "noisy:Joss:p=0.19",
       "family": "noisy",
       "type": "Joss",
       "params": {
-        "p": 0.16
+        "p": 0.19
       },
       "tier": "dev",
-      "weight": 0.4,
+      "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.31",
+      "key": "noisy:Joss:p=0.28",
       "family": "noisy",
       "type": "Joss",
       "params": {
-        "p": 0.31
+        "p": 0.28
       },
       "tier": "dev",
-      "weight": 0.4,
+      "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.01",
+      "key": "noisy:Joss:p=0.37",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.37
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.05",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.01
+        "p": 0.05
       },
       "tier": "dev",
-      "weight": 0.4,
+      "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.16",
+      "key": "noisy:NoisyTFT:p=0.19",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.16
+        "p": 0.19
       },
       "tier": "dev",
-      "weight": 0.4,
+      "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.22",
+      "key": "noisy:NoisyTFT:p=0.4",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.22
+        "p": 0.4
       },
       "tier": "dev",
-      "weight": 0.4,
+      "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "punitive:GrudgerK:k=1",
+      "key": "punitive:GrimForgive:g=0.15",
+      "family": "punitive",
+      "type": "GrimForgive",
+      "params": {
+        "g": 0.15
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=4",
       "family": "punitive",
       "type": "GrudgerK",
       "params": {
-        "k": 1
+        "k": 4
       },
       "tier": "dev",
-      "weight": 1.0,
+      "weight": 0.5,
       "anchor": false
     },
     {
-      "key": "punitive:GrudgerK:k=2",
+      "key": "punitive:GrudgerK:k=5",
       "family": "punitive",
       "type": "GrudgerK",
       "params": {
-        "k": 2
+        "k": 5
       },
       "tier": "dev",
-      "weight": 1.0,
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=6",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 6
+      },
+      "tier": "dev",
+      "weight": 0.5,
       "anchor": false
     },
     {
@@ -726,29 +807,29 @@
         "start": 2
       },
       "tier": "dev",
-      "weight": 0.3,
+      "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.15",
+      "key": "random:RandomMoves:p=0.26",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.15
+        "p": 0.26
       },
       "tier": "dev",
-      "weight": 0.3,
+      "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.3",
+      "key": "random:RandomMoves:p=0.62",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.3
+        "p": 0.62
       },
       "tier": "dev",
-      "weight": 0.3,
+      "weight": 0.25,
       "anchor": false
     },
     {
@@ -759,7 +840,18 @@
         "p": 0.66
       },
       "tier": "dev",
-      "weight": 0.3,
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.78",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.78
+      },
+      "tier": "dev",
+      "weight": 0.25,
       "anchor": false
     },
     {
@@ -770,129 +862,151 @@
         "p": 0.9
       },
       "tier": "dev",
-      "weight": 0.3,
+      "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=20",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=12",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
-        "p_defect": 0.08,
+        "p_defect": 0.2,
         "retaliate": 0.85,
-        "window": 20
+        "window": 12
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=7",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=3",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
-        "p_defect": 0.08,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 3
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=7",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
         "retaliate": 0.85,
         "window": 7
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=9",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.08,
-        "retaliate": 0.85,
-        "window": 9
-      },
-      "tier": "dev",
-      "weight": 0.14666666666666667,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=16",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.2,
-        "retaliate": 0.85,
-        "window": 16
-      },
-      "tier": "dev",
-      "weight": 0.14666666666666667,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=20",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.2,
-        "retaliate": 0.85,
-        "window": 20
-      },
-      "tier": "dev",
-      "weight": 0.14666666666666667,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=2",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.38,
-        "retaliate": 0.85,
-        "window": 2
-      },
-      "tier": "dev",
-      "weight": 0.14666666666666667,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=73",
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=23",
       "family": "temporal",
       "type": "HarvestFactor",
       "params": {
         "p_defect": 0.95,
         "repairable": false,
-        "start": 73
+        "start": 23
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=40",
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=14",
       "family": "temporal",
       "type": "HarvestFactor",
       "params": {
         "p_defect": 0.95,
         "repairable": true,
-        "start": 40
+        "start": 14
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:Kamikaze:p_steal=0.75|period=22",
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=44",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 44
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=48",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 48
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=68",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 68
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=98",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 98
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=4",
       "family": "temporal",
       "type": "Kamikaze",
       "params": {
         "p_steal": 0.75,
-        "period": 22
+        "period": 4
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=5",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 5
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
@@ -904,32 +1018,49 @@
         "period": 7
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:Kamikaze:p_steal=0.75|period=8",
+      "key": "temporal:ProbePhase:harvest_start=100|p_probe=0.75|phase=harvest|probe=12",
       "family": "temporal",
-      "type": "Kamikaze",
+      "type": "ProbePhase",
       "params": {
-        "p_steal": 0.75,
-        "period": 8
+        "harvest_start": 100,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 12
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=12",
+      "key": "temporal:ProbePhase:harvest_start=65|p_probe=0.75|phase=harvest|probe=5",
       "family": "temporal",
-      "type": "WindowTFT",
+      "type": "ProbePhase",
       "params": {
-        "forgive": 0.3,
-        "retaliate": 0.82,
-        "window": 12
+        "harvest_start": 65,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 5
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=90|p_probe=0.75|phase=harvest|probe=10",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 90,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 10
+      },
+      "tier": "dev",
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
@@ -942,88 +1073,81 @@
         "window": 3
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=5",
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=4",
       "family": "temporal",
       "type": "WindowTFT",
       "params": {
         "forgive": 0.3,
         "retaliate": 0.82,
-        "window": 5
+        "window": 4
       },
       "tier": "dev",
-      "weight": 0.14666666666666667,
+      "weight": 0.12941176470588237,
       "anchor": false
     },
     {
-      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=7",
-      "family": "temporal",
-      "type": "WindowTFT",
-      "params": {
-        "forgive": 0.3,
-        "retaliate": 0.82,
-        "window": 7
-      },
-      "tier": "dev",
-      "weight": 0.14666666666666667,
-      "anchor": false
-    },
-    {
-      "key": "wild:MemoryOne:p=(0.55, 0.2, 0.4, 0.45)",
+      "key": "wild:RandomFSM:k=2",
       "family": "wild",
-      "type": "MemoryOne",
+      "type": "RandomFSM",
       "params": {
-        "p": [
-          0.55,
-          0.2,
-          0.4,
-          0.45
-        ]
+        "k": 2
       },
       "tier": "dev",
-      "weight": 0.375,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "wild:Reactive:first=0|p_after_c=0.6|p_after_d=0.4",
+      "key": "wild:RandomFSM:k=5",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 5
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.9|p_after_d=0.1",
       "family": "wild",
       "type": "Reactive",
       "params": {
         "first": 0,
-        "p_after_c": 0.6,
-        "p_after_d": 0.4
+        "p_after_c": 0.9,
+        "p_after_d": 0.1
       },
       "tier": "dev",
-      "weight": 0.375,
+      "weight": 0.3,
       "anchor": false
     },
     {
-      "key": "wild:Reactive:first=0|p_after_c=0.7|p_after_d=0.3",
-      "family": "wild",
-      "type": "Reactive",
-      "params": {
-        "first": 0,
-        "p_after_c": 0.7,
-        "p_after_d": 0.3
-      },
-      "tier": "dev",
-      "weight": 0.375,
-      "anchor": false
-    },
-    {
-      "key": "wild:Reactive:first=1|p_after_c=0.85|p_after_d=0.05",
+      "key": "wild:Reactive:first=1|p_after_c=0.25|p_after_d=0.65",
       "family": "wild",
       "type": "Reactive",
       "params": {
         "first": 1,
-        "p_after_c": 0.85,
-        "p_after_d": 0.05
+        "p_after_c": 0.25,
+        "p_after_d": 0.65
       },
       "tier": "dev",
-      "weight": 0.375,
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=1|p_after_c=0.7|p_after_d=0.2",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 1,
+        "p_after_c": 0.7,
+        "p_after_d": 0.2
+      },
+      "tier": "dev",
+      "weight": 0.3,
       "anchor": false
     },
     {
@@ -1187,6 +1311,57 @@
       "anchor": false
     },
     {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.55|window=12",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.55,
+        "window": 12
+      },
+      "tier": "dev_complex",
+      "weight": 0.3666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.65|window=12",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.65,
+        "window": 12
+      },
+      "tier": "dev_complex",
+      "weight": 0.3666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.75|window=20",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.75,
+        "window": 20
+      },
+      "tier": "dev_complex",
+      "weight": 0.3666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=3|repair=1",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 3,
+        "repair": 1
+      },
+      "tier": "dev_complex",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
       "key": "delayed_extort:DelayedExtort:chi=3.0|delay=15",
       "family": "delayed_extort",
       "type": "DelayedExtort",
@@ -1220,6 +1395,30 @@
       },
       "tier": "dev_complex",
       "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=4|start=45",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 4,
+        "start": 45
+      },
+      "tier": "dev_complex",
+      "weight": 0.55,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=4|start=75",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 4,
+        "start": 75
+      },
+      "tier": "dev_complex",
+      "weight": 0.55,
       "anchor": false
     },
     {
@@ -1275,6 +1474,88 @@
       },
       "tier": "dev_complex",
       "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.2|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.2,
+        "window": 5
+      },
+      "tier": "dev_complex",
+      "weight": 0.22000000000000003,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.35|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.35,
+        "window": 10
+      },
+      "tier": "dev_complex",
+      "weight": 0.22000000000000003,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.35|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.35,
+        "window": 20
+      },
+      "tier": "dev_complex",
+      "weight": 0.22000000000000003,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.2|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.2,
+        "window": 10
+      },
+      "tier": "dev_complex",
+      "weight": 0.22000000000000003,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.2|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.2,
+        "window": 10
+      },
+      "tier": "dev_complex",
+      "weight": 0.22000000000000003,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.75|window=6",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.75,
+        "window": 6
+      },
+      "tier": "dev_complex",
+      "weight": 1.0,
       "anchor": false
     },
     {
@@ -1368,6 +1649,30 @@
         "chi": 3.0,
         "mode": "harvest",
         "probe": 6
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=0|threshold=0.6",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 0,
+        "threshold": 0.6
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=10|threshold=0.5",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 10,
+        "threshold": 0.5
       },
       "tier": "dev_complex",
       "weight": 0.5,
@@ -1536,11 +1841,11 @@
       "anchor": false
     },
     {
-      "key": "adaptive:AdaptiveProbe:probe_round=8|recover=2",
+      "key": "adaptive:AdaptiveProbe:probe_round=20|recover=2",
       "family": "adaptive",
       "type": "AdaptiveProbe",
       "params": {
-        "probe_round": 8,
+        "probe_round": 20,
         "recover": 2
       },
       "tier": "test",
@@ -1548,92 +1853,98 @@
       "anchor": false
     },
     {
-      "key": "adaptive:Responsive2:g_mutual=0.15|g_unprov=0.9|max_tests=2|min_c=4|min_d=4|resp=0.25|strike=1",
+      "key": "adaptive:AdaptiveProbe:probe_round=25|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 25,
+        "recover": 2
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive2:g_mutual=0.1|g_unprov=1.0|max_tests=3|min_c=4|min_d=2|resp=0.35|strike=2",
       "family": "adaptive",
       "type": "Responsive2",
       "params": {
-        "g_mutual": 0.15,
-        "g_unprov": 0.9,
-        "max_tests": 2,
-        "min_c": 4,
-        "min_d": 4,
-        "resp": 0.25,
-        "strike": 1
-      },
-      "tier": "test",
-      "weight": 0.3333333333333333,
-      "anchor": false
-    },
-    {
-      "key": "adaptive:Responsive3:cooldown=14|g_mutual=0.2|g_resp=0.85|g_unprov=0.3|max_tests=4|min_c=3|min_d=5|rate=0.25|resp=0.5",
-      "family": "adaptive",
-      "type": "Responsive3",
-      "params": {
-        "cooldown": 14,
-        "g_mutual": 0.2,
-        "g_resp": 0.85,
-        "g_unprov": 0.3,
-        "max_tests": 4,
-        "min_c": 3,
-        "min_d": 5,
-        "rate": 0.25,
-        "resp": 0.5
-      },
-      "tier": "test",
-      "weight": 0.3333333333333333,
-      "anchor": false
-    },
-    {
-      "key": "adaptive:Responsive3:cooldown=7|g_mutual=0.3|g_resp=0.9|g_unprov=0.45|max_tests=3|min_c=4|min_d=2|rate=0.18|resp=0.42",
-      "family": "adaptive",
-      "type": "Responsive3",
-      "params": {
-        "cooldown": 7,
-        "g_mutual": 0.3,
-        "g_resp": 0.9,
-        "g_unprov": 0.45,
+        "g_mutual": 0.1,
+        "g_unprov": 1.0,
         "max_tests": 3,
         "min_c": 4,
         "min_d": 2,
-        "rate": 0.18,
-        "resp": 0.42
+        "resp": 0.35,
+        "strike": 2
       },
       "tier": "test",
       "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "adaptive:TFTNoisyForgive:g=0.25",
+      "key": "adaptive:Responsive:g=0.15|max_tests=1|min_c=3|min_d=4|rate=0.22|resp=0.25",
+      "family": "adaptive",
+      "type": "Responsive",
+      "params": {
+        "g": 0.15,
+        "max_tests": 1,
+        "min_c": 3,
+        "min_d": 4,
+        "rate": 0.22,
+        "resp": 0.25
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive:g=0.3|max_tests=3|min_c=5|min_d=2|rate=0.15|resp=0.4",
+      "family": "adaptive",
+      "type": "Responsive",
+      "params": {
+        "g": 0.3,
+        "max_tests": 3,
+        "min_c": 5,
+        "min_d": 2,
+        "rate": 0.15,
+        "resp": 0.4
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTNoisyForgive:g=0.2",
       "family": "adaptive",
       "type": "TFTNoisyForgive",
       "params": {
-        "g": 0.25
+        "g": 0.2
       },
       "tier": "test",
       "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "adaptive:TFTProbe:probe_round=12|recover=2",
-      "family": "adaptive",
-      "type": "TFTProbe",
-      "params": {
-        "probe_round": 12,
-        "recover": 2
-      },
-      "tier": "test",
-      "weight": 0.3333333333333333,
-      "anchor": false
-    },
-    {
-      "key": "defect:EarlyDefector:k=25",
+      "key": "defect:EarlyDefector:k=15",
       "family": "defect",
       "type": "EarlyDefector",
       "params": {
-        "k": 25
+        "k": 15
       },
       "tier": "test",
-      "weight": 1.5,
+      "weight": 0.75,
+      "anchor": false
+    },
+    {
+      "key": "defect:RandomThenTFT:k=8|p=0.5",
+      "family": "defect",
+      "type": "RandomThenTFT",
+      "params": {
+        "k": 8,
+        "p": 0.5
+      },
+      "tier": "test",
+      "weight": 0.75,
       "anchor": false
     },
     {
@@ -1644,95 +1955,73 @@
         "chi": 1.95
       },
       "tier": "test",
-      "weight": 0.3,
+      "weight": 0.36,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=2.25",
+      "key": "extort:ExtortZD:chi=2.35",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 2.25
+        "chi": 2.35
       },
       "tier": "test",
-      "weight": 0.3,
+      "weight": 0.36,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=3.45",
+      "key": "extort:ExtortZD:chi=3.75",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 3.45
+        "chi": 3.75
       },
       "tier": "test",
-      "weight": 0.3,
+      "weight": 0.36,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=3.95",
-      "family": "extort",
-      "type": "ExtortZD",
-      "params": {
-        "chi": 3.95
-      },
-      "tier": "test",
-      "weight": 0.3,
-      "anchor": false
-    },
-    {
-      "key": "extort:GenerousZD:chi=1.2",
+      "key": "extort:GenerousZD:chi=1.6",
       "family": "extort",
       "type": "GenerousZD",
       "params": {
-        "chi": 1.2
+        "chi": 1.6
       },
       "tier": "test",
-      "weight": 0.3,
+      "weight": 0.36,
       "anchor": false
     },
     {
-      "key": "extort:GenerousZD:chi=2.0",
+      "key": "extort:GenerousZD:chi=2.4",
       "family": "extort",
       "type": "GenerousZD",
       "params": {
-        "chi": 2.0
+        "chi": 2.4
       },
       "tier": "test",
-      "weight": 0.3,
+      "weight": 0.36,
       "anchor": false
     },
     {
-      "key": "forgiving:ForgiveTFT:missed_limit=2",
-      "family": "forgiving",
-      "type": "ForgiveTFT",
-      "params": {
-        "missed_limit": 2
-      },
-      "tier": "test",
-      "weight": 0.5,
-      "anchor": false
-    },
-    {
-      "key": "forgiving:GenerousTFT:g=0.04",
+      "key": "forgiving:GenerousTFT:g=0.05",
       "family": "forgiving",
       "type": "GenerousTFT",
       "params": {
-        "g": 0.04
+        "g": 0.05
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
       "anchor": false
     },
     {
-      "key": "forgiving:GenerousTFT:g=0.22",
+      "key": "forgiving:GenerousTFT:g=0.18",
       "family": "forgiving",
       "type": "GenerousTFT",
       "params": {
-        "g": 0.22
+        "g": 0.18
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
       "anchor": false
     },
     {
@@ -1743,7 +2032,29 @@
         "g": 0.31
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousZD:chi=1.35",
+      "family": "forgiving",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 1.35
+      },
+      "tier": "test",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.08",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.08
+      },
+      "tier": "test",
+      "weight": 0.4,
       "anchor": false
     },
     {
@@ -1754,18 +2065,18 @@
         "k": 15
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
       "anchor": false
     },
     {
-      "key": "late:LateDefector:k=3",
+      "key": "late:LateDefector:k=48",
       "family": "late",
       "type": "LateDefector",
       "params": {
-        "k": 3
+        "k": 48
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
       "anchor": false
     },
     {
@@ -1776,18 +2087,40 @@
         "k": 54
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
       "anchor": false
     },
     {
-      "key": "late:LateDefector:k=65",
+      "key": "late:LateDefector:k=57",
       "family": "late",
       "type": "LateDefector",
       "params": {
-        "k": 65
+        "k": 57
       },
       "tier": "test",
-      "weight": 0.5,
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=75",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 75
+      },
+      "tier": "test",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "nice:Majority:k=5",
+      "family": "nice",
+      "type": "Majority",
+      "params": {
+        "k": 5
+      },
+      "tier": "test",
+      "weight": 1.0,
       "anchor": false
     },
     {
@@ -1800,18 +2133,31 @@
       "anchor": false
     },
     {
-      "key": "nice:TFTLastD",
-      "family": "nice",
-      "type": "TFTLastD",
-      "params": {},
+      "key": "noisy:Joss:p=0.46",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.46
+      },
       "tier": "test",
-      "weight": 1.0,
+      "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.03",
+      "key": "noisy:Joss:p=0.52",
       "family": "noisy",
       "type": "Joss",
+      "params": {
+        "p": 0.52
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.03",
+      "family": "noisy",
+      "type": "NoisyTFT",
       "params": {
         "p": 0.03
       },
@@ -1820,55 +2166,33 @@
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.22",
-      "family": "noisy",
-      "type": "Joss",
-      "params": {
-        "p": 0.22
-      },
-      "tier": "test",
-      "weight": 0.3333333333333333,
-      "anchor": false
-    },
-    {
-      "key": "noisy:Joss:p=0.34",
-      "family": "noisy",
-      "type": "Joss",
-      "params": {
-        "p": 0.34
-      },
-      "tier": "test",
-      "weight": 0.3333333333333333,
-      "anchor": false
-    },
-    {
-      "key": "noisy:NoisyTFT:p=0.1",
+      "key": "noisy:NoisyTFT:p=0.13",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.1
+        "p": 0.13
       },
       "tier": "test",
       "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.37",
+      "key": "noisy:NoisyTFT:p=0.28",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.37
+        "p": 0.28
       },
       "tier": "test",
       "weight": 0.3333333333333333,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.4",
+      "key": "noisy:NoisyTFT:p=0.43",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.4
+        "p": 0.43
       },
       "tier": "test",
       "weight": 0.3333333333333333,
@@ -1884,33 +2208,54 @@
       "anchor": false
     },
     {
-      "key": "punitive:Grudger2",
-      "family": "punitive",
-      "type": "Grudger2",
-      "params": {},
-      "tier": "test",
-      "weight": 0.6666666666666666,
-      "anchor": false
-    },
-    {
-      "key": "punitive:GrudgerK:k=4",
+      "key": "punitive:GrudgerK:k=3",
       "family": "punitive",
       "type": "GrudgerK",
       "params": {
-        "k": 4
+        "k": 3
       },
       "tier": "test",
       "weight": 0.6666666666666666,
       "anchor": false
     },
     {
-      "key": "random:Periodic:pattern=(1, 0, 0, 0)|start=1",
+      "key": "punitive:ResetGrim:cooldown=10|patience=2",
+      "family": "punitive",
+      "type": "ResetGrim",
+      "params": {
+        "cooldown": 10,
+        "patience": 2
+      },
+      "tier": "test",
+      "weight": 0.6666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 0, 0, 0, 1)|start=2",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "start": 2
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(1, 1, 0, 0)|start=1",
       "family": "random",
       "type": "Periodic",
       "params": {
         "pattern": [
           1,
-          0,
+          1,
           0,
           0
         ],
@@ -1921,100 +2266,61 @@
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.26",
+      "key": "random:RandomMoves:p=0.01",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.26
+        "p": 0.01
       },
       "tier": "test",
       "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.58",
+      "key": "random:RandomMoves:p=0.12",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.58
+        "p": 0.12
       },
       "tier": "test",
       "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.82",
+      "key": "random:RandomMoves:p=0.15",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.82
+        "p": 0.15
       },
       "tier": "test",
       "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.96",
+      "key": "random:RandomMoves:p=0.38",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.96
+        "p": 0.38
       },
       "tier": "test",
       "weight": 0.25,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.98",
-      "family": "random",
-      "type": "RandomMoves",
-      "params": {
-        "p": 0.98
-      },
-      "tier": "test",
-      "weight": 0.25,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=16",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=12",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
         "p_defect": 0.08,
         "retaliate": 0.85,
-        "window": 16
+        "window": 12
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=18",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.08,
-        "retaliate": 0.85,
-        "window": 18
-      },
-      "tier": "test",
-      "weight": 0.15714285714285717,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=2",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.08,
-        "retaliate": 0.85,
-        "window": 2
-      },
-      "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
@@ -2028,90 +2334,127 @@
         "window": 4
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=18",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=6",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
-        "p_defect": 0.2,
+        "p_defect": 0.08,
         "retaliate": 0.85,
-        "window": 18
+        "window": 6
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=2",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=8",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
-        "p_defect": 0.2,
+        "p_defect": 0.08,
         "retaliate": 0.85,
-        "window": 2
+        "window": 8
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=9",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.2,
-        "retaliate": 0.85,
-        "window": 9
-      },
-      "tier": "test",
-      "weight": 0.15714285714285717,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=18",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=14",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
         "p_defect": 0.38,
         "retaliate": 0.85,
-        "window": 18
+        "window": 14
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=4",
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=29",
       "family": "temporal",
-      "type": "DynamicWindow",
+      "type": "HarvestFactor",
       "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.38,
-        "retaliate": 0.85,
-        "window": 4
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 29
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=48",
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=53",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 53
+      },
+      "tier": "test",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=63",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 63
+      },
+      "tier": "test",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=93",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 93
+      },
+      "tier": "test",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=40",
       "family": "temporal",
       "type": "HarvestFactor",
       "params": {
         "p_defect": 0.95,
         "repairable": true,
-        "start": 48
+        "start": 40
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=78",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 78
+      },
+      "tier": "test",
+      "weight": 0.1375,
       "anchor": false
     },
     {
@@ -2124,7 +2467,7 @@
         "start": 8
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
@@ -2136,64 +2479,101 @@
         "period": 30
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:Kamikaze:p_steal=0.75|period=6",
+      "key": "temporal:Kamikaze:p_steal=0.75|period=8",
       "family": "temporal",
       "type": "Kamikaze",
       "params": {
         "p_steal": 0.75,
-        "period": 6
+        "period": 8
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=4",
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=14",
       "family": "temporal",
       "type": "WindowTFT",
       "params": {
         "forgive": 0.3,
         "retaliate": 0.82,
-        "window": 4
+        "window": 14
       },
       "tier": "test",
-      "weight": 0.15714285714285717,
+      "weight": 0.1375,
       "anchor": false
     },
     {
-      "key": "wild:MemoryOne:p=(0.5, 0.3, 0.3, 0.5)",
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=6",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 6
+      },
+      "tier": "test",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.35, 0.45, 0.1, 0.8)",
       "family": "wild",
       "type": "MemoryOne",
       "params": {
         "p": [
-          0.5,
-          0.3,
-          0.3,
-          0.5
-        ]
-      },
-      "tier": "test",
-      "weight": 0.375,
-      "anchor": false
-    },
-    {
-      "key": "wild:MemoryOne:p=(0.85, 0.15, 0.45, 0.1)",
-      "family": "wild",
-      "type": "MemoryOne",
-      "params": {
-        "p": [
-          0.85,
-          0.15,
+          0.35,
           0.45,
-          0.1
+          0.1,
+          0.8
         ]
       },
       "tier": "test",
-      "weight": 0.375,
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.65, 0.05, 0.6, 0.35)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.65,
+          0.05,
+          0.6,
+          0.35
+        ]
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=8",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 8
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.8|p_after_d=0.2",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.8,
+        "p_after_d": 0.2
+      },
+      "tier": "test",
+      "weight": 0.3,
       "anchor": false
     },
     {
@@ -2206,20 +2586,7 @@
         "p_after_d": 0.35
       },
       "tier": "test",
-      "weight": 0.375,
-      "anchor": false
-    },
-    {
-      "key": "wild:Reactive:first=1|p_after_c=0.7|p_after_d=0.2",
-      "family": "wild",
-      "type": "Reactive",
-      "params": {
-        "first": 1,
-        "p_after_c": 0.7,
-        "p_after_d": 0.2
-      },
-      "tier": "test",
-      "weight": 0.375,
+      "weight": 0.3,
       "anchor": false
     },
     {
@@ -2373,6 +2740,56 @@
       "anchor": false
     },
     {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.55|window=8",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.55,
+        "window": 8
+      },
+      "tier": "test_complex",
+      "weight": 0.55,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.75|window=20",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.75,
+        "window": 20
+      },
+      "tier": "test_complex",
+      "weight": 0.55,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=3|repair=2",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 3,
+        "repair": 2
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=4|repair=2",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 4,
+        "repair": 2
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
       "key": "delayed_extort:DelayedExtort:chi=3.0|delay=25",
       "family": "delayed_extort",
       "type": "DelayedExtort",
@@ -2394,6 +2811,30 @@
       },
       "tier": "test_complex",
       "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=8|start=45",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 8,
+        "start": 45
+      },
+      "tier": "test_complex",
+      "weight": 0.55,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=8|start=55",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 8,
+        "start": 55
+      },
+      "tier": "test_complex",
+      "weight": 0.55,
       "anchor": false
     },
     {
@@ -2433,6 +2874,114 @@
           "extort",
           "harvest"
         ]
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.2|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.2,
+        "window": 10
+      },
+      "tier": "test_complex",
+      "weight": 0.18333333333333335,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.2|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.2,
+        "window": 20
+      },
+      "tier": "test_complex",
+      "weight": 0.18333333333333335,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.5|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.5,
+        "window": 10
+      },
+      "tier": "test_complex",
+      "weight": 0.18333333333333335,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.35|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.35,
+        "window": 10
+      },
+      "tier": "test_complex",
+      "weight": 0.18333333333333335,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.2|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.2,
+        "window": 20
+      },
+      "tier": "test_complex",
+      "weight": 0.18333333333333335,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.2|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.2,
+        "window": 5
+      },
+      "tier": "test_complex",
+      "weight": 0.18333333333333335,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.6|window=6",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.6,
+        "window": 6
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.75|window=8",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.75,
+        "window": 8
       },
       "tier": "test_complex",
       "weight": 0.5,
@@ -2543,6 +3092,30 @@
         "chi": 3.0,
         "mode": "harvest",
         "probe": 4
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=0|threshold=0.5",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 0,
+        "threshold": 0.5
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=5|threshold=0.7",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 5,
+        "threshold": 0.7
       },
       "tier": "test_complex",
       "weight": 0.5,
@@ -3063,6 +3636,18 @@
       "anchor": false
     },
     {
+      "key": "adaptive:AdaptiveProbe:probe_round=12|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 12,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.06896551724137931,
+      "anchor": false
+    },
+    {
       "key": "adaptive:AdaptiveProbe:probe_round=16|recover=2",
       "family": "adaptive",
       "type": "AdaptiveProbe",
@@ -3071,31 +3656,19 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
-      "key": "adaptive:AdaptiveProbe:probe_round=20|recover=2",
+      "key": "adaptive:AdaptiveProbe:probe_round=30|recover=2",
       "family": "adaptive",
       "type": "AdaptiveProbe",
       "params": {
-        "probe_round": 20,
+        "probe_round": 30,
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
-      "anchor": false
-    },
-    {
-      "key": "adaptive:AdaptiveProbe:probe_round=25|recover=2",
-      "family": "adaptive",
-      "type": "AdaptiveProbe",
-      "params": {
-        "probe_round": 25,
-        "recover": 2
-      },
-      "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3107,19 +3680,19 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
-      "key": "adaptive:AdaptiveProbe:probe_round=4|recover=2",
+      "key": "adaptive:AdaptiveProbe:probe_round=8|recover=2",
       "family": "adaptive",
       "type": "AdaptiveProbe",
       "params": {
-        "probe_round": 4,
+        "probe_round": 8,
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3128,7 +3701,7 @@
       "type": "OmegaTFTLite",
       "params": {},
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3137,24 +3710,24 @@
       "type": "ProbeBot",
       "params": {},
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
-      "key": "adaptive:Responsive2:g_mutual=0.1|g_unprov=1.0|max_tests=3|min_c=4|min_d=2|resp=0.35|strike=2",
+      "key": "adaptive:Responsive2:g_mutual=0.15|g_unprov=0.9|max_tests=2|min_c=4|min_d=4|resp=0.25|strike=1",
       "family": "adaptive",
       "type": "Responsive2",
       "params": {
-        "g_mutual": 0.1,
-        "g_unprov": 1.0,
-        "max_tests": 3,
+        "g_mutual": 0.15,
+        "g_unprov": 0.9,
+        "max_tests": 2,
         "min_c": 4,
-        "min_d": 2,
-        "resp": 0.35,
-        "strike": 2
+        "min_d": 4,
+        "resp": 0.25,
+        "strike": 1
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3171,7 +3744,7 @@
         "strike": 3
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3188,7 +3761,7 @@
         "strike": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3207,7 +3780,7 @@
         "resp": 0.4
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3226,7 +3799,7 @@
         "resp": 0.36
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3245,7 +3818,7 @@
         "resp": 0.45
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3264,7 +3837,7 @@
         "resp": 0.55
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3283,7 +3856,7 @@
         "resp": 0.32
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3302,23 +3875,7 @@
         "resp": 0.38
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
-      "anchor": false
-    },
-    {
-      "key": "adaptive:Responsive:g=0.15|max_tests=1|min_c=3|min_d=4|rate=0.22|resp=0.25",
-      "family": "adaptive",
-      "type": "Responsive",
-      "params": {
-        "g": 0.15,
-        "max_tests": 1,
-        "min_c": 3,
-        "min_d": 4,
-        "rate": 0.22,
-        "resp": 0.25
-      },
-      "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3334,7 +3891,7 @@
         "resp": 0.3
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3350,40 +3907,40 @@
         "resp": 0.45
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
-      "key": "adaptive:TFTNoisyForgive:g=0.08",
+      "key": "adaptive:TFTNoisyForgive:g=0.1",
       "family": "adaptive",
       "type": "TFTNoisyForgive",
       "params": {
-        "g": 0.08
+        "g": 0.1
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
-      "key": "adaptive:TFTNoisyForgive:g=0.15",
+      "key": "adaptive:TFTNoisyForgive:g=0.3",
       "family": "adaptive",
       "type": "TFTNoisyForgive",
       "params": {
-        "g": 0.15
+        "g": 0.3
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
-      "key": "adaptive:TFTNoisyForgive:g=0.35",
+      "key": "adaptive:TFTNoisyForgive:g=0.4",
       "family": "adaptive",
       "type": "TFTNoisyForgive",
       "params": {
-        "g": 0.35
+        "g": 0.4
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3395,7 +3952,7 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3407,7 +3964,7 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3419,7 +3976,7 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3431,7 +3988,7 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3443,7 +4000,43 @@
         "recover": 2
       },
       "tier": "train",
-      "weight": 0.07407407407407407,
+      "weight": 0.06896551724137931,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=6|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 6,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.06896551724137931,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbeImmediate:probe=2|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbeImmediate",
+      "params": {
+        "probe": 2,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.06896551724137931,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbeImmediate:probe=3|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbeImmediate",
+      "params": {
+        "probe": 3,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.06896551724137931,
       "anchor": false
     },
     {
@@ -3452,7 +4045,7 @@
       "type": "Bully",
       "params": {},
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
       "anchor": false
     },
     {
@@ -3463,18 +4056,18 @@
         "k": 1
       },
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
       "anchor": false
     },
     {
-      "key": "defect:EarlyDefector:k=15",
+      "key": "defect:EarlyDefector:k=10",
       "family": "defect",
       "type": "EarlyDefector",
       "params": {
-        "k": 15
+        "k": 10
       },
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
       "anchor": false
     },
     {
@@ -3485,7 +4078,18 @@
         "k": 2
       },
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=25",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 25
+      },
+      "tier": "train",
+      "weight": 0.15,
       "anchor": false
     },
     {
@@ -3496,7 +4100,7 @@
         "k": 5
       },
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
       "anchor": false
     },
     {
@@ -3505,7 +4109,28 @@
       "type": "Prober",
       "params": {},
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
+      "anchor": false
+    },
+    {
+      "key": "defect:RandomThenTFT:k=4|p=0.5",
+      "family": "defect",
+      "type": "RandomThenTFT",
+      "params": {
+        "k": 4,
+        "p": 0.5
+      },
+      "tier": "train",
+      "weight": 0.15,
+      "anchor": false
+    },
+    {
+      "key": "defect:RemorsefulProber",
+      "family": "defect",
+      "type": "RemorsefulProber",
+      "params": {},
+      "tier": "train",
+      "weight": 0.15,
       "anchor": false
     },
     {
@@ -3514,7 +4139,29 @@
       "type": "Tester",
       "params": {},
       "tier": "train",
-      "weight": 0.21428571428571427,
+      "weight": 0.15,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.05",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.05
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.15",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.15
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3525,7 +4172,18 @@
         "chi": 1.25
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.35",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.35
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3536,18 +4194,7 @@
         "chi": 1.45
       },
       "tier": "train",
-      "weight": 0.075,
-      "anchor": false
-    },
-    {
-      "key": "extort:ExtortZD:chi=1.55",
-      "family": "extort",
-      "type": "ExtortZD",
-      "params": {
-        "chi": 1.55
-      },
-      "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3558,18 +4205,7 @@
         "chi": 1.65
       },
       "tier": "train",
-      "weight": 0.075,
-      "anchor": false
-    },
-    {
-      "key": "extort:ExtortZD:chi=1.75",
-      "family": "extort",
-      "type": "ExtortZD",
-      "params": {
-        "chi": 1.75
-      },
-      "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3580,7 +4216,7 @@
         "chi": 1.85
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3591,7 +4227,7 @@
         "chi": 2.05
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3602,18 +4238,29 @@
         "chi": 2.15
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
-      "key": "extort:ExtortZD:chi=2.35",
+      "key": "extort:ExtortZD:chi=2.25",
       "family": "extort",
       "type": "ExtortZD",
       "params": {
-        "chi": 2.35
+        "chi": 2.25
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.45",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.45
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3624,7 +4271,7 @@
         "chi": 2.55
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3635,7 +4282,7 @@
         "chi": 2.65
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3646,7 +4293,7 @@
         "chi": 2.75
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3657,7 +4304,18 @@
         "chi": 2.85
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.95",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.95
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3668,7 +4326,7 @@
         "chi": 3.05
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3679,7 +4337,7 @@
         "chi": 3.15
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3690,7 +4348,7 @@
         "chi": 3.25
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3701,7 +4359,18 @@
         "chi": 3.35
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.45",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.45
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3712,29 +4381,7 @@
         "chi": 3.55
       },
       "tier": "train",
-      "weight": 0.075,
-      "anchor": false
-    },
-    {
-      "key": "extort:ExtortZD:chi=3.65",
-      "family": "extort",
-      "type": "ExtortZD",
-      "params": {
-        "chi": 3.65
-      },
-      "tier": "train",
-      "weight": 0.075,
-      "anchor": false
-    },
-    {
-      "key": "extort:ExtortZD:chi=3.75",
-      "family": "extort",
-      "type": "ExtortZD",
-      "params": {
-        "chi": 3.75
-      },
-      "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
@@ -3745,62 +4392,73 @@
         "chi": 3.85
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
-      "key": "extort:GenerousZD:chi=1.6",
+      "key": "extort:ExtortZD:chi=3.95",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.95
+      },
+      "tier": "train",
+      "weight": 0.06666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "extort:GenerousZD:chi=2.0",
       "family": "extort",
       "type": "GenerousZD",
       "params": {
-        "chi": 1.6
+        "chi": 2.0
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
-      "key": "extort:GenerousZD:chi=2.4",
+      "key": "extort:GenerousZD:chi=3.2",
       "family": "extort",
       "type": "GenerousZD",
       "params": {
-        "chi": 2.4
+        "chi": 3.2
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
-      "key": "extort:GenerousZD:chi=2.8",
+      "key": "extort:GenerousZD:chi=3.6",
       "family": "extort",
       "type": "GenerousZD",
       "params": {
-        "chi": 2.8
+        "chi": 3.6
       },
       "tier": "train",
-      "weight": 0.075,
+      "weight": 0.06666666666666667,
       "anchor": false
     },
     {
-      "key": "forgiving:ForgiveTFT:missed_limit=3",
+      "key": "forgiving:ForgiveTFT:missed_limit=1",
       "family": "forgiving",
       "type": "ForgiveTFT",
       "params": {
-        "missed_limit": 3
+        "missed_limit": 1
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
-      "key": "forgiving:GenerousTFT:g=0.01",
+      "key": "forgiving:ForgiveTFT:missed_limit=2",
       "family": "forgiving",
-      "type": "GenerousTFT",
+      "type": "ForgiveTFT",
       "params": {
-        "g": 0.01
+        "missed_limit": 2
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3811,18 +4469,18 @@
         "g": 0.02
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
-      "key": "forgiving:GenerousTFT:g=0.05",
+      "key": "forgiving:GenerousTFT:g=0.04",
       "family": "forgiving",
       "type": "GenerousTFT",
       "params": {
-        "g": 0.05
+        "g": 0.04
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3833,7 +4491,18 @@
         "g": 0.07
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.09",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.09
+      },
+      "tier": "train",
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3844,7 +4513,7 @@
         "g": 0.12
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3855,7 +4524,18 @@
         "g": 0.15
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.22",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.22
+      },
+      "tier": "train",
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3866,7 +4546,7 @@
         "g": 0.26
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3877,7 +4557,7 @@
         "g": 0.36
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3888,7 +4568,7 @@
         "g": 0.42
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3899,18 +4579,18 @@
         "g": 0.49
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
-      "key": "forgiving:TFTNoisyForgive:g=0.08",
+      "key": "forgiving:GenerousZD:chi=1.8",
       "family": "forgiving",
-      "type": "TFTNoisyForgive",
+      "type": "GenerousZD",
       "params": {
-        "g": 0.08
+        "chi": 1.8
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3921,7 +4601,7 @@
         "g": 0.16
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3932,7 +4612,7 @@
         "g": 0.24
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3943,7 +4623,7 @@
         "g": 0.33
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3954,7 +4634,18 @@
         "g": 0.42
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.5",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.5
+      },
+      "tier": "train",
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3965,7 +4656,7 @@
         "strikes": 2
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3976,7 +4667,7 @@
         "strikes": 3
       },
       "tier": "train",
-      "weight": 0.1111111111111111,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3987,7 +4678,7 @@
         "k": 12
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -3998,7 +4689,7 @@
         "k": 18
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4009,7 +4700,7 @@
         "k": 24
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4020,7 +4711,18 @@
         "k": 27
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=3",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 3
+      },
+      "tier": "train",
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4031,7 +4733,7 @@
         "k": 30
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4042,7 +4744,7 @@
         "k": 33
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4053,7 +4755,7 @@
         "k": 36
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4064,7 +4766,7 @@
         "k": 42
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4075,7 +4777,7 @@
         "k": 45
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4086,18 +4788,7 @@
         "k": 51
       },
       "tier": "train",
-      "weight": 0.1,
-      "anchor": false
-    },
-    {
-      "key": "late:LateDefector:k=57",
-      "family": "late",
-      "type": "LateDefector",
-      "params": {
-        "k": 57
-      },
-      "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4108,18 +4799,18 @@
         "k": 6
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
-      "key": "late:LateDefector:k=60",
+      "key": "late:LateDefector:k=65",
       "family": "late",
       "type": "LateDefector",
       "params": {
-        "k": 60
+        "k": 65
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4130,18 +4821,7 @@
         "k": 70
       },
       "tier": "train",
-      "weight": 0.1,
-      "anchor": false
-    },
-    {
-      "key": "late:LateDefector:k=75",
-      "family": "late",
-      "type": "LateDefector",
-      "params": {
-        "k": 75
-      },
-      "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4152,7 +4832,7 @@
         "k": 80
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4163,7 +4843,7 @@
         "k": 85
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4174,7 +4854,7 @@
         "k": 9
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4185,7 +4865,7 @@
         "k": 90
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4196,7 +4876,29 @@
         "k": 94
       },
       "tier": "train",
-      "weight": 0.1,
+      "weight": 0.09523809523809523,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=97",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 97
+      },
+      "tier": "train",
+      "weight": 0.09523809523809523,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=98",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 98
+      },
+      "tier": "train",
+      "weight": 0.09523809523809523,
       "anchor": false
     },
     {
@@ -4205,7 +4907,7 @@
       "type": "ContriteTFT",
       "params": {},
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4216,7 +4918,7 @@
         "k": 2
       },
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4227,18 +4929,29 @@
         "k": 3
       },
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
       "anchor": false
     },
     {
-      "key": "nice:Majority:k=5",
+      "key": "nice:Majority:k=4",
       "family": "nice",
       "type": "Majority",
       "params": {
-        "k": 5
+        "k": 4
       },
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "nice:Majority:k=6",
+      "family": "nice",
+      "type": "Majority",
+      "params": {
+        "k": 6
+      },
+      "tier": "train",
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4247,7 +4960,7 @@
       "type": "Pavlov",
       "params": {},
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4256,7 +4969,7 @@
       "type": "SuspiciousTFT",
       "params": {},
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4265,7 +4978,7 @@
       "type": "TFT2",
       "params": {},
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4274,7 +4987,16 @@
       "type": "TFTForgiveOnce",
       "params": {},
       "tier": "train",
-      "weight": 0.25,
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "nice:TwoTitsForTat",
+      "family": "nice",
+      "type": "TwoTitsForTat",
+      "params": {},
+      "tier": "train",
+      "weight": 0.2,
       "anchor": false
     },
     {
@@ -4285,7 +5007,18 @@
         "p": 0.01
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.03",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.03
+      },
+      "tier": "train",
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4296,7 +5029,7 @@
         "p": 0.05
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4307,7 +5040,7 @@
         "p": 0.07
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4318,7 +5051,7 @@
         "p": 0.1
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4329,18 +5062,29 @@
         "p": 0.13
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.19",
+      "key": "noisy:Joss:p=0.16",
       "family": "noisy",
       "type": "Joss",
       "params": {
-        "p": 0.19
+        "p": 0.16
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.22",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.22
+      },
+      "tier": "train",
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4351,29 +5095,29 @@
         "p": 0.25
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.28",
+      "key": "noisy:Joss:p=0.31",
       "family": "noisy",
       "type": "Joss",
       "params": {
-        "p": 0.28
+        "p": 0.31
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:Joss:p=0.37",
+      "key": "noisy:Joss:p=0.34",
       "family": "noisy",
       "type": "Joss",
       "params": {
-        "p": 0.37
+        "p": 0.34
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4384,7 +5128,7 @@
         "p": 0.4
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4395,18 +5139,7 @@
         "p": 0.43
       },
       "tier": "train",
-      "weight": 0.08,
-      "anchor": false
-    },
-    {
-      "key": "noisy:Joss:p=0.46",
-      "family": "noisy",
-      "type": "Joss",
-      "params": {
-        "p": 0.46
-      },
-      "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4417,29 +5150,29 @@
         "p": 0.49
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.03",
+      "key": "noisy:Joss:p=0.55",
       "family": "noisy",
-      "type": "NoisyTFT",
+      "type": "Joss",
       "params": {
-        "p": 0.03
+        "p": 0.55
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.05",
+      "key": "noisy:NoisyTFT:p=0.01",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.05
+        "p": 0.01
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4450,29 +5183,40 @@
         "p": 0.07
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.13",
+      "key": "noisy:NoisyTFT:p=0.1",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.13
+        "p": 0.1
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.19",
+      "key": "noisy:NoisyTFT:p=0.16",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.19
+        "p": 0.16
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.22",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.22
+      },
+      "tier": "train",
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4483,18 +5227,7 @@
         "p": 0.25
       },
       "tier": "train",
-      "weight": 0.08,
-      "anchor": false
-    },
-    {
-      "key": "noisy:NoisyTFT:p=0.28",
-      "family": "noisy",
-      "type": "NoisyTFT",
-      "params": {
-        "p": 0.28
-      },
-      "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4505,7 +5238,7 @@
         "p": 0.31
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4516,18 +5249,18 @@
         "p": 0.34
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
-      "key": "noisy:NoisyTFT:p=0.43",
+      "key": "noisy:NoisyTFT:p=0.37",
       "family": "noisy",
       "type": "NoisyTFT",
       "params": {
-        "p": 0.43
+        "p": 0.37
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4538,7 +5271,7 @@
         "p": 0.46
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
       "anchor": false
     },
     {
@@ -4549,7 +5282,62 @@
         "p": 0.49
       },
       "tier": "train",
-      "weight": 0.08,
+      "weight": 0.07142857142857142,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.52",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.52
+      },
+      "tier": "train",
+      "weight": 0.07142857142857142,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.55",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.55
+      },
+      "tier": "train",
+      "weight": 0.07142857142857142,
+      "anchor": false
+    },
+    {
+      "key": "punitive:DelayedPunisher:patience=2|punish_rounds=8",
+      "family": "punitive",
+      "type": "DelayedPunisher",
+      "params": {
+        "patience": 2,
+        "punish_rounds": 8
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:DelayedPunisher:patience=3|punish_rounds=12",
+      "family": "punitive",
+      "type": "DelayedPunisher",
+      "params": {
+        "patience": 3,
+        "punish_rounds": 12
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:Gradual",
+      "family": "punitive",
+      "type": "Gradual",
+      "params": {},
+      "tier": "train",
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
@@ -4558,7 +5346,7 @@
       "type": "Grim",
       "params": {},
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
@@ -4569,7 +5357,7 @@
         "g": 0.03
       },
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
@@ -4580,18 +5368,7 @@
         "g": 0.08
       },
       "tier": "train",
-      "weight": 0.2,
-      "anchor": false
-    },
-    {
-      "key": "punitive:GrimForgive:g=0.15",
-      "family": "punitive",
-      "type": "GrimForgive",
-      "params": {
-        "g": 0.15
-      },
-      "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
@@ -4602,40 +5379,49 @@
         "g": 0.25
       },
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
-      "key": "punitive:GrudgerK:k=3",
+      "key": "punitive:GrimForgive:g=0.4",
       "family": "punitive",
-      "type": "GrudgerK",
+      "type": "GrimForgive",
       "params": {
-        "k": 3
+        "g": 0.4
       },
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
-      "key": "punitive:GrudgerK:k=5",
+      "key": "punitive:Grudger2",
       "family": "punitive",
-      "type": "GrudgerK",
-      "params": {
-        "k": 5
-      },
+      "type": "Grudger2",
+      "params": {},
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
-      "key": "punitive:GrudgerK:k=6",
+      "key": "punitive:GrudgerK:k=1",
       "family": "punitive",
       "type": "GrudgerK",
       "params": {
-        "k": 6
+        "k": 1
       },
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=2",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 2
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
@@ -4644,16 +5430,65 @@
       "type": "Mistrust",
       "params": {},
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
-      "key": "punitive:OmegaTFTLite",
+      "key": "punitive:ProbabilisticGrim:p_punish=0.8|patience=2",
       "family": "punitive",
-      "type": "OmegaTFTLite",
-      "params": {},
+      "type": "ProbabilisticGrim",
+      "params": {
+        "p_punish": 0.8,
+        "patience": 2
+      },
       "tier": "train",
-      "weight": 0.2,
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:ProbabilisticGrim:p_punish=0.8|patience=4",
+      "family": "punitive",
+      "type": "ProbabilisticGrim",
+      "params": {
+        "p_punish": 0.8,
+        "patience": 4
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:ResetGrim:cooldown=12|patience=3",
+      "family": "punitive",
+      "type": "ResetGrim",
+      "params": {
+        "cooldown": 12,
+        "patience": 3
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:SpitefulGrim:patience=1",
+      "family": "punitive",
+      "type": "SpitefulGrim",
+      "params": {
+        "patience": 1
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
+      "anchor": false
+    },
+    {
+      "key": "punitive:SpitefulGrim:patience=3",
+      "family": "punitive",
+      "type": "SpitefulGrim",
+      "params": {
+        "patience": 3
+      },
+      "tier": "train",
+      "weight": 0.11764705882352941,
       "anchor": false
     },
     {
@@ -4670,7 +5505,7 @@
         "start": 3
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4686,7 +5521,24 @@
         "start": 0
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 0, 1, 1)|start=0",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "start": 0
+      },
+      "tier": "train",
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4704,7 +5556,7 @@
         "start": 4
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4719,18 +5571,42 @@
         "start": 1
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.01",
+      "key": "random:Periodic:pattern=(1, 0, 0, 0)|start=1",
       "family": "random",
-      "type": "RandomMoves",
+      "type": "Periodic",
       "params": {
-        "p": 0.01
+        "pattern": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "start": 1
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(1, 0, 1, 0, 0)|start=3",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "start": 3
+      },
+      "tier": "train",
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4741,7 +5617,7 @@
         "p": 0.02
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4752,7 +5628,7 @@
         "p": 0.03
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4763,7 +5639,7 @@
         "p": 0.05
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4774,7 +5650,7 @@
         "p": 0.07
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4785,18 +5661,7 @@
         "p": 0.09
       },
       "tier": "train",
-      "weight": 0.06,
-      "anchor": false
-    },
-    {
-      "key": "random:RandomMoves:p=0.12",
-      "family": "random",
-      "type": "RandomMoves",
-      "params": {
-        "p": 0.12
-      },
-      "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4807,7 +5672,7 @@
         "p": 0.18
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4818,7 +5683,18 @@
         "p": 0.22
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.3",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.3
+      },
+      "tier": "train",
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4829,18 +5705,7 @@
         "p": 0.34
       },
       "tier": "train",
-      "weight": 0.06,
-      "anchor": false
-    },
-    {
-      "key": "random:RandomMoves:p=0.38",
-      "family": "random",
-      "type": "RandomMoves",
-      "params": {
-        "p": 0.38
-      },
-      "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4851,7 +5716,7 @@
         "p": 0.42
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4862,7 +5727,7 @@
         "p": 0.46
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4873,7 +5738,7 @@
         "p": 0.5
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4884,18 +5749,18 @@
         "p": 0.54
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.62",
+      "key": "random:RandomMoves:p=0.58",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.62
+        "p": 0.58
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4906,7 +5771,7 @@
         "p": 0.7
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4917,18 +5782,18 @@
         "p": 0.74
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
-      "key": "random:RandomMoves:p=0.78",
+      "key": "random:RandomMoves:p=0.82",
       "family": "random",
       "type": "RandomMoves",
       "params": {
-        "p": 0.78
+        "p": 0.82
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4939,7 +5804,7 @@
         "p": 0.86
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4950,7 +5815,29 @@
         "p": 0.93
       },
       "tier": "train",
-      "weight": 0.06,
+      "weight": 0.05357142857142857,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.96",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.96
+      },
+      "tier": "train",
+      "weight": 0.05357142857142857,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.98",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.98
+      },
+      "tier": "train",
+      "weight": 0.05357142857142857,
       "anchor": false
     },
     {
@@ -4964,21 +5851,7 @@
         "window": 10
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=12",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.08,
-        "retaliate": 0.85,
-        "window": 12
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -4992,7 +5865,91 @@
         "window": 14
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=16",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 16
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=18",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 18
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=2",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 2
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=20",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 20
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=22",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 22
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=25",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 25
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5006,7 +5963,7 @@
         "window": 3
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5020,35 +5977,35 @@
         "window": 5
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=6",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=7",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
         "p_defect": 0.08,
         "retaliate": 0.85,
-        "window": 6
+        "window": 7
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=8",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=9",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
         "p_defect": 0.08,
         "retaliate": 0.85,
-        "window": 8
+        "window": 9
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5062,21 +6019,7 @@
         "window": 10
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=12",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.2,
-        "retaliate": 0.85,
-        "window": 12
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5090,21 +6033,91 @@
         "window": 14
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=3",
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=16",
       "family": "temporal",
       "type": "DynamicWindow",
       "params": {
         "forgiveness": 0.25,
         "p_defect": 0.2,
         "retaliate": 0.85,
-        "window": 3
+        "window": 16
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=18",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 18
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=2",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 2
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=20",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 20
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=22",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 22
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=25",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 25
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5118,7 +6131,7 @@
         "window": 4
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5132,7 +6145,7 @@
         "window": 5
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5146,21 +6159,7 @@
         "window": 6
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=7",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.2,
-        "retaliate": 0.85,
-        "window": 7
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5174,7 +6173,21 @@
         "window": 8
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=9",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 9
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5188,7 +6201,7 @@
         "window": 10
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5202,21 +6215,7 @@
         "window": 12
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=14",
-      "family": "temporal",
-      "type": "DynamicWindow",
-      "params": {
-        "forgiveness": 0.25,
-        "p_defect": 0.38,
-        "retaliate": 0.85,
-        "window": 14
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5230,7 +6229,35 @@
         "window": 16
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=18",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 18
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=2",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 2
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5244,7 +6271,35 @@
         "window": 20
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=22",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 22
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=25",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 25
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5258,7 +6313,21 @@
         "window": 3
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=4",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 4
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5272,7 +6341,7 @@
         "window": 5
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5286,7 +6355,7 @@
         "window": 6
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5300,7 +6369,7 @@
         "window": 7
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5314,7 +6383,7 @@
         "window": 8
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5328,7 +6397,7 @@
         "window": 9
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5341,7 +6410,7 @@
         "start": 11
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5354,59 +6423,20 @@
         "start": 17
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=23",
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=73",
       "family": "temporal",
       "type": "HarvestFactor",
       "params": {
         "p_defect": 0.95,
         "repairable": false,
-        "start": 23
+        "start": 73
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=29",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": false,
-        "start": 29
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=53",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": false,
-        "start": 53
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=63",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": false,
-        "start": 63
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5419,33 +6449,7 @@
         "start": 83
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=93",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": false,
-        "start": 93
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=14",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": true,
-        "start": 14
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5458,7 +6462,7 @@
         "start": 20
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5471,7 +6475,7 @@
         "start": 26
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5484,7 +6488,7 @@
         "start": 32
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5497,20 +6501,7 @@
         "start": 36
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=44",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": true,
-        "start": 44
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5523,33 +6514,7 @@
         "start": 58
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=68",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": true,
-        "start": 68
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=78",
-      "family": "temporal",
-      "type": "HarvestFactor",
-      "params": {
-        "p_defect": 0.95,
-        "repairable": true,
-        "start": 78
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5562,7 +6527,20 @@
         "start": 88
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=96",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 96
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5574,7 +6552,7 @@
         "period": 10
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5586,7 +6564,7 @@
         "period": 12
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5598,7 +6576,7 @@
         "period": 14
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5610,7 +6588,7 @@
         "period": 16
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5622,7 +6600,7 @@
         "period": 18
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5634,7 +6612,19 @@
         "period": 20
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=22",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 22
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5646,7 +6636,7 @@
         "period": 24
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5658,45 +6648,71 @@
         "period": 27
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:Kamikaze:p_steal=0.75|period=4",
+      "key": "temporal:Kamikaze:p_steal=0.75|period=35",
       "family": "temporal",
       "type": "Kamikaze",
       "params": {
         "p_steal": 0.75,
-        "period": 4
+        "period": 35
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:Kamikaze:p_steal=0.75|period=5",
+      "key": "temporal:Kamikaze:p_steal=0.75|period=40",
       "family": "temporal",
       "type": "Kamikaze",
       "params": {
         "p_steal": 0.75,
-        "period": 5
+        "period": 40
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:ProbePhase:harvest_start=100|p_probe=0.75|phase=harvest|probe=12",
+      "key": "temporal:Kamikaze:p_steal=0.75|period=6",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 6
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=110|p_probe=0.75|phase=harvest|probe=14",
       "family": "temporal",
       "type": "ProbePhase",
       "params": {
-        "harvest_start": 100,
+        "harvest_start": 110,
         "p_probe": 0.75,
         "phase": "harvest",
-        "probe": 12
+        "probe": 14
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=120|p_probe=0.75|phase=harvest|probe=16",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 120,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 16
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5710,7 +6726,7 @@
         "probe": 2
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5724,7 +6740,7 @@
         "probe": 3
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5738,21 +6754,7 @@
         "probe": 4
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:ProbePhase:harvest_start=65|p_probe=0.75|phase=harvest|probe=5",
-      "family": "temporal",
-      "type": "ProbePhase",
-      "params": {
-        "harvest_start": 65,
-        "p_probe": 0.75,
-        "phase": "harvest",
-        "probe": 5
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5766,7 +6768,7 @@
         "probe": 6
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5780,21 +6782,7 @@
         "probe": 8
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
-      "anchor": false
-    },
-    {
-      "key": "temporal:ProbePhase:harvest_start=90|p_probe=0.75|phase=harvest|probe=10",
-      "family": "temporal",
-      "type": "ProbePhase",
-      "params": {
-        "harvest_start": 90,
-        "p_probe": 0.75,
-        "phase": "harvest",
-        "probe": 10
-      },
-      "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5807,7 +6795,33 @@
         "window": 10
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=12",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 12
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=16",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 16
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5820,20 +6834,33 @@
         "window": 2
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
-      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=6",
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=5",
       "family": "temporal",
       "type": "WindowTFT",
       "params": {
         "forgive": 0.3,
         "retaliate": 0.82,
-        "window": 6
+        "window": 5
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=7",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 7
+      },
+      "tier": "train",
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5846,7 +6873,7 @@
         "window": 8
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5859,7 +6886,7 @@
         "window": 9
       },
       "tier": "train",
-      "weight": 0.03235294117647059,
+      "weight": 0.02820512820512821,
       "anchor": false
     },
     {
@@ -5875,7 +6902,7 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -5891,7 +6918,39 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.5, 0.3, 0.3, 0.5)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.5,
+          0.3,
+          0.3,
+          0.5
+        ]
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.55, 0.2, 0.4, 0.45)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.55,
+          0.2,
+          0.4,
+          0.45
+        ]
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -5907,23 +6966,7 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
-      "anchor": false
-    },
-    {
-      "key": "wild:MemoryOne:p=(0.65, 0.05, 0.6, 0.35)",
-      "family": "wild",
-      "type": "MemoryOne",
-      "params": {
-        "p": [
-          0.65,
-          0.05,
-          0.6,
-          0.35
-        ]
-      },
-      "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -5939,7 +6982,7 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -5955,7 +6998,7 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -5971,7 +7014,23 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.85, 0.15, 0.45, 0.1)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.85,
+          0.15,
+          0.45,
+          0.1
+        ]
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -5987,7 +7046,7 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6003,18 +7062,45 @@
         ]
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
-      "key": "wild:RandomFSM:k=2",
+      "key": "wild:MemoryOne:p=(0.98, 0.05, 0.9, 0.01)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.98,
+          0.05,
+          0.9,
+          0.01
+        ]
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=10",
       "family": "wild",
       "type": "RandomFSM",
       "params": {
-        "k": 2
+        "k": 10
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=12",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 12
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6025,7 +7111,7 @@
         "k": 3
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6036,18 +7122,7 @@
         "k": 4
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
-      "anchor": false
-    },
-    {
-      "key": "wild:RandomFSM:k=5",
-      "family": "wild",
-      "type": "RandomFSM",
-      "params": {
-        "k": 5
-      },
-      "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6058,31 +7133,46 @@
         "k": 6
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
-      "key": "wild:RandomFSM:k=8",
-      "family": "wild",
-      "type": "RandomFSM",
-      "params": {
-        "k": 8
-      },
-      "tier": "train",
-      "weight": 0.07894736842105263,
-      "anchor": false
-    },
-    {
-      "key": "wild:Reactive:first=0|p_after_c=0.8|p_after_d=0.2",
+      "key": "wild:Reactive:first=0|p_after_c=0.5|p_after_d=0.5",
       "family": "wild",
       "type": "Reactive",
       "params": {
         "first": 0,
-        "p_after_c": 0.8,
-        "p_after_d": 0.2
+        "p_after_c": 0.5,
+        "p_after_d": 0.5
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.6|p_after_d=0.4",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.6,
+        "p_after_d": 0.4
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.7|p_after_d=0.3",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.7,
+        "p_after_d": 0.3
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6095,20 +7185,7 @@
         "p_after_d": 0.02
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
-      "anchor": false
-    },
-    {
-      "key": "wild:Reactive:first=0|p_after_c=0.9|p_after_d=0.1",
-      "family": "wild",
-      "type": "Reactive",
-      "params": {
-        "first": 0,
-        "p_after_c": 0.9,
-        "p_after_d": 0.1
-      },
-      "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6121,7 +7198,20 @@
         "p_after_d": 0.5
       },
       "tier": "train",
-      "weight": 0.07894736842105263,
+      "weight": 0.06521739130434782,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=1|p_after_c=0.85|p_after_d=0.05",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 1,
+        "p_after_c": 0.85,
+        "p_after_d": 0.05
+      },
+      "tier": "train",
+      "weight": 0.06521739130434782,
       "anchor": false
     },
     {
@@ -6843,6 +7933,247 @@
       "anchor": false
     },
     {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.55|window=12",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.55,
+        "window": 12
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.55|window=20",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.55,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.65|window=12",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.65,
+        "window": 12
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.65|window=20",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.65,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.65|window=8",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.65,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.75|window=12",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.75,
+        "window": 12
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=2.5|coop_threshold=0.75|window=8",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 2.5,
+        "coop_threshold": 0.75,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.55|window=20",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.55,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.55|window=8",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.55,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.65|window=20",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.65,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.65|window=8",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.65,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.75|window=12",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.75,
+        "window": 12
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "conditional_extort:ConditionalExtort:chi=3.5|coop_threshold=0.75|window=8",
+      "family": "conditional_extort",
+      "type": "ConditionalExtort",
+      "params": {
+        "chi": 3.5,
+        "coop_threshold": 0.75,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.08461538461538462,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=2|repair=1",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 2,
+        "repair": 1
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=2|repair=2",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 2,
+        "repair": 2
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=2|repair=3",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 2,
+        "repair": 3
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=3|repair=3",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 3,
+        "repair": 3
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=4|repair=1",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 4,
+        "repair": 1
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "contrition_cycle:ContritionCycle:patience=4|repair=3",
+      "family": "contrition_cycle",
+      "type": "ContritionCycle",
+      "params": {
+        "patience": 4,
+        "repair": 3
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
       "key": "delayed_extort:DelayedExtort:chi=2.0|delay=15",
       "family": "delayed_extort",
       "type": "DelayedExtort",
@@ -6996,6 +8327,102 @@
       },
       "tier": "train_complex",
       "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=12|start=45",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 12,
+        "start": 45
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=12|start=55",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 12,
+        "start": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=12|start=65",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 12,
+        "start": 65
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=12|start=75",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 12,
+        "start": 75
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=4|start=55",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 4,
+        "start": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=4|start=65",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 4,
+        "start": 65
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=8|start=65",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 8,
+        "start": 65
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
+      "anchor": false
+    },
+    {
+      "key": "endgame_hunter:EndgameHunter:preempt=8|start=75",
+      "family": "endgame_hunter",
+      "type": "EndgameHunter",
+      "params": {
+        "preempt": 8,
+        "start": 75
+      },
+      "tier": "train_complex",
+      "weight": 0.1375,
       "anchor": false
     },
     {
@@ -7204,6 +8631,428 @@
       },
       "tier": "train_complex",
       "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.2|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.2,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.35|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.35,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.35|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.35,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.35|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.35,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.5|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.5,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.5|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.5,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=4|threshold=0.5|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 4,
+        "threshold": 0.5,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.2|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.2,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.2|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.2,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.35|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.35,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.5|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.5,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.4|punish=8|threshold=0.5|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "punish": 8,
+        "threshold": 0.5,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.2|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.2,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.2|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.2,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.35|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.35,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.35|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.35,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.5|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.5,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.5|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.5,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=4|threshold=0.5|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 4,
+        "threshold": 0.5,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.35|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.35,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.35|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.35,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.35|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.35,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.5|window=10",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.5,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.5|window=20",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.5,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "noise_adaptive:NoiseAdaptive:forgive=0.7|punish=8|threshold=0.5|window=5",
+      "family": "noise_adaptive",
+      "type": "NoiseAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "punish": 8,
+        "threshold": 0.5,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.044000000000000004,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.6|window=10",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.6,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.6|window=8",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.6,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.75|window=10",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.75,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.9|window=10",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.9,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.9|window=6",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.9,
+        "window": 6
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "pattern_breaker:PatternBreaker:threshold=0.9|window=8",
+      "family": "pattern_breaker",
+      "type": "PatternBreaker",
+      "params": {
+        "threshold": 0.9,
+        "window": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.16666666666666666,
       "anchor": false
     },
     {
@@ -7655,6 +9504,102 @@
         "chi": 3.0,
         "mode": "harvest",
         "probe": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=0|threshold=0.4",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 0,
+        "threshold": 0.4
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=0|threshold=0.7",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 0,
+        "threshold": 0.7
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=10|threshold=0.4",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 10,
+        "threshold": 0.4
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=10|threshold=0.6",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 10,
+        "threshold": 0.6
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=10|threshold=0.7",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 10,
+        "threshold": 0.7
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=5|threshold=0.4",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 5,
+        "threshold": 0.4
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=5|threshold=0.5",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 5,
+        "threshold": 0.5
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "reputation_grim:ReputationGrim:forgive_after=5|threshold=0.6",
+      "family": "reputation_grim",
+      "type": "ReputationGrim",
+      "params": {
+        "forgive_after": 5,
+        "threshold": 0.6
       },
       "tier": "train_complex",
       "weight": 0.125,

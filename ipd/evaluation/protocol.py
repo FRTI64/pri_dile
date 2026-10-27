@@ -42,7 +42,7 @@ from typing import Any, Callable, Iterable, Mapping, Sequence
 
 from ..core.opponents import (
     AdaptiveProbe, AllC, AllD, Bully, ContriteTFT, EarlyDefector,
-    FirmButFair, ForgiveTFT, GenerousTFT, Grim, GrimForgive, Grudger2,
+    FirmButFair, ForgiveTFT, GenerousTFT, Gradual, Grim, GrimForgive, Grudger2,
     GrudgerK, Joss, LastKDefect, LateDefector, Majority, MemoryOne,
     Mistrust, NoisyTFT, OmegaTFTLite, Pavlov, Periodic, ProbeBot,
     Prober, RandomFSM, RandomMoves, RandomThenTFT, Reactive,
@@ -118,6 +118,12 @@ FAMILY_WEIGHTS: dict[str, float] = {
     "delayed_extort": 1.0,
     "memory_two": 1.0,
     "meta_mix": 1.0,
+    "noise_adaptive": 1.1,
+    "reputation_grim": 1.0,
+    "contrition_cycle": 1.0,
+    "endgame_hunter": 1.1,
+    "pattern_breaker": 1.0,
+    "conditional_extort": 1.1,
     "policy": 1.5,
     "axelrod": 1.5,
     "axelrod_mix": 1.2,
@@ -138,7 +144,10 @@ TEST_ONLY_FAMILIES = ("early_harvest", "frequent_kamikaze",
                       "probe_harvest", "hyper_extort", "early_probe",
                       "adaptive_probe")
 COMPLEX_FAMILIES = ("phase_switch", "adaptive_mix", "probe_exploit",
-                    "delayed_extort", "memory_two", "meta_mix")
+                    "delayed_extort", "memory_two", "meta_mix",
+                    "noise_adaptive", "reputation_grim",
+                    "contrition_cycle", "endgame_hunter",
+                    "pattern_breaker", "conditional_extort")
 POLICY_FAMILIES = ("policy",)
 AXELROD_FAMILIES = ("axelrod", "axelrod_mix")
 
@@ -457,6 +466,187 @@ class MetaMix(Strategy):
         if self.mode == "coop":
             return C
         return C if self.rng.random() < 0.5 else D
+
+
+class NoiseAdaptive(Strategy):
+    """New style: forgive isolated noise, punish sustained defection."""
+
+    def __init__(self, window: int = 10, threshold: float = 0.25,
+                 forgive: float = 0.7, punish: int = 6,
+                 rng: random.Random | None = None):
+        self.window = int(window)
+        self.threshold = float(threshold)
+        self.forgive = float(forgive)
+        self.punish = int(punish)
+        super().__init__(rng)
+        self.name = f"NoiseAdaptive:{window}"
+
+    def reset(self) -> None:
+        self.punish_left = 0
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if t == 0:
+            return C
+        if self.punish_left > 0:
+            self.punish_left -= 1
+            return D
+        recent = theirs[-self.window:]
+        rate = sum(1 for x in recent if x == D) / max(1, len(recent))
+        if rate >= self.threshold:
+            self.punish_left = self.punish - 1
+            return D
+        if theirs[-1] == D:
+            return C if self.rng.random() < self.forgive else D
+        return C
+
+
+class ReputationGrim(Strategy):
+    """New style: track cumulative reputation, turn grim below threshold."""
+
+    def __init__(self, threshold: float = 0.55, forgive_after: int = 0,
+                 rng: random.Random | None = None):
+        self.threshold = float(threshold)
+        self.forgive_after = int(forgive_after)
+        super().__init__(rng)
+        self.name = f"ReputationGrim:{threshold:g}"
+
+    def reset(self) -> None:
+        self.grim = False
+        self.cooldown = 0
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if self.grim:
+            if self.forgive_after and theirs and theirs[-1] == C:
+                self.cooldown += 1
+                if self.cooldown >= self.forgive_after:
+                    self.grim = False
+                    self.cooldown = 0
+                    return C
+            return D
+        if len(theirs) >= 6:
+            cooperation = 1.0 - sum(1 for x in theirs if x == D) / len(theirs)
+            if cooperation < self.threshold:
+                self.grim = True
+                return D
+        return C
+
+
+class ContritionCycle(Strategy):
+    """New style: apologise after own defection and repair the relation."""
+
+    def __init__(self, repair: int = 2, patience: int = 3,
+                 rng: random.Random | None = None):
+        self.repair = int(repair)
+        self.patience = int(patience)
+        super().__init__(rng)
+        self.name = f"Contrition:{repair}/{patience}"
+
+    def reset(self) -> None:
+        self.repair_left = 0
+        self.pending = 0
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if t == 0:
+            return C
+        if self.repair_left > 0:
+            self.repair_left -= 1
+            return C
+        if mine[-1] == D:
+            self.repair_left = self.repair
+            return C
+        if theirs[-1] == D:
+            self.pending += 1
+            if self.pending >= self.patience:
+                self.pending = 0
+                self.repair_left = self.repair
+                return D
+            return D
+        self.pending = 0
+        return C
+
+
+class EndgameHunter(Strategy):
+    """New style: TFT until the endgame, then preempt or harvest."""
+
+    def __init__(self, start: int = 60, preempt: int = 8,
+                 rng: random.Random | None = None):
+        self.start = int(start)
+        self.preempt = int(preempt)
+        super().__init__(rng)
+        self.name = f"EndgameHunter:{start}"
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if t >= self.start:
+            return D
+        if t >= max(0, self.start - self.preempt) and theirs and theirs[-1] == D:
+            return D
+        return theirs[-1] if t > 0 else C
+
+
+class PatternBreaker(Strategy):
+    """New style: detect short cycles and play the counter-cycle."""
+
+    def __init__(self, window: int = 8, threshold: float = 0.75,
+                 rng: random.Random | None = None):
+        self.window = int(window)
+        self.threshold = float(threshold)
+        super().__init__(rng)
+        self.name = f"PatternBreaker:{window}"
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if t == 0:
+            return C
+        recent = theirs[-self.window:]
+        if len(recent) < self.window:
+            return recent[-1]
+        best_rate = 0.0
+        best_period = 0
+        for period in (2, 3, 4):
+            matches = sum(1 for i in range(period, len(recent))
+                          if recent[i] == recent[i - period])
+            rate = matches / max(1, len(recent) - period)
+            if rate > best_rate:
+                best_rate = rate
+                best_period = period
+        if best_period and best_rate >= self.threshold:
+            return 1 - recent[-best_period]
+        return recent[-1]
+
+
+class ConditionalExtort(Strategy):
+    """New style: exploit cooperative opponents, otherwise play TFT."""
+
+    def __init__(self, window: int = 12, coop_threshold: float = 0.65,
+                 chi: float = 3.0, rng: random.Random | None = None):
+        self.window = int(window)
+        self.coop_threshold = float(coop_threshold)
+        self._ext = ExtortZD(float(chi), rng)
+        super().__init__(rng)
+        self.name = f"ConditionalExtort:{window}"
+
+    def reset(self) -> None:
+        self._ext.reset()
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if t == 0:
+            return C
+        recent = theirs[-self.window:]
+        cooperation = 1.0 - sum(1 for x in recent if x == D) / max(1, len(recent))
+        if cooperation >= self.coop_threshold:
+            return self._ext.act(t, mine, theirs)
+        return theirs[-1]
 
 
 class AxelrodMix(Strategy):
@@ -781,6 +971,42 @@ def _b_meta_mix(rng: random.Random, modes: Sequence[str]) -> Strategy:
     return MetaMix(tuple(str(x) for x in modes), rng)
 
 
+def _b_noise_adaptive(rng: random.Random, window: int, threshold: float,
+                      forgive: float, punish: int) -> Strategy:
+    return NoiseAdaptive(int(window), float(threshold), float(forgive),
+                         int(punish), rng)
+
+
+def _b_reputation_grim(rng: random.Random, threshold: float,
+                       forgive_after: int) -> Strategy:
+    return ReputationGrim(float(threshold), int(forgive_after), rng)
+
+
+def _b_contrition(rng: random.Random, repair: int,
+                  patience: int) -> Strategy:
+    return ContritionCycle(int(repair), int(patience), rng)
+
+
+def _b_endgame_hunter(rng: random.Random, start: int,
+                      preempt: int) -> Strategy:
+    return EndgameHunter(int(start), int(preempt), rng)
+
+
+def _b_pattern_breaker(rng: random.Random, window: int,
+                       threshold: float) -> Strategy:
+    return PatternBreaker(int(window), float(threshold), rng)
+
+
+def _b_conditional_extort(rng: random.Random, window: int,
+                          coop_threshold: float, chi: float) -> Strategy:
+    return ConditionalExtort(int(window), float(coop_threshold),
+                             float(chi), rng)
+
+
+def _b_gradual(rng: random.Random) -> Strategy:
+    return Gradual(rng)
+
+
 def _b_axelrod(rng: random.Random, strategy: str) -> Strategy:
     from ..core.opponents.axelrod_bank import axelrod_by_name
 
@@ -912,6 +1138,13 @@ _BUILDERS: dict[str, Callable[..., Strategy]] = {
     "DelayedExtort": _b_delayed_extort,
     "MemoryTwo": _b_memory_two,
     "MetaMix": _b_meta_mix,
+    "NoiseAdaptive": _b_noise_adaptive,
+    "ReputationGrim": _b_reputation_grim,
+    "ContritionCycle": _b_contrition,
+    "EndgameHunter": _b_endgame_hunter,
+    "PatternBreaker": _b_pattern_breaker,
+    "ConditionalExtort": _b_conditional_extort,
+    "Gradual": _b_gradual,
     "Axelrod": _b_axelrod,
     "AxelrodMix": _b_axelrod_mix,
     "PolicyFinal": _b_policy_final,
@@ -998,33 +1231,48 @@ def _catalog_specs() -> list[dict[str, Any]]:
                       "TFTForgiveOnce", "TFT2LastD", "TwoTitsForTat",
                       "SuspiciousTFT"):
         _add(specs, "nice", type_name)
-    for k in (2, 3, 5):
+    for k in (2, 3, 4, 5, 6):
         _add(specs, "nice", "Majority", k=k)
     for g in (0.01, 0.02, 0.04, 0.05, 0.07, 0.09, 0.12, 0.15, 0.18, 0.22,
               0.26, 0.31, 0.36, 0.42, 0.49):
         _add(specs, "forgiving", "GenerousTFT", g=g)
     for strikes in (2, 3, 4):
         _add(specs, "forgiving", "TwoStrike", strikes=strikes)
-    for missed in (1, 2, 3):
+    for missed in (1, 2, 3, 4):
         _add(specs, "forgiving", "ForgiveTFT", missed_limit=missed)
-    for g in (0.08, 0.16, 0.24, 0.33, 0.42):
+    for g in (0.08, 0.16, 0.24, 0.33, 0.42, 0.50):
         _add(specs, "forgiving", "TFTNoisyForgive", g=g)
+    for chi in (1.35, 1.80):
+        _add(specs, "forgiving", "GenerousZD", chi=chi)
 
     for type_name in ("Grim", "Grudger2", "FirmButFair", "Mistrust",
-                      "OmegaTFTLite"):
+                      "Gradual"):
         _add(specs, "punitive", type_name)
     for k in (1, 2, 3, 4, 5, 6):
         _add(specs, "punitive", "GrudgerK", k=k)
-    for g in (0.03, 0.08, 0.15, 0.25):
+    for g in (0.03, 0.08, 0.15, 0.25, 0.40):
         _add(specs, "punitive", "GrimForgive", g=g)
+    for patience in (2, 4):
+        _add(specs, "punitive", "ProbabilisticGrim", patience=patience,
+             p_punish=0.8)
+    for patience, cooldown in ((2, 10), (3, 12)):
+        _add(specs, "punitive", "ResetGrim", patience=patience,
+             cooldown=cooldown)
+    for patience in (1, 3):
+        _add(specs, "punitive", "SpitefulGrim", patience=patience)
+    for patience, punish in ((2, 8), (3, 12)):
+        _add(specs, "punitive", "DelayedPunisher", patience=patience,
+             punish_rounds=punish)
 
     for type_name in ("Bully", "Prober", "Tester", "RemorsefulProber"):
         _add(specs, "defect", type_name)
-    for k in (1, 2, 5, 10, 15, 25):
+    for k in (1, 2, 5, 10, 15, 25, 30, 40):
         _add(specs, "defect", "EarlyDefector", k=k)
+    for k in (4, 8):
+        _add(specs, "defect", "RandomThenTFT", k=k, p=0.5)
 
     for k in (3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45,
-              48, 51, 54, 57, 60, 65, 70, 75, 80, 85, 90, 94, 97):
+              48, 51, 54, 57, 60, 65, 70, 75, 80, 85, 90, 94, 97, 98, 99):
         _add(specs, "late", "LateDefector", k=k)
 
     for p in (0.01, 0.02, 0.03, 0.05, 0.07, 0.09, 0.12, 0.15, 0.18, 0.22,
@@ -1034,6 +1282,8 @@ def _catalog_specs() -> list[dict[str, Any]]:
     for pattern, start in (
         ((C, C, D), 0), ((C, D), 1), ((C, D, D, C), 2),
         ((C, C, C, D), 3), ((D, C, C, C), 1), ((C, C, D, D, C), 4),
+        ((C, C, D, D), 0), ((D, D, C, C), 1), ((C, C, C, C, D), 2),
+        ((D, C, D, C, C), 3),
     ):
         _add(specs, "random", "Periodic", pattern=pattern, start=start)
 
@@ -1044,6 +1294,7 @@ def _catalog_specs() -> list[dict[str, Any]]:
         (0.65, 0.05, 0.60, 0.35), (0.60, 0.10, 0.50, 0.40),
         (0.55, 0.20, 0.40, 0.45), (0.50, 0.30, 0.30, 0.50),
         (0.45, 0.10, 0.20, 0.60), (0.40, 0.25, 0.15, 0.70),
+        (0.98, 0.05, 0.90, 0.01), (0.35, 0.45, 0.10, 0.80),
     )
     for p in memone_params:
         _add(specs, "wild", "MemoryOne", p=p)
@@ -1051,11 +1302,12 @@ def _catalog_specs() -> list[dict[str, Any]]:
         (C, 0.98, 0.02), (C, 0.90, 0.10), (C, 0.80, 0.20),
         (C, 0.70, 0.30), (C, 0.60, 0.40), (D, 0.85, 0.05),
         (D, 0.70, 0.20), (D, 0.55, 0.35), (D, 0.40, 0.50),
+        (C, 0.50, 0.50), (D, 0.25, 0.65),
     )
     for first, pc, pd in reactive_params:
         _add(specs, "wild", "Reactive", first=first,
              p_after_c=pc, p_after_d=pd)
-    for k in (2, 3, 4, 5, 6, 8):
+    for k in (2, 3, 4, 5, 6, 8, 10, 12):
         _add(specs, "wild", "RandomFSM", k=k)
 
     resp3_params = (
@@ -1096,36 +1348,40 @@ def _catalog_specs() -> list[dict[str, Any]]:
         _add(specs, "adaptive", "TFTProbe", probe_round=probe, recover=2)
     for probe in (4, 8, 12, 16, 20, 25, 30, 40):
         _add(specs, "adaptive", "AdaptiveProbe", probe_round=probe, recover=2)
-    for g in (0.08, 0.15, 0.25, 0.35, 0.45):
+    for probe in (1, 2, 3):
+        _add(specs, "adaptive", "TFTProbeImmediate", probe=probe, recover=2)
+    for g in (0.10, 0.20, 0.30, 0.40):
         _add(specs, "adaptive", "TFTNoisyForgive", g=g)
 
-    for chi in (1.05, 1.15, 1.25, 1.35, 1.45, 1.55, 1.65, 1.75, 1.85,
-                1.95, 2.05, 2.15, 2.25, 2.35, 2.45, 2.55, 2.65, 2.75,
-                2.85, 2.95, 3.05, 3.15, 3.25, 3.35, 3.45, 3.55, 3.65,
-                3.75, 3.85, 3.95):
+    for chi in (1.0, 1.05, 1.15, 1.25, 1.35, 1.45, 1.55, 1.65, 1.75,
+                1.85, 1.95, 2.05, 2.15, 2.25, 2.35, 2.45, 2.55, 2.65,
+                2.75, 2.85, 2.95, 3.05, 3.15, 3.25, 3.35, 3.45, 3.55,
+                3.65, 3.75, 3.85, 3.95):
         _add(specs, "extort", "ExtortZD", chi=chi)
-    for chi in (1.2, 1.6, 2.0, 2.4, 2.8):
+    for chi in (1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6):
         _add(specs, "extort", "GenerousZD", chi=chi)
 
     for start in (8, 11, 14, 17, 20, 23, 26, 29, 32, 36, 40, 44, 48, 53,
-                  58, 63, 68, 73, 78, 83, 88, 93):
+                  58, 63, 68, 73, 78, 83, 88, 93, 96, 98):
         _add(specs, "temporal", "HarvestFactor", start=start,
              repairable=start % 2 == 0, p_defect=0.95)
-    for window in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20):
+    for window in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25):
         for p_defect in (0.08, 0.20, 0.38):
             _add(specs, "temporal", "DynamicWindow", window=window,
                  p_defect=p_defect, retaliate=0.85, forgiveness=0.25)
-    for period in (4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 27, 30):
+    for period in (4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 27, 30,
+                   35, 40):
         _add(specs, "temporal", "Kamikaze", period=period, p_steal=0.75)
-    for probe in (2, 3, 4, 5, 6, 8, 10, 12):
+    for probe in (2, 3, 4, 5, 6, 8, 10, 12, 14, 16):
         _add(specs, "temporal", "ProbePhase", probe=probe, p_probe=0.75,
              phase="harvest", harvest_start=40 + 5 * probe)
-    for window in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12):
+    for window in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16):
         _add(specs, "temporal", "WindowTFT", window=window,
              retaliate=0.82, forgive=0.30)
 
     for p in (0.01, 0.03, 0.05, 0.07, 0.10, 0.13, 0.16, 0.19, 0.22, 0.25,
-              0.28, 0.31, 0.34, 0.37, 0.40, 0.43, 0.46, 0.49):
+              0.28, 0.31, 0.34, 0.37, 0.40, 0.43, 0.46, 0.49, 0.52,
+              0.55):
         _add(specs, "noisy", "NoisyTFT", p=p)
         _add(specs, "noisy", "Joss", p=p)
 
@@ -1171,6 +1427,37 @@ def _catalog_specs() -> list[dict[str, Any]]:
     )
     for modes in meta_modes:
         _add(specs, "meta_mix", "MetaMix", modes=modes)
+
+    # New style sets: each is a distinct behavioural family, not just a
+    # parameter variant of an existing one.
+    for window in (5, 10, 20):
+        for threshold in (0.20, 0.35, 0.50):
+            for forgive in (0.4, 0.7):
+                for punish in (4, 8):
+                    _add(specs, "noise_adaptive", "NoiseAdaptive",
+                         window=window, threshold=threshold,
+                         forgive=forgive, punish=punish)
+    for threshold in (0.40, 0.50, 0.60, 0.70):
+        for forgive_after in (0, 5, 10):
+            _add(specs, "reputation_grim", "ReputationGrim",
+                 threshold=threshold, forgive_after=forgive_after)
+    for repair in (1, 2, 3):
+        for patience in (2, 3, 4):
+            _add(specs, "contrition_cycle", "ContritionCycle",
+                 repair=repair, patience=patience)
+    for start in (45, 55, 65, 75):
+        for preempt in (4, 8, 12):
+            _add(specs, "endgame_hunter", "EndgameHunter",
+                 start=start, preempt=preempt)
+    for window in (6, 8, 10):
+        for threshold in (0.60, 0.75, 0.90):
+            _add(specs, "pattern_breaker", "PatternBreaker",
+                 window=window, threshold=threshold)
+    for window in (8, 12, 20):
+        for coop in (0.55, 0.65, 0.75):
+            for chi in (2.5, 3.5):
+                _add(specs, "conditional_extort", "ConditionalExtort",
+                     window=window, coop_threshold=coop, chi=chi)
 
     # ------------------------------------------------------------------
     # Axelrod strategies and custom combinations
@@ -1765,7 +2052,9 @@ __all__ = [
     "DEV_ONLY_FAMILIES", "TEST_ONLY_FAMILIES", "MANIFEST_PATH",
     "USAGE_PATH", "OpponentConfig", "MirrorAdaptive", "DelayedGrim",
     "PhaseSwitcher", "AdaptiveMix", "ProbeExploit", "DelayedExtort",
-    "MemoryTwo", "MetaMix", "AxelrodMix", "build_catalog",
+    "MemoryTwo", "MetaMix", "NoiseAdaptive", "ReputationGrim",
+    "ContritionCycle", "EndgameHunter", "PatternBreaker",
+    "ConditionalExtort", "AxelrodMix", "build_catalog",
     "catalog_sha256", "catalog_counts", "protocol_manifest",
     "write_manifest", "read_manifest", "verify_manifest", "audit_protocol",
     "build_protocol_field", "build_training_field",

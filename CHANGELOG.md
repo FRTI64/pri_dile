@@ -7,9 +7,12 @@
 
 ### Added
 
-- **Protocol v4**：597-config catalog；50 个 Axelrod 4.14.0 策略 + 15 个
-  `AxelrodMix` 组合；新增 `train_axelrod` / `dev_axelrod` / `test_axelrod`；
-  默认 2048 人 / dev 30 fields / test 50 fields；final 为 `test_v7`。
+- **Protocol v4**：747-config catalog；50 个 Axelrod 4.14.0 策略 + 15 个
+  `AxelrodMix` 组合；6 个新复杂风格 family（noise_adaptive /
+  reputation_grim / contrition_cycle / endgame_hunter / pattern_breaker /
+  conditional_extort）并为旧 family 增加新对手；新增
+  `train_axelrod` / `dev_axelrod` / `test_axelrod`；默认 2048 人 /
+  dev 30 fields / test 50 fields；final 为 `test_v7`。
   v4 baseline 尚未运行（按要求不做测试）。
 - **Protocol v3**（legacy）：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
   532-config catalog、6 个 complex family、10 个 policy opponent；
