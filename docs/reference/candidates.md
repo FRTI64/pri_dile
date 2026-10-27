@@ -35,6 +35,10 @@ python3 -m ipd list-policies
 | `adv-gru` | Adv-GRU | GRU + 规则 | base 权重 + `configs/adversarial_gru_policy_config*.json` | 只有 Python |
 | `adv-rl` | Adv-RL | RL + 规则 | `rl_policy_weights_bc.json` + `configs/adversarial_rl_policy_config*.json` | v3 dev 高；test 第三；red 弱（legacy） |
 | `selfplay` | SelfPlay-GRU | 21 维 GRU | `weights/selfplay_gru_policy.json` | 21 维备选；改进 No-Go |
+| `psro` | PSRO-Meta | 策略组合 | `weights/psro/meta_strategy.json` | 实验；reference blue maximin 混合；未 promotion |
+| `psro-br` | PSRO-BR | RL | `weights/psro/psro_policy.json` | 实验；最后一轮 best response；未 promotion |
+| `psro-scratch` | PSRO-Scratch | 策略组合 | `weights/psro_scratch/meta_strategy.json` | 实验；blue 仅 random/scratch/BR；red_win 0.0；未 promotion |
+| `psro-scratch-br` | PSRO-Scratch-BR | RL | `weights/psro_scratch/psro_policy.json` | 实验；从零最终 BR；未 promotion |
 
 ## 2. 集合别名
 
@@ -44,8 +48,8 @@ python3 -m ipd list-policies
 | `base` / `legacy` | Final/Resp3/Bayes（base+tuned）+ `hybrid` |
 | `classic` | `base` + `harvest45`, `harvest-tuned`, `gap-start` |
 | `suite` | `base` + `harvest45`, `triple-majority` |
-| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
-| `all` | 全部 20 个注册候选 |
+| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
+| `all` | 全部 24 个注册候选 |
 
 ## 3. 常用别名
 
@@ -59,6 +63,10 @@ python3 -m ipd list-policies
 | `adv`, `adversarial`, `advmlp` | `adv-mlp` |
 | `advgru` / `advrl` | `adv-gru` / `adv-rl` |
 | `self-play`, `selfplay-gru`, `sp` | `selfplay` |
+| `psro`, `psro-meta` | `psro` |
+| `psro-br`, `psro-response` | `psro-br` |
+| `psro-scratch`, `psro-zero` | `psro-scratch` |
+| `psro-scratch-br`, `psro-zero-br` | `psro-scratch-br` |
 | `final`, `finalbase` | `final-base` |
 | `finaltuned`, `final-param` | `final-tuned` |
 | `resp`, `resp3`, `respbase` | `resp3-base` |

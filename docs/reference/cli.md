@@ -105,7 +105,7 @@ python3 -m ipd matchup --spec-config configs/eval/sweep_all_weights_20261026.jso
 ```
 
 参数：`--candidates` 或 `--spec-config`（二者互斥）、`--only`、
-`--opponent-set core|all|axelrod|axelrod-fast|axelrod-cheating`、`--reps`、
+`--opponent-set core|all|protocol|axelrod|axelrod-fast|axelrod-cheating`、`--reps`、
 `--rounds`、`--workers`、`--seed`、`--out`、`--json-out`、`--suite-out`、
 `--family-out`。
 
@@ -140,13 +140,20 @@ python3 -m ipd train --list
 python3 -m ipd train neural --device auto
 python3 -m ipd train gru --device auto
 python3 -m ipd train rl --device auto --iterations 100
+python3 -m ipd train psro --config configs/psro/psro_20261027.json --workers 20
+python3 -m ipd train psro --config configs/psro/psro_scratch_20261027.json --workers 20
 python3 -m ipd train adversarial --arch mlp
 python3 -m ipd train opponent-model --data-mode mixed
 python3 -m ipd train selfplay --config configs/selfplay/full.json --device auto
 python3 -m ipd train selfplay-bc --device auto --episodes 4000 --epochs 10
 ```
 
-完整任务见 [../guides/training.md](../guides/training.md)。
+`train psro` 参数：`--config`、`--out`、`--rounds`、`--seeds`、
+`--nash-iterations`、`--uniform-mix`、`--oracle-iterations`、
+`--oracle-fields`、`--oracle-n`、`--oracle-workers`、`--device`、
+`--deploy-policy last|meta_best`、`--dry-run`。默认候选是
+`configs/psro/psro_20261027.json`；完整任务见
+[../guides/training.md](../guides/training.md)。
 
 ## 4. 导出与自检
 

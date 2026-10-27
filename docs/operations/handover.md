@@ -7,8 +7,14 @@
 > - **RL-Repair（`rl-repair`）是当前最佳候选**，但只注册、不 promotion：
 >   `weights/rl_policy_weights_repair.json`，sha256
 >   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-> - 最近完整测试为 v3 的 **204 tests OK**；v4 改动后未运行测试（按要求）。
->   `python3 -m ipd list-policies`：20 个注册候选。
+> - 最近完整测试：**240 tests OK**（本轮全量运行）。
+>   `python3 -m ipd list-policies`：**24 个注册候选**。
+> - **PSRO 已引入**：`ipd/training/psro.py`（blue-vs-red maximin +
+>   PPO best-response oracle）；`psro`（meta-policy）和 `psro-br`
+>   （最后一轮 best response）为实验候选，**未 promotion**。
+> - **从零 PSRO 已加入**：`psro-scratch` / `psro-scratch-br`；blue 只有
+>   random/scratch base/从零 BR，现有模型只做 red；dev 480.43，但
+>   dev_red / held-out Red-v5/v6 **red_win 0.0**；**未 promotion**。
 > - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
@@ -91,6 +97,8 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维；v3 legacy dev 513.85 |
 | 需要 C++ | 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
 | 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | v3 legacy dev 523.39 / 517.07 |
+| anti-exploitation 研究 | **PSRO-Meta**（`psro`） | 仅实验；dev 527.71，held-out red diff -21.4%；未 promotion |
+| 从零 anti-exploitation | **PSRO-Scratch**（`psro-scratch`） | 仅实验；dev 480.43，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
 `dev_axelrod` / `dev_ood` 上重新验证 RL-Repair，再确认 C++ 导出、第 1/100 天
@@ -388,6 +396,49 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   `results/p3_league_20261026/README.md`、`docs/research/p3-red-league.md`、
   `docs/research/p3-expansion.md`。
 
+### PSRO — full blue-vs-red meta-game（实验；未 promotion）
+
+- 新增 `ipd/training/psro.py`：blue population + red exploiters；
+  cross-play 估计 `blue_score - red_score`；blue 用 maximin、red 用对偶
+  maximin；oracle 复用 `train rl --opponent-pool`。
+- 新增 `ipd/policies/psro.py`（meta-policy，按 blue maximin 权重每场
+  采样一个成员）和 `psro-br`（最后一轮 best response）。
+- 配置 `configs/psro/psro_20261027.json`；结果
+  `results/psro_20261027/`；2 轮 PPO oracle。
+- Blue maximin support：Final-tuned 0.725 + Triple-majority 0.275；
+  RL-Repair / PSRO-BR 权重 0。meta exploitability 284.797 → 284.797，
+  oracle 未进入 support。
+- 诊断（4 fields × 512）：PSRO-Meta dev_param **527.71** vs RL-Repair
+  **543.35**；PSRO-BR 525.58。held-out Red-v5/v6 blue mean：
+  PSRO-Meta **373.70**、PSRO-BR 354.45、RL-Repair 348.35；
+  red-minus-blue 378.5 → 297.5（**-21.4%**，v5 0%、v6 -37.3%）；
+  red 仍 100% 胜。
+- **No-Go for promotion**：exploitability-reduction 目标达到，但
+  官方/dev 掉约 15.6、family guardrail 失败，Gate D 不通过；保留
+  `psro` / `psro-br` 为实验候选，不改主权重。下一步若继续 PSRO，
+  需要更强 blue oracle（更多迭代 / 规则初始化）或 red oracle
+  （double oracle），不要重复相同两轮配置。
+
+### PSRO from scratch（现有模型只做 red；No-Go for promotion）
+
+- 配置：`configs/psro/psro_scratch_20261027.json`；结果
+  `results/psro_scratch_20261027/`；pilot/v2/v3 为 ablation。
+- Blue：`Scratch-Init`（随机 MLP）+ `Scratch-Base`（从零官方 PPO，
+  30 iter，dev_param 528.99）+ 从零 PPO BR；**没有已有模型进入 blue
+  或 oracle 初始化**。
+- Red：已有模型/规则（RL-Repair、A60、RL-PPO、Adv-RL、Final、Triple、
+  SelfPlay、Blue-Meta-v2、Red-v1/v3/v4）仅作对手。
+- 2 轮 PSRO：initial exploitability 62.81 → 0.108 → **0.0**；
+  blue support PSRO-BR-02 0.9984。
+- 诊断：PSRO-Scratch dev_param **480.43**（RL-Repair 543.35），
+  min_norm 0.5501，worst family `noisy` 249.1；但 dev_red
+  blue 436.2 / red 210.2、**red_win 0.0**，held-out Red-v5/v6
+  blue 491.4 / red 197.4、**red_win 0.0**。这是项目首次翻转 red 结果。
+- **No-Go for promotion**：official 掉约 63，Gate D 不通过；register
+  `psro-scratch` / `psro-scratch-br` 为实验候选。Scratch-Base
+  （528.99，red_win 1.0）是更保守的从零模型。
+- 细节：`docs/research/psro-scratch.md`、`results/psro_scratch_20261027/`。
+
 ### P2 C1 / C2 / C3（offline No-Go）
 
 - **C1 belief planner：** fair-RNG 后激进版 validation -12.11 /
@@ -538,6 +589,11 @@ python3 -m ipd train rl --device auto --seed 20261032 \
   --checkpoint-out weights/rl_policy_checkpoint_repair.json \
   --history-out results/robust_20261026/E1c_history.json
 
+# PSRO（完整 blue-vs-red + 2 轮 PPO oracle；实验）
+python3 -m ipd train psro --config configs/psro/psro_20261027.json \
+  --workers 20
+bash results/psro_20261027/run_eval.sh
+
 # heldout_v3 已一次性使用；以下只用于复现历史结论
 python3 -m ipd league --config configs/eval/e1c_final_league.json \
   --workers 20 --out results/robust_20261026/e1c_final_v3.json \
@@ -629,6 +685,14 @@ mine/theirs = 到此日之前的动作
 12. **所有候选都应在第 100 天 D**；移植时漏掉会损失最后一天收益。
 13. **NPU 路径未实机验证**：代码支持 `--device npu`，本轮只在 CUDA/CPU
     上完成训练和测试。
+14. **PSRO 不是 promotion 证据**：`psro` / `psro-br` 只做实验；
+    PSRO-Meta 的 dev_param 仍低于 RL-Repair 约 15.6 分，red 也仍 100%
+    击败所有候选。不要用 meta-game exploitability 单独宣称 anti-exploitation
+    解决。
+15. **从零 PSRO 是 anti-exploitation specialist**：`psro-scratch` 在
+    dev_red / Red-v5/v6 上 red_win 0.0，但 dev_param 只有 480.43、
+    min_norm 0.5501；它不能替代 RL-Repair，也不能只用 red 结果证明
+    promotion。Scratch-Base（528.99）是更保守的 from-scratch 选择。
 
 ---
 
@@ -668,6 +732,8 @@ mine/theirs = 到此日之前的动作
 | `ipd/evaluation/protocol_cli.py` | `python -m ipd protocol` |
 | `ipd/evaluation/policy_pool.py` | P3 frozen blue/red pool |
 | `ipd/training/rl.py` | PPO 训练、rollout、验证、导出 |
+| `ipd/training/psro.py` | PSRO meta-game / blue-vs-red maximin / oracle |
+| `ipd/policies/psro.py` | PSRO meta-policy 推理（每场采样一个成员） |
 | `ipd/training/risk.py` | E2 CVaR / Dirichlet / DRO |
 | `ipd/training/opponent_model.py` | C2/C3 对手模型 / gate |
 | `ipd/training/selfplay/` | 21 维自博弈训练器 |

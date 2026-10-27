@@ -44,6 +44,8 @@ ipd/
 │   │   ├── hybrid.py / triple_majority.py / gap_start.py
 │   │   ├── neural.py / gru.py / rl.py
 │   │   ├── rl_hard60.py / rl_repair.py / selfplay.py
+│   │   ├── psro.py / psro_br.py
+│   │   ├── psro_scratch.py / psro_scratch_br.py
 │   │   └── adv_mlp.py / adv_gru.py / adv_rl.py
 │   ├── rules/             训练/搜索用的共享规则构件
 │   ├── opponents/         把自身策略作为对手的银行
@@ -52,6 +54,7 @@ ipd/
 │   ├── rl.py              PPO actor-critic 推理
 │   ├── selfplay_gru.py    21 维 SelfPlay-GRU 推理
 │   ├── selfplay_gru_obs.py 21 维观测（纯标准库）
+│   ├── psro.py            PSRO meta-policy（每场采样一个成员）
 │   ├── adversarial.py     约束剥削包装
 │   ├── moe.py             C3 safe/risky/unknown 三路 MoE
 │   ├── belief_planner.py  C1 Bayesian belief planner
@@ -86,6 +89,7 @@ ipd/
 │   ├── risk.py            E2 CVaR / Dirichlet / DRO
 │   ├── opponent_model.py  C2/C3 对手模型 / gate
 │   ├── league.py          P3 maximin / opponent manifest
+│   ├── psro.py            完整 PSRO：元博弈 / blue-red maximin / oracle
 │   ├── selfplay/          21 维非对称自博弈训练器
 │   └── search/            multiobj / bayes / joint / wide / triple / p1 / p2
 └── tools/                 C++ 权重导出、matchup 透视
@@ -136,8 +140,8 @@ def build(*, seed=20261024, weights=None, config=None, mode="sample",
 | `base` / `legacy` | 7 | Final/Resp3/Bayes（base+tuned）+ Hybrid |
 | `classic` | 10 | base + Harvest45 + Harvest-tuned + GapStart |
 | `suite` | 9 | base + Harvest45 + Triple-majority |
-| `learned` | 9 | Neural、GRU、RL、Hard60、Repair、Adv-MLP、Adv-GRU、Adv-RL、SelfPlay |
-| `all` | 20 | 全部注册候选 |
+| `learned` | 13 | Neural、GRU、RL、Hard60、Repair、PSRO-Meta、PSRO-BR、PSRO-Scratch、PSRO-Scratch-BR、Adv-MLP、Adv-GRU、Adv-RL、SelfPlay |
+| `all` | 24 | 全部注册候选 |
 
 `python3 -m ipd list-policies` 是最终口径；新增候选后同步更新本表。
 
@@ -235,6 +239,8 @@ python3 -m ipd train --list
 python3 -m ipd train neural --device auto
 python3 -m ipd train gru --device auto
 python3 -m ipd train rl --device auto --iterations 100
+python3 -m ipd train psro --config configs/psro/psro_20261027.json
+python3 -m ipd train psro --config configs/psro/psro_scratch_20261027.json
 python3 -m ipd train adversarial --arch mlp
 python3 -m ipd train selfplay --config configs/selfplay/full.json --device auto
 python3 -m ipd train selfplay-bc --device auto --episodes 4000 --epochs 10
@@ -312,6 +318,8 @@ tests/test_opponent_model.py     C2/C3 对手模型 / gate
 tests/test_belief_planner.py     C1 belief planner
 tests/test_moe.py                C3 three-way gate + MoE
 tests/test_selfplay.py           21 维观测、GRU、PPO、BC、resume
+tests/test_psro.py               PSRO 元博弈、population、oracle 命令、端到端
+tests/test_psro_policy.py        PSRO meta-policy 采样/重置
 tests/test_axelrod_opponents.py  Axelrod 243/224/1、适配器、CLI
 tests/test_training.py           训练任务可导入、统一参数、JSON 工具
 tests/test_protocol.py           Protocol v4 catalog / audit / manifest / usage
@@ -324,5 +332,4 @@ python3 -m ipd test
 # 等价：python3 -m unittest discover -s tests -t . -v
 ```
 
-最近完整测试为 v3 的 204 tests；v4 改动后未运行（按要求）。新模块仍应先写
-测试，再训练/评估。
+最近完整测试：**240 tests OK**。新模块仍应先写测试，再训练/评估。

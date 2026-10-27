@@ -1,0 +1,302 @@
+{
+  "schema": "ipd-psro-report-v1",
+  "name": "psro_scratch_20261027",
+  "population": [
+    {
+      "name": "Scratch-Init",
+      "entry": {
+        "path": "weights/psro_scratch/init_policy.json"
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "random-init"
+      ]
+    },
+    {
+      "name": "RL-Repair",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/rl_policy_weights_repair.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "entry": {
+        "kind": "rl-hard60",
+        "params": {
+          "weights": "weights/rl_policy_weights_hard60.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "RL-PPO",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/rl_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Adv-RL",
+      "entry": {
+        "kind": "adv-rl",
+        "params": {
+          "config": "configs/adversarial_rl_policy_config_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Final-tuned",
+      "entry": {
+        "kind": "final-tuned"
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Triple-majority",
+      "entry": {
+        "kind": "triple-majority"
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "SelfPlay-GRU",
+      "entry": {
+        "kind": "selfplay",
+        "params": {
+          "weights": "weights/selfplay_gru_policy.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Blue-Meta-v2",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/blue_meta_v2.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v1",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v1.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v3",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v3.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v4",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v4.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_01",
+      "entry": {
+        "path": "results/psro_scratch_20261027/br_01.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": "init_policy",
+      "tags": []
+    }
+  ],
+  "blue": [
+    "Scratch-Init",
+    "PSRO-BR-br_01"
+  ],
+  "red": [
+    "RL-Repair",
+    "RL-PPO-Hard60",
+    "RL-PPO",
+    "Adv-RL",
+    "Final-tuned",
+    "Triple-majority",
+    "SelfPlay-GRU",
+    "Blue-Meta-v2",
+    "Red-RL-v1",
+    "Red-RL-v3",
+    "Red-RL-v4"
+  ],
+  "blue_meta": {
+    "names": [
+      "Scratch-Init",
+      "PSRO-BR-br_01"
+    ],
+    "weights": [
+      0.0002,
+      0.9998
+    ],
+    "weights_by_name": {
+      "Scratch-Init": 0.0002,
+      "PSRO-BR-br_01": 0.9998
+    },
+    "expected": {
+      "Scratch-Init": 0.0,
+      "PSRO-BR-br_01": 0.0
+    },
+    "value": 0.01396495,
+    "worst_case": 0.0,
+    "best_red": "RL-Repair",
+    "iterations": 20000
+  },
+  "red_meta": {
+    "names": [
+      "RL-Repair",
+      "RL-PPO-Hard60",
+      "RL-PPO",
+      "Adv-RL",
+      "Final-tuned",
+      "Triple-majority",
+      "SelfPlay-GRU",
+      "Blue-Meta-v2",
+      "Red-RL-v1",
+      "Red-RL-v3",
+      "Red-RL-v4"
+    ],
+    "weights": [
+      0.1287,
+      0.12745,
+      0.12735,
+      0.12145,
+      0.12225,
+      0.1272,
+      0.124,
+      0.1216,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "weights_by_name": {
+      "RL-Repair": 0.1287,
+      "RL-PPO-Hard60": 0.12745,
+      "RL-PPO": 0.12735,
+      "Adv-RL": 0.12145,
+      "Final-tuned": 0.12225,
+      "Triple-majority": 0.1272,
+      "SelfPlay-GRU": 0.124,
+      "Blue-Meta-v2": 0.1216,
+      "Red-RL-v1": 0.0,
+      "Red-RL-v3": 0.0,
+      "Red-RL-v4": 0.0
+    },
+    "training_weights": [
+      0.12303136363636365,
+      0.12196886363636364,
+      0.12188386363636362,
+      0.11686886363636365,
+      0.11754886363636363,
+      0.12175636363636365,
+      0.11903636363636363,
+      0.11699636363636363,
+      0.013636363636363636,
+      0.013636363636363636,
+      0.013636363636363636
+    ],
+    "training_weights_by_name": {
+      "RL-Repair": 0.12303136363636365,
+      "RL-PPO-Hard60": 0.12196886363636364,
+      "RL-PPO": 0.12188386363636362,
+      "Adv-RL": 0.11686886363636365,
+      "Final-tuned": 0.11754886363636363,
+      "Triple-majority": 0.12175636363636365,
+      "SelfPlay-GRU": 0.11903636363636363,
+      "Blue-Meta-v2": 0.11699636363636363,
+      "Red-RL-v1": 0.013636363636363636,
+      "Red-RL-v3": 0.013636363636363636,
+      "Red-RL-v4": 0.013636363636363636
+    },
+    "expected": {
+      "RL-Repair": 0.0,
+      "RL-PPO-Hard60": 0.0,
+      "RL-PPO": 0.0,
+      "Adv-RL": 0.0,
+      "Final-tuned": 0.0,
+      "Triple-majority": 0.0,
+      "SelfPlay-GRU": 0.0,
+      "Blue-Meta-v2": 0.0,
+      "Red-RL-v1": -139.6495,
+      "Red-RL-v3": -290.86975,
+      "Red-RL-v4": -306.5054375
+    },
+    "value": 0.0,
+    "worst_case": 0.0,
+    "best_blue": "Scratch-Init",
+    "iterations": 20000
+  },
+  "config": "/home/frti64/pri_dile/configs/psro/psro_scratch_20261027.json",
+  "created": "2026-10-27T20:04:19",
+  "deploy_entry": "PSRO-BR-br_01",
+  "deploy_source": "/home/frti64/pri_dile/results/psro_scratch_20261027/br_01.json"
+}

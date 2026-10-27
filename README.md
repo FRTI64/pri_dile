@@ -16,7 +16,15 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 baseline **尚未运行**（按本次要求不做测试）；v3 的 299/20/40 结果
 >   只作 legacy；
-> - 上次完整测试为 v3 的 204 tests；v4 改动后未运行测试；
+> - **240 tests OK**（本轮全量运行）；注册候选 24 个；
+> - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
+>   meta-policy 在 held-out Red-v5/v6 上 red-minus-blue -21.4%，但
+>   dev_param 527.71 vs RL-Repair 543.35；`psro-br` 未进入 maximin support；
+>   两者均为实验候选，**未 promotion**；
+> - **从零 PSRO 已加入**：`psro-scratch` / `psro-scratch-br`；blue 只含
+>   random init + 从零 scratch base + 从零 BR，现有模型/规则只做 red；
+>   **dev_param 480.43、min_norm 0.55**，但 dev_red / held-out Red-v5/v6
+>   **red_win 0.0**（首次翻转 red 结果）；**未 promotion**；
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 仍 100% 击败 top 3。
 >
 > 完整结论、权重、风险和 promotion 条件见
@@ -51,6 +59,14 @@ python3 -m ipd protocol eval --candidates all \
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_complexity4 --fields 30 --n 2048 \
   --out results/protocol_v4/protocol_v4_dev_complexity4.json
+
+# PSRO（reference population；实验）
+python3 -m ipd train psro --config configs/psro/psro_20261027.json \
+  --workers 20
+
+# 从零 PSRO（blue 只有 random/scratch/BR；现有模型只做 red）
+python3 -m ipd train psro --config configs/psro/psro_scratch_20261027.json \
+  --workers 20
 
 # 旧口径（legacy，仅历史复现）
 python3 -m ipd benchmark --candidates core --fields 8 --workers 8
@@ -109,6 +125,8 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | E1c repair | **Go candidate**（RL-Repair），未 promotion |
 | E2 CVaR / DRO | No-Go |
 | P3 red pool | red pool Go；league-lite / expansion Gate D **FAIL** |
+| **PSRO** | **实现 + 实验候选**；reference meta-policy red diff -21.4%，dev -15.6；oracle 未进 support；未 promotion |
+| **PSRO from scratch** | blue=random/scratch/BR，现有模型只做 red；dev 480.43 / min_norm 0.55，但 dev_red + Red-v5/v6 **red_win 0.0**；未 promotion |
 | P2 C1 / C2 / C3 | 全部 offline No-Go |
 | SelfPlay 改进 | No-Go；保留 21 维部署备选 |
 | Axelrod | **已接入 Protocol v4**：224 策略 + 15 组合；可选依赖 |

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import functools
 import json
 import random
 import statistics
@@ -32,6 +33,7 @@ from ..core.opponents.axelrod_bank import (
     axelrod_by_name, axelrod_cheating_by_name, axelrod_cheating_specs,
     axelrod_specs, require_axelrod,
 )
+from ..core.opponents.spec import TypeSpec
 from ..core.simulator import play_match
 from ..paths import result_path
 from ..policies.opponents import ALL_BY_NAME, ALL_SPECS
@@ -41,6 +43,23 @@ from .distributions import FAMILY_MULT
 SCHEMA = "ipd-matchup-v2"
 
 
+@functools.lru_cache(maxsize=1)
+def _protocol_specs() -> tuple[TypeSpec, ...]:
+    """Expose every frozen Protocol v4 catalog entry as an opponent type."""
+    from .protocol import build_catalog
+
+    return tuple(
+        TypeSpec(name=entry.key, family=entry.family,
+                 weight=entry.weight, factory=entry.build)
+        for entry in build_catalog()
+    )
+
+
+@functools.lru_cache(maxsize=1)
+def _protocol_by_name() -> dict[str, TypeSpec]:
+    return {spec.name: spec for spec in _protocol_specs()}
+
+
 def type_task(task: dict) -> list[tuple[str, str, str, float, float, float, int]]:
     from ..policies.registry import CandidateSpec
 
@@ -48,6 +67,8 @@ def type_task(task: dict) -> list[tuple[str, str, str, float, float, float, int]
     opponent_set = task.get("opponent_set", "core")
     if opponent_set == "all":
         spec = ALL_BY_NAME[type_name]
+    elif opponent_set == "protocol":
+        spec = _protocol_by_name()[type_name]
     elif opponent_set == "axelrod":
         spec = axelrod_by_name(include_long_run=True)[type_name]
     elif opponent_set == "axelrod-fast":
@@ -76,6 +97,8 @@ def type_task(task: dict) -> list[tuple[str, str, str, float, float, float, int]
 
 
 def _selected_specs(opponent_set: str):
+    if opponent_set == "protocol":
+        return list(_protocol_specs())
     if opponent_set == "axelrod":
         return axelrod_specs(include_long_run=True)
     if opponent_set == "axelrod-fast":
@@ -204,10 +227,11 @@ def build_parser() -> argparse.ArgumentParser:
                     help="comma-separated candidate names/kinds to keep from "
                          "--spec-config")
     ap.add_argument("--opponent-set",
-                    choices=("core", "all", "axelrod", "axelrod-fast",
-                             "axelrod-cheating"),
+                    choices=("core", "all", "protocol", "axelrod",
+                             "axelrod-fast", "axelrod-cheating"),
                     default="core",
                     help="core = 85-type bank, all = 158-type full bank, "
+                         "protocol = full Protocol v4 catalog (977 configs), "
                          "axelrod = 243 ordinary Axelrod strategies, "
                          "axelrod-fast = 224 excluding long-running ones, "
                          "axelrod-cheating = cheating strategies "

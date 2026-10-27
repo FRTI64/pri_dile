@@ -1,0 +1,108 @@
+{
+  "schema": "ipd-psro-population-v1",
+  "entries": [
+    {
+      "name": "Scratch-Init",
+      "entry": {
+        "path": "weights/psro_scratch/init_policy.json"
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "random-init"
+      ]
+    },
+    {
+      "name": "Scratch-Base",
+      "entry": {
+        "path": "weights/psro_scratch/base_policy.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "official-base"
+      ]
+    },
+    {
+      "name": "Red-RL-v1",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v1.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v3",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v3.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v4",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v4.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_01",
+      "entry": {
+        "path": "results/psro_scratch_v2_20261027/br_01.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": "base_checkpoint",
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_02",
+      "entry": {
+        "path": "results/psro_scratch_v2_20261027/br_02.json"
+      },
+      "role": "blue",
+      "generation": 2,
+      "parent": "base_checkpoint",
+      "tags": []
+    }
+  ],
+  "meta": {
+    "round": 2,
+    "name": "psro_scratch_v2_20261027",
+    "blue_weights": {
+      "Scratch-Init": 0.0,
+      "Scratch-Base": 0.0,
+      "PSRO-BR-br_01": 1.0,
+      "PSRO-BR-br_02": 0.0
+    },
+    "red_weights": {
+      "Red-RL-v1": 1.0,
+      "Red-RL-v3": 0.0,
+      "Red-RL-v4": 0.0
+    }
+  }
+}

@@ -1,0 +1,2 @@
+6752720f48b835268c89164cf22495867776f81d92171fd2ce105fc5c02f6066  weights/psro_scratch_pilot/psro_policy.json
+6d1b8e6ee3ab96b877a2e432981526329528260aa4fd38c0c2ba8143ff63bb74  weights/psro_scratch_pilot/meta_strategy.json

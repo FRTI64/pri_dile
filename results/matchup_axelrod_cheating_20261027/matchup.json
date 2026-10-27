@@ -1,0 +1,1257 @@
+{
+  "schema": "ipd-matchup-v2",
+  "created": "2026-10-27T20:25:56",
+  "seconds": 22.56,
+  "seed": 20261024,
+  "reps": 16,
+  "rounds": 100,
+  "opponent_set": "axelrod-cheating",
+  "spec_config": null,
+  "candidates": [
+    {
+      "kind": "final-base",
+      "name": "Final-base",
+      "params": {}
+    },
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "params": {}
+    },
+    {
+      "kind": "resp3-base",
+      "name": "Resp3-base",
+      "params": {}
+    },
+    {
+      "kind": "resp3-tuned",
+      "name": "Resp3-tuned",
+      "params": {}
+    },
+    {
+      "kind": "bayes-base",
+      "name": "Bayes-base",
+      "params": {}
+    },
+    {
+      "kind": "bayes-tuned",
+      "name": "Bayes-tuned",
+      "params": {}
+    },
+    {
+      "kind": "hybrid",
+      "name": "Final+Resp3",
+      "params": {}
+    },
+    {
+      "kind": "harvest45",
+      "name": "Harvest45",
+      "params": {}
+    },
+    {
+      "kind": "triple-majority",
+      "name": "Triple-majority",
+      "params": {}
+    },
+    {
+      "kind": "harvest-tuned",
+      "name": "Harvest-tuned",
+      "params": {}
+    },
+    {
+      "kind": "gap-start",
+      "name": "GapStart",
+      "params": {}
+    },
+    {
+      "kind": "neural",
+      "name": "Neural",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "gru",
+      "name": "GRU",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "RL-PPO",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-hard60",
+      "name": "RL-PPO-Hard60",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-repair",
+      "name": "RL-Repair",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro",
+      "name": "PSRO-Meta",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-br",
+      "name": "PSRO-BR",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-scratch",
+      "name": "PSRO-Scratch",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-scratch-br",
+      "name": "PSRO-Scratch-BR",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-mlp",
+      "name": "Adv-MLP",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-gru",
+      "name": "Adv-GRU",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "selfplay",
+      "name": "SelfPlay-GRU",
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ],
+  "opponents": [
+    {
+      "name": "Darwin",
+      "family": "axelrod-cheating"
+    }
+  ],
+  "type_rows": [
+    {
+      "candidate": "Adv-GRU",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 444.0,
+      "opponent": 359.0,
+      "diff": 85.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Adv-MLP",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 539.0,
+      "opponent": 619.0,
+      "diff": -80.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Adv-RL",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 657.0,
+      "opponent": 387.0,
+      "diff": 270.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Bayes-base",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 716.0,
+      "opponent": 311.0,
+      "diff": 405.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Bayes-tuned",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 437.0,
+      "opponent": 342.0,
+      "diff": 95.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Final+Resp3",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 550.5,
+      "opponent": 615.5,
+      "diff": -65.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Final-base",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 544.5,
+      "opponent": 619.5,
+      "diff": -75.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Final-tuned",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 439.5,
+      "opponent": 359.5,
+      "diff": 80.0,
+      "reps": 16
+    },
+    {
+      "candidate": "GRU",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 484.0,
+      "opponent": 639.0,
+      "diff": -155.0,
+      "reps": 16
+    },
+    {
+      "candidate": "GapStart",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 811.0,
+      "opponent": 21.0,
+      "diff": 790.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Harvest-tuned",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 477.0,
+      "opponent": 277.0,
+      "diff": 200.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Harvest45",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 540.0,
+      "opponent": 200.0,
+      "diff": 340.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Neural",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 291.5,
+      "opponent": 121.5,
+      "diff": 170.0,
+      "reps": 16
+    },
+    {
+      "candidate": "PSRO-BR",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 455.0,
+      "opponent": 340.0,
+      "diff": 115.0,
+      "reps": 16
+    },
+    {
+      "candidate": "PSRO-Meta",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 533.0,
+      "opponent": 633.0,
+      "diff": -100.0,
+      "reps": 16
+    },
+    {
+      "candidate": "PSRO-Scratch",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 698.0,
+      "opponent": 313.0,
+      "diff": 385.0,
+      "reps": 16
+    },
+    {
+      "candidate": "PSRO-Scratch-BR",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 455.0,
+      "opponent": 340.0,
+      "diff": 115.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-PPO",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 459.5,
+      "opponent": 339.5,
+      "diff": 120.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-PPO-Hard60",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 675.5,
+      "opponent": 340.5,
+      "diff": 335.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Repair",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 459.5,
+      "opponent": 339.5,
+      "diff": 120.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Resp3-base",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 547.5,
+      "opponent": 617.5,
+      "diff": -70.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Resp3-tuned",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 434.5,
+      "opponent": 364.5,
+      "diff": 70.0,
+      "reps": 16
+    },
+    {
+      "candidate": "SelfPlay-GRU",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 446.0,
+      "opponent": 341.0,
+      "diff": 105.0,
+      "reps": 16
+    },
+    {
+      "candidate": "Triple-majority",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 399.0,
+      "opponent": 629.0,
+      "diff": -230.0,
+      "reps": 16
+    }
+  ],
+  "family_means": {
+    "Adv-GRU": {
+      "axelrod-cheating": 444.0
+    },
+    "Adv-MLP": {
+      "axelrod-cheating": 539.0
+    },
+    "Adv-RL": {
+      "axelrod-cheating": 657.0
+    },
+    "Bayes-base": {
+      "axelrod-cheating": 716.0
+    },
+    "Bayes-tuned": {
+      "axelrod-cheating": 437.0
+    },
+    "Final+Resp3": {
+      "axelrod-cheating": 550.5
+    },
+    "Final-base": {
+      "axelrod-cheating": 544.5
+    },
+    "Final-tuned": {
+      "axelrod-cheating": 439.5
+    },
+    "GRU": {
+      "axelrod-cheating": 484.0
+    },
+    "GapStart": {
+      "axelrod-cheating": 811.0
+    },
+    "Harvest-tuned": {
+      "axelrod-cheating": 477.0
+    },
+    "Harvest45": {
+      "axelrod-cheating": 540.0
+    },
+    "Neural": {
+      "axelrod-cheating": 291.5
+    },
+    "PSRO-BR": {
+      "axelrod-cheating": 455.0
+    },
+    "PSRO-Meta": {
+      "axelrod-cheating": 533.0
+    },
+    "PSRO-Scratch": {
+      "axelrod-cheating": 698.0
+    },
+    "PSRO-Scratch-BR": {
+      "axelrod-cheating": 455.0
+    },
+    "RL-PPO": {
+      "axelrod-cheating": 459.5
+    },
+    "RL-PPO-Hard60": {
+      "axelrod-cheating": 675.5
+    },
+    "RL-Repair": {
+      "axelrod-cheating": 459.5
+    },
+    "Resp3-base": {
+      "axelrod-cheating": 547.5
+    },
+    "Resp3-tuned": {
+      "axelrod-cheating": 434.5
+    },
+    "SelfPlay-GRU": {
+      "axelrod-cheating": 446.0
+    },
+    "Triple-majority": {
+      "axelrod-cheating": 399.0
+    }
+  },
+  "suite_weights": {
+    "original": {
+      "Darwin": 1.0
+    },
+    "late": {
+      "Darwin": 1.0
+    },
+    "grim": {
+      "Darwin": 1.0
+    },
+    "noise": {
+      "Darwin": 1.0
+    },
+    "complex": {
+      "Darwin": 1.0
+    },
+    "smart": {
+      "Darwin": 1.0
+    },
+    "punitive": {
+      "Darwin": 1.0
+    },
+    "random": {
+      "Darwin": 1.0
+    },
+    "wide": {
+      "Darwin": 1.0
+    }
+  },
+  "suite_scores": {
+    "Adv-GRU": {
+      "original": 444.0,
+      "late": 444.0,
+      "grim": 444.0,
+      "noise": 444.0,
+      "complex": 444.0,
+      "smart": 444.0,
+      "punitive": 444.0,
+      "random": 444.0,
+      "wide": 444.0
+    },
+    "Adv-MLP": {
+      "original": 539.0,
+      "late": 539.0,
+      "grim": 539.0,
+      "noise": 539.0,
+      "complex": 539.0,
+      "smart": 539.0,
+      "punitive": 539.0,
+      "random": 539.0,
+      "wide": 539.0
+    },
+    "Adv-RL": {
+      "original": 657.0,
+      "late": 657.0,
+      "grim": 657.0,
+      "noise": 657.0,
+      "complex": 657.0,
+      "smart": 657.0,
+      "punitive": 657.0,
+      "random": 657.0,
+      "wide": 657.0
+    },
+    "Bayes-base": {
+      "original": 716.0,
+      "late": 716.0,
+      "grim": 716.0,
+      "noise": 716.0,
+      "complex": 716.0,
+      "smart": 716.0,
+      "punitive": 716.0,
+      "random": 716.0,
+      "wide": 716.0
+    },
+    "Bayes-tuned": {
+      "original": 437.0,
+      "late": 437.0,
+      "grim": 437.0,
+      "noise": 437.0,
+      "complex": 437.0,
+      "smart": 437.0,
+      "punitive": 437.0,
+      "random": 437.0,
+      "wide": 437.0
+    },
+    "Final+Resp3": {
+      "original": 550.5,
+      "late": 550.5,
+      "grim": 550.5,
+      "noise": 550.5,
+      "complex": 550.5,
+      "smart": 550.5,
+      "punitive": 550.5,
+      "random": 550.5,
+      "wide": 550.5
+    },
+    "Final-base": {
+      "original": 544.5,
+      "late": 544.5,
+      "grim": 544.5,
+      "noise": 544.5,
+      "complex": 544.5,
+      "smart": 544.5,
+      "punitive": 544.5,
+      "random": 544.5,
+      "wide": 544.5
+    },
+    "Final-tuned": {
+      "original": 439.5,
+      "late": 439.5,
+      "grim": 439.5,
+      "noise": 439.5,
+      "complex": 439.5,
+      "smart": 439.5,
+      "punitive": 439.5,
+      "random": 439.5,
+      "wide": 439.5
+    },
+    "GRU": {
+      "original": 484.0,
+      "late": 484.0,
+      "grim": 484.0,
+      "noise": 484.0,
+      "complex": 484.0,
+      "smart": 484.0,
+      "punitive": 484.0,
+      "random": 484.0,
+      "wide": 484.0
+    },
+    "GapStart": {
+      "original": 811.0,
+      "late": 811.0,
+      "grim": 811.0,
+      "noise": 811.0,
+      "complex": 811.0,
+      "smart": 811.0,
+      "punitive": 811.0,
+      "random": 811.0,
+      "wide": 811.0
+    },
+    "Harvest-tuned": {
+      "original": 477.0,
+      "late": 477.0,
+      "grim": 477.0,
+      "noise": 477.0,
+      "complex": 477.0,
+      "smart": 477.0,
+      "punitive": 477.0,
+      "random": 477.0,
+      "wide": 477.0
+    },
+    "Harvest45": {
+      "original": 540.0,
+      "late": 540.0,
+      "grim": 540.0,
+      "noise": 540.0,
+      "complex": 540.0,
+      "smart": 540.0,
+      "punitive": 540.0,
+      "random": 540.0,
+      "wide": 540.0
+    },
+    "Neural": {
+      "original": 291.5,
+      "late": 291.5,
+      "grim": 291.5,
+      "noise": 291.5,
+      "complex": 291.5,
+      "smart": 291.5,
+      "punitive": 291.5,
+      "random": 291.5,
+      "wide": 291.5
+    },
+    "PSRO-BR": {
+      "original": 455.0,
+      "late": 455.0,
+      "grim": 455.0,
+      "noise": 455.0,
+      "complex": 455.0,
+      "smart": 455.0,
+      "punitive": 455.0,
+      "random": 455.0,
+      "wide": 455.0
+    },
+    "PSRO-Meta": {
+      "original": 533.0,
+      "late": 533.0,
+      "grim": 533.0,
+      "noise": 533.0,
+      "complex": 533.0,
+      "smart": 533.0,
+      "punitive": 533.0,
+      "random": 533.0,
+      "wide": 533.0
+    },
+    "PSRO-Scratch": {
+      "original": 698.0,
+      "late": 698.0,
+      "grim": 698.0,
+      "noise": 698.0,
+      "complex": 698.0,
+      "smart": 698.0,
+      "punitive": 698.0,
+      "random": 698.0,
+      "wide": 698.0
+    },
+    "PSRO-Scratch-BR": {
+      "original": 455.0,
+      "late": 455.0,
+      "grim": 455.0,
+      "noise": 455.0,
+      "complex": 455.0,
+      "smart": 455.0,
+      "punitive": 455.0,
+      "random": 455.0,
+      "wide": 455.0
+    },
+    "RL-PPO": {
+      "original": 459.5,
+      "late": 459.5,
+      "grim": 459.5,
+      "noise": 459.5,
+      "complex": 459.5,
+      "smart": 459.5,
+      "punitive": 459.5,
+      "random": 459.5,
+      "wide": 459.5
+    },
+    "RL-PPO-Hard60": {
+      "original": 675.5,
+      "late": 675.5,
+      "grim": 675.5,
+      "noise": 675.5,
+      "complex": 675.5,
+      "smart": 675.5,
+      "punitive": 675.5,
+      "random": 675.5,
+      "wide": 675.5
+    },
+    "RL-Repair": {
+      "original": 459.5,
+      "late": 459.5,
+      "grim": 459.5,
+      "noise": 459.5,
+      "complex": 459.5,
+      "smart": 459.5,
+      "punitive": 459.5,
+      "random": 459.5,
+      "wide": 459.5
+    },
+    "Resp3-base": {
+      "original": 547.5,
+      "late": 547.5,
+      "grim": 547.5,
+      "noise": 547.5,
+      "complex": 547.5,
+      "smart": 547.5,
+      "punitive": 547.5,
+      "random": 547.5,
+      "wide": 547.5
+    },
+    "Resp3-tuned": {
+      "original": 434.5,
+      "late": 434.5,
+      "grim": 434.5,
+      "noise": 434.5,
+      "complex": 434.5,
+      "smart": 434.5,
+      "punitive": 434.5,
+      "random": 434.5,
+      "wide": 434.5
+    },
+    "SelfPlay-GRU": {
+      "original": 446.0,
+      "late": 446.0,
+      "grim": 446.0,
+      "noise": 446.0,
+      "complex": 446.0,
+      "smart": 446.0,
+      "punitive": 446.0,
+      "random": 446.0,
+      "wide": 446.0
+    },
+    "Triple-majority": {
+      "original": 399.0,
+      "late": 399.0,
+      "grim": 399.0,
+      "noise": 399.0,
+      "complex": 399.0,
+      "smart": 399.0,
+      "punitive": 399.0,
+      "random": 399.0,
+      "wide": 399.0
+    }
+  },
+  "candidate_summary": {
+    "Adv-GRU": {
+      "equal_type_mean": 444.0,
+      "family_means": {
+        "axelrod-cheating": 444.0
+      },
+      "family_avg": 444.0,
+      "family_worst": 444.0,
+      "suite_scores": {
+        "original": 444.0,
+        "late": 444.0,
+        "grim": 444.0,
+        "noise": 444.0,
+        "complex": 444.0,
+        "smart": 444.0,
+        "punitive": 444.0,
+        "random": 444.0,
+        "wide": 444.0
+      },
+      "suite_avg": 444.0,
+      "suite_worst": 444.0
+    },
+    "Adv-MLP": {
+      "equal_type_mean": 539.0,
+      "family_means": {
+        "axelrod-cheating": 539.0
+      },
+      "family_avg": 539.0,
+      "family_worst": 539.0,
+      "suite_scores": {
+        "original": 539.0,
+        "late": 539.0,
+        "grim": 539.0,
+        "noise": 539.0,
+        "complex": 539.0,
+        "smart": 539.0,
+        "punitive": 539.0,
+        "random": 539.0,
+        "wide": 539.0
+      },
+      "suite_avg": 539.0,
+      "suite_worst": 539.0
+    },
+    "Adv-RL": {
+      "equal_type_mean": 657.0,
+      "family_means": {
+        "axelrod-cheating": 657.0
+      },
+      "family_avg": 657.0,
+      "family_worst": 657.0,
+      "suite_scores": {
+        "original": 657.0,
+        "late": 657.0,
+        "grim": 657.0,
+        "noise": 657.0,
+        "complex": 657.0,
+        "smart": 657.0,
+        "punitive": 657.0,
+        "random": 657.0,
+        "wide": 657.0
+      },
+      "suite_avg": 657.0,
+      "suite_worst": 657.0
+    },
+    "Bayes-base": {
+      "equal_type_mean": 716.0,
+      "family_means": {
+        "axelrod-cheating": 716.0
+      },
+      "family_avg": 716.0,
+      "family_worst": 716.0,
+      "suite_scores": {
+        "original": 716.0,
+        "late": 716.0,
+        "grim": 716.0,
+        "noise": 716.0,
+        "complex": 716.0,
+        "smart": 716.0,
+        "punitive": 716.0,
+        "random": 716.0,
+        "wide": 716.0
+      },
+      "suite_avg": 716.0,
+      "suite_worst": 716.0
+    },
+    "Bayes-tuned": {
+      "equal_type_mean": 437.0,
+      "family_means": {
+        "axelrod-cheating": 437.0
+      },
+      "family_avg": 437.0,
+      "family_worst": 437.0,
+      "suite_scores": {
+        "original": 437.0,
+        "late": 437.0,
+        "grim": 437.0,
+        "noise": 437.0,
+        "complex": 437.0,
+        "smart": 437.0,
+        "punitive": 437.0,
+        "random": 437.0,
+        "wide": 437.0
+      },
+      "suite_avg": 437.0,
+      "suite_worst": 437.0
+    },
+    "Final+Resp3": {
+      "equal_type_mean": 550.5,
+      "family_means": {
+        "axelrod-cheating": 550.5
+      },
+      "family_avg": 550.5,
+      "family_worst": 550.5,
+      "suite_scores": {
+        "original": 550.5,
+        "late": 550.5,
+        "grim": 550.5,
+        "noise": 550.5,
+        "complex": 550.5,
+        "smart": 550.5,
+        "punitive": 550.5,
+        "random": 550.5,
+        "wide": 550.5
+      },
+      "suite_avg": 550.5,
+      "suite_worst": 550.5
+    },
+    "Final-base": {
+      "equal_type_mean": 544.5,
+      "family_means": {
+        "axelrod-cheating": 544.5
+      },
+      "family_avg": 544.5,
+      "family_worst": 544.5,
+      "suite_scores": {
+        "original": 544.5,
+        "late": 544.5,
+        "grim": 544.5,
+        "noise": 544.5,
+        "complex": 544.5,
+        "smart": 544.5,
+        "punitive": 544.5,
+        "random": 544.5,
+        "wide": 544.5
+      },
+      "suite_avg": 544.5,
+      "suite_worst": 544.5
+    },
+    "Final-tuned": {
+      "equal_type_mean": 439.5,
+      "family_means": {
+        "axelrod-cheating": 439.5
+      },
+      "family_avg": 439.5,
+      "family_worst": 439.5,
+      "suite_scores": {
+        "original": 439.5,
+        "late": 439.5,
+        "grim": 439.5,
+        "noise": 439.5,
+        "complex": 439.5,
+        "smart": 439.5,
+        "punitive": 439.5,
+        "random": 439.5,
+        "wide": 439.5
+      },
+      "suite_avg": 439.5,
+      "suite_worst": 439.5
+    },
+    "GRU": {
+      "equal_type_mean": 484.0,
+      "family_means": {
+        "axelrod-cheating": 484.0
+      },
+      "family_avg": 484.0,
+      "family_worst": 484.0,
+      "suite_scores": {
+        "original": 484.0,
+        "late": 484.0,
+        "grim": 484.0,
+        "noise": 484.0,
+        "complex": 484.0,
+        "smart": 484.0,
+        "punitive": 484.0,
+        "random": 484.0,
+        "wide": 484.0
+      },
+      "suite_avg": 484.0,
+      "suite_worst": 484.0
+    },
+    "GapStart": {
+      "equal_type_mean": 811.0,
+      "family_means": {
+        "axelrod-cheating": 811.0
+      },
+      "family_avg": 811.0,
+      "family_worst": 811.0,
+      "suite_scores": {
+        "original": 811.0,
+        "late": 811.0,
+        "grim": 811.0,
+        "noise": 811.0,
+        "complex": 811.0,
+        "smart": 811.0,
+        "punitive": 811.0,
+        "random": 811.0,
+        "wide": 811.0
+      },
+      "suite_avg": 811.0,
+      "suite_worst": 811.0
+    },
+    "Harvest-tuned": {
+      "equal_type_mean": 477.0,
+      "family_means": {
+        "axelrod-cheating": 477.0
+      },
+      "family_avg": 477.0,
+      "family_worst": 477.0,
+      "suite_scores": {
+        "original": 477.0,
+        "late": 477.0,
+        "grim": 477.0,
+        "noise": 477.0,
+        "complex": 477.0,
+        "smart": 477.0,
+        "punitive": 477.0,
+        "random": 477.0,
+        "wide": 477.0
+      },
+      "suite_avg": 477.0,
+      "suite_worst": 477.0
+    },
+    "Harvest45": {
+      "equal_type_mean": 540.0,
+      "family_means": {
+        "axelrod-cheating": 540.0
+      },
+      "family_avg": 540.0,
+      "family_worst": 540.0,
+      "suite_scores": {
+        "original": 540.0,
+        "late": 540.0,
+        "grim": 540.0,
+        "noise": 540.0,
+        "complex": 540.0,
+        "smart": 540.0,
+        "punitive": 540.0,
+        "random": 540.0,
+        "wide": 540.0
+      },
+      "suite_avg": 540.0,
+      "suite_worst": 540.0
+    },
+    "Neural": {
+      "equal_type_mean": 291.5,
+      "family_means": {
+        "axelrod-cheating": 291.5
+      },
+      "family_avg": 291.5,
+      "family_worst": 291.5,
+      "suite_scores": {
+        "original": 291.5,
+        "late": 291.5,
+        "grim": 291.5,
+        "noise": 291.5,
+        "complex": 291.5,
+        "smart": 291.5,
+        "punitive": 291.5,
+        "random": 291.5,
+        "wide": 291.5
+      },
+      "suite_avg": 291.5,
+      "suite_worst": 291.5
+    },
+    "PSRO-BR": {
+      "equal_type_mean": 455.0,
+      "family_means": {
+        "axelrod-cheating": 455.0
+      },
+      "family_avg": 455.0,
+      "family_worst": 455.0,
+      "suite_scores": {
+        "original": 455.0,
+        "late": 455.0,
+        "grim": 455.0,
+        "noise": 455.0,
+        "complex": 455.0,
+        "smart": 455.0,
+        "punitive": 455.0,
+        "random": 455.0,
+        "wide": 455.0
+      },
+      "suite_avg": 455.0,
+      "suite_worst": 455.0
+    },
+    "PSRO-Meta": {
+      "equal_type_mean": 533.0,
+      "family_means": {
+        "axelrod-cheating": 533.0
+      },
+      "family_avg": 533.0,
+      "family_worst": 533.0,
+      "suite_scores": {
+        "original": 533.0,
+        "late": 533.0,
+        "grim": 533.0,
+        "noise": 533.0,
+        "complex": 533.0,
+        "smart": 533.0,
+        "punitive": 533.0,
+        "random": 533.0,
+        "wide": 533.0
+      },
+      "suite_avg": 533.0,
+      "suite_worst": 533.0
+    },
+    "PSRO-Scratch": {
+      "equal_type_mean": 698.0,
+      "family_means": {
+        "axelrod-cheating": 698.0
+      },
+      "family_avg": 698.0,
+      "family_worst": 698.0,
+      "suite_scores": {
+        "original": 698.0,
+        "late": 698.0,
+        "grim": 698.0,
+        "noise": 698.0,
+        "complex": 698.0,
+        "smart": 698.0,
+        "punitive": 698.0,
+        "random": 698.0,
+        "wide": 698.0
+      },
+      "suite_avg": 698.0,
+      "suite_worst": 698.0
+    },
+    "PSRO-Scratch-BR": {
+      "equal_type_mean": 455.0,
+      "family_means": {
+        "axelrod-cheating": 455.0
+      },
+      "family_avg": 455.0,
+      "family_worst": 455.0,
+      "suite_scores": {
+        "original": 455.0,
+        "late": 455.0,
+        "grim": 455.0,
+        "noise": 455.0,
+        "complex": 455.0,
+        "smart": 455.0,
+        "punitive": 455.0,
+        "random": 455.0,
+        "wide": 455.0
+      },
+      "suite_avg": 455.0,
+      "suite_worst": 455.0
+    },
+    "RL-PPO": {
+      "equal_type_mean": 459.5,
+      "family_means": {
+        "axelrod-cheating": 459.5
+      },
+      "family_avg": 459.5,
+      "family_worst": 459.5,
+      "suite_scores": {
+        "original": 459.5,
+        "late": 459.5,
+        "grim": 459.5,
+        "noise": 459.5,
+        "complex": 459.5,
+        "smart": 459.5,
+        "punitive": 459.5,
+        "random": 459.5,
+        "wide": 459.5
+      },
+      "suite_avg": 459.5,
+      "suite_worst": 459.5
+    },
+    "RL-PPO-Hard60": {
+      "equal_type_mean": 675.5,
+      "family_means": {
+        "axelrod-cheating": 675.5
+      },
+      "family_avg": 675.5,
+      "family_worst": 675.5,
+      "suite_scores": {
+        "original": 675.5,
+        "late": 675.5,
+        "grim": 675.5,
+        "noise": 675.5,
+        "complex": 675.5,
+        "smart": 675.5,
+        "punitive": 675.5,
+        "random": 675.5,
+        "wide": 675.5
+      },
+      "suite_avg": 675.5,
+      "suite_worst": 675.5
+    },
+    "RL-Repair": {
+      "equal_type_mean": 459.5,
+      "family_means": {
+        "axelrod-cheating": 459.5
+      },
+      "family_avg": 459.5,
+      "family_worst": 459.5,
+      "suite_scores": {
+        "original": 459.5,
+        "late": 459.5,
+        "grim": 459.5,
+        "noise": 459.5,
+        "complex": 459.5,
+        "smart": 459.5,
+        "punitive": 459.5,
+        "random": 459.5,
+        "wide": 459.5
+      },
+      "suite_avg": 459.5,
+      "suite_worst": 459.5
+    },
+    "Resp3-base": {
+      "equal_type_mean": 547.5,
+      "family_means": {
+        "axelrod-cheating": 547.5
+      },
+      "family_avg": 547.5,
+      "family_worst": 547.5,
+      "suite_scores": {
+        "original": 547.5,
+        "late": 547.5,
+        "grim": 547.5,
+        "noise": 547.5,
+        "complex": 547.5,
+        "smart": 547.5,
+        "punitive": 547.5,
+        "random": 547.5,
+        "wide": 547.5
+      },
+      "suite_avg": 547.5,
+      "suite_worst": 547.5
+    },
+    "Resp3-tuned": {
+      "equal_type_mean": 434.5,
+      "family_means": {
+        "axelrod-cheating": 434.5
+      },
+      "family_avg": 434.5,
+      "family_worst": 434.5,
+      "suite_scores": {
+        "original": 434.5,
+        "late": 434.5,
+        "grim": 434.5,
+        "noise": 434.5,
+        "complex": 434.5,
+        "smart": 434.5,
+        "punitive": 434.5,
+        "random": 434.5,
+        "wide": 434.5
+      },
+      "suite_avg": 434.5,
+      "suite_worst": 434.5
+    },
+    "SelfPlay-GRU": {
+      "equal_type_mean": 446.0,
+      "family_means": {
+        "axelrod-cheating": 446.0
+      },
+      "family_avg": 446.0,
+      "family_worst": 446.0,
+      "suite_scores": {
+        "original": 446.0,
+        "late": 446.0,
+        "grim": 446.0,
+        "noise": 446.0,
+        "complex": 446.0,
+        "smart": 446.0,
+        "punitive": 446.0,
+        "random": 446.0,
+        "wide": 446.0
+      },
+      "suite_avg": 446.0,
+      "suite_worst": 446.0
+    },
+    "Triple-majority": {
+      "equal_type_mean": 399.0,
+      "family_means": {
+        "axelrod-cheating": 399.0
+      },
+      "family_avg": 399.0,
+      "family_worst": 399.0,
+      "suite_scores": {
+        "original": 399.0,
+        "late": 399.0,
+        "grim": 399.0,
+        "noise": 399.0,
+        "complex": 399.0,
+        "smart": 399.0,
+        "punitive": 399.0,
+        "random": 399.0,
+        "wide": 399.0
+      },
+      "suite_avg": 399.0,
+      "suite_worst": 399.0
+    }
+  }
+}

@@ -26,14 +26,16 @@
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
 | 当前最佳候选 | `rl-repair`（RL-Repair，未 promotion） |
 | 第二候选 / fallback | `rl-hard60`（A60） |
-| 测试 | v3 时 204 tests；v4 改动后未运行（按要求） |
-| 注册候选 | 20 个（`python3 -m ipd list-policies`） |
+| 测试 | **240 tests OK**（本轮全量运行） |
+| 注册候选 | 24 个（`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
 | Protocol v4 baseline | **未运行**；v3 的 484.32/476.54/471.44 只作 legacy |
 | held-out | test 消费永久锁定（provisional only）；v2/v3 已进入 legacy |
-| 已知未解决 | anti-exploitation；Red-v5/v6 仍 100% 击败 top 3 |
+| PSRO | 完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro` / `psro-br` 实验候选，未 promotion |
+| PSRO from scratch | blue 仅 random/scratch/BR，现有模型只做 red；`psro-scratch` / `psro-scratch-br`；red_win 0.0，但 dev 480.43；未 promotion |
+| 已知未解决 | anti-exploitation；Red-v5/v6 仍 100% 击败 top 3；`psro-scratch` red_win 0.0，但 dev 480.43 / min_norm 0.55；PSRO-Meta dev 掉约 15.6 |
 
 推荐、权重、风险和 promotion 条件以
 [operations/handover.md](operations/handover.md) 为准。
@@ -62,7 +64,7 @@
 | 文档 | 内容 |
 |---|---|
 | [reference/cli.md](reference/cli.md) | `python3 -m ipd <command>` 命令与常用参数 |
-| [reference/candidates.md](reference/candidates.md) | 20 个候选、别名、集合、权重、状态 |
+| [reference/candidates.md](reference/candidates.md) | 24 个候选、别名、集合、权重、状态 |
 | [reference/configuration.md](reference/configuration.md) | `configs/`、`weights/`、`results/`、路径与配置格式 |
 | [reference/metrics.md](reference/metrics.md) | 四分布、blind、suite、league、CVaR、min_norm 的定义与口径 |
 | [reference/protocol-v4.md](reference/protocol-v4.md) | Protocol v4 的 train/dev/test 划分、manifest、usage ledger |
@@ -76,6 +78,7 @@
 | [policies/gru.md](policies/gru.md) | GRU-Net 策略 |
 | [policies/adversarial.md](policies/adversarial.md) | 约束剥削规则 |
 | [policies/selfplay.md](policies/selfplay.md) | 21 维非对称自博弈 |
+| [policies/psro.md](policies/psro.md) | PSRO meta-policy / best response 部署 |
 
 ### 研究记录
 
@@ -87,6 +90,8 @@
 | [research/e2-risk-ppo.md](research/e2-risk-ppo.md) | E2 CVaR / DRO | No-Go |
 | [research/p3-red-league.md](research/p3-red-league.md) | P3 red pool + league-lite | red pool Go；league-lite No-Go |
 | [research/p3-expansion.md](research/p3-expansion.md) | P3 multi-red + PSRO-lite | No-Go |
+| [research/psro.md](research/psro.md) | 完整 PSRO：blue population + 红队 oracle | 实现完成；实验候选，No-Go for promotion |
+| [research/psro-scratch.md](research/psro-scratch.md) | 从零 PSRO：现有模型只做 red | red_win 0.0，但 official 掉约 63；No-Go |
 | [research/p2-c1-belief-planner.md](research/p2-c1-belief-planner.md) | C1 Bayesian planner | No-Go |
 | [research/p2-c2c3-opponent-model.md](research/p2-c2c3-opponent-model.md) | C2/C3 opponent model + gate | No-Go |
 | [research/p2-c2c3-excitation.md](research/p2-c2c3-excitation.md) | C2/C3 excitation / counterfactual | data Go；planner No-Go |

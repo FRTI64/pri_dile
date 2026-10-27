@@ -1,0 +1,44 @@
+{
+  "schema": "ipd-protocol-red-eval-v1",
+  "protocol": "protocol_v4",
+  "catalog_sha256": "beb594ab4a2840675a37079fe5f7b2ce8eac1f98de46aae3c090a5e4fad5fe47",
+  "created": "2026-10-27T21:00:19",
+  "seconds": 0.57,
+  "tier": "dev_red",
+  "seeds": 10,
+  "rounds": 100,
+  "seed": 20261027,
+  "usage_consumed": false,
+  "selection_eligible": true,
+  "no_consume": false,
+  "test_consumption_locked": false,
+  "results": {
+    "PSRO-Scratch": {
+      "seeds": 10,
+      "blue_mean": 436.2,
+      "blue_min": 396.0,
+      "blue_p05": 400.5,
+      "red_mean": 210.2,
+      "diff": 226.0,
+      "red_win": 0.0
+    },
+    "PSRO-Scratch-BR": {
+      "seeds": 10,
+      "blue_mean": 427.2,
+      "blue_min": 384.0,
+      "blue_p05": 390.3,
+      "red_mean": 195.2,
+      "diff": 232.0,
+      "red_win": 0.0
+    },
+    "RL-Repair": {
+      "seeds": 10,
+      "blue_mean": 379.2,
+      "blue_min": 370.0,
+      "blue_p05": 370.0,
+      "red_mean": 715.2,
+      "diff": -336.0,
+      "red_win": 1.0
+    }
+  }
+}

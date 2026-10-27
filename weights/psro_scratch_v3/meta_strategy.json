@@ -1,0 +1,175 @@
+{
+  "schema": "ipd-psro-report-v1",
+  "name": "psro_scratch_v3_20261027",
+  "population": [
+    {
+      "name": "Scratch-Init",
+      "entry": {
+        "path": "weights/psro_scratch/init_policy.json"
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "random-init"
+      ]
+    },
+    {
+      "name": "Scratch-Base",
+      "entry": {
+        "path": "weights/psro_scratch/base_policy.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "official-base"
+      ]
+    },
+    {
+      "name": "Red-RL-v1",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v1.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v3",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v3.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v4",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v4.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_01",
+      "entry": {
+        "path": "results/psro_scratch_v3_20261027/br_01.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": "base_checkpoint",
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_02",
+      "entry": {
+        "path": "results/psro_scratch_v3_20261027/br_02.json"
+      },
+      "role": "blue",
+      "generation": 2,
+      "parent": "base_checkpoint",
+      "tags": []
+    }
+  ],
+  "blue": [
+    "Scratch-Init",
+    "Scratch-Base",
+    "PSRO-BR-br_01",
+    "PSRO-BR-br_02"
+  ],
+  "red": [
+    "Red-RL-v1",
+    "Red-RL-v3",
+    "Red-RL-v4"
+  ],
+  "blue_meta": {
+    "names": [
+      "Scratch-Init",
+      "Scratch-Base",
+      "PSRO-BR-br_01",
+      "PSRO-BR-br_02"
+    ],
+    "weights": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "weights_by_name": {
+      "Scratch-Init": 1.0,
+      "Scratch-Base": 0.0,
+      "PSRO-BR-br_01": 0.0,
+      "PSRO-BR-br_02": 0.0
+    },
+    "expected": {
+      "Scratch-Init": -59.998921875,
+      "Scratch-Base": -338.438890625,
+      "PSRO-BR-br_01": -330.00234374999997,
+      "PSRO-BR-br_02": -317.815078125
+    },
+    "value": -59.998921875,
+    "worst_case": -60.0,
+    "best_red": "Red-RL-v1",
+    "iterations": 20000
+  },
+  "red_meta": {
+    "names": [
+      "Red-RL-v1",
+      "Red-RL-v3",
+      "Red-RL-v4"
+    ],
+    "weights": [
+      0.99995,
+      5e-05,
+      0.0
+    ],
+    "weights_by_name": {
+      "Red-RL-v1": 0.99995,
+      "Red-RL-v3": 5e-05,
+      "Red-RL-v4": 0.0
+    },
+    "training_weights": [
+      0.8999575000000001,
+      0.0500425,
+      0.049999999999999996
+    ],
+    "training_weights_by_name": {
+      "Red-RL-v1": 0.8999575000000001,
+      "Red-RL-v3": 0.0500425,
+      "Red-RL-v4": 0.049999999999999996
+    },
+    "expected": {
+      "Red-RL-v1": 60.0,
+      "Red-RL-v3": 38.4375,
+      "Red-RL-v4": -21.25
+    },
+    "value": 59.998921875,
+    "worst_case": 59.998921875,
+    "best_blue": "Scratch-Init",
+    "iterations": 20000
+  },
+  "config": "/home/frti64/pri_dile/configs/psro/psro_scratch_v3_20261027.json",
+  "created": "2026-10-27T20:58:41",
+  "deploy_entry": "Scratch-Init",
+  "deploy_source": "/home/frti64/pri_dile/weights/psro_scratch/init_policy.json"
+}

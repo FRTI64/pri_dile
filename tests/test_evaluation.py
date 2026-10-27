@@ -79,6 +79,27 @@ class MatchTests(unittest.TestCase):
         self.assertEqual((cand, typ, family, n),
                          ("Final-tuned", "TFT", "nice", 1))
 
+    def test_matchup_protocol_selection(self):
+        from ipd.evaluation.matchup import _selected_specs
+        from ipd.evaluation.protocol import build_catalog
+
+        specs = _selected_specs("protocol")
+        self.assertEqual(len(specs), len(build_catalog()))
+        self.assertEqual(len({spec.name for spec in specs}), len(specs))
+
+        spec = candidate_specs(["final-tuned"])[0]
+        rows = type_task({
+            "type": "anchor:AllC",
+            "opponent_set": "protocol",
+            "reps": 1,
+            "rounds": 5,
+            "seed": 1,
+            "candidates": [spec.to_dict()],
+        })
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0][:3], ("Final-tuned", "anchor:AllC",
+                                       "anchor"))
+
     def test_matchup_suite_weighted_cli(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "matchup.csv"

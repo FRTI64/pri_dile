@@ -16,6 +16,7 @@ python3 -m ipd train --list
 | `neural` | `train neural` | MLP 行为克隆 + DAgger |
 | `gru` | `train gru` | GRU-Net BC + DAgger |
 | `rl` | `train rl` | PPO（主权重、A60、RL-Repair、red/blue response） |
+| `psro` | `train psro` | PSRO：blue-vs-red 元博弈 + PPO best response |
 | `adversarial` | `train adversarial` | 约束剥削规则搜索 |
 | `opponent-model` | `train opponent-model` | C2/C3 对手模型 / gate |
 | `selfplay` | `train selfplay` | 21 维非对称自博弈 |
@@ -135,7 +136,68 @@ python3 -m ipd train rl --device auto --iterations 40 \
 PPO 的 MDP、网络、损失、验证指标见 [../policies/rl.md](../policies/rl.md)；
 E1 的 Gate 和结果见 [../research/e1-robust-finetune.md](../research/e1-robust-finetune.md)。
 
-## 4. Self-play
+## 4. PSRO
+
+完整 PSRO 使用独立的 blue population 和 red exploiter population：
+
+1. cross-play 估计 `blue_score - red_score` 元博弈；
+2. blue 求 maximin 混合，red 求对偶 maximin 混合；
+3. 把 red 训练混合写成 `--opponent-pool` manifest；
+4. 用现有 PPO trainer 训练一个 blue best response；
+5. 加入 blue population，重新求解；可重复多轮。
+
+```bash
+python3 -m ipd train psro --config configs/psro/psro_20261027.json \
+  --workers 20
+
+# 只评估初始元博弈，不训练 oracle
+python3 -m ipd train psro --config configs/psro/psro_20261027.json \
+  --dry-run --out /tmp/psro_dry
+
+# 诊断评估（小规模，不是完整 v4 baseline）
+bash results/psro_20261027/run_eval.sh
+```
+
+产物：
+
+- `results/psro_20261027/report.json`、`population.json`、每轮
+  `br_XX.json` / `br_XX_history.json`；
+- `weights/psro/meta_strategy.json`：blue/red 混合与 population；
+- `weights/psro/psro_policy.json`：最后一轮 best response（`psro-br`）；
+- 注册候选 `psro`（meta-policy，每场按 blue 混合采样）和
+  `psro-br`（单策略）。
+
+首轮结果：blue maximin 选择 Final-tuned + Triple-majority；PPO oracle
+未进入 support，dev_param / held-out red 是明显 trade-off。**实验候选，
+未 promotion**；方法与结果见 [../research/psro.md](../research/psro.md)。
+若继续，优先改 oracle 或加入 red oracle（double oracle），不要重复同一配置。
+
+### 4.1 从零 PSRO（existing models 只做 red）
+
+```bash
+# 1. 从零官方 base
+python3 -m ipd train rl --device auto --from-scratch --iterations 30 \
+  --fields-per-dist 5 --n 80 --dist-weights 1,1,1,2 \
+  --ent-coef 0.001 --lr 3e-4 --center-advantages --select-metric avg \
+  --seed 20262027 \
+  --out weights/psro_scratch/base_policy.json \
+  --checkpoint-out weights/psro_scratch/base_checkpoint.json \
+  --history-out results/psro_scratch_20261027/base_history.json
+
+# 2. PSRO：blue 只有 random/scratch base/BR；已有模型只进 red 池
+python3 -m ipd train psro \
+  --config configs/psro/psro_scratch_20261027.json --workers 20
+```
+
+`psro-scratch` / `psro-scratch-br` 是产物。诊断：`dev_param` 480.43 /
+min_norm 0.55，但 `dev_red` 和 held-out Red-v5/v6 的 red win 降到 **0.0**
+（首次翻转 red 结果）。official 代价太大，**未 promotion**；详见
+[../research/psro-scratch.md](../research/psro-scratch.md)。
+
+`configs/psro/psro_scratch_pilot_20261027.json` 是更激进的 pilot
+（dev 473，red_win 0）；`psro_scratch_v2/v3` 是 ablation。
+
+## 5. Self-play
 
 ```bash
 # 200 episode smoke
@@ -152,7 +214,7 @@ python3 -m ipd train selfplay-bc --device auto --episodes 4000 --epochs 10
 注意：self-play 的改进实验已判 No-Go；最终 SelfPlay-GRU 是 BC 蒸馏策略，
 不是从零 self-play 的产物。详见 [../policies/selfplay.md](../policies/selfplay.md)。
 
-## 5. C2/C3 对手模型与 MoE
+## 6. C2/C3 对手模型与 MoE
 
 ```bash
 python3 -m ipd train opponent-model --data-mode mixed \
@@ -167,7 +229,7 @@ python3 -m ipd moe-eval --suite validation,heldout_v2 --seeds 3 \
 
 C2/C3 全部离线 No-Go；这些命令只用于复现对照，不要继续扫 threshold。
 
-## 6. 产物与纪律
+## 7. 产物与纪律
 
 - 权重写 `weights/`，实验报告/曲线写 `results/<experiment>/`；
 - `.pt` checkpoint 被 `*.pt` 忽略，提交代码 + JSON 权重 + 报告；

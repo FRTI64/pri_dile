@@ -48,6 +48,10 @@ python3 -m ipd self-test --candidates selfplay --weights weights/selfplay_gru_po
 | SelfPlay-GRU | `weights/selfplay_gru_policy.json` | 21 维 GRU；有状态 |
 | Adv-MLP / Adv-GRU | 对应 base 权重 + `configs/adversarial_*_config*.json` | 只有 Python |
 | Adv-RL | `weights/rl_policy_weights_bc.json` + aggressive config | 有 C++ |
+| PSRO-BR | `weights/psro/psro_policy.json` | 85 维 MLP；有 C++ |
+| PSRO-Meta | `weights/psro/meta_strategy.json` + 全部 blue 成员 | Python 采样器；C++ 需自行实现 |
+| PSRO-Scratch-BR | `weights/psro_scratch/psro_policy.json` | 85 维 MLP；有 C++ |
+| PSRO-Scratch | `weights/psro_scratch/meta_strategy.json` + 从零 blue 成员 | Python 采样器 |
 
 单文件提交时，需要把 JSON 权重内嵌到 Python/C++ 源文件；仓库不提供自动
 单文件打包脚本。
@@ -100,6 +104,10 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | RL-PPO | 是 | `cpp/policies/neural_policy.hpp` + `cpp/rl_policy_weights.hpp` |
 | Adv-RL | 是 | `cpp/policies/adversarial_rl_policy.hpp` |
 | Adv-MLP / Adv-GRU | 否 | 需在 Neural/GRU 外自行加两条规则 |
+| PSRO-BR | 是（标准 MLP） | `cpp/policies/neural_policy.hpp` + 导出的 PSRO 权重 |
+| PSRO-Meta | 否 | 需要保留 population 和采样器；不能只导出单个 MLP |
+| PSRO-Scratch-BR | 是（标准 MLP） | 同 PSRO-BR，权重换为 scratch 版 |
+| PSRO-Scratch | 否 | 需要保留从零 blue population 和采样器 |
 | Triple-majority | 否 | 需移植 Final + Resp3 + Bayes 并投票 |
 
 ## 6. 部署检查清单

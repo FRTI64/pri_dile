@@ -141,6 +141,12 @@ python3 -m ipd league --config configs/eval/e0_league.json \
   --out /tmp/e0_smoke/report.json
 ```
 
+PSRO 的 held-out red 诊断使用 `configs/psro/psro_red_check.json`（只跑
+Red-v5/v6，不跑 suite/cross-play），见 `results/psro_20261027/run_eval.sh`。
+从零 PSRO 使用 `configs/psro/psro_scratch_red_check.json`，见
+`results/psro_scratch_20261027/run_eval.sh`；`protocol red --tier dev_red`
+的结果单独写 `eval_dev_red.json`。
+
 输出包含 official / blind / validation / heldout_v2 / cross-play / red，
 以及 `min_norm_family`、CVaR、Nash/Elo/exploitability。详见
 [../research/e0-league.md](../research/e0-league.md)。

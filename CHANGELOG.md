@@ -7,6 +7,20 @@
 
 ### Added
 
+- **PSRO**：`ipd/training/psro.py`（blue-vs-red 元博弈、maximin、
+  PPO best-response oracle、population/report/checksum）；`ipd/policies/psro.py`
+  （meta-policy，每场按 blue maximin 采样）；候选 `psro` / `psro-br`；
+  `configs/psro/`；`results/psro_20261027/`；测试 `tests/test_psro.py` /
+  `tests/test_psro_policy.py`。2 轮结果：blue support 为 Final-tuned +
+  Triple-majority，oracle 未进入 support；dev_param 527.71 vs RL-Repair
+  543.35，held-out Red-v5/v6 red-minus-blue -21.4%（blue +25.4），
+  **未 promotion**。
+- **从零 PSRO**：`configs/psro/psro_scratch_20261027.json`；blue 只有
+  random init + 从零官方 base + 从零 BR，现有模型/规则只做 red；
+  候选 `psro-scratch` / `psro-scratch-br`；结果
+  `results/psro_scratch_20261027/`。dev_param 480.43 / min_norm 0.5501，
+  但 dev_red 与 held-out Red-v5/v6 **red_win 0.0**（首次翻转）；
+  **未 promotion**。
 - **Protocol v4**：977-config catalog；224 个 Axelrod 4.14.0 策略 + 15 个
   `AxelrodMix` 组合；6 个新复杂风格 family（noise_adaptive /
   reputation_grim / contrition_cycle / endgame_hunter / pattern_breaker /
@@ -44,6 +58,8 @@
 
 ### Changed
 
+- 注册候选从 20 增至 24（`psro` / `psro-br` / `psro-scratch` /
+  `psro-scratch-br`）；完整测试 240 OK。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为

@@ -199,6 +199,9 @@ python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 1 --n 256 --workers 4 \
   --no-consume --out /tmp/test_v7_smoke.json
 
+# 全 catalog 逐 config（diagnostic；不等于 field 抽样）
+python3 -m ipd matchup --candidates all --opponent-set protocol --reps 16
+
 # red
 python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \

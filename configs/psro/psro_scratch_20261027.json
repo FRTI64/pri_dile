@@ -1,0 +1,132 @@
+{
+  "schema": "ipd-psro-config-v1",
+  "name": "psro_scratch_20261027",
+  "note": "From-scratch PSRO with a scratch base policy. Blue = random init + a 30-iteration from-scratch PPO base trained only on official distributions + from-scratch PPO best responses. Existing models/rules are red/reference opponents only; no existing model is used as blue, oracle initialisation, or fallback.",
+  "rounds": 2,
+  "output_dir": "results/psro_scratch_20261027",
+  "deploy_path": "weights/psro_scratch/psro_policy.json",
+  "deploy_policy": "meta_best",
+  "target_exploitability": -1.0,
+  "cross_play": {
+    "seeds": 8,
+    "seed_base": 21261027,
+    "policy_seed_base": 21161027,
+    "workers": 20,
+    "rounds": 100,
+    "mode": "sample"
+  },
+  "meta": {
+    "iterations": 20000,
+    "seed": 20261027,
+    "uniform_mix": 0.15
+  },
+  "oracle": {
+    "init_weights": "weights/psro_scratch/base_checkpoint.json",
+    "iterations": 20,
+    "fields_per_dist": 4,
+    "n": 64,
+    "workers": 20,
+    "lr": 0.0001,
+    "bc_kl_coef": 0.05,
+    "opponent_fraction": 0.4,
+    "opponent_penalty": 1.0,
+    "ent_coef": 0.0001,
+    "target_kl": 0.02,
+    "value_bias": 0.0,
+    "allow_probe": false,
+    "device": "auto",
+    "seed": 20263027,
+    "train_dists": ["original", "late", "grim30", "wide", "repair"],
+    "dist_weights": [1, 1, 1, 2, 2],
+    "extra_args": ["--no-value-load"]
+  },
+  "population": [
+    {
+      "name": "Scratch-Init",
+      "path": "weights/psro_scratch/init_policy.json",
+      "role": "blue",
+      "generation": 0,
+      "tags": ["scratch", "random-init"]
+    },
+    {
+      "name": "Scratch-Base",
+      "path": "weights/psro_scratch/base_policy.json",
+      "role": "blue",
+      "generation": 1,
+      "tags": ["scratch", "official-base"]
+    },
+    {
+      "name": "RL-Repair",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/rl_policy_weights_repair.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "role": "red",
+      "params": {"weights": "weights/rl_policy_weights_hard60.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/rl_policy_weights.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Adv-RL",
+      "kind": "adv-rl",
+      "role": "red",
+      "params": {"config": "configs/adversarial_rl_policy_config_aggressive.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "role": "red"
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "role": "red"
+    },
+    {
+      "name": "SelfPlay-GRU",
+      "kind": "selfplay",
+      "role": "red",
+      "params": {"weights": "weights/selfplay_gru_policy.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Blue-Meta-v2",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/blue_meta_v2.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Red-RL-v1",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/red_rl_v1.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Red-RL-v3",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/red_rl_v3.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Red-RL-v4",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/red_rl_v4.json",
+                  "mode": "sample"}
+    }
+  ]
+}

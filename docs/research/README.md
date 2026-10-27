@@ -23,6 +23,8 @@
 | E2 | [e2-risk-ppo.md](e2-risk-ppo.md) | **No-Go**（CVaR/DRO 未过 tail Gate） |
 | P3 | [p3-red-league.md](p3-red-league.md) | red pool Go；league-lite No-Go |
 | P3 expansion | [p3-expansion.md](p3-expansion.md) | **No-Go**（Gate D FAIL） |
+| PSRO | [psro.md](psro.md) | 实现完成；`psro` / `psro-br` 实验候选；**No-Go for promotion** |
+| PSRO from scratch | [psro-scratch.md](psro-scratch.md) | 现有模型只做 red；`psro-scratch` red_win 0.0，但 dev 480.43；**No-Go** |
 | P2 C1 | [p2-c1-belief-planner.md](p2-c1-belief-planner.md) | **No-Go** |
 | P2 C2/C3 | [p2-c2c3-opponent-model.md](p2-c2c3-opponent-model.md) | **No-Go** |
 | P2 C2/C3 数据 | [p2-c2c3-excitation.md](p2-c2c3-excitation.md) | 数据层 Go；planner No-Go |

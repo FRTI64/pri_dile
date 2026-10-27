@@ -82,7 +82,9 @@ CC = 6, CD = 0, DC = 10, DD = 1
 ## 5. matchup
 
 158 类对手、10 个家族：`nice`、`forgiving`、`punitive`、`defect`、`late`、
-`random`、`wild`、`adaptive`、`plus`、`smart`。
+`random`、`wild`、`adaptive`、`plus`、`smart`。`--opponent-set protocol`
+使用 Protocol v4 全 catalog（977 configs，38 个 family），用于逐 config
+覆盖诊断，不与 158 类 legacy 表混用。
 
 输出：
 
@@ -108,6 +110,28 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `red blue` | 蓝军对 red 的均分，**越高越好** |
 | `red win` | red 胜率，越低越好 |
 | `exploitability` | 池内/red 对候选的最大可获利差 |
+
+### 6.1 PSRO 元博弈
+
+PSRO 使用 **blue × red** 矩形收益矩阵：
+
+```text
+M[i][j] = blue_i score - red_j score
+```
+
+- `blue_meta.weights` / `red_meta.weights`：blue maximin 和 red 对偶
+  maximin 混合；`red_meta.training_weights` 额外混入 uniform，仅用于
+  oracle 采样；
+- `blue_worst_case`：blue 混合在 red 列上的最小收益（越高越好）；
+- `exploitability`：`max(0, -blue_worst_case)`，即 red 对 blue 混合的
+  最大收益（越低越好）；
+- `red_meta.expected`：每个 red 对 blue 混合的收益，用于检查是否有
+  单一 exploiter 主导；
+- 元博弈 exploitability 只是有限 population 内的估计，**不能替代**
+  held-out Red-v5/v6 或 Protocol v4 red；报告时必须同时给出外部 red。
+- 符号约定：`protocol red` 的 `diff` 是 **blue - red**（正数 = blue
+  优势）；league red report 的 `diff_mean` 是 **red - blue**（负数 = blue
+  优势）。跨表比较前先确认符号，不要把两者直接相加或排名。
 
 旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2/v3 已进入 legacy。
 新候选使用 Protocol v4：`dev_param` / `dev_family` / `dev_complex` /

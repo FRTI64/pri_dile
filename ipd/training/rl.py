@@ -730,6 +730,9 @@ def main(argv=None) -> None:
     ap.add_argument("--center-rewards", action=argparse.BooleanOptionalAction,
                     default=False,
                     help="subtract the per-episode mean reward before GAE")
+    ap.add_argument("--value-bias", type=float, default=None,
+                    help="initial value-head bias (default: 5.5 for raw "
+                         "scores, 0 when --center-rewards)")
     ap.add_argument("--workers", type=int, default=24)
     ap.add_argument("--seed", type=int, default=20261030)
     ap.add_argument("--init-weights", default=weights_path("neural_policy_weights.json"),
@@ -822,8 +825,10 @@ def main(argv=None) -> None:
         torch.cuda.manual_seed_all(args.seed)
     torch.set_num_threads(1)
 
-    model = make_model(args.hidden,
-                       value_bias=0.0 if args.center_rewards else 5.5).to(device)
+    value_bias = (0.0 if args.center_rewards else 5.5)
+    if args.value_bias is not None:
+        value_bias = float(args.value_bias)
+    model = make_model(args.hidden, value_bias=value_bias).to(device)
     mean = [0.0] * N_FEATURES
     std = [1.0] * N_FEATURES
     temperature = 1.0
@@ -910,6 +915,7 @@ def main(argv=None) -> None:
         "lam": args.lam,
         "center_rewards": args.center_rewards,
         "center_advantages": args.center_advantages,
+        "value_bias": value_bias,
         "safe": safe,
         "init_weights": None if args.from_scratch else args.init_weights,
         "feature_version": FEATURE_VERSION,

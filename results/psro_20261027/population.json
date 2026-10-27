@@ -1,0 +1,192 @@
+{
+  "schema": "ipd-psro-population-v1",
+  "entries": [
+    {
+      "name": "RL-Repair",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/rl_policy_weights_repair.json",
+          "mode": "sample"
+        }
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "entry": {
+        "kind": "rl-hard60",
+        "params": {
+          "weights": "weights/rl_policy_weights_hard60.json",
+          "mode": "sample"
+        }
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "RL-PPO",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/rl_policy_weights.json",
+          "mode": "sample"
+        }
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Adv-RL",
+      "entry": {
+        "kind": "adv-rl",
+        "params": {
+          "config": "configs/adversarial_rl_policy_config_aggressive.json",
+          "mode": "sample"
+        }
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Final-tuned",
+      "entry": {
+        "kind": "final-tuned"
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Triple-majority",
+      "entry": {
+        "kind": "triple-majority"
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "SelfPlay-GRU",
+      "entry": {
+        "kind": "selfplay",
+        "params": {
+          "weights": "weights/selfplay_gru_policy.json",
+          "mode": "sample"
+        }
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Blue-Meta-v2",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/blue_meta_v2.json",
+          "mode": "sample"
+        }
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v1",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v1.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v3",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v3.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v4",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v4.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_01",
+      "entry": {
+        "path": "results/psro_20261027/br_01.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": "rl_policy_checkpoint_repair",
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_02",
+      "entry": {
+        "path": "results/psro_20261027/br_02.json"
+      },
+      "role": "blue",
+      "generation": 2,
+      "parent": "rl_policy_checkpoint_repair",
+      "tags": []
+    }
+  ],
+  "meta": {
+    "round": 2,
+    "name": "psro_20261027",
+    "blue_weights": {
+      "RL-Repair": 0.0,
+      "RL-PPO-Hard60": 0.0,
+      "RL-PPO": 0.0,
+      "Adv-RL": 0.0,
+      "Final-tuned": 0.7251,
+      "Triple-majority": 0.2749,
+      "SelfPlay-GRU": 0.0,
+      "Blue-Meta-v2": 0.0,
+      "PSRO-BR-br_01": 0.0,
+      "PSRO-BR-br_02": 0.0
+    },
+    "red_weights": {
+      "Red-RL-v1": 0.33935,
+      "Red-RL-v3": 5e-05,
+      "Red-RL-v4": 0.6606
+    }
+  }
+}

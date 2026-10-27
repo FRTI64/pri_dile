@@ -1,0 +1,294 @@
+{
+  "round": 2,
+  "dry_run": false,
+  "before": {
+    "blue_indices": [
+      0,
+      1,
+      13
+    ],
+    "red_indices": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "blue_meta": {
+      "names": [
+        "Scratch-Init",
+        "Scratch-Base",
+        "PSRO-BR-br_01"
+      ],
+      "weights": [
+        0.6556,
+        0.0,
+        0.3444
+      ],
+      "weights_by_name": {
+        "Scratch-Init": 0.6556,
+        "Scratch-Base": 0.0,
+        "PSRO-BR-br_01": 0.3444
+      },
+      "expected": {
+        "Scratch-Init": -0.109921875,
+        "Scratch-Base": -0.8828906249999999,
+        "PSRO-BR-br_01": -0.05765625000000002
+      },
+      "value": -0.09192159374999999,
+      "worst_case": -0.107625,
+      "best_red": "SelfPlay-GRU",
+      "iterations": 20000
+    },
+    "red_meta": {
+      "names": [
+        "RL-Repair",
+        "RL-PPO-Hard60",
+        "RL-PPO",
+        "Adv-RL",
+        "Final-tuned",
+        "Triple-majority",
+        "SelfPlay-GRU",
+        "Blue-Meta-v2",
+        "Red-RL-v1",
+        "Red-RL-v3",
+        "Red-RL-v4"
+      ],
+      "weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.99825,
+        0.0,
+        0.00175,
+        0.0,
+        0.0
+      ],
+      "weights_by_name": {
+        "RL-Repair": 0.0,
+        "RL-PPO-Hard60": 0.0,
+        "RL-PPO": 0.0,
+        "Adv-RL": 0.0,
+        "Final-tuned": 0.0,
+        "Triple-majority": 0.0,
+        "SelfPlay-GRU": 0.99825,
+        "Blue-Meta-v2": 0.0,
+        "Red-RL-v1": 0.00175,
+        "Red-RL-v3": 0.0,
+        "Red-RL-v4": 0.0
+      },
+      "training_weights": [
+        0.013636363636363636,
+        0.013636363636363636,
+        0.013636363636363636,
+        0.013636363636363636,
+        0.013636363636363636,
+        0.013636363636363636,
+        0.8621488636363637,
+        0.013636363636363636,
+        0.015123863636363635,
+        0.013636363636363636,
+        0.013636363636363636
+      ],
+      "training_weights_by_name": {
+        "RL-Repair": 0.013636363636363636,
+        "RL-PPO-Hard60": 0.013636363636363636,
+        "RL-PPO": 0.013636363636363636,
+        "Adv-RL": 0.013636363636363636,
+        "Final-tuned": 0.013636363636363636,
+        "Triple-majority": 0.013636363636363636,
+        "SelfPlay-GRU": 0.8621488636363637,
+        "Blue-Meta-v2": 0.013636363636363636,
+        "Red-RL-v1": 0.015123863636363635,
+        "Red-RL-v3": 0.013636363636363636,
+        "Red-RL-v4": 0.013636363636363636
+      },
+      "expected": {
+        "RL-Repair": 0.0,
+        "RL-PPO-Hard60": 0.0,
+        "RL-PPO": 0.0,
+        "Adv-RL": 0.0,
+        "Final-tuned": 0.0,
+        "Triple-majority": 0.0,
+        "SelfPlay-GRU": 0.107625,
+        "Blue-Meta-v2": 0.0,
+        "Red-RL-v1": -8.865750000000006,
+        "Red-RL-v3": -67.84287499999999,
+        "Red-RL-v4": -121.477375
+      },
+      "value": 0.0919268203125,
+      "worst_case": 0.05765625000000002,
+      "best_blue": "PSRO-BR-br_01",
+      "iterations": 20000
+    },
+    "exploitability": 0.107625,
+    "blue_worst_case": -0.107625,
+    "red_exploitability": 0.0,
+    "best_red": "SelfPlay-GRU",
+    "best_blue": "PSRO-BR-br_01",
+    "uniform_mix": 0.15
+  },
+  "after": {
+    "blue_indices": [
+      0,
+      1,
+      13,
+      14
+    ],
+    "red_indices": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "blue_meta": {
+      "names": [
+        "Scratch-Init",
+        "Scratch-Base",
+        "PSRO-BR-br_01",
+        "PSRO-BR-br_02"
+      ],
+      "weights": [
+        0.0,
+        0.0,
+        0.0016,
+        0.9984
+      ],
+      "weights_by_name": {
+        "Scratch-Init": 0.0,
+        "Scratch-Base": 0.0,
+        "PSRO-BR-br_01": 0.0016,
+        "PSRO-BR-br_02": 0.9984
+      },
+      "expected": {
+        "Scratch-Init": -0.003140625,
+        "Scratch-Base": -0.016890625,
+        "PSRO-BR-br_01": 0.006687500000000001,
+        "PSRO-BR-br_02": 0.00740625
+      },
+      "value": 0.0074051,
+      "worst_case": 0.0,
+      "best_red": "RL-Repair",
+      "iterations": 20000
+    },
+    "red_meta": {
+      "names": [
+        "RL-Repair",
+        "RL-PPO-Hard60",
+        "RL-PPO",
+        "Adv-RL",
+        "Final-tuned",
+        "Triple-majority",
+        "SelfPlay-GRU",
+        "Blue-Meta-v2",
+        "Red-RL-v1",
+        "Red-RL-v3",
+        "Red-RL-v4"
+      ],
+      "weights": [
+        0.14175,
+        0.14605,
+        0.14135,
+        0.1417,
+        0.14495,
+        0.14155,
+        0.00185,
+        0.14075,
+        5e-05,
+        0.0,
+        0.0
+      ],
+      "weights_by_name": {
+        "RL-Repair": 0.14175,
+        "RL-PPO-Hard60": 0.14605,
+        "RL-PPO": 0.14135,
+        "Adv-RL": 0.1417,
+        "Final-tuned": 0.14495,
+        "Triple-majority": 0.14155,
+        "SelfPlay-GRU": 0.00185,
+        "Blue-Meta-v2": 0.14075,
+        "Red-RL-v1": 5e-05,
+        "Red-RL-v3": 0.0,
+        "Red-RL-v4": 0.0
+      },
+      "training_weights": [
+        0.1341238636363636,
+        0.13777886363636363,
+        0.13378386363636363,
+        0.13408136363636364,
+        0.13684386363636364,
+        0.13395386363636363,
+        0.015208863636363635,
+        0.13327386363636362,
+        0.013678863636363635,
+        0.013636363636363636,
+        0.013636363636363636
+      ],
+      "training_weights_by_name": {
+        "RL-Repair": 0.1341238636363636,
+        "RL-PPO-Hard60": 0.13777886363636363,
+        "RL-PPO": 0.13378386363636363,
+        "Adv-RL": 0.13408136363636364,
+        "Final-tuned": 0.13684386363636364,
+        "Triple-majority": 0.13395386363636363,
+        "SelfPlay-GRU": 0.015208863636363635,
+        "Blue-Meta-v2": 0.13327386363636362,
+        "Red-RL-v1": 0.013678863636363635,
+        "Red-RL-v3": 0.013636363636363636,
+        "Red-RL-v4": 0.013636363636363636
+      },
+      "expected": {
+        "RL-Repair": 0.0,
+        "RL-PPO-Hard60": 0.0,
+        "RL-PPO": 0.0,
+        "Adv-RL": 0.0,
+        "Final-tuned": 0.0,
+        "Triple-majority": 0.0,
+        "SelfPlay-GRU": -1.8715,
+        "Blue-Meta-v2": 0.0,
+        "Red-RL-v1": -78.8565,
+        "Red-RL-v3": -196.081,
+        "Red-RL-v4": -210.77049999999997
+      },
+      "value": -0.0074051,
+      "worst_case": -0.00740625,
+      "best_blue": "PSRO-BR-br_02",
+      "iterations": 20000
+    },
+    "exploitability": 0.0,
+    "blue_worst_case": 0.0,
+    "red_exploitability": 0.00740625,
+    "best_red": "RL-Repair",
+    "best_blue": "PSRO-BR-br_02",
+    "uniform_mix": 0.15
+  },
+  "entry": {
+    "name": "PSRO-BR-br_02",
+    "entry": {
+      "path": "results/psro_scratch_20261027/br_02.json"
+    },
+    "role": "blue",
+    "generation": 2,
+    "parent": "base_checkpoint",
+    "tags": []
+  },
+  "manifest": "/home/frti64/pri_dile/results/psro_scratch_20261027/oracle_manifest_02.json",
+  "init_weights": "/home/frti64/pri_dile/weights/psro_scratch/base_checkpoint.json",
+  "exploitability_delta": -0.107625
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "ipd-psro-config-v1",
+  "name": "psro_scratch_pilot_20261027",
+  "note": "From-scratch PSRO pilot (aggressive): blue = random init + from-scratch PPO best responses; all existing models/rules are red/reference opponents. 40% red, 30 iterations, score-difference reward; stopped after one round because in-population exploitability reached 0. This is the high-anti-red / low-official ablation.",
+  "rounds": 1,
+  "output_dir": "results/psro_scratch_pilot_20261027",
+  "deploy_path": "weights/psro_scratch_pilot/psro_policy.json",
+  "deploy_policy": "last",
+  "cross_play": {
+    "seeds": 8,
+    "seed_base": 21261027,
+    "policy_seed_base": 21161027,
+    "workers": 20,
+    "rounds": 100,
+    "mode": "sample"
+  },
+  "meta": {
+    "iterations": 20000,
+    "seed": 20261027,
+    "uniform_mix": 0.15
+  },
+  "oracle": {
+    "init_weights": null,
+    "iterations": 30,
+    "fields_per_dist": 3,
+    "n": 64,
+    "workers": 20,
+    "lr": 0.0003,
+    "bc_kl_coef": 0.0,
+    "opponent_fraction": 0.4,
+    "opponent_penalty": 1.0,
+    "ent_coef": 0.001,
+    "target_kl": 0.03,
+    "value_bias": 0.0,
+    "allow_probe": false,
+    "device": "auto",
+    "seed": 20262027,
+    "train_dists": ["original", "late", "grim30", "wide", "repair"],
+    "dist_weights": [1, 1, 1, 2, 2]
+  },
+  "population": [
+    {
+      "name": "Scratch-Init",
+      "path": "weights/psro_scratch/init_policy.json",
+      "role": "blue",
+      "generation": 0,
+      "tags": ["scratch", "random-init"]
+    },
+    {
+      "name": "RL-Repair",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/rl_policy_weights_repair.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "role": "red",
+      "params": {"weights": "weights/rl_policy_weights_hard60.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/rl_policy_weights.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Adv-RL",
+      "kind": "adv-rl",
+      "role": "red",
+      "params": {"config": "configs/adversarial_rl_policy_config_aggressive.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "role": "red"
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "role": "red"
+    },
+    {
+      "name": "SelfPlay-GRU",
+      "kind": "selfplay",
+      "role": "red",
+      "params": {"weights": "weights/selfplay_gru_policy.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Blue-Meta-v2",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/blue_meta_v2.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Red-RL-v1",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/red_rl_v1.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Red-RL-v3",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/red_rl_v3.json",
+                  "mode": "sample"}
+    },
+    {
+      "name": "Red-RL-v4",
+      "kind": "rl",
+      "role": "red",
+      "params": {"weights": "weights/red_pool/red_rl_v4.json",
+                  "mode": "sample"}
+    }
+  ]
+}

@@ -24,8 +24,8 @@
 ## 当前状态
 
 - 最近提交：`git log -1`（Protocol v4 Axelrod/scale；baseline 未运行）。
-- 工作区在文档重组提交后应为 clean；最近完整测试为 v3 的 **204 tests**，
-  v4 改动后未运行；`python3 -m ipd list-policies` 为 **20 个注册候选**。
+- 最近完整测试：**240 tests OK**；`python3 -m ipd list-policies` 为
+  **24 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Repair（`rl-repair`）是当前最佳候选**，但未 promotion：
@@ -38,6 +38,13 @@
 - `test_v7` / `test_red` **永久锁定**（`consume_test=false`），CLI 无覆盖
   开关；所有 test 运行都是 provisional，不写 usage ledger。
 - anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
+- **PSRO 已引入：** `psro`（meta-policy）/ `psro-br` 为实验候选；
+  PSRO-Meta 在 held-out Red-v5/v6 上 red diff -21.4%，但 dev_param
+  527.71 vs 543.35，未 promotion。详见 `docs/research/psro.md`。
+- **从零 PSRO：** `psro-scratch` / `psro-scratch-br`；blue 只有
+  random/scratch base/BR，已有模型只做 red；dev 480.43，但
+  dev_red / Red-v5/v6 red_win 0.0；未 promotion。详见
+  `docs/research/psro-scratch.md`。
 
 ### 头部候选（legacy v3 baseline，299 人 / 20 / 40 fields）
 
@@ -63,6 +70,16 @@ legacy，不能与新表混用。
 - **P3：red pool Go；league-lite / expansion No-Go。** league-lite E4
   -12.8%；expansion held-out exploitability 只 -5.9%，Gate D FAIL；E4 red
   仍 100% 击败。
+- **PSRO：实现完成；No-Go for promotion。** blue maximin 选
+  Final-tuned + Triple-majority；两轮 PPO oracle 未进入 support；
+  held-out red diff -21.4%，但 dev 掉约 15.6、family guardrail 失败。
+  不要重复同一 2 轮配置；下一步需要更强 oracle 或 red oracle
+  （double oracle）。
+- **从零 PSRO：No-Go for promotion；anti-exploitation 首次成功。**
+  `psro-scratch` dev 480.43、min_norm 0.55，但 dev_red / Red-v5/v6
+  red_win 0.0；Scratch-Base 528.99 但 red_win 1.0。下一步不要重复
+  同一 fine-tune；应做约束/多目标 oracle（official family floor +
+  red objective）或在新 held-out red 上复核。
 - **P2 C1/C2/C3：offline No-Go。** 包括 belief planner、binary gate、
   excitation/counterfactual、three-way MoE、repeated calibration / EV probe。
   不要继续扫 C3 threshold 或 planner horizon。
@@ -84,8 +101,10 @@ legacy，不能与新表混用。
    - 教师：RL-Repair / A60 / Adv-RL / SelfPlay / 规则策略；
    - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune；
    - 报告 per-family、min_norm、CVaR、held-out red，而不只看官方均值。
-3. **P3 anti-exploitation（仅在有新 held-out red 时）**
-   - 之前的 red pool / PSRO-lite 都未过 Gate D；不要复读相同实验。
+3. **P3 / PSRO anti-exploitation（仅在有新 held-out red 时）**
+   - 之前的 red pool / PSRO-lite / 完整 PSRO 都未过 Gate D；不要复读相同实验。
+   - 若继续 PSRO，只做更强 blue oracle（更多迭代/规则初始化）或加入 red
+     oracle（double oracle）；不要重复当前 2 轮配置。
 4. **E9 容量/特征 ablation（可选，低优先级）**
    - 85→128→64 vs 85→64→32，同 init/seed/data；
    - 或一次只加一组新特征（response gap / phase / first-D timing）；

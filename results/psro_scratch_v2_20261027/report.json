@@ -1,0 +1,1098 @@
+{
+  "schema": "ipd-psro-report-v1",
+  "name": "psro_scratch_v2_20261027",
+  "created": "2026-10-27T20:48:56",
+  "seconds": 540.55,
+  "config": "/home/frti64/pri_dile/configs/psro/psro_scratch_v2_20261027.json",
+  "config_sha256": "16a54a4066aa1a32b31312c3a8e6674b5d287919ce8aec81c0154851c38f5679",
+  "population": [
+    {
+      "name": "Scratch-Init",
+      "entry": {
+        "path": "weights/psro_scratch/init_policy.json"
+      },
+      "role": "blue",
+      "generation": 0,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "random-init"
+      ]
+    },
+    {
+      "name": "Scratch-Base",
+      "entry": {
+        "path": "weights/psro_scratch/base_policy.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": null,
+      "tags": [
+        "scratch",
+        "official-base"
+      ]
+    },
+    {
+      "name": "Red-RL-v1",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v1.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v3",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v3.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "Red-RL-v4",
+      "entry": {
+        "kind": "rl",
+        "params": {
+          "weights": "weights/red_pool/red_rl_v4.json",
+          "mode": "sample"
+        }
+      },
+      "role": "red",
+      "generation": 0,
+      "parent": null,
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_01",
+      "entry": {
+        "path": "results/psro_scratch_v2_20261027/br_01.json"
+      },
+      "role": "blue",
+      "generation": 1,
+      "parent": "base_checkpoint",
+      "tags": []
+    },
+    {
+      "name": "PSRO-BR-br_02",
+      "entry": {
+        "path": "results/psro_scratch_v2_20261027/br_02.json"
+      },
+      "role": "blue",
+      "generation": 2,
+      "parent": "base_checkpoint",
+      "tags": []
+    }
+  ],
+  "initial": {
+    "names": [
+      "Scratch-Init",
+      "Scratch-Base",
+      "Red-RL-v1",
+      "Red-RL-v3",
+      "Red-RL-v4"
+    ],
+    "roles": [
+      "blue",
+      "blue",
+      "red",
+      "red",
+      "red"
+    ],
+    "blue": [
+      "Scratch-Init",
+      "Scratch-Base"
+    ],
+    "red": [
+      "Red-RL-v1",
+      "Red-RL-v3",
+      "Red-RL-v4"
+    ],
+    "matrix": [
+      [
+        0.0,
+        0.0,
+        -65.0,
+        -60.625,
+        21.875
+      ],
+      [
+        0.0,
+        0.0,
+        -312.1875,
+        -366.5625,
+        -382.5
+      ],
+      [
+        65.0,
+        312.1875,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        60.625,
+        366.5625,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        -21.875,
+        382.5,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "payoff": [
+      [
+        0.0,
+        0.0,
+        355.59375,
+        324.25,
+        412.34375
+      ],
+      [
+        0.0,
+        0.0,
+        329.625,
+        277.75,
+        337.21875
+      ],
+      [
+        420.59375,
+        641.8125,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        384.875,
+        644.3125,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        390.46875,
+        719.71875,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "opponent_payoff": [
+      [
+        0.0,
+        0.0,
+        420.59375,
+        384.875,
+        390.46875
+      ],
+      [
+        0.0,
+        0.0,
+        641.8125,
+        644.3125,
+        719.71875
+      ],
+      [
+        355.59375,
+        329.625,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        324.25,
+        277.75,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        412.34375,
+        337.21875,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "matches": [
+      [
+        0,
+        0,
+        32,
+        32,
+        32
+      ],
+      [
+        0,
+        0,
+        32,
+        32,
+        32
+      ],
+      [
+        32,
+        32,
+        0,
+        0,
+        0
+      ],
+      [
+        32,
+        32,
+        0,
+        0,
+        0
+      ],
+      [
+        32,
+        32,
+        0,
+        0,
+        0
+      ]
+    ],
+    "blue_indices": [
+      0,
+      1
+    ],
+    "red_indices": [
+      2,
+      3,
+      4
+    ],
+    "blue_meta": {
+      "names": [
+        "Scratch-Init",
+        "Scratch-Base"
+      ],
+      "weights": [
+        1.0,
+        0.0
+      ],
+      "weights_by_name": {
+        "Scratch-Init": 1.0,
+        "Scratch-Base": 0.0
+      },
+      "expected": {
+        "Scratch-Init": -64.99978125000001,
+        "Scratch-Base": -312.19021875
+      },
+      "value": -64.99978125000001,
+      "worst_case": -65.0,
+      "best_red": "Red-RL-v1",
+      "iterations": 20000
+    },
+    "red_meta": {
+      "names": [
+        "Red-RL-v1",
+        "Red-RL-v3",
+        "Red-RL-v4"
+      ],
+      "weights": [
+        0.99995,
+        5e-05,
+        0.0
+      ],
+      "weights_by_name": {
+        "Red-RL-v1": 0.99995,
+        "Red-RL-v3": 5e-05,
+        "Red-RL-v4": 0.0
+      },
+      "training_weights": [
+        0.8999575000000001,
+        0.0500425,
+        0.049999999999999996
+      ],
+      "training_weights_by_name": {
+        "Red-RL-v1": 0.8999575000000001,
+        "Red-RL-v3": 0.0500425,
+        "Red-RL-v4": 0.049999999999999996
+      },
+      "expected": {
+        "Red-RL-v1": 65.0,
+        "Red-RL-v3": 60.625,
+        "Red-RL-v4": -21.875
+      },
+      "value": 64.99978125000001,
+      "worst_case": 64.99978125000001,
+      "best_blue": "Scratch-Init",
+      "iterations": 20000
+    },
+    "exploitability": 65.0,
+    "blue_worst_case": -65.0,
+    "red_exploitability": 0.0,
+    "best_red": "Red-RL-v1",
+    "best_blue": "Scratch-Init",
+    "uniform_mix": 0.15
+  },
+  "final": {
+    "names": [
+      "Scratch-Init",
+      "Scratch-Base",
+      "Red-RL-v1",
+      "Red-RL-v3",
+      "Red-RL-v4",
+      "PSRO-BR-br_01",
+      "PSRO-BR-br_02"
+    ],
+    "roles": [
+      "blue",
+      "blue",
+      "red",
+      "red",
+      "red",
+      "blue",
+      "blue"
+    ],
+    "blue": [
+      "Scratch-Init",
+      "Scratch-Base",
+      "PSRO-BR-br_01",
+      "PSRO-BR-br_02"
+    ],
+    "red": [
+      "Red-RL-v1",
+      "Red-RL-v3",
+      "Red-RL-v4"
+    ],
+    "matrix": [
+      [
+        0.0,
+        0.0,
+        -65.0,
+        -60.625,
+        21.875,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -312.1875,
+        -366.5625,
+        -382.5,
+        0.0,
+        0.0
+      ],
+      [
+        65.0,
+        312.1875,
+        0.0,
+        0.0,
+        0.0,
+        -113.125,
+        -88.125
+      ],
+      [
+        60.625,
+        366.5625,
+        0.0,
+        0.0,
+        0.0,
+        -193.125,
+        -179.6875
+      ],
+      [
+        -21.875,
+        382.5,
+        0.0,
+        0.0,
+        0.0,
+        -207.8125,
+        -222.5
+      ],
+      [
+        0.0,
+        0.0,
+        113.125,
+        193.125,
+        207.8125,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        88.125,
+        179.6875,
+        222.5,
+        0.0,
+        0.0
+      ]
+    ],
+    "payoff": [
+      [
+        0.0,
+        0.0,
+        355.59375,
+        324.25,
+        412.34375,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        329.625,
+        277.75,
+        337.21875,
+        0.0,
+        0.0
+      ],
+      [
+        420.59375,
+        641.8125,
+        0.0,
+        0.0,
+        0.0,
+        209.65625,
+        223.34375
+      ],
+      [
+        384.875,
+        644.3125,
+        0.0,
+        0.0,
+        0.0,
+        159.78125,
+        174.53125
+      ],
+      [
+        390.46875,
+        719.71875,
+        0.0,
+        0.0,
+        0.0,
+        193.3125,
+        179.59375
+      ],
+      [
+        0.0,
+        0.0,
+        322.78125,
+        352.90625,
+        401.125,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        311.46875,
+        354.21875,
+        402.09375,
+        0.0,
+        0.0
+      ]
+    ],
+    "opponent_payoff": [
+      [
+        0.0,
+        0.0,
+        420.59375,
+        384.875,
+        390.46875,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        641.8125,
+        644.3125,
+        719.71875,
+        0.0,
+        0.0
+      ],
+      [
+        355.59375,
+        329.625,
+        0.0,
+        0.0,
+        0.0,
+        322.78125,
+        311.46875
+      ],
+      [
+        324.25,
+        277.75,
+        0.0,
+        0.0,
+        0.0,
+        352.90625,
+        354.21875
+      ],
+      [
+        412.34375,
+        337.21875,
+        0.0,
+        0.0,
+        0.0,
+        401.125,
+        402.09375
+      ],
+      [
+        0.0,
+        0.0,
+        209.65625,
+        159.78125,
+        193.3125,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        223.34375,
+        174.53125,
+        179.59375,
+        0.0,
+        0.0
+      ]
+    ],
+    "matches": [
+      [
+        0,
+        0,
+        32,
+        32,
+        32,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        32,
+        32,
+        32,
+        0,
+        0
+      ],
+      [
+        32,
+        32,
+        0,
+        0,
+        0,
+        32,
+        32
+      ],
+      [
+        32,
+        32,
+        0,
+        0,
+        0,
+        32,
+        32
+      ],
+      [
+        32,
+        32,
+        0,
+        0,
+        0,
+        32,
+        32
+      ],
+      [
+        0,
+        0,
+        32,
+        32,
+        32,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        32,
+        32,
+        32,
+        0,
+        0
+      ]
+    ],
+    "blue_indices": [
+      0,
+      1,
+      5,
+      6
+    ],
+    "red_indices": [
+      2,
+      3,
+      4
+    ],
+    "blue_meta": {
+      "names": [
+        "Scratch-Init",
+        "Scratch-Base",
+        "PSRO-BR-br_01",
+        "PSRO-BR-br_02"
+      ],
+      "weights": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "weights_by_name": {
+        "Scratch-Init": 0.0,
+        "Scratch-Base": 0.0,
+        "PSRO-BR-br_01": 1.0,
+        "PSRO-BR-br_02": 0.0
+      },
+      "expected": {
+        "Scratch-Init": -65.0,
+        "Scratch-Base": -312.1875,
+        "PSRO-BR-br_01": 113.125,
+        "PSRO-BR-br_02": 88.125
+      },
+      "value": 113.125,
+      "worst_case": 113.125,
+      "best_red": "Red-RL-v1",
+      "iterations": 20000
+    },
+    "red_meta": {
+      "names": [
+        "Red-RL-v1",
+        "Red-RL-v3",
+        "Red-RL-v4"
+      ],
+      "weights": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "weights_by_name": {
+        "Red-RL-v1": 1.0,
+        "Red-RL-v3": 0.0,
+        "Red-RL-v4": 0.0
+      },
+      "training_weights": [
+        0.9,
+        0.049999999999999996,
+        0.049999999999999996
+      ],
+      "training_weights_by_name": {
+        "Red-RL-v1": 0.9,
+        "Red-RL-v3": 0.049999999999999996,
+        "Red-RL-v4": 0.049999999999999996
+      },
+      "expected": {
+        "Red-RL-v1": -113.125,
+        "Red-RL-v3": -193.125,
+        "Red-RL-v4": -207.8125
+      },
+      "value": -113.125,
+      "worst_case": -113.125,
+      "best_blue": "PSRO-BR-br_01",
+      "iterations": 20000
+    },
+    "exploitability": 0.0,
+    "blue_worst_case": 113.125,
+    "red_exploitability": 113.125,
+    "best_red": "Red-RL-v1",
+    "best_blue": "PSRO-BR-br_01",
+    "uniform_mix": 0.15
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "dry_run": false,
+      "before": {
+        "blue_indices": [
+          0,
+          1
+        ],
+        "red_indices": [
+          2,
+          3,
+          4
+        ],
+        "blue_meta": {
+          "names": [
+            "Scratch-Init",
+            "Scratch-Base"
+          ],
+          "weights": [
+            1.0,
+            0.0
+          ],
+          "weights_by_name": {
+            "Scratch-Init": 1.0,
+            "Scratch-Base": 0.0
+          },
+          "expected": {
+            "Scratch-Init": -64.99978125000001,
+            "Scratch-Base": -312.19021875
+          },
+          "value": -64.99978125000001,
+          "worst_case": -65.0,
+          "best_red": "Red-RL-v1",
+          "iterations": 20000
+        },
+        "red_meta": {
+          "names": [
+            "Red-RL-v1",
+            "Red-RL-v3",
+            "Red-RL-v4"
+          ],
+          "weights": [
+            0.99995,
+            5e-05,
+            0.0
+          ],
+          "weights_by_name": {
+            "Red-RL-v1": 0.99995,
+            "Red-RL-v3": 5e-05,
+            "Red-RL-v4": 0.0
+          },
+          "training_weights": [
+            0.8999575000000001,
+            0.0500425,
+            0.049999999999999996
+          ],
+          "training_weights_by_name": {
+            "Red-RL-v1": 0.8999575000000001,
+            "Red-RL-v3": 0.0500425,
+            "Red-RL-v4": 0.049999999999999996
+          },
+          "expected": {
+            "Red-RL-v1": 65.0,
+            "Red-RL-v3": 60.625,
+            "Red-RL-v4": -21.875
+          },
+          "value": 64.99978125000001,
+          "worst_case": 64.99978125000001,
+          "best_blue": "Scratch-Init",
+          "iterations": 20000
+        },
+        "exploitability": 65.0,
+        "blue_worst_case": -65.0,
+        "red_exploitability": 0.0,
+        "best_red": "Red-RL-v1",
+        "best_blue": "Scratch-Init",
+        "uniform_mix": 0.15
+      },
+      "after": {
+        "blue_indices": [
+          0,
+          1,
+          5
+        ],
+        "red_indices": [
+          2,
+          3,
+          4
+        ],
+        "blue_meta": {
+          "names": [
+            "Scratch-Init",
+            "Scratch-Base",
+            "PSRO-BR-br_01"
+          ],
+          "weights": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "weights_by_name": {
+            "Scratch-Init": 0.0,
+            "Scratch-Base": 0.0,
+            "PSRO-BR-br_01": 1.0
+          },
+          "expected": {
+            "Scratch-Init": -65.0,
+            "Scratch-Base": -312.1875,
+            "PSRO-BR-br_01": 113.125
+          },
+          "value": 113.125,
+          "worst_case": 113.125,
+          "best_red": "Red-RL-v1",
+          "iterations": 20000
+        },
+        "red_meta": {
+          "names": [
+            "Red-RL-v1",
+            "Red-RL-v3",
+            "Red-RL-v4"
+          ],
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "weights_by_name": {
+            "Red-RL-v1": 1.0,
+            "Red-RL-v3": 0.0,
+            "Red-RL-v4": 0.0
+          },
+          "training_weights": [
+            0.9,
+            0.049999999999999996,
+            0.049999999999999996
+          ],
+          "training_weights_by_name": {
+            "Red-RL-v1": 0.9,
+            "Red-RL-v3": 0.049999999999999996,
+            "Red-RL-v4": 0.049999999999999996
+          },
+          "expected": {
+            "Red-RL-v1": -113.125,
+            "Red-RL-v3": -193.125,
+            "Red-RL-v4": -207.8125
+          },
+          "value": -113.125,
+          "worst_case": -113.125,
+          "best_blue": "PSRO-BR-br_01",
+          "iterations": 20000
+        },
+        "exploitability": 0.0,
+        "blue_worst_case": 113.125,
+        "red_exploitability": 113.125,
+        "best_red": "Red-RL-v1",
+        "best_blue": "PSRO-BR-br_01",
+        "uniform_mix": 0.15
+      },
+      "entry": {
+        "name": "PSRO-BR-br_01",
+        "entry": {
+          "path": "results/psro_scratch_v2_20261027/br_01.json"
+        },
+        "role": "blue",
+        "generation": 1,
+        "parent": "base_checkpoint",
+        "tags": []
+      },
+      "manifest": "/home/frti64/pri_dile/results/psro_scratch_v2_20261027/oracle_manifest_01.json",
+      "init_weights": "/home/frti64/pri_dile/weights/psro_scratch/base_checkpoint.json",
+      "exploitability_delta": -65.0
+    },
+    {
+      "round": 2,
+      "dry_run": false,
+      "before": {
+        "blue_indices": [
+          0,
+          1,
+          5
+        ],
+        "red_indices": [
+          2,
+          3,
+          4
+        ],
+        "blue_meta": {
+          "names": [
+            "Scratch-Init",
+            "Scratch-Base",
+            "PSRO-BR-br_01"
+          ],
+          "weights": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "weights_by_name": {
+            "Scratch-Init": 0.0,
+            "Scratch-Base": 0.0,
+            "PSRO-BR-br_01": 1.0
+          },
+          "expected": {
+            "Scratch-Init": -65.0,
+            "Scratch-Base": -312.1875,
+            "PSRO-BR-br_01": 113.125
+          },
+          "value": 113.125,
+          "worst_case": 113.125,
+          "best_red": "Red-RL-v1",
+          "iterations": 20000
+        },
+        "red_meta": {
+          "names": [
+            "Red-RL-v1",
+            "Red-RL-v3",
+            "Red-RL-v4"
+          ],
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "weights_by_name": {
+            "Red-RL-v1": 1.0,
+            "Red-RL-v3": 0.0,
+            "Red-RL-v4": 0.0
+          },
+          "training_weights": [
+            0.9,
+            0.049999999999999996,
+            0.049999999999999996
+          ],
+          "training_weights_by_name": {
+            "Red-RL-v1": 0.9,
+            "Red-RL-v3": 0.049999999999999996,
+            "Red-RL-v4": 0.049999999999999996
+          },
+          "expected": {
+            "Red-RL-v1": -113.125,
+            "Red-RL-v3": -193.125,
+            "Red-RL-v4": -207.8125
+          },
+          "value": -113.125,
+          "worst_case": -113.125,
+          "best_blue": "PSRO-BR-br_01",
+          "iterations": 20000
+        },
+        "exploitability": 0.0,
+        "blue_worst_case": 113.125,
+        "red_exploitability": 113.125,
+        "best_red": "Red-RL-v1",
+        "best_blue": "PSRO-BR-br_01",
+        "uniform_mix": 0.15
+      },
+      "after": {
+        "blue_indices": [
+          0,
+          1,
+          5,
+          6
+        ],
+        "red_indices": [
+          2,
+          3,
+          4
+        ],
+        "blue_meta": {
+          "names": [
+            "Scratch-Init",
+            "Scratch-Base",
+            "PSRO-BR-br_01",
+            "PSRO-BR-br_02"
+          ],
+          "weights": [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "weights_by_name": {
+            "Scratch-Init": 0.0,
+            "Scratch-Base": 0.0,
+            "PSRO-BR-br_01": 1.0,
+            "PSRO-BR-br_02": 0.0
+          },
+          "expected": {
+            "Scratch-Init": -65.0,
+            "Scratch-Base": -312.1875,
+            "PSRO-BR-br_01": 113.125,
+            "PSRO-BR-br_02": 88.125
+          },
+          "value": 113.125,
+          "worst_case": 113.125,
+          "best_red": "Red-RL-v1",
+          "iterations": 20000
+        },
+        "red_meta": {
+          "names": [
+            "Red-RL-v1",
+            "Red-RL-v3",
+            "Red-RL-v4"
+          ],
+          "weights": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "weights_by_name": {
+            "Red-RL-v1": 1.0,
+            "Red-RL-v3": 0.0,
+            "Red-RL-v4": 0.0
+          },
+          "training_weights": [
+            0.9,
+            0.049999999999999996,
+            0.049999999999999996
+          ],
+          "training_weights_by_name": {
+            "Red-RL-v1": 0.9,
+            "Red-RL-v3": 0.049999999999999996,
+            "Red-RL-v4": 0.049999999999999996
+          },
+          "expected": {
+            "Red-RL-v1": -113.125,
+            "Red-RL-v3": -193.125,
+            "Red-RL-v4": -207.8125
+          },
+          "value": -113.125,
+          "worst_case": -113.125,
+          "best_blue": "PSRO-BR-br_01",
+          "iterations": 20000
+        },
+        "exploitability": 0.0,
+        "blue_worst_case": 113.125,
+        "red_exploitability": 113.125,
+        "best_red": "Red-RL-v1",
+        "best_blue": "PSRO-BR-br_01",
+        "uniform_mix": 0.15
+      },
+      "entry": {
+        "name": "PSRO-BR-br_02",
+        "entry": {
+          "path": "results/psro_scratch_v2_20261027/br_02.json"
+        },
+        "role": "blue",
+        "generation": 2,
+        "parent": "base_checkpoint",
+        "tags": []
+      },
+      "manifest": "/home/frti64/pri_dile/results/psro_scratch_v2_20261027/oracle_manifest_02.json",
+      "init_weights": "/home/frti64/pri_dile/weights/psro_scratch/base_checkpoint.json",
+      "exploitability_delta": 0.0
+    }
+  ],
+  "deploy": {
+    "entry": "PSRO-BR-br_01",
+    "source": "/home/frti64/pri_dile/results/psro_scratch_v2_20261027/br_01.json",
+    "path": "/home/frti64/pri_dile/weights/psro_scratch_v2/psro_policy.json",
+    "sha256": "9eebe43fc8c8e1e7f36ac8a2d4d4bad5b8599e907476d139e58992c1ccb41527"
+  },
+  "dry_run": false,
+  "meta": {
+    "seeds": [
+      21361027,
+      21368946,
+      21376865,
+      21384784,
+      21392703,
+      21400622,
+      21408541,
+      21416460
+    ],
+    "match_rounds": 100,
+    "policy_seed_base": 21261027,
+    "nash_iterations": 20000,
+    "uniform_mix": 0.15,
+    "deploy_policy": "meta_best"
+  }
+}

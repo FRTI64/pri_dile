@@ -1,0 +1,133 @@
+{
+  "schema": "ipd-psro-config-v1",
+  "name": "psro_20261027",
+  "note": "Full PSRO loop: frozen blue/red population, cross-play score-difference meta-game, fictitious-play meta-strategy, PPO best-response oracle. Red-v5/v6 and Protocol v4 test tiers are not used.",
+  "rounds": 2,
+  "output_dir": "results/psro_20261027",
+  "deploy_path": "weights/psro/psro_policy.json",
+  "deploy_policy": "last",
+  "cross_play": {
+    "seeds": 8,
+    "seed_base": 21161027,
+    "policy_seed_base": 21061027,
+    "workers": 20,
+    "rounds": 100,
+    "mode": "sample"
+  },
+  "meta": {
+    "iterations": 20000,
+    "seed": 20261027,
+    "uniform_mix": 0.15
+  },
+  "oracle": {
+    "init_weights": "weights/rl_policy_checkpoint_repair.json",
+    "iterations": 12,
+    "fields_per_dist": 4,
+    "n": 64,
+    "workers": 20,
+    "lr": 0.0001,
+    "bc_kl_coef": 0.05,
+    "opponent_fraction": 0.6,
+    "opponent_penalty": 1.0,
+    "ent_coef": 0.0001,
+    "target_kl": 0.02,
+    "allow_probe": false,
+    "device": "auto",
+    "seed": 20261035,
+    "train_dists": ["original", "late", "grim30", "wide", "repair"],
+    "dist_weights": [1, 1, 1, 2, 2]
+  },
+  "population": [
+    {
+      "name": "RL-Repair",
+      "kind": "rl",
+      "role": "blue",
+      "params": {
+        "weights": "weights/rl_policy_weights_repair.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-PPO-Hard60",
+      "kind": "rl-hard60",
+      "role": "blue",
+      "params": {
+        "weights": "weights/rl_policy_weights_hard60.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "role": "blue",
+      "params": {
+        "weights": "weights/rl_policy_weights.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Adv-RL",
+      "kind": "adv-rl",
+      "role": "blue",
+      "params": {
+        "config": "configs/adversarial_rl_policy_config_aggressive.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Final-tuned",
+      "kind": "final-tuned",
+      "role": "blue"
+    },
+    {
+      "name": "Triple-majority",
+      "kind": "triple-majority",
+      "role": "blue"
+    },
+    {
+      "name": "SelfPlay-GRU",
+      "kind": "selfplay",
+      "role": "blue",
+      "params": {
+        "weights": "weights/selfplay_gru_policy.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Blue-Meta-v2",
+      "kind": "rl",
+      "role": "blue",
+      "params": {
+        "weights": "weights/red_pool/blue_meta_v2.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v1",
+      "kind": "rl",
+      "role": "red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v1.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v3",
+      "kind": "rl",
+      "role": "red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v3.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-RL-v4",
+      "kind": "rl",
+      "role": "red",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v4.json",
+        "mode": "sample"
+      }
+    }
+  ]
+}

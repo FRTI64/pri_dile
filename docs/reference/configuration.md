@@ -27,6 +27,7 @@ configs/
 ├── splits/protocol_v4/manifest.json         Protocol v4 catalog manifest
 ├── splits/protocol_v4/test_policy.json      test 消费锁定策略（consume_test=false）
 ├── league/                                  P3 red pool blue manifests
+├── psro/                                    PSRO population / oracle / red check
 ├── selfplay/                                full / smoke / BC / E4 red
 └── retrain_20261025/                        复训实验配置
 ```
@@ -82,6 +83,49 @@ cross-play、red 和 Nash 预算。关键字段：
 }
 ```
 
+### PSRO 配置
+
+`configs/psro/psro_20261027.json` 定义 blue/red population、cross-play
+seed、元博弈 solver、PPO oracle 和输出路径：
+
+```json
+{
+  "name": "psro_20261027",
+  "rounds": 2,
+  "output_dir": "results/psro_20261027",
+  "deploy_path": "weights/psro/psro_policy.json",
+  "deploy_policy": "last",
+  "cross_play": {"seeds": 8, "seed_base": 21161027,
+                  "policy_seed_base": 21061027, "workers": 20, "rounds": 100},
+  "meta": {"iterations": 20000, "seed": 20261027, "uniform_mix": 0.15},
+  "oracle": {"init_weights": "weights/rl_policy_checkpoint_repair.json",
+              "iterations": 12, "fields_per_dist": 4, "n": 64,
+              "opponent_fraction": 0.6, "opponent_penalty": 1.0},
+  "population": [
+    {"name": "Final-tuned", "kind": "final-tuned", "role": "blue"},
+    {"name": "Red-RL-v4", "kind": "rl", "role": "red",
+     "params": {"weights": "weights/red_pool/red_rl_v4.json"}}
+  ]
+}
+```
+
+- `role=blue` 是待部署策略；`role=red` 是 exploiter；
+- `meta.uniform_mix` 只混合 red 训练权重，不用于 evaluation；
+- `oracle` 复用 `train rl --opponent-pool`；`--no-validation` 是 PSRO 的
+  默认语义（best response，而不是验证选模）；
+- `deploy_policy=last|meta_best` 选择最后一轮 BR 或 blue 期望最高的成员；
+- `psro` 候选读取 `weights/psro/meta_strategy.json`，每场按 blue maximin
+  采样一个成员。
+- 从零配置 `configs/psro/psro_scratch_20261027.json`：
+  blue 只有 `Scratch-Init`（随机 MLP）、`Scratch-Base`（从零官方 PPO）
+  和 `PSRO-BR-*`；已有模型/规则全部是 `role=red`。oracle 的
+  `init_weights` 是 scratch base checkpoint，不是已有候选。
+  `psro-scratch` / `psro-scratch-br` 分别读取
+  `weights/psro_scratch/meta_strategy.json` 和
+  `weights/psro_scratch/psro_policy.json`。
+- `psro_scratch_pilot_20261027.json`（激进 pilot）和
+  `psro_scratch_v2/v3` 是 ablation；不要和主配置混用。
+
 ## 3. weights/
 
 | 文件 | 内容 |
@@ -94,6 +138,12 @@ cross-play、red 和 Nash 预算。关键字段：
 | `rl_policy_weights_repair.json` | RL-Repair |
 | `rl_policy_weights_bc.json` | Adv-RL base |
 | `selfplay_gru_policy.json` | 21 维 SelfPlay-GRU |
+| `psro/meta_strategy.json` | PSRO reference blue/red population + 元策略 |
+| `psro/psro_policy.json` | reference PSRO best response（`psro-br`） |
+| `psro_scratch/init_policy.json` | 从零随机初始策略 |
+| `psro_scratch/base_policy.json` / `_checkpoint.json` | 从零官方 PPO base |
+| `psro_scratch/meta_strategy.json` | 从零 PSRO blue/red population + 元策略 |
+| `psro_scratch/psro_policy.json` | 从零 PSRO 最终 best response |
 | `opponent_*` / `red_pool/` | C2/C3、P3 研究 artifact |
 | `retrain_20261025/` / `hard2_20261026/` | 复训实验权重 |
 
@@ -110,6 +160,8 @@ results/
 ├── robust_<date>/                E1
 ├── risk_<date>/                  E2
 ├── red_pool_<date>/ p3_league_<date>/
+├── psro_<date>/                  PSRO 元博弈 + oracle + 诊断
+├── psro_scratch_<date>/          从零 PSRO + scratch base + 诊断
 ├── p2_*_<date>/
 ├── selfplay_* / sweep_<date> /
 └── <experiment>/README.md        实验报告
@@ -126,4 +178,4 @@ results/
 - Axelrod：`pip install -r requirements-axelrod.txt`（`axelrod==4.14.0`）；
 - 可选安装：`pip install -e '.[train]'` / `.[axelrod]`。
 
-最近完整测试为 v3 的 204 tests；v4 改动后未运行测试（按要求）。
+最近完整测试：**240 tests OK**（本轮全量运行）。

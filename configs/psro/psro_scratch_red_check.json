@@ -1,0 +1,27 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "psro_scratch_red_check",
+  "note": "Diagnostic only: from-scratch PSRO variants vs held-out Red-v5/v6. Not a selection run and not a Gate D evaluation.",
+  "baseline": "RL-Repair",
+  "defaults": {"workers": 20, "rounds": 100, "red_seeds": 10},
+  "candidates": [
+    {"name": "PSRO-Scratch", "kind": "psro-scratch"},
+    {"name": "PSRO-Scratch-BR", "kind": "psro-scratch-br"},
+    {"name": "Scratch-Init", "kind": "rl",
+     "params": {"weights": "weights/psro_scratch/init_policy.json", "mode": "sample"}},
+    {"name": "Scratch-Base", "kind": "rl",
+     "params": {"weights": "weights/psro_scratch/base_policy.json", "mode": "sample"}},
+    {"name": "RL-Repair", "kind": "rl-repair"},
+    {"name": "Final-tuned", "kind": "final-tuned"},
+    {"name": "Triple-majority", "kind": "triple-majority"}
+  ],
+  "red_policies": [
+    {"name": "Red-v5-heldout", "kind": "rl",
+     "params": {"weights": "weights/red_pool/red_rl_v5_heldout.json",
+                 "mode": "sample"}},
+    {"name": "Red-v6-heldout", "kind": "rl",
+     "params": {"weights": "weights/red_pool/red_rl_v6_heldout.json",
+                 "mode": "sample"}}
+  ],
+  "red": {"seeds": 10, "seed_base": 20561026, "policy_seed_base": 20361026}
+}
