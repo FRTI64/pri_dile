@@ -8,20 +8,25 @@
 
 - `HANDOVER.md`
 - `docs/ipd-long-term-improvement-plan.md`
+- `results/p3_league_20261026/README.md`
+- `docs/p3-expansion-plan.md`
 - `docs/AXELROD_OPPONENTS.md`
 - `results/axelrod_20261027/README.md`
 - `docs/p2-c3-threeway-moe.md`
+- `results/p2_threeway_moe_20261026/README.md`
 - `docs/p2-c3-repeated-calib.md`
 - `results/p2_repeated_calib_20261026/README.md`
 - `docs/p2-c2c3-excitation.md`
+- `results/p2_excitation_20261026/README.md`
 - `docs/p2-c2c3-opponent-model.md`
 - `docs/p2-c1-belief-planner.md`
 
 ## 当前状态
 
-- 最新提交：`e7475e0 P2 C3 repeated counterfactual calibration (No-Go)`。
-- **工作区当前是 dirty**：Axelrod 可选对手库已实现但**尚未提交**；
-  不要丢弃或覆盖这些改动。当前 `python3 -m ipd test` 为 **183 tests OK**。
+- 最新研究提交：`973de9c Add optional Axelrod opponent bank`。
+- **工作区在交班提交后应为 clean**：Axelrod 可选对手库已提交；
+  `HANDOVER.md` 顶部状态 note 与本 prompt 一起提交。
+  当前 `python3 -m ipd test` 为 **183 tests OK**。
 - 主权重未替换：
   `weights/rl_policy_weights.json` sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`；
@@ -53,10 +58,16 @@
   final +3.91，official/blind 不降；注册 `rl-repair`，未覆盖主权重。
 - **E2：No-Go。** CVaR/DRO 没有把 heldout CVaR 抬起；不注册 `rl-risk`/`rl-dro`。
 - **P3 red pool：第一里程碑 Go。** Red-RL-v1 在全部 held-out blue 上强于
-  E4 red；但 **P3 league-lite / expansion 均 No-Go**，Gate D 未达 -20%，
-  E4 red 仍 100% 击败当前 blue。不要继续盲调 red fraction。
-- **P2 C1：No-Go。** belief planner 激进/保守版都没有达到 Gate C；诊断是
-  opponent model discrimination，而不是 planning horizon。
+  E4 red；但 **P3 league-lite / expansion 均 No-Go**：
+  league-lite E4 -12.8%；expansion 用 v1-v6 red + maximin 权重，held-out
+  exploitability 只 390.33→367.33（**-5.9%**），official +0.24 通过但
+  `validation:extort` -3.21%，Gate D FAIL。E4 red 仍 100% 击败当前 blue。
+  不要继续盲调 red fraction / red 数量。
+- **P2 C1：No-Go（fair RNG）。** belief planner 激进版 validation -12.11 /
+  heldout_v2 -16.15；保守版 validation -2.19 / heldout_v2 +2.06，
+  held-out red E4 +0.35、v5 0.00、v6 -0.10。早期共享 base RNG 的
+  E4 +6.6 是伪影，已修正。诊断是 opponent model discrimination / excitation，
+  不是 planning horizon。
 - **P2 C2/C3 binary gate：No-Go。** heldout_v2 gate 70.6%，false positives
   全部来自 adaptive/noisy；gated conservative +1.20，红色无变化。
 - **C2/C3 exploratory/counterfactual 数据：数据层 Go / planner No-Go。**
@@ -72,42 +83,24 @@
 - **C3 EV probe screen：No-Go。** 一次性 belief planner override 最好
   1-seed +1.29，3-seed -5.22；无条件 early probe -10.7~-20.8。
   不要继续调 C3 threshold；需要显式 value-of-information 或更好的后验/特征。
-- **Axelrod 可选对手库（未提交）**：243 普通 / 224 fast / 1 cheating
-  (Darwin)；默认依赖不变，`axelrod==4.14.0` 仅在 `requirements-axelrod.txt`
-  或 `pip install -e '.[axelrod]'` 时安装。224 fast × 100 回合：Triple 560.95、
-  Resp3 555.37、Final 555.27、Bayes 546.25（不能与四分布 554.x 直接比较）。
+- **Axelrod 可选对手库（已提交 973de9c）**：243 普通 / 224 fast / 1
+  cheating (Darwin)；默认依赖不变，`axelrod==4.14.0` 仅在
+  `requirements-axelrod.txt` 或 `pip install -e '.[axelrod]'` 时安装。
+  224 fast × 100 回合：Triple 560.95、Resp3 555.37、Final 555.27、
+  Bayes 546.25（不能与四分布 554.x 直接比较）。
 
 ## 任务（下一 session）
 
-### 1. 先 review + commit Axelrod 改动（优先级最高）
+### 1. Axelrod 已提交，保留为可选评估
 
-当前未提交文件：
+`973de9c` 已提交 Axelrod 243/224/cheating 对手库和 smoke 结果；默认四分布、
+85/158 对手集合、主权重不变。不要把它混入常规 CI 或主线选模。
 
-```text
-M HANDOVER.md README.md docs/IPD_README.md docs/STRUCTURE.md
-M ipd/core/opponents/__init__.py ipd/core/simulator.py
-M ipd/evaluation/benchmark.py common.py distributions.py matchup.py split_config.py
-M pyproject.toml
-?? docs/AXELROD_OPPONENTS.md
-?? ipd/core/opponents/axelrod_bank.py
-?? requirements-axelrod.txt
-?? results/axelrod_20261027/
-?? tests/test_axelrod_opponents.py
-```
-
-Review 重点：
-
-- 默认 `import ipd` / 四分布 benchmark 不因 Axelrod 缺失而失败；适配器必须
-  lazy import。
-- 默认四分布、85/158 对手集合、主权重完全不变；只新增
-  `--dists axelrod|axelrod-fast|axelrod-cheating` /
-  `--opponent-set axelrod*`。
-- `set_rounds` hook、随机 seed/reset、Meta history、Darwin class genome
-  顺序相关等测试是否覆盖。
-- 用 `python3 -m ipd test` 确认 183 tests；再跑一次 core 四分布 benchmark
-  对比提交前结果。
-- 如果确认无误，**单独提交 Axelrod**，并把 `HANDOVER.md` 顶部
-  “改动尚未提交” 状态改掉。不要把它和下一轮研究混在一个 commit。
+可选后续：
+- 用 `axelrod-fast` 评估 RL-Repair / A60 / Adv-RL / SelfPlay（目前只有
+  core 规则策略的 smoke 结果）；
+- 结果只作为额外 validation / 诊断，不要当 final test；
+- 完整 `axelrod`（243）很慢，日常用 `axelrod-fast`（224）。
 
 ### 2. 再决定主线
 
@@ -124,6 +117,11 @@ P2 C1/C2/C3 已经连续 No-Go，**不要继续调 C3 threshold / planner horizo
    - Gate C 之外也要报告 per-family、min_norm、CVaR、held-out red。
 3. **P3 anti-exploitation（仅在有新 held-out red 时）**
    - 之前的 red pool / PSRO-lite 都未过 Gate D；不要复读相同实验。
+4. **E9 容量/特征 ablation（可选，低优先级）**
+   - 85→128→64 vs 85→64→32，同 init/seed/data；
+   - 或一次只加一组新特征（response gap / phase / first-D timing），
+     不要只重复 last moves；
+   - 预期收益小；先看 heldout_v2 +3 或 min_norm +0.02。
 
 ### 3. 数据/评估纪律
 
@@ -140,9 +138,13 @@ P2 C1/C2/C3 已经连续 No-Go，**不要继续调 C3 threshold / planner horizo
 - 不只用官方四分布选模；必须报告 per-family、min_norm、CVaR、held-out red。
 - 保留 RL-PPO / A60 / RL-Repair 作为 fallback；**未确认前不要覆盖**
   `weights/rl_policy_weights.json`。
-- **不要丢弃当前未提交的 Axelrod 改动**；它是可选功能，不是主线权重。
+- **Axelrod 已提交（973de9c），不要 revert 或覆盖**；它是可选功能，不是
+  主线权重。
 - Axelrod 是重量级可选依赖（torch/scipy/pandas/dask）；默认安装保持零第三方
   依赖，版本固定 `4.14.0`。
+- **公平 RNG 是硬要求**：planner/opponent-model 评估时，base 与 planner
+  必须使用独立、同 seed 的 policy 实例；C1 早期共享 RNG 曾产生 E4 +6.6
+  的伪影，已修正。
 - `.pt` checkpoint 被 `*.pt` 忽略；提交代码、JSON 权重和报告即可。
 - 结束时更新 README/HANDOVER、checksum、Go/No-Go 结论，并提交。
 
@@ -150,14 +152,13 @@ P2 C1/C2/C3 已经连续 No-Go，**不要继续调 C3 threshold / planner horizo
 
 ```bash
 cd /home/frti64/pri_dile
-git status
-git diff --stat
-python3 -m ipd test          # 应为 183 tests OK
+git status                    # 交班提交后应为 clean
+python3 -m ipd test           # 183 tests OK
 python3 -m ipd benchmark --candidates core --fields 8 --workers 8
 ```
 
-先确认 Axelrod 改动不改变默认口径，再单独提交。之后根据用户的优先级选择
-“比赛提交硬化”或 E3；不要回到 C3 threshold sweep。
+确认默认口径和 183 tests；之后根据用户优先级选择“比赛提交硬化”、E3，
+或可选的 E9 容量/特征 ablation。不要回到 C3 threshold sweep。
 
 ## 复现命令
 
@@ -208,6 +209,8 @@ PYTHONPATH=. .venv/bin/python \
 ## 已提交 commits
 
 ```text
+9a4c931 Update handover prompt after Axelrod and P2 C3
+973de9c Add optional Axelrod opponent bank (243/224/cheating)
 e7475e0 P2 C3 repeated counterfactual calibration (No-Go)
 601426c P2 C3 three-way gate + MoE (No-Go)
 b19d4f9 P2 C2/C3 exploratory/counterfactual data (data Go / planner No-Go)

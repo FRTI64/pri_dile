@@ -2,8 +2,9 @@
 
 > **交接状态（2026-10-27）**：新增可选 Axelrod 对手库（243 普通 / 224 fast /
 > Darwin cheating）；默认四分布、85/158 对手集合和主权重均未改变。
-> `python3 -m ipd test` 当前 183 tests OK。改动尚未提交，提交前先看
-> `docs/AXELROD_OPPONENTS.md` 和 `results/axelrod_20261027/README.md`。
+> Axelrod 工作已提交（`973de9c`）。`python3 -m ipd test` 当前 183 tests OK。
+> 提交前先看 `docs/AXELROD_OPPONENTS.md` 和
+> `results/axelrod_20261027/README.md`。
 
 ## 目录结构
 
