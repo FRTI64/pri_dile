@@ -28,6 +28,10 @@ from pathlib import Path
 from typing import Sequence
 
 from ..core.opponents import TYPE_BANK, TYPE_BY_NAME
+from ..core.opponents.axelrod_bank import (
+    axelrod_by_name, axelrod_cheating_by_name, axelrod_cheating_specs,
+    axelrod_specs, require_axelrod,
+)
 from ..core.simulator import play_match
 from ..paths import result_path
 from ..policies.opponents import ALL_BY_NAME, ALL_SPECS
@@ -42,9 +46,18 @@ def type_task(task: dict) -> list[tuple[str, str, str, float, float, float, int]
 
     type_name = task["type"]
     opponent_set = task.get("opponent_set", "core")
-    spec = (ALL_BY_NAME if opponent_set == "all"
-            else TYPE_BY_NAME)[type_name]
+    if opponent_set == "all":
+        spec = ALL_BY_NAME[type_name]
+    elif opponent_set == "axelrod":
+        spec = axelrod_by_name(include_long_run=True)[type_name]
+    elif opponent_set == "axelrod-fast":
+        spec = axelrod_by_name(include_long_run=False)[type_name]
+    elif opponent_set == "axelrod-cheating":
+        spec = axelrod_cheating_by_name()[type_name]
+    else:
+        spec = TYPE_BY_NAME[type_name]
     reps = int(task["reps"])
+    rounds = int(task.get("rounds", 100))
     base_seed = int(task["seed"])
     specs = [CandidateSpec.from_dict(x) for x in task["candidates"]]
     rows = []
@@ -55,7 +68,7 @@ def type_task(task: dict) -> list[tuple[str, str, str, float, float, float, int]
             opponent = spec.factory(random.Random(opp_seed))
             opponent.name = type_name
             candidate = cand_spec.build()
-            result = play_match(candidate, opponent)
+            result = play_match(candidate, opponent, rounds=rounds)
             rows.append((cand_spec.name, type_name, spec.family,
                          result.score_a, result.score_b,
                          result.score_a - result.score_b, 1))
@@ -63,6 +76,12 @@ def type_task(task: dict) -> list[tuple[str, str, str, float, float, float, int]
 
 
 def _selected_specs(opponent_set: str):
+    if opponent_set == "axelrod":
+        return axelrod_specs(include_long_run=True)
+    if opponent_set == "axelrod-fast":
+        return axelrod_specs(include_long_run=False)
+    if opponent_set == "axelrod-cheating":
+        return axelrod_cheating_specs()
     return list(ALL_SPECS if opponent_set == "all" else TYPE_BANK)
 
 
@@ -184,9 +203,17 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--only", default=None,
                     help="comma-separated candidate names/kinds to keep from "
                          "--spec-config")
-    ap.add_argument("--opponent-set", choices=("core", "all"), default="core",
-                    help="core = 85-type bank, all = 158-type full bank")
+    ap.add_argument("--opponent-set",
+                    choices=("core", "all", "axelrod", "axelrod-fast",
+                             "axelrod-cheating"),
+                    default="core",
+                    help="core = 85-type bank, all = 158-type full bank, "
+                         "axelrod = 243 ordinary Axelrod strategies, "
+                         "axelrod-fast = 224 excluding long-running ones, "
+                         "axelrod-cheating = cheating strategies "
+                         "(4.14.0: Darwin)")
     ap.add_argument("--reps", type=int, default=16)
+    ap.add_argument("--rounds", type=int, default=100)
     ap.add_argument("--workers", type=int, default=24)
     ap.add_argument("--seed", type=int, default=20261024)
     ap.add_argument("--out", default=result_path("matchup_results.csv"),
@@ -212,8 +239,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         config, specs = _specs_from_config(args.spec_config, args.only)
     else:
         specs = candidate_specs(args.candidates, default=BASE_NAMES)
+    if args.opponent_set.startswith("axelrod"):
+        try:
+            require_axelrod()
+        except RuntimeError as exc:
+            ap.error(str(exc))
     opponent_specs = _selected_specs(args.opponent_set)
     tasks = [{"type": spec.name, "reps": args.reps, "seed": args.seed,
+              "rounds": args.rounds,
               "candidates": [x.to_dict() for x in specs],
               "opponent_set": args.opponent_set}
              for spec in opponent_specs]
@@ -290,6 +323,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "seconds": round(time.time() - started, 2),
         "seed": args.seed,
         "reps": args.reps,
+        "rounds": args.rounds,
         "opponent_set": args.opponent_set,
         "spec_config": str(config.path) if config else None,
         "candidates": [spec.to_dict() for spec in specs],

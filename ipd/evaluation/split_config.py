@@ -15,7 +15,7 @@ from typing import Any, Iterable, Mapping
 
 from ..paths import ROOT
 from ..policies.registry import CandidateSpec
-from .distributions import DISTS
+from .distributions import DISTS, EVAL_DISTS
 
 BENCHMARK_DEFAULTS = {
     "fields": 20,
@@ -56,7 +56,7 @@ class EvalParams:
             rounds=int(data.get("rounds", 100)),
             dists=dists,
         )
-        unknown = [d for d in params.dists if d not in DISTS]
+        unknown = [d for d in params.dists if d not in EVAL_DISTS]
         if unknown:
             raise ValueError(f"unknown distributions: {unknown}")
         if params.fields <= 0 or params.n <= 0:

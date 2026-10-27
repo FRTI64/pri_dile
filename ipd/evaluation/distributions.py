@@ -10,6 +10,9 @@ from typing import Sequence
 
 from ..core.opponents import DelayedTFT, GenerousTFT, Joss, LateDefector
 from ..core.opponents import NoisyTFT, RandomP
+from ..core.opponents.axelrod_bank import (
+    sample_axelrod_cheating_field, sample_axelrod_field,
+)
 from ..core.opponents.bank import (
     TYPE_BANK, TYPE_BY_NAME, effective_weights, sample_mixed_population,
     sample_mixture, sample_population,
@@ -19,6 +22,13 @@ from ..policies.opponents import ALL_SPECS, SMART, TUNED_SMART
 
 N_PLAYERS = 299
 DISTS = ("original", "late", "grim30", "wide")
+# Optional opponent banks backed by the Axelrod library.  ``axelrod`` is the
+# full 243-strategy ordinary bank; ``axelrod-fast`` removes the 19 strategies
+# classified as long-running (mostly Meta players that simulate the bank);
+# ``axelrod-cheating`` contains strategies Axelrod marks as not obeying its
+# tournament rules (4.14.0: Darwin only).
+AXELROD_DISTS = ("axelrod", "axelrod-fast", "axelrod-cheating")
+EVAL_DISTS = DISTS + AXELROD_DISTS
 TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair")
 
 # Base weights for a fixed high-Grim population.  Late harvesters remain a
@@ -166,7 +176,12 @@ def sample_wide(seed: int, n: int = 60, smart_share: float | None = None):
 
 
 def build_dist_field(dist: str, seed: int, n: int):
-    """Build one of the four official evaluation distributions."""
+    """Build one of the official evaluation distributions.
+
+    The four headline distributions are drawn from the pri_dile opponent bank.
+    ``axelrod`` and ``axelrod-fast`` use the optional Axelrod library bank;
+    ``axelrod-cheating`` adds strategies Axelrod classifies as cheating.
+    """
     if dist == "original":
         return build_field("original", seed, n)[0]
     if dist == "late":
@@ -175,6 +190,12 @@ def build_dist_field(dist: str, seed: int, n: int):
         return build_field("grim30", seed, n)[0]
     if dist == "wide":
         return sample_wide(seed, n, 0.15)[0]
+    if dist == "axelrod":
+        return sample_axelrod_field(seed, n, include_long_run=True)
+    if dist == "axelrod-fast":
+        return sample_axelrod_field(seed, n, include_long_run=False)
+    if dist == "axelrod-cheating":
+        return sample_axelrod_cheating_field(seed, n)
     raise ValueError(f"unknown distribution: {dist}")
 
 
@@ -212,9 +233,9 @@ def sample_blind_field(seed: int, n: int = N_PLAYERS):
 
 
 __all__ = [
-    "N_PLAYERS", "DISTS", "TRAIN_DISTS", "HIGH_GRIM_BASE",
-    "ORIGINAL_SCENARIO_WEIGHTS", "HARD_OPPONENTS", "FAMILY_MULT", "EXTRA",
-    "build_field", "build_dist_field", "build_train_dist_field",
-    "sample_wide", "sample_suite_field", "sample_blind_field",
-    "TYPE_BANK", "TYPE_BY_NAME", "TUNED_SMART",
+    "N_PLAYERS", "DISTS", "TRAIN_DISTS", "AXELROD_DISTS", "EVAL_DISTS",
+    "HIGH_GRIM_BASE", "ORIGINAL_SCENARIO_WEIGHTS", "HARD_OPPONENTS",
+    "FAMILY_MULT", "EXTRA", "build_field", "build_dist_field",
+    "build_train_dist_field", "sample_wide", "sample_suite_field",
+    "sample_blind_field", "TYPE_BANK", "TYPE_BY_NAME", "TUNED_SMART",
 ]

@@ -1,0 +1,37 @@
+{
+  "schema": "ipd-benchmark-v1",
+  "created": "2026-10-27T00:34:08",
+  "seconds": 5.52,
+  "seed": 20261026,
+  "fields": 1,
+  "n": 224,
+  "rounds": 100,
+  "dists": [
+    "axelrod-fast"
+  ],
+  "candidates": [
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "params": {}
+    }
+  ],
+  "summary": {
+    "Final-tuned": {
+      "kind": "final-tuned",
+      "dists": {
+        "axelrod-fast": {
+          "mean": 555.2723214285714,
+          "min": 555.2723214285714,
+          "p05": 555.2723214285714,
+          "values": [
+            555.2723214285714
+          ]
+        }
+      },
+      "avg": 555.2723214285714,
+      "worst": 555.2723214285714,
+      "min": 555.2723214285714
+    }
+  }
+}

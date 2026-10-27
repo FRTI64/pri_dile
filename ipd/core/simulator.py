@@ -58,6 +58,12 @@ class Result:
 def play_match(a: Strategy, b: Strategy, rounds=100) -> Result:
     a.reset()
     b.reset()
+    # Optional hook used by adapters that expose the match length to their
+    # wrapped strategy (e.g. the optional Axelrod opponent bank).
+    for player in (a, b):
+        setter = getattr(player, "set_rounds", None)
+        if callable(setter):
+            setter(rounds)
     ah: list[int] = []
     bh: list[int] = []
     sa = sb = 0

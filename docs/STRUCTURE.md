@@ -24,6 +24,7 @@ ipd/
 │   │   ├── spec.py        TypeSpec 元数据
 │   │   ├── bank.py        85 类对手银行与混合采样
 │   │   ├── plus.py        额外参数化对手（PLUS）
+│   │   ├── axelrod_bank.py 可选 Axelrod 库适配器（243 个普通策略）
 │   │   └── legacy.py      旧固定权重赛场辅助函数
 │   ├── machine.py         Final 状态机（Machine）
 │   ├── harvest.py         Harvest 变体
@@ -143,6 +144,31 @@ results/<run>/
 python3 -m ipd eval-split --config configs/eval/retrain_20261025.json
 python3 -m ipd eval-split --config configs/eval/retrain_20261025_fast.json
 ```
+
+### Axelrod 对手库（可选）
+
+`ipd/core/opponents/axelrod_bank.py` 把 Axelrod 的 `Player` 接口适配为本项目的
+`Strategy.act(t, mine, theirs)`，并且延迟导入 `axelrod`，因此默认安装仍然零
+第三方依赖。两个对手集合：
+
+- `axelrod`：243 个 `axelrod.strategies`（不含 `Darwin` 等 cheating 策略）；
+- `axelrod-fast`：224 个，剔除 Axelrod 标记为 `long_run_time` 的 19 个策略
+  （主要是每回合模拟整个策略库的 Meta 策略），适合日常跑分；
+- `axelrod-cheating`：Axelrod 标记为 cheating 的策略（4.14.0 只有 `Darwin`，
+  它跨对局保留 genome），作为额外的鲁棒性测试集。旧版 `Geller`/`MindReader`
+  系列已被上游移除，且需要直接读取/改写候选策略，当前适配器不包含。
+
+```bash
+pip install -r requirements-axelrod.txt
+python3 -m ipd benchmark --dists axelrod-fast --fields 1 --n 224
+python3 -m ipd matchup --opponent-set axelrod-fast --reps 4
+python3 -m ipd benchmark --dists axelrod-cheating --fields 1 --n 1
+```
+
+适配器内部使用 Axelrod 标准的 3/0/5/1 收益矩阵，因为零行列式策略的四向量
+按该矩阵校准；实际对局得分仍由 `ipd.core.simulator` 的 6/0/10/1 矩阵计算。
+完整 243 集合包含昂贵的 Meta 策略，100 回合全量跑分建议使用
+`axelrod-fast`，或给 `matchup` 加 `--rounds` 做快速验证。
 
 ### C++ 文件
 

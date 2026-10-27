@@ -11,6 +11,7 @@ Examples::
     python3 -m ipd benchmark --candidates core,neural,gru
     python3 -m ipd benchmark --candidates all --fields 20 --workers 20
     python3 -m ipd benchmark --arch rl --fields 20
+    python3 -m ipd benchmark --dists axelrod-fast --fields 1 --n 224
 """
 from __future__ import annotations
 
@@ -23,12 +24,13 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import Sequence
 
+from ..core.opponents.axelrod_bank import require_axelrod
 from ..paths import result_path
 from ..policies.registry import (
     CORE_NAMES, candidate_specs, legacy_arch_names, resolve_names,
 )
 from .common import eval_task, seed_map
-from .distributions import DISTS
+from .distributions import AXELROD_DISTS, DISTS, EVAL_DISTS
 
 SCHEMA = "ipd-benchmark-v1"
 _LEGACY_ARCHES = ("mlp", "gru", "rl", "adversarial", "adv-rl",
@@ -48,7 +50,7 @@ _ARCH_OUT = {
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         description="Benchmark any registered candidate on the four official "
-                    "distributions.")
+                    "distributions, or on the optional Axelrod opponent bank.")
     ap.add_argument("--candidates", default=None,
                     help="comma-separated names or core|base|suite|learned|all")
     ap.add_argument("--arch", default=None, choices=_LEGACY_ARCHES,
@@ -67,7 +69,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--include-baselines", action="store_true", default=True)
     ap.add_argument("--no-baselines", dest="include_baselines",
                     action="store_false")
-    ap.add_argument("--dists", default=",".join(DISTS))
+    ap.add_argument("--dists", default=",".join(DISTS),
+                    help="comma-separated distributions: the four official "
+                         "ones, plus axelrod (243 strategies), "
+                         "axelrod-fast (224, excluding long-running ones) and "
+                         "axelrod-cheating (4.14.0: Darwin)")
     ap.add_argument("--fields", type=int, default=8)
     ap.add_argument("--n", type=int, default=299)
     ap.add_argument("--workers", type=int, default=20)
@@ -98,9 +104,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     dists = tuple(x.strip() for x in args.dists.split(",") if x.strip())
-    unknown = [d for d in dists if d not in DISTS]
+    unknown = [d for d in dists if d not in EVAL_DISTS]
     if unknown:
-        ap.error(f"unknown distributions: {unknown}; choose from {DISTS}")
+        ap.error(f"unknown distributions: {unknown}; choose from {EVAL_DISTS}")
+    if any(d in AXELROD_DISTS for d in dists):
+        try:
+            require_axelrod()
+        except RuntimeError as exc:
+            ap.error(str(exc))
 
     names = _selected_names(args)
     if not names:

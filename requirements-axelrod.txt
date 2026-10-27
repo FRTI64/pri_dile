@@ -1,0 +1,5 @@
+# Optional: Axelrod-library opponent bank.
+#   python3 -m ipd benchmark --dists axelrod-fast
+#   python3 -m ipd matchup --opponent-set axelrod
+# Axelrod currently pulls torch, scipy, pandas, matplotlib and dask.
+axelrod==4.14.0

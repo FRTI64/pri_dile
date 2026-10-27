@@ -53,6 +53,13 @@ def run_match(policy: Any, opponent: Any, rounds: int = 100,
         if reset_fn is not None:
             reset_fn()
 
+    # Optional hook for opponents that need to know the match length (e.g. the
+    # Axelrod adapter propagates it to ``Player.match_attributes``).
+    for obj in (p, opponent):
+        setter = getattr(obj, "set_rounds", None)
+        if callable(setter):
+            setter(rounds)
+
     mine: list[int] = []
     theirs: list[int] = []
     score = opponent_score = 0

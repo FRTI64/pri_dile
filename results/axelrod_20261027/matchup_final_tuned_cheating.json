@@ -1,0 +1,104 @@
+{
+  "schema": "ipd-matchup-v2",
+  "created": "2026-10-27T13:50:39",
+  "seconds": 3.29,
+  "seed": 20261024,
+  "reps": 4,
+  "rounds": 100,
+  "opponent_set": "axelrod-cheating",
+  "spec_config": null,
+  "candidates": [
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "params": {}
+    }
+  ],
+  "opponents": [
+    {
+      "name": "Darwin",
+      "family": "axelrod-cheating"
+    }
+  ],
+  "type_rows": [
+    {
+      "candidate": "Final-tuned",
+      "type": "Darwin",
+      "family": "axelrod-cheating",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 4
+    }
+  ],
+  "family_means": {
+    "Final-tuned": {
+      "axelrod-cheating": 604.0
+    }
+  },
+  "suite_weights": {
+    "original": {
+      "Darwin": 1.0
+    },
+    "late": {
+      "Darwin": 1.0
+    },
+    "grim": {
+      "Darwin": 1.0
+    },
+    "noise": {
+      "Darwin": 1.0
+    },
+    "complex": {
+      "Darwin": 1.0
+    },
+    "smart": {
+      "Darwin": 1.0
+    },
+    "punitive": {
+      "Darwin": 1.0
+    },
+    "random": {
+      "Darwin": 1.0
+    },
+    "wide": {
+      "Darwin": 1.0
+    }
+  },
+  "suite_scores": {
+    "Final-tuned": {
+      "original": 604.0,
+      "late": 604.0,
+      "grim": 604.0,
+      "noise": 604.0,
+      "complex": 604.0,
+      "smart": 604.0,
+      "punitive": 604.0,
+      "random": 604.0,
+      "wide": 604.0
+    }
+  },
+  "candidate_summary": {
+    "Final-tuned": {
+      "equal_type_mean": 604.0,
+      "family_means": {
+        "axelrod-cheating": 604.0
+      },
+      "family_avg": 604.0,
+      "family_worst": 604.0,
+      "suite_scores": {
+        "original": 604.0,
+        "late": 604.0,
+        "grim": 604.0,
+        "noise": 604.0,
+        "complex": 604.0,
+        "smart": 604.0,
+        "punitive": 604.0,
+        "random": 604.0,
+        "wide": 604.0
+      },
+      "suite_avg": 604.0,
+      "suite_worst": 604.0
+    }
+  }
+}

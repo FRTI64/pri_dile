@@ -13,6 +13,9 @@ dependencies = []
 
 [project.optional-dependencies]
 train = ["torch>=2.7", "numpy>=2.0"]
+# Optional Axelrod-library opponent bank (243 ordinary strategies).
+# Axelrod currently depends on torch, scipy, pandas and dask.
+axelrod = ["axelrod==4.14.0"]
 
 [project.scripts]
 ipd = "ipd.cli:main"

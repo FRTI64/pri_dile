@@ -52,9 +52,11 @@
 - `docs/GRU_POLICY.md`：GRU-Net 的方法、训练、接口、结果与风险。
 - `docs/RL_POLICY.md`：完整 PPO 强化学习的方法、训练、结果与风险。
 - `docs/ADVERSARIAL_POLICY.md`：对抗性剥削规则、调参、结果与风险。
+- `docs/AXELROD_OPPONENTS.md`：Axelrod 243/224/cheating 对手库、适配器、结果与风险。
 - `HANDOVER.md`：交接文档（推荐方案、参数、文件、风险、检查清单）。
 - `docs/FINAL_COMPARISON.md`：各测试集完整对照表。
 - `ipd/core/opponents/plus.py`：额外 67 类复杂/细粒度对手。
+- `ipd/core/opponents/axelrod_bank.py`：可选 Axelrod 对手库（243 普通 / 224 fast / Darwin cheating）。
 - `ipd/evaluation/suite.py`：9 个测试集的统一对比。
 - `docs/SUITE_RESULTS.md`：新测试集结果。
 - `cpp/policies/bayes_plus_policy.hpp` / `cpp/policies/responsive3_policy.hpp`：BayesPlus / Responsive3 的无依赖 C++17 实现。

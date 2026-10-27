@@ -1,0 +1,100 @@
+{
+  "schema": "ipd-benchmark-v1",
+  "created": "2026-10-27T13:53:07",
+  "seconds": 3.56,
+  "seed": 20261026,
+  "fields": 1,
+  "n": 1,
+  "rounds": 100,
+  "dists": [
+    "axelrod-cheating"
+  ],
+  "candidates": [
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "params": {}
+    },
+    {
+      "kind": "resp3-tuned",
+      "name": "Resp3-tuned",
+      "params": {}
+    },
+    {
+      "kind": "bayes-tuned",
+      "name": "Bayes-tuned",
+      "params": {}
+    },
+    {
+      "kind": "triple-majority",
+      "name": "Triple-majority",
+      "params": {}
+    }
+  ],
+  "summary": {
+    "Final-tuned": {
+      "kind": "final-tuned",
+      "dists": {
+        "axelrod-cheating": {
+          "mean": 604.0,
+          "min": 604.0,
+          "p05": 604.0,
+          "values": [
+            604.0
+          ]
+        }
+      },
+      "avg": 604.0,
+      "worst": 604.0,
+      "min": 604.0
+    },
+    "Resp3-tuned": {
+      "kind": "resp3-tuned",
+      "dists": {
+        "axelrod-cheating": {
+          "mean": 604.0,
+          "min": 604.0,
+          "p05": 604.0,
+          "values": [
+            604.0
+          ]
+        }
+      },
+      "avg": 604.0,
+      "worst": 604.0,
+      "min": 604.0
+    },
+    "Bayes-tuned": {
+      "kind": "bayes-tuned",
+      "dists": {
+        "axelrod-cheating": {
+          "mean": 604.0,
+          "min": 604.0,
+          "p05": 604.0,
+          "values": [
+            604.0
+          ]
+        }
+      },
+      "avg": 604.0,
+      "worst": 604.0,
+      "min": 604.0
+    },
+    "Triple-majority": {
+      "kind": "triple-majority",
+      "dists": {
+        "axelrod-cheating": {
+          "mean": 604.0,
+          "min": 604.0,
+          "p05": 604.0,
+          "values": [
+            604.0
+          ]
+        }
+      },
+      "avg": 604.0,
+      "worst": 604.0,
+      "min": 604.0
+    }
+  }
+}

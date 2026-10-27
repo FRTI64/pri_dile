@@ -10,6 +10,7 @@ moving each opponent family into its own module:
 * :mod:`.zero_determinant` -- ZD extortion / generous opponents
 * :mod:`.bank` -- the 85-type bank and mixture samplers
 * :mod:`.plus` -- extra parameterised types
+* :mod:`.axelrod_bank` -- optional adapter for the Axelrod strategy library
 * :mod:`.legacy` -- the old fixed-weight field helper
 """
 from __future__ import annotations

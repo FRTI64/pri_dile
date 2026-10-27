@@ -97,6 +97,48 @@ python3 -m ipd matchup \
 # 66 个策略/模型/权重 × 158 对手 × 10 家族；结果见 results/sweep_20261026/
 ```
 
+### Axelrod 对手库（可选）
+
+安装 Axelrod 后，可把它的 **243 个普通策略**作为对手加入 benchmark。该依赖
+较重（会带入 torch/scipy/pandas/dask），只在需要时安装：
+
+```bash
+pip install -r requirements-axelrod.txt
+# 或者：pip install -e '.[axelrod]'
+
+# 243 个策略（含 19 个 long-run 策略，主要是 Meta；完整但较慢）
+python3 -m ipd benchmark --candidates final-tuned \
+  --dists axelrod --fields 1 --n 243 --out results/axelrod_benchmark.json
+
+# 224 个策略（剔除 19 个 long-run 策略，适合日常跑分）
+python3 -m ipd benchmark --candidates core \
+  --dists axelrod-fast --fields 4 --n 224 --workers 20
+
+# 完整 243 个策略的快速 smoke（10 回合；100 回合会慢很多）
+python3 -m ipd matchup --candidates final-tuned --opponent-set axelrod \
+  --reps 1 --rounds 10 --out results/axelrod_matchup_smoke.csv
+
+# 日常逐对手矩阵：224 个非 long-run 策略，标准 100 回合
+python3 -m ipd matchup --candidates base --opponent-set axelrod-fast \
+  --reps 4 --out results/axelrod_fast_matchup.csv
+
+# 额外 cheating 测试集（4.14.0 只有 Darwin）
+python3 -m ipd benchmark --candidates final-tuned \
+  --dists axelrod-cheating --fields 1 --n 1 \
+  --out results/axelrod_cheating_benchmark.json
+python3 -m ipd matchup --candidates final-tuned \
+  --opponent-set axelrod-cheating --reps 4 \
+  --out results/axelrod_cheating_matchup.csv
+```
+
+`axelrod` 使用完整的普通策略集合（`axelrod.strategies`，243 个；不含
+`Darwin` 等 cheating 策略）；`axelrod-fast` 去掉 Axelrod 标记为
+`long_run_time` 的 19 个策略；`axelrod-cheating` 收集
+`axelrod.cheating_strategies`（4.14.0 只有 `Darwin`，具备跨对局持久 genome）。
+旧版 `Geller`/`MindReader` 系列已被上游移除，且需要直接读取或改写候选策略，
+当前适配器不包含它们。采样按洗牌后的整轮进行，`--n 243` 时每个策略恰好出现
+一次。
+
 ### 神经策略推理（不需要 PyTorch）
 
 ```bash
@@ -361,6 +403,7 @@ Bayesian/EV probe best 1-seed +1.29、3-seed -5.22。**C3 calibration
 |---|---|
 | [HANDOVER.md](HANDOVER.md) | 交接总览、推荐方案、参数、风险、检查清单 |
 | [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口 |
+| [docs/AXELROD_OPPONENTS.md](docs/AXELROD_OPPONENTS.md) | Axelrod 243/224/cheating 对手库、适配器与结果 |
 | [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md) | 按策略/模型/对手拆分评估 |
 | [docs/SELFPLAY.md](docs/SELFPLAY.md) | 非对称自博弈：21 维观测、对手池、red league、验证拆分 |
 | [docs/E0_LEAGUE.md](docs/E0_LEAGUE.md) | E0 cross-play / Nash / exploitability harness |

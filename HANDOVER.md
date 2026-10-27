@@ -1,5 +1,10 @@
 # 100 天囚徒困境项目交接文档
 
+> **交接状态（2026-10-27）**：新增可选 Axelrod 对手库（243 普通 / 224 fast /
+> Darwin cheating）；默认四分布、85/158 对手集合和主权重均未改变。
+> `python3 -m ipd test` 当前 183 tests OK。改动尚未提交，提交前先看
+> `docs/AXELROD_OPPONENTS.md` 和 `results/axelrod_20261027/README.md`。
+
 ## 目录结构
 
 ```text
@@ -25,7 +30,9 @@ python3 -m ipd self-test --candidates all
 所有命令默认在仓库根目录执行；路径由 `ipd.paths` 统一解析。如需从其他目录
 运行，请先执行 `pip install -e .`。
 
-## 0. 本次新增工作摘要
+## 0. 新增工作摘要（按日期）
+
+### 2026-10-26 新增：MLP/GRU/RL 与约束剥削
 
 本轮在原有规则策略之外，新增了 MLP/GRU/完整 RL 三类学习策略及对应的约束剥削
 版本，并补齐了 C++ 推理、测试和文档。
@@ -205,6 +212,50 @@ red league / 竞争力约束、三阶段课程、fast/full/final 三层评估和
   而不是继续调 threshold。
   详见 `docs/p2-c3-repeated-calib.md`、
   `results/p2_repeated_calib_20261026/`。
+
+### 2026-10-27 新增：Axelrod 对手库与 cheating 测试集
+
+新增可选 `axelrod==4.14.0` 对手库，接入 benchmark / matchup / eval-split；
+不改变原有四分布和 85/158 对手集合的默认口径。详细说明见
+`docs/AXELROD_OPPONENTS.md`，结果见 `results/axelrod_20261027/`。
+
+| 集合 | 数量 | 内容 |
+|---|---:|---|
+| `axelrod` | 243 | `axelrod.strategies` 普通策略 |
+| `axelrod-fast` | 224 | 剔除 19 个 `long_run_time`（17 Meta + `DBS` + `EvolvedAttention`） |
+| `axelrod-cheating` | 1 | `axelrod.cheating_strategies`；4.14.0 只有 `Darwin` |
+
+关键点：
+
+- 新增 `ipd/core/opponents/axelrod_bank.py`；延迟导入 Axelrod，默认安装仍零
+  第三方依赖。适配器增量维护普通/Meta history，并新增 `set_rounds` hook。
+- 策略内部用 Axelrod 标准 3/0/5/1 矩阵（ZD 四向量按该矩阵校准）；实际得分
+  仍用本项目 6/0/10/1 矩阵。
+- 224 fast × 100 回合、1 field：Triple 560.95、Resp3 555.37、Final 555.27、
+  Bayes 546.25（不能与官方四分布 554.x 直接比较）。
+- 243 全量 × 10 回合 smoke 跑通 243/243；100 回合完整跑分很慢，主要耗时在
+  19 个 long-run 策略，日常请用 `axelrod-fast`。
+- `axelrod-cheating` 目前只有 `Darwin`；core 四个候选对 Darwin 都是 604.00
+  （99 回合 CC + 最后一天 D，机制检查，不用于正式排名）。
+  `Geller`/`MindReader` 系列不在 4.14 发布包中，当前适配器不支持，需另做
+  candidate peek/改写 harness 才能移植。
+- `Darwin` 的 `genome` 是类变量，结果依赖对局顺序/重复次数，单次分数不能当
+  稳定强度。
+- 可选依赖较重（torch/scipy/pandas/dask），版本固定 4.14.0；升级前先跑
+  `tests/test_axelrod_opponents.py`。
+
+复现与验证：
+
+```bash
+python3 -m pip install -r requirements-axelrod.txt
+python3 -m ipd benchmark --candidates core --dists axelrod-fast \
+  --fields 1 --n 224 --workers 5
+python3 -m ipd matchup --candidates final-tuned --opponent-set axelrod-fast \
+  --reps 4 --workers 12
+python3 -m ipd benchmark --candidates core --dists axelrod-cheating \
+  --fields 1 --n 1 --workers 4
+python3 -m ipd test   # 183 tests, OK
+```
 
 复现入口：
 
@@ -685,6 +736,7 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 | `ipd/core/opponents/basic.py` | 基础对手（AllC/TFT/Grim/GTFT/...） |
 | `ipd/core/opponents/reciprocal.py` | Responsive3、ProbeBot、GTFT 等 |
 | `ipd/core/opponents/bank.py` | 85 类扩展对手、采样器 |
+| `ipd/core/opponents/axelrod_bank.py` | 可选 Axelrod 库适配器（243 个普通策略 / 224 个 fast） |
 | `ipd/core/bayes.py` / `ipd/core/bayes_plus.py` | Bayes/BayesPlus |
 | `ipd/policies/candidates/triple_majority.py` | Triple-majority |
 | `ipd/policies/candidates/` | 每个参赛/评估候选一个独立文件，互不 import |
@@ -694,6 +746,7 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 | `cpp/opponents/*.hpp` | 按对手拆分的 C++ 头文件 |
 | `ipd/training/neural.py` | GPU/NPU 神经策略训练（PyTorch + DAgger） |
 | `requirements-train.txt` | 神经策略训练依赖（仅 PyTorch） |
+| `requirements-axelrod.txt` | 可选 Axelrod 对手库依赖（会带入 torch/scipy/pandas/dask） |
 | `ipd/policies/neural.py` | 神经策略纯 Python 推理（无需 PyTorch） |
 | `cpp/neural_policy.cpp` | MLP 策略 C++17 推理（无外部依赖） |
 | `cpp/ipd_features.hpp` | MLP/GRU 共用的 C++ 特征提取 |
@@ -722,6 +775,7 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 | `configs/adversarial_policy_config*.json` | MLP 保守/激进配置 |
 | `configs/adversarial_gru_policy_config*.json` | GRU 保守/激进配置 |
 | `docs/NEURAL_POLICY.md` / `docs/GRU_POLICY.md` / `docs/ADVERSARIAL_POLICY.md` | 三种策略族的方法、接口、结果、风险 |
+| `docs/AXELROD_OPPONENTS.md` | Axelrod 243/224/cheating 对手库、适配器、结果与风险 |
 | `ipd/training/search/joint.py` | Final+Resp3 联合策略 |
 | `ipd/training/search/multiobj.py` | 多目标训练与参数配置 |
 | `ipd/training/search/bayes_priors.py` | Bayes 先验参数化 |
@@ -740,6 +794,7 @@ run2 的 143.5 修复到 603，`EarlyD25` 基本持平。
 | `results/benchmark.json` | 当前统一四分布结果（全部候选） |
 | `results/blind_results.json` | 当前统一盲测结果（全部候选） |
 | `results/matchup_triple_results.csv` | 主策略逐类型原始数据 |
+| `results/axelrod_20261027/` | Axelrod 224/243/cheating 对手库的 smoke benchmark、逐对手矩阵与说明 |
 | `results/final_benchmark.json` | 规则基线四分布数据 |
 | `results/neural_benchmark.json` | MLP 策略四分布对比数据 |
 | `results/neural_blind_results.json` | MLP 策略盲测排名数据 |
@@ -851,6 +906,32 @@ python3 -m ipd suite --fields 12 --workers 24
 ```bash
 python3 -m ipd matchup --candidates final-tuned,resp3-tuned,bayes-tuned,hybrid,triple-majority
 ```
+
+### Axelrod 对手库（可选）
+
+```bash
+pip install -r requirements-axelrod.txt
+# 224 个非 long-run 策略，适合日常跑分
+python3 -m ipd benchmark --dists axelrod-fast --candidates core \
+  --fields 1 --n 224 --workers 5
+python3 -m ipd matchup --opponent-set axelrod-fast --candidates final-tuned \
+  --reps 4 --workers 12
+# 完整 243 个普通策略；含 19 个很慢的 long-run 策略（主要是 Meta）
+python3 -m ipd matchup --opponent-set axelrod --candidates final-tuned \
+  --reps 1 --rounds 10 --workers 12
+# cheating 额外测试集（4.14.0 只有 Darwin）
+python3 -m ipd benchmark --dists axelrod-cheating --candidates final-tuned \
+  --fields 1 --n 1
+python3 -m ipd matchup --opponent-set axelrod-cheating --candidates final-tuned \
+  --reps 4
+```
+
+`axelrod` = 243 个 `axelrod.strategies`（不含 `Darwin` 等 cheating 策略）；
+`axelrod-fast` = 224 个，剔除 Axelrod 标记为 `long_run_time` 的 19 个策略；
+`axelrod-cheating` = `axelrod.cheating_strategies`（4.14.0 只有 `Darwin`；
+旧版 Geller/MindReader 系列不在 4.14 发布包中，当前适配器也未包含）。
+适配器使用 Axelrod 标准 3/0/5/1 矩阵做内部计算，实际得分仍用本项目
+6/0/10/1 矩阵。smoke 结果见 `results/axelrod_20261027/`。
 
 ### C++ 编译
 
@@ -977,6 +1058,29 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
     内嵌对应 MLP 权重，或退回 Adv-MLP。默认 `safe=true`；只有显式训练
     `--allow-probe` 才会关闭主动探测限制。
 
+15. **完整 Axelrod 243 集很慢**
+    19 个 `long_run_time` 策略（主要是每回合模拟整个策略库的 Meta）会让
+    100 回合全量跑分达到几十分钟。日常使用 `axelrod-fast`（224），完整集只做
+    定向分析或用 `matchup --rounds 10` 做 smoke。
+
+16. **Axelrod cheating 集目前只有 Darwin**
+    `Geller`/`MindReader`/`MindController` 系列不在 4.14 发布包中，当前适配器
+    也不支持它们需要的 candidate peek/改写。不要把 cheating 集描述成完整的
+    旧版读源码家族；要移植需另做隔离 harness。
+
+17. **Axelrod 内部收益矩阵与项目得分不同**
+    适配器内部用标准 3/0/5/1（ZD 四向量按此校准），实际得分用项目
+    6/0/10/1。若为了“统一”把内部矩阵改成 6/0/10/1，ZD 策略会因负概率报错。
+
+18. **Darwin 结果顺序相关**
+    `genome` 是类变量，跨对局/重复/worker 调度保留；单次 604 不是稳定强度，
+    cheating 结果只作机制/鲁棒性检查，不进入正式排名。
+
+19. **Axelrod 是可选的重量级依赖**
+    会带入 torch/scipy/pandas/dask；版本固定 `4.14.0`。升级前先跑
+    `tests/test_axelrod_opponents.py`，并重新确认 243/224/1 的数量与
+    cheating 类是否可适配。
+
 ---
 
 ## 8. 交接检查清单
@@ -1001,4 +1105,11 @@ C++ 的 BayesPlus 模型库和 Python 版语义对应，但浮点/模型顺序�
 - [ ] 固定随机种子。
 - [ ] 用最终版本重新跑一次 `python3 -m ipd blind`，确认没有配置遗漏。
 - [ ] 检查第 1 天和第 100 天行为。
+- [ ] 如果使用 Axelrod 对手库，确认已安装 `requirements-axelrod.txt`，并跑通
+      `python3 -m ipd benchmark --candidates core --dists axelrod-fast --fields 1 --n 224`。
+- [ ] 明确日常使用 `axelrod-fast`（224）；完整 `axelrod`（243）只做定向分析，
+      不要放进常规 CI。
+- [ ] Axelrod 版本保持 `4.14.0`，升级前跑 `tests/test_axelrod_opponents.py`。
+- [ ] cheating 结果（当前只有 Darwin）只用于机制/鲁棒性检查，不进入正式排名；
+      若需要旧版 Geller/MindReader，先单独设计 candidate peek/改写 harness。
 - [ ] 保存最终提交文件、配置 JSON 和运行日志。
