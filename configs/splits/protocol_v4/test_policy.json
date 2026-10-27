@@ -1,0 +1,7 @@
+{
+  "schema": "ipd-protocol-test-policy-v1",
+  "protocol": "protocol_v4",
+  "consume_test": false,
+  "reason": "test_v7 and test_red are permanently held out; all CLI test runs are provisional and cannot consume the test set",
+  "updated": "2026-10-27"
+}

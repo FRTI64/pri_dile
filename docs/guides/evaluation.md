@@ -9,7 +9,7 @@
 ## 1. 先选协议
 
 **新候选默认走 Protocol v4**：`dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 选模，`test_v7` 只给预注册 top 3 跑一次。
+`dev_axelrod` / `dev_ood` 选模；test 消费永久锁定，只能做 provisional 诊断。
 
 ```bash
 python3 -m ipd protocol audit
@@ -17,13 +17,13 @@ python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --baseline RL-PPO
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 2048 --no-consume
 ```
 
 | 目标 | 协议 | 命令 |
 |---|---|---|
 | 正式选模 | Protocol v4 dev | `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood` |
-| 一次性 final | Protocol v4 test | `protocol eval --tiers test_v7 --acknowledge-once` |
+| test 诊断（永久 provisional） | Protocol v4 test | `protocol eval --tiers test_v7 --no-consume` |
 | 快速烟测 | 四分布（legacy），少 fields | `benchmark --fields 1..8` |
 | 历史四分布 | 20 fields × 299（legacy） | `benchmark --fields 20` |
 | 历史盲测 | 20 个未见 seed（legacy） | `blind --fields 20` |
@@ -33,9 +33,10 @@ python3 -m ipd protocol eval --candidates <top3> \
 | 每个候选独立参数 | eval-split | `eval-split --config ...` |
 
 Protocol v4 的 manifest 在 `configs/splits/protocol_v4/manifest.json`，
-test 使用记录在 `results/protocol_v4/usage.json`。审计失败（family 泄漏、
-config 重叠、manifest hash 不匹配）时不要继续跑 test。`test_v7` 尚未消费；
-`test_v6` 已作为 v3 legacy 消费。详见
+test 策略在 `configs/splits/protocol_v4/test_policy.json`（`consume_test=false`）。
+审计失败（family 泄漏、config 重叠、manifest hash 不匹配）时不要继续跑 test。
+test 消费永久锁定：所有 test 运行都标记 `selection_eligible=false`，不写
+`results/protocol_v4/usage.json`；`test_v6` 已作为 v3 legacy 消费。详见
 [../reference/protocol-v4.md](../reference/protocol-v4.md)。
 
 **不要混表：**
@@ -144,8 +145,9 @@ python3 -m ipd league --config configs/eval/e0_league.json \
 以及 `min_norm_family`、CVaR、Nash/Elo/exploitability。详见
 [../research/e0-league.md](../research/e0-league.md)。
 
-以上 league 输出是 legacy 口径。新候选使用 Protocol v4：`test_v7` 尚未消费，
-下一个通过 dev 的候选可以直接用它做一次 final。
+以上 league 输出是 legacy 口径。新候选使用 Protocol v4：test 消费已永久
+锁定，`test_v7` / `test_red` 只用于 provisional 诊断，不能作为 final 或选模
+依据。
 
 ## 7. 拆分评估
 

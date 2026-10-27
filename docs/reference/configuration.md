@@ -25,6 +25,7 @@ configs/
 ├── adversarial_rl_policy_config*.json       RL 保守/激进
 ├── eval/                                    eval-split / league / sweep 配置
 ├── splits/protocol_v4/manifest.json         Protocol v4 catalog manifest
+├── splits/protocol_v4/test_policy.json      test 消费锁定策略（consume_test=false）
 ├── league/                                  P3 red pool blue manifests
 ├── selfplay/                                full / smoke / BC / E4 red
 └── retrain_20261025/                        复训实验配置
@@ -104,7 +105,7 @@ cross-play、red 和 Nash 预算。关键字段：
 results/
 ├── benchmark.json / blind_results.json / suite_results.json
 ├── split_<name>/                 eval-split 输出
-├── protocol_v4/                  Protocol v4 manifest 使用记录 / dev / test
+├── protocol_v4/                  Protocol v4 dev / provisional test 结果
 ├── e0_league_<date>/             E0
 ├── robust_<date>/                E1
 ├── risk_<date>/                  E2

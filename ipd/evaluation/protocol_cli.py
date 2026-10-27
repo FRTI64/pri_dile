@@ -17,10 +17,10 @@ from ..policies.registry import CandidateSpec, candidate_specs
 from .common import evaluate_field_details, quantile, run_match
 from .protocol import (
     COMPLEXITY_TIERS, DEV_FIELDS, DEV_TIERS, LEVEL_TIERS,
-    PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_FIELDS, TEST_TIER,
-    audit_protocol, build_protocol_field, build_protocol_red_field,
-    catalog_sha256, guard_test_usage, record_usage, verify_manifest,
-    write_manifest,
+    PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_FIELDS,
+    TEST_POLICY_PATH, TEST_TIER, audit_protocol, build_protocol_field,
+    build_protocol_red_field, catalog_sha256, guard_test_usage, record_usage,
+    test_consumption_allowed, verify_manifest, write_manifest,
 )
 
 DEV_DEFAULT = "dev_param,dev_family,dev_complex,dev_axelrod,dev_ood"
@@ -124,6 +124,8 @@ def _audit(argv: Sequence[str]) -> int:
         print(f"catalog:  {report['catalog_size']} configs, "
               f"sha256 {report['catalog_sha256'][:16]}...")
         print(f"manifest: {report['manifest']['reason']}")
+        policy = "locked" if not test_consumption_allowed() else "UNLOCKED"
+        print(f"test policy: {policy} ({TEST_POLICY_PATH})")
         print("\ncounts by group/family:")
         for group, families in report["counts"].items():
             total = sum(families.values())
@@ -179,17 +181,26 @@ def _eval(argv: Sequence[str]) -> int:
     ap.add_argument("--baseline", default=None,
                     help="candidate name used for per-family min_norm")
     ap.add_argument("--acknowledge-once", action="store_true",
-                    help="required for test_v7; records one-shot usage")
+                    help="cannot unlock test_v7 while test consumption is "
+                         "locked; ignored for provisional runs")
     ap.add_argument("--no-consume", action="store_true",
                     help="evaluate test tier without writing usage ledger; "
-                         "results are provisional and not selection-eligible")
+                         "required while test consumption is locked")
     ap.add_argument("--force", action="store_true",
-                    help="rerun a consumed test tier and mark it contaminated")
+                    help="cannot override the test consumption lock; ignored "
+                         "for provisional runs")
     args = ap.parse_args(argv)
 
     tiers = _parse_tiers(args.tiers)
     test_run = TEST_TIER in tiers
-    if test_run and not args.acknowledge_once and not args.no_consume:
+    consumption_locked = test_run and not test_consumption_allowed()
+    no_consume = args.no_consume or consumption_locked
+    if test_run and consumption_locked and not args.no_consume:
+        raise SystemExit(
+            f"{TEST_TIER} is locked (test consumption disabled); "
+            "use --no-consume for a provisional run")
+    if test_run and not consumption_locked and not args.acknowledge_once \
+            and not args.no_consume:
         raise SystemExit(
             f"{TEST_TIER} requires --acknowledge-once or --no-consume")
     if TEST_TIER in tiers and args.fields is None:
@@ -206,15 +217,22 @@ def _eval(argv: Sequence[str]) -> int:
     if args.baseline and args.baseline not in names:
         raise SystemExit(f"baseline {args.baseline!r} is not in the candidate list")
 
-    if test_run and not args.no_consume:
+    if consumption_locked:
+        print(f"WARNING: test consumption is locked by {TEST_POLICY_PATH}; "
+              "running provisionally (selection_eligible=false)", flush=True)
+        if args.acknowledge_once or args.force:
+            print("WARNING: --acknowledge-once/--force cannot unlock test "
+                  "consumption and are ignored for this run", flush=True)
+    elif test_run and args.no_consume:
+        print("WARNING: --no-consume enabled; test set is NOT consumed and "
+              "results are provisional, not selection-eligible", flush=True)
+
+    if test_run and not no_consume:
         for name in names:
             try:
                 guard_test_usage(name, force=args.force, tier=TEST_TIER)
             except RuntimeError as exc:
                 raise SystemExit(str(exc))
-    elif test_run:
-        print("WARNING: --no-consume enabled; test set is NOT consumed and "
-              "results are provisional, not selection-eligible", flush=True)
 
     seeds = [args.seed + i * 7919 for i in range(fields)]
     tasks = [
@@ -256,7 +274,7 @@ def _eval(argv: Sequence[str]) -> int:
     out = args.out
     if out is None:
         if TEST_TIER in tiers:
-            suffix = "test_provisional" if args.no_consume else "test"
+            suffix = "test_provisional" if no_consume else "test"
             out = result_path(f"protocol_v4/{PROTOCOL_NAME}_{suffix}.json")
         elif len(tiers) == 1 and tiers[0] in LEVEL_TIERS + COMPLEXITY_TIERS:
             out = result_path(
@@ -278,9 +296,10 @@ def _eval(argv: Sequence[str]) -> int:
         "rounds": args.rounds,
         "seed": args.seed,
         "baseline": args.baseline,
-        "usage_consumed": bool(test_run and not args.no_consume),
-        "selection_eligible": not args.no_consume,
-        "no_consume": args.no_consume,
+        "usage_consumed": bool(test_run and not no_consume),
+        "selection_eligible": not no_consume,
+        "no_consume": no_consume,
+        "test_consumption_locked": consumption_locked,
         "candidates": [spec.to_dict() for spec in specs],
         "results": aggregated,
     }
@@ -296,12 +315,13 @@ def _eval(argv: Sequence[str]) -> int:
         print(f"  {name:20} " + "  ".join(cells))
     print(f"\nwritten {out_path}")
 
-    if test_run and not args.no_consume:
+    if test_run and not no_consume:
         for name in names:
             record_usage(TEST_TIER, name, str(out_path), force=args.force)
         print(f"{TEST_TIER} usage recorded")
     elif test_run:
-        print(f"{TEST_TIER} NOT consumed (--no-consume); "
+        reason = "locked by policy" if consumption_locked else "--no-consume"
+        print(f"{TEST_TIER} NOT consumed ({reason}); "
               "results are provisional")
     return 0
 
@@ -335,27 +355,45 @@ def _red(argv: Sequence[str]) -> int:
     ap.add_argument("--workers", type=int, default=20)
     ap.add_argument("--seed", type=int, default=20261027)
     ap.add_argument("--out", default=None)
-    ap.add_argument("--acknowledge-once", action="store_true")
+    ap.add_argument("--acknowledge-once", action="store_true",
+                    help="cannot unlock test_red while test consumption is "
+                         "locked; ignored for provisional runs")
     ap.add_argument("--no-consume", action="store_true",
                     help="evaluate test_red without writing usage ledger; "
-                         "results are provisional")
-    ap.add_argument("--force", action="store_true")
+                         "required while test consumption is locked")
+    ap.add_argument("--force", action="store_true",
+                    help="cannot override the test consumption lock; ignored "
+                         "for provisional runs")
     args = ap.parse_args(argv)
 
     test_run = args.tier == "test_red"
-    if test_run and not args.acknowledge_once and not args.no_consume:
+    consumption_locked = test_run and not test_consumption_allowed()
+    no_consume = args.no_consume or consumption_locked
+    if test_run and consumption_locked and not args.no_consume:
+        raise SystemExit(
+            "test_red is locked (test consumption disabled); "
+            "use --no-consume for a provisional run")
+    if test_run and not consumption_locked and not args.acknowledge_once \
+            and not args.no_consume:
         raise SystemExit("test_red requires --acknowledge-once or --no-consume")
     specs = candidate_specs(args.candidates, default="all")
     names = [spec.name for spec in specs]
-    if test_run and not args.no_consume:
+    if consumption_locked:
+        print(f"WARNING: test consumption is locked by {TEST_POLICY_PATH}; "
+              "running provisionally (selection_eligible=false)", flush=True)
+        if args.acknowledge_once or args.force:
+            print("WARNING: --acknowledge-once/--force cannot unlock test "
+                  "consumption and are ignored for this run", flush=True)
+    elif test_run and args.no_consume:
+        print("WARNING: --no-consume enabled; test_red is NOT consumed",
+              flush=True)
+
+    if test_run and not no_consume:
         for name in names:
             try:
                 guard_test_usage(name, force=args.force, tier="test_red")
             except RuntimeError as exc:
                 raise SystemExit(str(exc))
-    elif test_run:
-        print("WARNING: --no-consume enabled; test_red is NOT consumed",
-              flush=True)
 
     seeds = [args.seed + i * 7919 for i in range(args.seeds)]
     tasks = [
@@ -386,7 +424,7 @@ def _red(argv: Sequence[str]) -> int:
 
     out = args.out
     if out is None:
-        suffix = "_provisional" if args.no_consume else ""
+        suffix = "_provisional" if no_consume else ""
         out = result_path(
             f"protocol_v4/protocol_v4_{args.tier}{suffix}.json")
     out_path = Path(out)
@@ -401,9 +439,10 @@ def _red(argv: Sequence[str]) -> int:
         "seeds": args.seeds,
         "rounds": args.rounds,
         "seed": args.seed,
-        "usage_consumed": bool(test_run and not args.no_consume),
-        "selection_eligible": not args.no_consume,
-        "no_consume": args.no_consume,
+        "usage_consumed": bool(test_run and not no_consume),
+        "selection_eligible": not no_consume,
+        "no_consume": no_consume,
+        "test_consumption_locked": consumption_locked,
         "results": summary,
     }
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
@@ -416,12 +455,13 @@ def _red(argv: Sequence[str]) -> int:
               f"red={row['red_mean']:7.2f} diff={row['diff']:+7.2f} "
               f"red_win={row['red_win']:.1%}")
     print(f"written {out_path}")
-    if test_run and not args.no_consume:
+    if test_run and not no_consume:
         for name in names:
             record_usage("test_red", name, str(out_path), force=args.force)
         print("test_red usage recorded")
     elif test_run:
-        print("test_red NOT consumed (--no-consume); results are provisional")
+        reason = "locked by policy" if consumption_locked else "--no-consume"
+        print(f"test_red NOT consumed ({reason}); results are provisional")
     return 0
 
 

@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from collections import Counter
 from pathlib import Path
+from unittest.mock import patch
 
 from ipd.evaluation.distributions import (
     TRAIN_DISTS, build_dist_field, build_train_dist_field,
@@ -15,8 +16,8 @@ from ipd.evaluation.protocol import (
     AXELROD_FAMILIES, COMPLEX_FAMILIES, DEV_ONLY_FAMILIES, TEST_ONLY_FAMILIES, TEST_TIER,
     TRAIN_PROFILES, audit_protocol, build_catalog, build_protocol_field,
     build_protocol_red_field, build_training_field, catalog_sha256,
-    guard_test_usage, load_usage, record_usage, verify_manifest,
-    write_manifest,
+    guard_test_usage, load_test_policy, load_usage, record_usage,
+    test_consumption_allowed, verify_manifest, write_manifest,
 )
 
 
@@ -188,6 +189,133 @@ class ProtocolNoConsumeCliTests(unittest.TestCase):
             self.assertTrue(payload["no_consume"])
 
 
+class ProtocolTestPolicyTests(unittest.TestCase):
+    def test_missing_policy_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "test_policy.json"
+            policy = load_test_policy(path)
+            self.assertFalse(policy["consume_test"])
+            self.assertFalse(test_consumption_allowed(path))
+            self.assertIn("locked", policy["reason"])
+
+    def test_only_policy_can_unlock_consumption(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "test_policy.json"
+            path.write_text(json.dumps({"consume_test": False}),
+                            encoding="utf-8")
+            self.assertFalse(test_consumption_allowed(path))
+            path.write_text(json.dumps({"consume_test": True}),
+                            encoding="utf-8")
+            self.assertTrue(test_consumption_allowed(path))
+            path.write_text(json.dumps({"consume_test": "true"}),
+                            encoding="utf-8")
+            self.assertFalse(test_consumption_allowed(path))
+            path.write_text("{not json", encoding="utf-8")
+            self.assertFalse(test_consumption_allowed(path))
+
+    def test_repository_policy_locks_consumption(self) -> None:
+        self.assertFalse(load_test_policy()["consume_test"])
+        self.assertFalse(test_consumption_allowed())
+
+
+class ProtocolConsumptionLockCliTests(unittest.TestCase):
+    @patch("ipd.evaluation.protocol_cli.test_consumption_allowed",
+           return_value=False)
+    def test_test_tier_still_requires_explicit_flag(self, _allowed) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "test.json"
+            with self.assertRaises(SystemExit):
+                protocol_main([
+                    "eval", "--candidates", "final-tuned",
+                    "--tiers", TEST_TIER, "--fields", "1", "--n", "8",
+                    "--workers", "1", "--seed", "123", "--out", str(out),
+                ])
+            self.assertFalse(out.exists())
+
+    @patch("ipd.evaluation.protocol_cli.test_consumption_allowed",
+           return_value=False)
+    def test_acknowledge_once_cannot_unlock_locked_test(
+            self, _allowed) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "test.json"
+            with self.assertRaises(SystemExit):
+                protocol_main([
+                    "eval", "--candidates", "final-tuned",
+                    "--tiers", TEST_TIER, "--fields", "1", "--n", "8",
+                    "--workers", "1", "--seed", "123", "--acknowledge-once",
+                    "--out", str(out),
+                ])
+            self.assertFalse(out.exists())
+
+    @patch("ipd.evaluation.protocol_cli.test_consumption_allowed",
+           return_value=False)
+    @patch("ipd.evaluation.protocol_cli.record_usage")
+    @patch("ipd.evaluation.protocol_cli.guard_test_usage")
+    def test_test_tier_is_provisional_with_no_consume(
+            self, guard, record, _allowed) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "test.json"
+            code = protocol_main([
+                "eval", "--candidates", "final-tuned",
+                "--tiers", TEST_TIER, "--fields", "1", "--n", "8",
+                "--workers", "1", "--seed", "123", "--no-consume",
+                "--acknowledge-once", "--out", str(out),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(out.read_text(encoding="utf-8"))
+            self.assertFalse(payload["usage_consumed"])
+            self.assertFalse(payload["selection_eligible"])
+            self.assertTrue(payload["no_consume"])
+            self.assertTrue(payload["test_consumption_locked"])
+            guard.assert_not_called()
+            record.assert_not_called()
+
+    @patch("ipd.evaluation.protocol_cli.test_consumption_allowed",
+           return_value=True)
+    @patch("ipd.evaluation.protocol_cli.record_usage")
+    @patch("ipd.evaluation.protocol_cli.guard_test_usage")
+    def test_unlocked_policy_can_consume(
+            self, guard, record, _allowed) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "test.json"
+            code = protocol_main([
+                "eval", "--candidates", "final-tuned",
+                "--tiers", TEST_TIER, "--fields", "1", "--n", "8",
+                "--workers", "1", "--seed", "123", "--acknowledge-once",
+                "--out", str(out),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(out.read_text(encoding="utf-8"))
+            self.assertTrue(payload["usage_consumed"])
+            self.assertTrue(payload["selection_eligible"])
+            self.assertFalse(payload["no_consume"])
+            self.assertFalse(payload["test_consumption_locked"])
+            guard.assert_called_once()
+            record.assert_called_once()
+
+    @patch("ipd.evaluation.protocol_cli.test_consumption_allowed",
+           return_value=False)
+    @patch("ipd.evaluation.protocol_cli.record_usage")
+    @patch("ipd.evaluation.protocol_cli.guard_test_usage")
+    def test_red_test_tier_is_provisional_with_no_consume(
+            self, guard, record, _allowed) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "red.json"
+            code = protocol_main([
+                "red", "--candidates", "final-tuned", "--tier", "test_red",
+                "--seeds", "1", "--workers", "1", "--seed", "123",
+                "--no-consume", "--acknowledge-once", "--out", str(out),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(out.read_text(encoding="utf-8"))
+            self.assertFalse(payload["usage_consumed"])
+            self.assertFalse(payload["selection_eligible"])
+            self.assertTrue(payload["no_consume"])
+            self.assertTrue(payload["test_consumption_locked"])
+            guard.assert_not_called()
+            record.assert_not_called()
+
+
 class ProtocolRedCliTests(unittest.TestCase):
     def test_red_cli_writes_result(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -222,14 +350,15 @@ class ProtocolUsageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "usage.json"
             guard_test_usage("candidate-a", path=path, tier=TEST_TIER)
-            record_usage(TEST_TIER, "candidate-a", "result.json", path=path)
+            record_usage(TEST_TIER, "candidate-a", "result.json", path=path,
+                         allow_locked=True)
             self.assertEqual(len(load_usage(path)["entries"]), 1)
             with self.assertRaises(RuntimeError):
                 guard_test_usage("candidate-a", path=path, tier=TEST_TIER)
             guard_test_usage("candidate-a", path=path, force=True,
                              tier=TEST_TIER)
             record_usage(TEST_TIER, "candidate-a", "result-2.json",
-                         path=path, force=True)
+                         path=path, force=True, allow_locked=True)
             entries = load_usage(path)["entries"]
             self.assertEqual(len(entries), 2)
             self.assertTrue(entries[-1]["contaminated"])
@@ -237,8 +366,29 @@ class ProtocolUsageTests(unittest.TestCase):
     def test_different_candidate_is_allowed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "usage.json"
-            record_usage(TEST_TIER, "candidate-a", "result.json", path=path)
+            record_usage(TEST_TIER, "candidate-a", "result.json", path=path,
+                         allow_locked=True)
             guard_test_usage("candidate-b", path=path, tier=TEST_TIER)
+
+    def test_record_usage_refuses_when_locked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "usage.json"
+            with patch("ipd.evaluation.protocol.test_consumption_allowed",
+                       return_value=False):
+                with self.assertRaises(RuntimeError):
+                    record_usage(TEST_TIER, "candidate-a", "result.json",
+                                 path=path)
+            self.assertFalse(path.exists())
+
+    def test_record_usage_allowed_when_unlocked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "usage.json"
+            with patch("ipd.evaluation.protocol.test_consumption_allowed",
+                       return_value=True):
+                record_usage(TEST_TIER, "candidate-a", "result.json",
+                             path=path)
+            self.assertTrue(path.exists())
+            self.assertEqual(len(load_usage(path)["entries"]), 1)
 
 
 if __name__ == "__main__":

@@ -32,10 +32,11 @@
   `weights/rl_policy_weights_repair.json`，sha256
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
-  `dev_complex` / `dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final；
+  `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional；
   另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /
   test 50）；旧四分布 / blind / v2 / v3 是 legacy。
-- `test_v7` **尚未消费**；下一个通过 dev 的候选可用一次，之后需要 `test_v8`。
+- `test_v7` / `test_red` **永久锁定**（`consume_test=false`），CLI 无覆盖
+  开关；所有 test 运行都是 provisional，不写 usage ledger。
 - anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 
 ### 头部候选（legacy v3 baseline，299 人 / 20 / 40 fields）
@@ -76,7 +77,7 @@ legacy，不能与新表混用。
    - 在 v4 上重跑 RL-Repair 的 `dev_param` / `dev_family` /
      `dev_complex` / `dev_axelrod` / `dev_ood`；补跑
      `dev_level0..4` / `dev_complexity0..4` 分级诊断；
-   - `test_v7` 尚未消费；可用于一次独立 final，之后建 `test_v8`；
+   - `test_v7` 只做 provisional 诊断，不能当作独立 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
 2. **E3 multi-teacher distillation + gating（研究首选）**
@@ -94,9 +95,9 @@ legacy，不能与新表混用。
 
 - 新候选用 `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
   `dev_ood` 选模；`dev_level0..4` / `dev_complexity0..4` 是分级诊断；
-  `test_v7` 尚未消费。
-- `test_v7` 消费后，下一个候选需要新建 `test_v8`，并重新走
-  `protocol manifest` + `protocol audit`。
+  test 消费永久锁定。
+- `test_v7` / `test_red` 运行结果标记 `selection_eligible=false`，
+  不写 usage ledger；不要用 test 结果排名或选模。
 - 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red
   best response。
 - `min_family` 跨 family 不可比；看 `min_norm_family` / per-family /
@@ -179,7 +180,7 @@ bash results/p2_repeated_calib_20261026/run.sh
 - **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
 - **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 用
   2048 人 / dev 30 fields / test 50 fields。
-- **`test_v7` 未消费**：只给预注册 top 3 用一次；之后下一个候选需要
-  `test_v8`。
+- **test 消费永久锁定**：`test_v7` / `test_red` 只做 provisional 诊断，
+  不写 usage ledger，不能用于排名或 final。
 - **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / v2 / v3
   只做历史对照。

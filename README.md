@@ -35,11 +35,11 @@ python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO
 
-# test_v7 只给预注册 top 3 跑一次（默认 50 fields）
+# test_v7 永久锁定为 provisional（不会消费；默认 50 fields）
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 2048 --no-consume
 
-# 只验证 pipeline，不消费 test_v7
+# 只验证 pipeline，同样不会消费 test_v7
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 1 --n 256 --workers 4 \
   --no-consume --out /tmp/test_v7_smoke.json
@@ -102,7 +102,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 
 | 阶段 | 结论 |
 |---|---|
-| Protocol v4 split | **启用**；977 configs + 新风格/Axelrod/complex/policy；test_v7 未消费 |
+| Protocol v4 split | **启用**；977 configs + 新风格/Axelrod/complex/policy；test 消费永久锁定 |
 | Protocol v4 baseline | **未运行**（本次不测试）；v3 baseline 仅作 legacy |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

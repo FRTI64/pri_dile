@@ -28,11 +28,11 @@
 | 第二候选 / fallback | `rl-hard60`（A60） |
 | 测试 | v3 时 204 tests；v4 改动后未运行（按要求） |
 | 注册候选 | 20 个（`python3 -m ipd list-policies`） |
-| 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final |
+| 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
 | Protocol v4 baseline | **未运行**；v3 的 484.32/476.54/471.44 只作 legacy |
-| held-out | `test_v7` 未消费；下一个候选可用一次；v2/v3 已进入 legacy |
+| held-out | test 消费永久锁定（provisional only）；v2/v3 已进入 legacy |
 | 已知未解决 | anti-exploitation；Red-v5/v6 仍 100% 击败 top 3 |
 
 推荐、权重、风险和 promotion 条件以

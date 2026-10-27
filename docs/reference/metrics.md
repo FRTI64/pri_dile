@@ -53,7 +53,7 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `dev_ood` | dev / complex / family / Axelrod 的偏移混合 | 选模 / OOD |
 | `dev_level0..4` | 按思考等级划分的派生对手集 | 选模 / 分级诊断 |
 | `dev_complexity0..4` | 按策略复杂度划分的派生对手集 | 选模 / 复杂度诊断 |
-| `test_v7` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 一次性 final |
+| `test_v7` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 永久 held-out（provisional only） |
 
 - 默认 2048 人，dev 30 fields，test 50 fields。
 - 具体 config 不跨层；`test_v7` 的 test-only family 不出现在 train/dev。
@@ -111,7 +111,7 @@ CC = 6, CD = 0, DC = 10, DD = 1
 
 旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2/v3 已进入 legacy。
 新候选使用 Protocol v4：`dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final。
+`dev_axelrod` / `dev_ood` 选模；test 消费永久锁定，只能做 provisional 诊断。
 
 ## 7. 协议差异速查
 

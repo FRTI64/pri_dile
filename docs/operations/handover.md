@@ -13,7 +13,7 @@
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
 > - **v4 baseline 尚未运行**；v3 的 RL-Repair 484.32 / A60 476.54 /
->   Adv-RL 471.44 只作 legacy。`test_v7` 未消费。
+>   Adv-RL 471.44 只作 legacy。test 消费已永久锁定（provisional only）。
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 > - 最近提交：`git log -1`（Protocol v4 Axelrod/scale）。
 
@@ -37,13 +37,13 @@ python3 -m ipd protocol eval --candidates all \
   --fields 30 --n 2048 --workers 20 --seed 20261027 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 
-# 3. test_v7：只对预注册 top 3 跑一次
+# 3. test_v7：永久 provisional，不会消费
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 50 --n 2048 --workers 20 \
-  --seed 20261027 --acknowledge-once \
-  --out results/protocol_v4/protocol_v4_test.json
+  --seed 20261027 --no-consume \
+  --out results/protocol_v4/protocol_v4_test_provisional.json
 
-# 3.1 只验证 pipeline，不消费 test_v7
+# 3.1 只验证 pipeline，同样不会消费 test_v7
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 1 --n 256 --workers 4 \
   --no-consume --out /tmp/test_v7_smoke.json
@@ -59,7 +59,7 @@ python3 -m ipd protocol eval --candidates all \
 # 5. red（diagnostic / final）
 python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
-  --seeds 30 --acknowledge-once
+  --seeds 30 --no-consume
 ```
 
 规则：
@@ -67,10 +67,12 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 - `dev_param` 是主排序；`dev_family` / `dev_complex` / `dev_axelrod` /
   `dev_ood` 是门禁；`dev_level0..4` / `dev_complexity0..4` 用于分级诊断；
 - 必须同时看 per-family、`min_norm`、`worst_family`；
-- `test_v7` 尚未消费；消费后下一个候选需要 `test_v8`；
-- `--no-consume` 只用于 pipeline 烟测，结果 `selection_eligible=false`，
-  不写 usage ledger；不要用它做排名；
-- usage ledger：`results/protocol_v4/usage.json`；
+- `test_v7` / `test_red` 由
+  `configs/splits/protocol_v4/test_policy.json` 永久锁定
+  （`consume_test=false`）；所有 test 运行都是 provisional，
+  `selection_eligible=false`，CLI 没有覆盖开关；
+- `--acknowledge-once` / `--force` 不能解锁 test 消费；
+- usage ledger：`results/protocol_v4/usage.json`（test 锁定后不会新增）；
 - manifest：`configs/splits/protocol_v4/manifest.json`；
 - 旧 `official` / `blind` / v2 只能作为 legacy 对照，不能与新表混用。
 
@@ -92,8 +94,9 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
 `dev_axelrod` / `dev_ood` 上重新验证 RL-Repair，再确认 C++ 导出、第 1/100 天
-行为、权重 checksum；`test_v7` 尚未消费，可用于一次独立 final。得到确认后才
-把 `weights/rl_policy_weights.json` 替换为 RL-Repair。当前文档不假设已经替换。
+行为、权重 checksum。test 消费已在 policy 层永久关闭，provisional test 不能
+当作独立 final；promotion 以 dev 复现和外部比赛结果为准。得到确认后才把
+`weights/rl_policy_weights.json` 替换为 RL-Repair。当前文档不假设已经替换。
 
 ---
 
@@ -116,10 +119,11 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | `dev_ood` | 选模（偏移混合） | 30 fields × 2048 |
 | `dev_level0..4` | 思考等级分级诊断 | 30 fields × 2048 |
 | `dev_complexity0..4` | 策略复杂度分级诊断 | 30 fields × 2048 |
-| `test_v7` | 一次性 final | 50 fields × 2048 |
+| `test_v7` | 永久 held-out（provisional only） | 50 fields × 2048 |
 | `dev_red` / `test_red` | exploitability | 30 seeds |
 
-`test_v7` **尚未消费**；消费后下一个候选需要 `test_v8`。
+`test_v7` / `test_red` **永久锁定**：所有运行都是 provisional，不写 usage
+ledger，不能用于排名或 final。
 
 v4 baseline **尚未运行**。下面是 legacy v3 baseline（20/40 fields × 299），
 仅用于历史对照：
@@ -322,7 +326,7 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 224 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
   opponent；每个 entry 带 `thinking_level` / `complexity` 0–4；
 - 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
-- **baseline 尚未运行**（按要求不做测试）；`test_v7` 未消费；
+- **baseline 尚未运行**（按要求不做测试）；test 消费永久锁定；
 - Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；
 - 文档：`docs/reference/protocol-v4.md`，ADR 0007 / 0008。
 
@@ -457,11 +461,11 @@ python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO
 python3 -m ipd protocol eval --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 2048 --no-consume
 python3 -m ipd protocol red --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
   --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tier test_red --seeds 30 --acknowledge-once
+  --tier test_red --seeds 30 --no-consume
 ```
 
 Legacy 四分布 / blind（只用于历史复现）：
@@ -610,7 +614,7 @@ mine/theirs = 到此日之前的动作
    2048 人、dev 30 fields、test 50 fields。
 6. **split 已重划**：`heldout_v2` 已泄漏，`heldout_v3` 已被 E1c 使用，
    `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v4。
-   `test_v7` 尚未消费；v3 的 `test_v6` 已消费。
+   v4 test 消费已永久锁定；v3 的 `test_v6` 已消费。
 7. **SelfPlay 不是 anti-exploitation 证据**：final test 中的 held-out red
    是 RL-BC 互惠型对照，不能证明能防针对性 red。
 8. **GRU / SelfPlay-GRU 有状态**：每场必须 `reset()`；同一时间步不要重复
@@ -640,8 +644,8 @@ mine/theirs = 到此日之前的动作
 - [ ] 运行 `python3 -m ipd protocol audit`，确认 manifest / family / config
       无泄漏。
 - [ ] 对学习策略跑 `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood`
-      （2048 人 / 30 fields）；`test_v7` 只给预注册 top 3 跑一次，并检查
-      usage ledger。
+      （2048 人 / 30 fields）；`test_v7` 只做 provisional 诊断，不会写
+      usage ledger，也不能用于选模。
 - [ ] 检查第 1 天、第 100 天和“对手未 D 时 C”的安全规则。
 - [ ] 确认 GRU / SelfPlay 每场 `reset()`，同一时间步只调用一次。
 - [ ] 若提交 C++，刷新权重头文件并重新编译；Triple 需要自行移植。

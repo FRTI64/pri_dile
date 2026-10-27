@@ -16,9 +16,10 @@ from .metagame import (
 )
 from .opponent_suite import build_suite, suite_names
 from .protocol import (
-    PROTOCOL_NAME, TEST_TIER, audit_protocol, build_catalog,
-    build_protocol_field, build_training_field, catalog_sha256,
-    protocol_manifest,
+    PROTOCOL_NAME, TEST_POLICY_PATH, TEST_TIER, audit_protocol,
+    build_catalog, build_protocol_field, build_training_field,
+    catalog_sha256, load_test_policy, protocol_manifest,
+    test_consumption_allowed,
 )
 
 __all__ = [
@@ -30,6 +31,7 @@ __all__ = [
     "quantile", "multi_objective_fitness", "seed_map",
     "antisymmetrize", "elo_ratings", "exploitability", "fictitious_play",
     "nash_average", "build_suite", "suite_names", "PROTOCOL_NAME",
-    "TEST_TIER", "audit_protocol", "build_catalog", "build_protocol_field",
-    "build_training_field", "catalog_sha256", "protocol_manifest",
+    "TEST_TIER", "TEST_POLICY_PATH", "audit_protocol", "build_catalog",
+    "build_protocol_field", "build_training_field", "catalog_sha256",
+    "load_test_policy", "protocol_manifest", "test_consumption_allowed",
 ]

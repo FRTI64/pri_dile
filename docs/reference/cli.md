@@ -41,15 +41,15 @@ python3 -m ipd protocol eval --candidates all \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once \
-  --out results/protocol_v4/protocol_v4_test.json
+  --tiers test_v7 --fields 50 --n 2048 --no-consume \
+  --out results/protocol_v4/protocol_v4_test_provisional.json
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_complexity4 --fields 30 --n 2048
 python3 -m ipd protocol red --candidates all --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
-  --seeds 30 --acknowledge-once
+  --seeds 30 --no-consume
 ```
 
 参数：`--candidates`、`--tiers`（`dev_param` / `dev_family` /
@@ -57,8 +57,11 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 `dev_complexity0..4` / `test_v7`）、`--fields`、`--n`、
 `--rounds`、`--workers`、`--seed`、`--baseline`、`--acknowledge-once`、
 `--force`、`--no-consume`、`--out`。默认 `n=2048`、dev 30 fields、
-test 50 fields；`test_v7` 必须显式确认并写入 usage ledger，或使用
-`--no-consume` 做不消费 test 的 pipeline 烟测。详见
+test 50 fields。`test_v7` / `test_red` 由
+`configs/splits/protocol_v4/test_policy.json` 永久锁定
+（`consume_test=false`），CLI 没有覆盖开关；test 运行必须显式传
+`--no-consume`，且一律 provisional、不写 usage ledger，
+`--acknowledge-once` / `--force` 不能解锁。详见
 [protocol-v4.md](protocol-v4.md)。
 
 ### benchmark（legacy）

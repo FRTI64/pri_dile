@@ -14,9 +14,12 @@
   family 增加新对手；新增 `train_axelrod` / `dev_axelrod` /
   `test_axelrod`；每个 entry 带 `thinking_level` / `complexity` 0–4，
   提供 `dev_level0..4` / `dev_complexity0..4` 和对应训练 profile；
-  默认 2048 人 / dev 30 fields / test 50 fields；final 为 `test_v7`。
-  新增 `protocol eval/red --no-consume`：test 烟测不写 usage ledger，
-  结果标记 `selection_eligible=false`。v4 baseline 尚未运行。
+  默认 2048 人 / dev 30 fields / test 50 fields；test tier 为 `test_v7`。
+  test 消费永久锁定：`configs/splits/protocol_v4/test_policy.json`
+  （`consume_test=false`）；CLI 无覆盖开关，test 运行必须显式传
+  `--no-consume`，一律 provisional、不写 usage ledger，结果标记
+  `selection_eligible=false`。
+  v4 baseline 尚未运行。
 - **Protocol v3**（legacy）：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
   532-config catalog、6 个 complex family、10 个 policy opponent；
   `train` / `dev_param` / `dev_family` / `dev_complex` / `dev_ood` /

@@ -18,7 +18,8 @@ Design
 * ``test_v7`` is a weighted field: 30% seen-family test configs, 20%
   test-only adversarial families, 15% complex families, 10% policy opponents,
   15% Axelrod opponents and 10% anchors.  It is guarded by a usage ledger and
-  must be consumed once per candidate family.
+  by ``test_policy.json``; Protocol v4 locks consumption, so CLI test runs are
+  provisional unless the policy is explicitly changed.
 * Training profiles (``train_v3`` / ``train_easy`` / ``train_hard`` /
   ``train_complex`` / ``train_policy``) provide different curricula over the
   same frozen catalog.
@@ -353,6 +354,7 @@ AXELROD_LEVELS: dict[str, int] = {
 
 MANIFEST_PATH = CONFIG_DIR / "splits" / PROTOCOL_NAME / "manifest.json"
 USAGE_PATH = RESULTS_DIR / PROTOCOL_NAME / "usage.json"
+TEST_POLICY_PATH = CONFIG_DIR / "splits" / PROTOCOL_NAME / "test_policy.json"
 
 # Red policy pools.  These are the P3 held-out reds; they are disjoint between
 # dev and test but are legacy artifacts, so the audit reports a warning until a
@@ -2405,6 +2407,40 @@ def _usage_target(path: str | Path | None) -> Path:
     return Path(path) if path is not None else USAGE_PATH
 
 
+def load_test_policy(path: str | Path | None = None) -> dict[str, Any]:
+    """Load the test-consumption policy, failing closed.
+
+    The policy is deliberately separate from the CLI so a test run cannot
+    consume a held-out tier just because a flag was forgotten.  Missing,
+    unreadable or malformed policy files all mean "locked".
+    """
+    target = Path(path) if path is not None else TEST_POLICY_PATH
+    locked = {
+        "schema": "ipd-protocol-test-policy-v1",
+        "protocol": PROTOCOL_NAME,
+        "consume_test": False,
+        "reason": f"test policy {target} is missing or unreadable; "
+                  "test consumption is locked",
+    }
+    if not target.exists():
+        return locked
+    try:
+        data = json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return locked
+    if not isinstance(data, dict):
+        return locked
+    data.setdefault("schema", "ipd-protocol-test-policy-v1")
+    data.setdefault("protocol", PROTOCOL_NAME)
+    data.setdefault("consume_test", False)
+    return data
+
+
+def test_consumption_allowed(path: str | Path | None = None) -> bool:
+    """Return True only if the policy explicitly unlocks test consumption."""
+    return load_test_policy(path).get("consume_test") is True
+
+
 def load_usage(path: str | Path | None = None) -> dict[str, Any]:
     target = _usage_target(path)
     if not target.exists():
@@ -2432,15 +2468,24 @@ def guard_test_usage(candidate: str, *, path: str | Path | None = None,
              and not e.get("contaminated")]
     if prior and not force:
         raise RuntimeError(
-            f"{candidate!r} already consumed test_v5; pass --force to rerun "
+            f"{candidate!r} already consumed {tier}; pass --force to rerun "
             "and mark the result contaminated")
     return data
 
 
 def record_usage(tier: str, candidate: str, result_path: str, *,
                  path: str | Path | None = None, force: bool = False,
-                 note: str = "") -> Path:
-    """Append one usage entry; a forced rerun is marked contaminated."""
+                 note: str = "", allow_locked: bool = False) -> Path:
+    """Append one usage entry; a forced rerun is marked contaminated.
+
+    The test policy is enforced here as well as in the CLI so direct callers
+    cannot consume a held-out tier while the lock is active.  Low-level
+    tooling/tests can pass ``allow_locked=True`` explicitly.
+    """
+    if not allow_locked and not test_consumption_allowed():
+        raise RuntimeError(
+            f"test consumption is locked by {TEST_POLICY_PATH}; refusing to "
+            "write the usage ledger")
     data = load_usage(path)
     contaminated = bool(force and any(
         e.get("tier") == tier and e.get("candidate") == candidate
@@ -2468,7 +2513,9 @@ __all__ = [
     "AXELROD_EXTRA", "AXELROD_MIXES", "PROTOCOL_N_PLAYERS", "DEV_FIELDS",
     "TEST_FIELDS",
     "DEV_ONLY_FAMILIES", "TEST_ONLY_FAMILIES", "MANIFEST_PATH",
-    "USAGE_PATH", "OpponentConfig", "MirrorAdaptive", "DelayedGrim",
+    "USAGE_PATH", "TEST_POLICY_PATH", "load_test_policy",
+    "test_consumption_allowed", "OpponentConfig", "MirrorAdaptive",
+    "DelayedGrim",
     "PhaseSwitcher", "AdaptiveMix", "ProbeExploit", "DelayedExtort",
     "MemoryTwo", "MetaMix", "NoiseAdaptive", "ReputationGrim",
     "ContritionCycle", "EndgameHunter", "PatternBreaker",

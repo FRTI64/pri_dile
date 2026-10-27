@@ -19,7 +19,7 @@ v4 增加：
 - **15 个 AxelrodMix 组合**（每场从 2–4 个 Axelrod 策略中抽一个）；
 - `dev_axelrod` / `train_axelrod`；
 - 默认赛场扩大到 **2048 人（2000+）**，dev **30 fields**，test **50 fields**；
-- final 改为 `test_v7`。
+- final 改为 `test_v7`；v4 起 test 消费永久锁定，只做 provisional 诊断。
 
 catalog 从 532 扩到 **977 个 config**，并新增 8 个复杂/高阶 family 和一批
 旧 family 的新对手；另外按 **thinking level 0–4** 和 **complexity 0–4**
@@ -35,7 +35,7 @@ catalog 从 532 扩到 **977 个 config**，并新增 8 个复杂/高阶 family 
 | `dev_complex` | 选模：复杂 family | 14 个 complex family | 39 + 5 |
 | `dev_axelrod` | 选模：Axelrod | Axelrod 策略 + 组合 | 36 + 5 |
 | `dev_ood` | 选模：偏移混合 | dev / complex / family / Axelrod | - |
-| `test_v7` | 一次性 final | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 40 + 6 + 36 + 5 |
+| `test_v7` | 永久 held-out（provisional only） | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 40 + 6 + 36 + 5 |
 
 固定 anchor：`AllC`、`AllD`、`TFT`、`Grim`、`Random.50`。
 
@@ -188,13 +188,13 @@ python3 -m ipd protocol eval --candidates all \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 
-# test_v7：默认 2048 人 × 50 fields，top 3 一次性
+# test_v7：默认 2048 人 × 50 fields；永久 provisional，不会消费
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 50 --n 2048 --workers 20 \
-  --acknowledge-once \
-  --out results/protocol_v4/protocol_v4_test.json
+  --no-consume \
+  --out results/protocol_v4/protocol_v4_test_provisional.json
 
-# 只验证 pipeline，不消费 test_v7：
+# 只验证 pipeline，同样不会消费 test_v7：
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 1 --n 256 --workers 4 \
   --no-consume --out /tmp/test_v7_smoke.json
@@ -202,7 +202,7 @@ python3 -m ipd protocol eval --candidates <top3> \
 # red
 python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
-  --seeds 30 --acknowledge-once
+  --seeds 30 --no-consume
 ```
 
 ## 6. 选模规则
@@ -212,10 +212,13 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 3. `dev_axelrod` 看 Axelrod 泛化；
 4. `dev_ood` 看混合/偏移稳定性；
 5. 以 `dev_param` 为主排序，结合 `min_norm` / `worst_family`；
-6. 预注册 top 3 后才运行 `test_v7`；test 结果不参与下一轮调参。
+6. `test_v7` / `test_red` 只做 provisional 诊断；test 结果不参与选模或调参。
 
-`--no-consume` 只用于 pipeline 烟测：不写 usage ledger、不消费 test，但结果
-会标记 `selection_eligible=false`，不能用于排名或选模。
+`configs/splits/protocol_v4/test_policy.json` 将 `consume_test` 固定为
+`false`，CLI 没有覆盖开关。test 运行必须显式传 `--no-consume`，结果会标记
+`usage_consumed=false`、`selection_eligible=false`，并写入
+`*_test_provisional.json` / `*_provisional.json`。`--acknowledge-once` /
+`--force` 不能解锁；policy 缺失或损坏时也按锁定处理。
 
 ## 7. 当前限制
 
@@ -227,5 +230,5 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
   只在定向分析时使用。
-- `test_v7` 一旦消费，下一候选需要新建 `test_v8`。
+- test 消费已永久锁定；`test_v7` / `test_red` 只作 provisional 诊断。
 - Red-v5 / Red-v6 仍是 P3 legacy artifact；anti-exploitation 未解决。
