@@ -10,7 +10,7 @@
 > - 最近完整测试为 v3 的 **204 tests OK**；v4 改动后未运行测试（按要求）。
 >   `python3 -m ipd list-policies`：20 个注册候选。
 > - **Protocol v4 已定义**：597 configs；50 Axelrod 策略 + 15 组合；
->   499 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
+>   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
 > - **v4 baseline 尚未运行**；v3 的 RL-Repair 484.32 / A60 476.54 /
 >   Adv-RL 471.44 只作 legacy。`test_v7` 未消费。
@@ -34,12 +34,12 @@ python3 -m ipd protocol audit
 # 2. dev 选模：所有候选，五个 validation tier
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
-  --fields 30 --n 499 --workers 20 --seed 20261027 --baseline RL-PPO \
+  --fields 30 --n 2048 --workers 20 --seed 20261027 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 
 # 3. test_v7：只对预注册 top 3 跑一次
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 499 --workers 20 \
+  --tiers test_v7 --fields 50 --n 2048 --workers 20 \
   --seed 20261027 --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
 
@@ -94,12 +94,12 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 
 | 层 | 用途 | 规模 |
 |---|---|---|
-| `dev_param` | 选模（标准 + Axelrod 参数 held-out） | 30 fields × 499 |
-| `dev_family` | 选模（family held-out） | 30 fields × 499 |
-| `dev_complex` | 选模（complex family） | 30 fields × 499 |
-| `dev_axelrod` | 选模（Axelrod） | 30 fields × 499 |
-| `dev_ood` | 选模（偏移混合） | 30 fields × 499 |
-| `test_v7` | 一次性 final | 50 fields × 499 |
+| `dev_param` | 选模（标准 + Axelrod 参数 held-out） | 30 fields × 2048 |
+| `dev_family` | 选模（family held-out） | 30 fields × 2048 |
+| `dev_complex` | 选模（complex family） | 30 fields × 2048 |
+| `dev_axelrod` | 选模（Axelrod） | 30 fields × 2048 |
+| `dev_ood` | 选模（偏移混合） | 30 fields × 2048 |
+| `test_v7` | 一次性 final | 50 fields × 2048 |
 | `dev_red` / `test_red` | exploitability | 30 seeds |
 
 `test_v7` **尚未消费**；消费后下一个候选需要 `test_v8`。
@@ -304,7 +304,7 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 新 catalog 597 configs，manifest `d6a674aa...`；
 - 50 个 Axelrod 策略 + 15 个 AxelrodMix；6 个 complex family、10 个 policy
   opponent；
-- 新增 `dev_axelrod` / `train_axelrod`；默认 499 人 / dev 30 / test 50；
+- 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
 - **baseline 尚未运行**（按要求不做测试）；`test_v7` 未消费；
 - Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；
 - 文档：`docs/reference/protocol-v4.md`，ADR 0007。
@@ -438,9 +438,9 @@ Protocol v4（当前主口径）：
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
-  --fields 30 --n 499 --workers 20 --baseline RL-PPO
+  --fields 30 --n 2048 --workers 20 --baseline RL-PPO
 python3 -m ipd protocol eval --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tiers test_v7 --fields 50 --n 499 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
 python3 -m ipd protocol red --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
   --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
@@ -590,7 +590,7 @@ mine/theirs = 到此日之前的动作
 4. **RL 有尾部风险**：最终从零 RL 在 `Rand3->TFT` 上约 347（BC 约 554），
    `Extort3`、`Random.50/70` 也可能回退；`ProbeBot` 已修复到约 603。
 5. **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 默认
-   499 人、dev 30 fields、test 50 fields。
+   2048 人、dev 30 fields、test 50 fields。
 6. **split 已重划**：`heldout_v2` 已泄漏，`heldout_v3` 已被 E1c 使用，
    `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v4。
    `test_v7` 尚未消费；v3 的 `test_v6` 已消费。
@@ -623,7 +623,7 @@ mine/theirs = 到此日之前的动作
 - [ ] 运行 `python3 -m ipd protocol audit`，确认 manifest / family / config
       无泄漏。
 - [ ] 对学习策略跑 `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood`
-      （499 人 / 30 fields）；`test_v7` 只给预注册 top 3 跑一次，并检查
+      （2048 人 / 30 fields）；`test_v7` 只给预注册 top 3 跑一次，并检查
       usage ledger。
 - [ ] 检查第 1 天、第 100 天和“对手未 D 时 C”的安全规则。
 - [ ] 确认 GRU / SelfPlay 每场 `reset()`，同一时间步只调用一次。

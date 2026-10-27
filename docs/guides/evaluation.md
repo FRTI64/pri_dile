@@ -15,9 +15,9 @@
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
-  --fields 30 --n 499 --baseline RL-PPO
+  --fields 30 --n 2048 --baseline RL-PPO
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 499 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
 ```
 
 | 目标 | 协议 | 命令 |

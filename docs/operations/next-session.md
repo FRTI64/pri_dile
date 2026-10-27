@@ -33,7 +33,7 @@
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
   `dev_complex` / `dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final；
-  499 人 / dev 30 / test 50）；旧四分布 / blind / v2 / v3 是 legacy。
+  2048 人 / dev 30 / test 50）；旧四分布 / blind / v2 / v3 是 legacy。
 - `test_v7` **尚未消费**；下一个通过 dev 的候选可用一次，之后需要 `test_v8`。
 - anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 
@@ -175,7 +175,7 @@ bash results/p2_repeated_calib_20261026/run.sh
   必须加入 red/exploiter pool。
 - **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
 - **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 用
-  499 人 / dev 30 fields / test 50 fields。
+  2048 人 / dev 30 fields / test 50 fields。
 - **`test_v7` 未消费**：只给预注册 top 3 用一次；之后下一个候选需要
   `test_v8`。
 - **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / v2 / v3

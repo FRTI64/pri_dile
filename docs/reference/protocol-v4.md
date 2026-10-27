@@ -18,7 +18,7 @@ v4 增加：
 - **50 个 Axelrod 4.14.0 策略**（经典、noisy、adaptive、ZD、meta、evolved）；
 - **15 个 AxelrodMix 组合**（每场从 2–4 个 Axelrod 策略中抽一个）；
 - `dev_axelrod` / `train_axelrod`；
-- 默认赛场扩大到 **499 人**，dev **30 fields**，test **50 fields**；
+- 默认赛场扩大到 **2048 人（2000+）**，dev **30 fields**，test **50 fields**；
 - final 改为 `test_v7`。
 
 catalog 从 532 扩到 **约 597 个 config**。
@@ -111,15 +111,15 @@ python3 -m ipd protocol manifest
 
 # manifest：configs/splits/protocol_v4/manifest.json
 # catalog sha256: d6a674aa...
-# dev：默认 499 人 × 30 fields
+# dev：默认 2048 人 × 30 fields
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
-  --fields 30 --n 499 --workers 20 --baseline RL-PPO \
+  --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 
-# test_v7：默认 499 人 × 50 fields，top 3 一次性
+# test_v7：默认 2048 人 × 50 fields，top 3 一次性
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 499 --workers 20 \
+  --tiers test_v7 --fields 50 --n 2048 --workers 20 \
   --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
 
@@ -141,7 +141,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 ## 7. 当前限制
 
 - 对手仍是合成/Axelrod 库；test_v7 不是真实 300 人比赛数据。
-- v4 的 499/30/50 规模尚未跑新 baseline；`results/protocol_v3/` 的
+- v4 的 2048/30/50 规模尚未跑新 baseline；`results/protocol_v3/` 的
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
   只在定向分析时使用。

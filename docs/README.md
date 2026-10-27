@@ -29,7 +29,7 @@
 | 测试 | v3 时 204 tests；v4 改动后未运行（按要求） |
 | 注册候选 | 20 个（`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final |
-| 规模 | 597 configs；499 人 / dev 30 / test 50；50 Axelrod + 15 组合 |
+| 规模 | 597 configs；2048 人 / dev 30 / test 50；50 Axelrod + 15 组合 |
 | Protocol v4 baseline | **未运行**；v3 的 484.32/476.54/471.44 只作 legacy |
 | held-out | `test_v7` 未消费；下一个候选可用一次；v2/v3 已进入 legacy |
 | 已知未解决 | anti-exploitation；Red-v5/v6 仍 100% 击败 top 3 |

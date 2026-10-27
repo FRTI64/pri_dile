@@ -53,7 +53,7 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `dev_ood` | dev / complex / family / Axelrod 的偏移混合 | 选模 / OOD |
 | `test_v7` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 一次性 final |
 
-- 默认 499 人，dev 30 fields，test 50 fields。
+- 默认 2048 人，dev 30 fields，test 50 fields。
 - 具体 config 不跨层；`test_v7` 的 test-only family 不出现在 train/dev。
 - complex family：`phase_switch`、`adaptive_mix`、`probe_exploit`、
   `delayed_extort`、`memory_two`、`meta_mix`。

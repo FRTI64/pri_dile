@@ -17,7 +17,7 @@ Protocol v3 的 532 个 config 仍以本地规则/策略为主，缺少 Axelrod 
    - 组合覆盖 TitForTat/Grudger/Adaptive、ZD、Meta、Evolved 等。
 3. 新增 `train_axelrod` / `dev_axelrod` / `test_axelrod` 分组；
    `train_v4` 和 `test_v7` 按比例混入 Axelrod。
-4. 默认赛场扩大：**499 人**，dev **30 fields**，test **50 fields**，
+4. 默认赛场扩大：**2048 人**，dev **30 fields**，test **50 fields**，
    red **30 seeds**。
 5. final 改为 `test_v7`；Axelrod 为可选依赖，缺失时 audit 给 warning，
    实际评估报清晰错误。

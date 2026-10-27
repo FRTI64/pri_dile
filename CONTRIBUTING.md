@@ -108,7 +108,7 @@ docs/decisions/      ADR
 ## 7. 评估与选模纪律
 
 - 新候选用 **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` /
-  `dev_axelrod` / `dev_ood` 选模；正式 dev 用 499 人 / 30 fields；
+  `dev_axelrod` / `dev_ood` 选模；正式 dev 用 2048 人 / 30 fields；
 - `test_v7` 尚未消费；消费后下一个候选需要 `test_v8`；
 - 学习策略默认 `sample`，`argmax` 只作对照；
 - 不混用 Protocol v4 与 legacy official/blind/heldout/v2/v3 数字；

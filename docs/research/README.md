@@ -16,7 +16,7 @@
 
 | 阶段 | 文档 | 结论 |
 |---|---|---|
-| Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | **已定义**；Axelrod + 499/30/50；baseline 未运行 |
+| Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | **已定义**；Axelrod + 2048/30/50；baseline 未运行 |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |

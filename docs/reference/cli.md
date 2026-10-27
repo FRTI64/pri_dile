@@ -38,10 +38,10 @@ python3 -m ipd protocol audit
 python3 -m ipd protocol manifest
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
-  --fields 30 --n 499 --workers 20 --baseline RL-PPO \
+  --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 499 --acknowledge-once \
+  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
 python3 -m ipd protocol red --candidates all --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
@@ -51,7 +51,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 参数：`--candidates`、`--tiers`（`dev_param` / `dev_family` /
 `dev_complex` / `dev_axelrod` / `dev_ood` / `test_v7`）、`--fields`、`--n`、
 `--rounds`、`--workers`、`--seed`、`--baseline`、`--acknowledge-once`、
-`--force`、`--out`。默认 `n=499`、dev 30 fields、test 50 fields；
+`--force`、`--out`。默认 `n=2048`、dev 30 fields、test 50 fields；
 `test_v7` 必须显式确认，并写入 usage ledger。详见
 [protocol-v4.md](protocol-v4.md)。
 

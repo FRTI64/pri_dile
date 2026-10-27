@@ -12,7 +12,7 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > - 最佳候选：`rl-repair`（RL-Repair），但**未 promotion**；
 > - fallback：`rl-hard60`（A60）；
 > - **Protocol v4**：597 configs；50 个 Axelrod 策略 + 15 个 AxelrodMix；
->   默认 499 人 / dev 30 fields / test 50 fields；
+>   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 baseline **尚未运行**（按本次要求不做测试）；v3 的 299/20/40 结果
 >   只作 legacy；
 > - 上次完整测试为 v3 的 204 tests；v4 改动后未运行测试；
@@ -28,15 +28,15 @@ python3 -m pip install -e .
 python3 -m ipd list-policies
 python3 -m ipd test
 
-# Protocol v4：审计 split，跑 dev 选模（默认 499 人 × 30 fields）
+# Protocol v4：审计 split，跑 dev 选模（默认 2048 人 × 30 fields）
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
-  --fields 30 --n 499 --workers 20 --baseline RL-PPO
+  --fields 30 --n 2048 --workers 20 --baseline RL-PPO
 
 # test_v7 只给预注册 top 3 跑一次（默认 50 fields）
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 499 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
 
 # 旧口径（legacy，仅历史复现）
 python3 -m ipd benchmark --candidates core --fields 8 --workers 8
@@ -50,7 +50,7 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 ## 当前候选（Protocol v4；下表是 legacy v3 baseline）
 
 下表是 **Protocol v3** 的 299/20/40 baseline，不是 v4 排名；v4 的
-499/30/50 baseline 尚未运行。完整 v3 表见
+2048/30/50 baseline 尚未运行。完整 v3 表见
 [results/protocol_v3/README.md](results/protocol_v3/README.md)。
 
 | 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_ood | test_v6 | 状态 |

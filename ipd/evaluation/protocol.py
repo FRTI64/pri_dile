@@ -73,7 +73,9 @@ SPLIT_TIERS = ("train", "dev_param", "dev_family", "dev_complex",
 
 # Larger default match sizes for Protocol v4.  The old v3 baseline used
 # 299/20/40; these constants make the new scale explicit for CLI and docs.
-PROTOCOL_N_PLAYERS = 499
+# 2048 opponents per field gives a 2000+ capacity while keeping field sizes
+# close to a power of two for deterministic sampling.
+PROTOCOL_N_PLAYERS = 2048
 DEV_FIELDS = 30
 TEST_FIELDS = 50
 
