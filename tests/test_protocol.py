@@ -171,6 +171,23 @@ class ProtocolCliTests(unittest.TestCase):
             self.assertEqual(payload["fields"], 1)
 
 
+class ProtocolNoConsumeCliTests(unittest.TestCase):
+    def test_test_tier_no_consume_is_provisional(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "test.json"
+            code = protocol_main([
+                "eval", "--candidates", "final-tuned",
+                "--tiers", TEST_TIER, "--fields", "1", "--n", "8",
+                "--workers", "1", "--seed", "123", "--no-consume",
+                "--out", str(out),
+            ])
+            self.assertEqual(code, 0)
+            payload = json.loads(out.read_text(encoding="utf-8"))
+            self.assertFalse(payload["usage_consumed"])
+            self.assertFalse(payload["selection_eligible"])
+            self.assertTrue(payload["no_consume"])
+
+
 class ProtocolRedCliTests(unittest.TestCase):
     def test_red_cli_writes_result(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

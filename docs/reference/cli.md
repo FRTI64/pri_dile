@@ -56,8 +56,9 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 `dev_complex` / `dev_axelrod` / `dev_ood` / `dev_level0..4` /
 `dev_complexity0..4` / `test_v7`）、`--fields`、`--n`、
 `--rounds`、`--workers`、`--seed`、`--baseline`、`--acknowledge-once`、
-`--force`、`--out`。默认 `n=2048`、dev 30 fields、test 50 fields；
-`test_v7` 必须显式确认，并写入 usage ledger。详见
+`--force`、`--no-consume`、`--out`。默认 `n=2048`、dev 30 fields、
+test 50 fields；`test_v7` 必须显式确认并写入 usage ledger，或使用
+`--no-consume` 做不消费 test 的 pipeline 烟测。详见
 [protocol-v4.md](protocol-v4.md)。
 
 ### benchmark（legacy）

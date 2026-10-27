@@ -15,7 +15,8 @@
   `test_axelrod`；每个 entry 带 `thinking_level` / `complexity` 0–4，
   提供 `dev_level0..4` / `dev_complexity0..4` 和对应训练 profile；
   默认 2048 人 / dev 30 fields / test 50 fields；final 为 `test_v7`。
-  v4 baseline 尚未运行（按要求不做测试）。
+  新增 `protocol eval/red --no-consume`：test 烟测不写 usage ledger，
+  结果标记 `selection_eligible=false`。v4 baseline 尚未运行。
 - **Protocol v3**（legacy）：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
   532-config catalog、6 个 complex family、10 个 policy opponent；
   `train` / `dev_param` / `dev_family` / `dev_complex` / `dev_ood` /

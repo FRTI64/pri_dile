@@ -43,6 +43,11 @@ python3 -m ipd protocol eval --candidates <top3> \
   --seed 20261027 --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
 
+# 3.1 只验证 pipeline，不消费 test_v7
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v7 --fields 1 --n 256 --workers 4 \
+  --no-consume --out /tmp/test_v7_smoke.json
+
 # 4. 按思考等级 / 复杂度分级
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048 \
@@ -63,6 +68,8 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
   `dev_ood` 是门禁；`dev_level0..4` / `dev_complexity0..4` 用于分级诊断；
 - 必须同时看 per-family、`min_norm`、`worst_family`；
 - `test_v7` 尚未消费；消费后下一个候选需要 `test_v8`；
+- `--no-consume` 只用于 pipeline 烟测，结果 `selection_eligible=false`，
+  不写 usage ledger；不要用它做排名；
 - usage ledger：`results/protocol_v4/usage.json`；
 - manifest：`configs/splits/protocol_v4/manifest.json`；
 - 旧 `official` / `blind` / v2 只能作为 legacy 对照，不能与新表混用。

@@ -39,6 +39,11 @@ python3 -m ipd protocol eval --candidates all \
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
 
+# 只验证 pipeline，不消费 test_v7
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v7 --fields 1 --n 256 --workers 4 \
+  --no-consume --out /tmp/test_v7_smoke.json
+
 # 按对手思考等级 / 策略复杂度
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048 \

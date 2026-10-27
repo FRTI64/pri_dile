@@ -194,6 +194,11 @@ python3 -m ipd protocol eval --candidates <top3> \
   --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
 
+# 只验证 pipeline，不消费 test_v7：
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v7 --fields 1 --n 256 --workers 4 \
+  --no-consume --out /tmp/test_v7_smoke.json
+
 # red
 python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
@@ -209,11 +214,15 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 5. 以 `dev_param` 为主排序，结合 `min_norm` / `worst_family`；
 6. 预注册 top 3 后才运行 `test_v7`；test 结果不参与下一轮调参。
 
+`--no-consume` 只用于 pipeline 烟测：不写 usage ledger、不消费 test，但结果
+会标记 `selection_eligible=false`，不能用于排名或选模。
+
 ## 7. 当前限制
 
 - 对手仍是合成/Axelrod 库；test_v7 不是真实 300 人比赛数据。
 - 224 个 Axelrod 策略里包含 evolved/meta 等较慢策略；完整 test_v7 会比 v3
-  慢，正式 final 前建议先用 `--fields 1 --n 256` 烟测。
+  慢，正式 final 前建议用 `--fields 1 --n 256 --no-consume` 做 pipeline
+  烟测。
 - v4 的 2048/30/50 规模尚未跑新 baseline；`results/protocol_v3/` 的
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
