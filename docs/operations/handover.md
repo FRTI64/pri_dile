@@ -9,7 +9,7 @@
 >   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 > - 最近完整测试为 v3 的 **204 tests OK**；v4 改动后未运行测试（按要求）。
 >   `python3 -m ipd list-policies`：20 个注册候选。
-> - **Protocol v4 已定义**：747 configs；12 complex 风格 + 50 Axelrod + 15 组合；
+> - **Protocol v4 已定义**：819 configs；14 complex 风格 + 66 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
 > - **v4 baseline 尚未运行**；v3 的 RL-Repair 484.32 / A60 476.54 /
@@ -43,7 +43,15 @@ python3 -m ipd protocol eval --candidates <top3> \
   --seed 20261027 --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
 
-# 4. red（diagnostic / final）
+# 4. 按思考等级 / 复杂度分级
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_level3 --fields 30 --n 2048 \
+  --out results/protocol_v4/protocol_v4_dev_level3.json
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_complexity4 --fields 30 --n 2048 \
+  --out results/protocol_v4/protocol_v4_dev_complexity4.json
+
+# 5. red（diagnostic / final）
 python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
   --seeds 30 --acknowledge-once
@@ -52,7 +60,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 规则：
 
 - `dev_param` 是主排序；`dev_family` / `dev_complex` / `dev_axelrod` /
-  `dev_ood` 是门禁；
+  `dev_ood` 是门禁；`dev_level0..4` / `dev_complexity0..4` 用于分级诊断；
 - 必须同时看 per-family、`min_norm`、`worst_family`；
 - `test_v7` 尚未消费；消费后下一个候选需要 `test_v8`；
 - usage ledger：`results/protocol_v4/usage.json`；
@@ -99,6 +107,8 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | `dev_complex` | 选模（complex family） | 30 fields × 2048 |
 | `dev_axelrod` | 选模（Axelrod） | 30 fields × 2048 |
 | `dev_ood` | 选模（偏移混合） | 30 fields × 2048 |
+| `dev_level0..4` | 思考等级分级诊断 | 30 fields × 2048 |
+| `dev_complexity0..4` | 策略复杂度分级诊断 | 30 fields × 2048 |
 | `test_v7` | 一次性 final | 50 fields × 2048 |
 | `dev_red` / `test_red` | exploitability | 30 seeds |
 
@@ -301,9 +311,9 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 
 ### Protocol v4（2026-10-27）
 
-- 新 catalog 747 configs，manifest `71492572...`；
-- 50 个 Axelrod 策略 + 15 个 AxelrodMix；12 个 complex family、10 个 policy
-  opponent；
+- 新 catalog 819 configs，manifest `5fa46ea7...`；
+- 66 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
+  opponent；每个 entry 带 `thinking_level` / `complexity` 0–4；
 - 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
 - **baseline 尚未运行**（按要求不做测试）；`test_v7` 未消费；
 - Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；

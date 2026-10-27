@@ -2,7 +2,7 @@
 
 100 天迭代囚徒困境（IPD）策略工具包：规则状态机、贝叶斯推断、多数投票融合、
 MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估以
-**Protocol v4**（747 configs / 新风格集 / Axelrod / 2048 人赛场）
+**Protocol v4**（819 configs / 新风格集 / Axelrod / 2048 人赛场）
 为主，另保留 legacy 四分布、
 blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 
@@ -11,7 +11,7 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
 > - 最佳候选：`rl-repair`（RL-Repair），但**未 promotion**；
 > - fallback：`rl-hard60`（A60）；
-> - **Protocol v4**：747 configs；12 个 complex 风格 + 50 个 Axelrod 策略 +
+> - **Protocol v4**：819 configs；14 个 complex 风格 + 66 个 Axelrod 策略 +
 >   15 个 AxelrodMix；
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 baseline **尚未运行**（按本次要求不做测试）；v3 的 299/20/40 结果
@@ -38,6 +38,14 @@ python3 -m ipd protocol eval --candidates all \
 # test_v7 只给预注册 top 3 跑一次（默认 50 fields）
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 50 --n 2048 --acknowledge-once
+
+# 按对手思考等级 / 策略复杂度
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_level3 --fields 30 --n 2048 \
+  --out results/protocol_v4/protocol_v4_dev_level3.json
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_complexity4 --fields 30 --n 2048 \
+  --out results/protocol_v4/protocol_v4_dev_complexity4.json
 
 # 旧口径（legacy，仅历史复现）
 python3 -m ipd benchmark --candidates core --fields 8 --workers 8
@@ -89,7 +97,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 
 | 阶段 | 结论 |
 |---|---|
-| Protocol v4 split | **启用**；747 configs + 新风格/Axelrod/complex/policy；test_v7 未消费 |
+| Protocol v4 split | **启用**；819 configs + 新风格/Axelrod/complex/policy；test_v7 未消费 |
 | Protocol v4 baseline | **未运行**（本次不测试）；v3 baseline 仅作 legacy |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |
@@ -98,7 +106,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | P3 red pool | red pool Go；league-lite / expansion Gate D **FAIL** |
 | P2 C1 / C2 / C3 | 全部 offline No-Go |
 | SelfPlay 改进 | No-Go；保留 21 维部署备选 |
-| Axelrod | **已接入 Protocol v4**：50 策略 + 15 组合；可选依赖 |
+| Axelrod | **已接入 Protocol v4**：66 策略 + 15 组合；可选依赖 |
 
 完整记录见 [docs/research/](docs/research/) 和
 `results/sweep_20261026/README.md`（66 候选 × 158 类对手）。

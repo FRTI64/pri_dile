@@ -68,8 +68,11 @@ TIER_NAMES = ("train", "dev_param", "dev_family", "dev_complex",
 DEV_TIERS = ("dev_param", "dev_family", "dev_complex", "dev_axelrod",
              "dev_ood", "dev_red")
 TEST_TIERS = (TEST_TIER, "test_red")
+LEVEL_TIERS = tuple(f"dev_level{i}" for i in range(5))
+COMPLEXITY_TIERS = tuple(f"dev_complexity{i}" for i in range(5))
 SPLIT_TIERS = ("train", "dev_param", "dev_family", "dev_complex",
-               "dev_axelrod", "dev_ood", TEST_TIER)
+               "dev_axelrod", "dev_ood", TEST_TIER) \
+    + LEVEL_TIERS + COMPLEXITY_TIERS
 
 # Larger default match sizes for Protocol v4.  The old v3 baseline used
 # 299/20/40; these constants make the new scale explicit for CLI and docs.
@@ -147,7 +150,8 @@ COMPLEX_FAMILIES = ("phase_switch", "adaptive_mix", "probe_exploit",
                     "delayed_extort", "memory_two", "meta_mix",
                     "noise_adaptive", "reputation_grim",
                     "contrition_cycle", "endgame_hunter",
-                    "pattern_breaker", "conditional_extort")
+                    "pattern_breaker", "conditional_extort",
+                    "lookahead", "portfolio")
 POLICY_FAMILIES = ("policy",)
 AXELROD_FAMILIES = ("axelrod", "axelrod_mix")
 
@@ -163,9 +167,15 @@ AXELROD_STRATEGIES = (
     "Bully", "Predator", "Ripoff", "SneakyTitForTat", "TrickyCooperator",
     "TrickyDefector", "Alternator", "CyclerCCD", "CyclerCCCD",
     "RandomTitForTat", "Random", "Defector", "Cooperator", "ZDExtort2",
-    "ZDExtort3", "ZDExtortion", "ZDGTFT2", "MetaMajority", "MetaWinner",
-    "MetaHunter", "EvolvedFSM16", "EvolvedANN", "PSOGambler1_1_1",
-    "Calculator", "OmegaTFT", "Stalker", "Thumper", "LimitedRetaliate",
+    "ZDExtort3", "ZDExtortion", "ZDGTFT2", "MetaHunter", "EvolvedFSM16",
+    "EvolvedANN", "PSOGambler1_1_1", "Calculator", "OmegaTFT", "Stalker",
+    "Thumper", "LimitedRetaliate",
+    # Fast high-level additions (no long-run Meta players).
+    "Winner12", "Winner21", "EvolvedHMM5", "EvolvedFSM16Noise05",
+    "EvolvedANNNoise05", "PSOGambler2_2_2", "PSOGamblerMem1",
+    "KnowledgeableWorseAndWorse", "ThueMorse", "ThueMorseInverse",
+    "LimitedRetaliate3", "Retaliate2", "Retaliate3", "HardTitFor2Tats",
+    "SlowTitForTwoTats2", "DynamicTwoTitsForTat", "MEM2", "ShortMem",
 )
 
 AXELROD_MIXES = (
@@ -174,10 +184,10 @@ AXELROD_MIXES = (
     ("GTFT", "FirmButFair", "Random"),
     ("GoByMajority", "HardGoByMajority", "SoftGrudger"),
     ("ZDExtort2", "ZDExtort3", "ZDExtortion"),
-    ("Adaptive", "EvolvedFSM16", "MetaMajority"),
+    ("Adaptive", "EvolvedFSM16", "Winner12"),
     ("TitForTat", "DoubleCrosser", "RemorsefulProber"),
     ("Forgiver", "Grumpy", "Predator"),
-    ("MetaWinner", "MetaHunter", "AdaptiveTitForTat"),
+    ("Winner21", "MetaHunter", "AdaptiveTitForTat"),
     ("Cooperator", "Defector", "Alternator"),
     ("TitFor2Tats", "TwoTitsForTat", "LimitedRetaliate"),
     ("RandomTitForTat", "SneakyTitForTat", "TrickyCooperator"),
@@ -185,6 +195,114 @@ AXELROD_MIXES = (
     ("ZDGTFT2", "OmegaTFT", "PSOGambler1_1_1"),
     ("TitForTat", "Grudger", "Forgiver", "Random"),
 )
+
+# Thinking-level ladder: 0 = non-strategic, 1 = fixed heuristic, 2 = reactive /
+# adaptive, 3 = meta / opponent-aware, 4 = search / ensemble / evolved.
+FAMILY_LEVELS: dict[str, int] = {
+    "anchor": 0,
+    "random": 0,
+    "nice": 1,
+    "forgiving": 1,
+    "punitive": 1,
+    "defect": 1,
+    "late": 1,
+    "noisy": 1,
+    "delayed_grim": 1,
+    "wild": 2,
+    "extort": 2,
+    "temporal": 2,
+    "memory_two": 2,
+    "noise_adaptive": 2,
+    "contrition_cycle": 2,
+    "adaptive": 3,
+    "phase_switch": 3,
+    "adaptive_mix": 3,
+    "probe_exploit": 3,
+    "delayed_extort": 3,
+    "reputation_grim": 3,
+    "endgame_hunter": 3,
+    "pattern_breaker": 3,
+    "conditional_extort": 3,
+    "lookahead": 4,
+    "portfolio": 4,
+    "axelrod": 2,
+    "axelrod_mix": 3,
+    "meta_mix": 4,
+    "policy": 4,
+    "early_harvest": 2,
+    "frequent_kamikaze": 2,
+    "probe_harvest": 3,
+    "hyper_extort": 2,
+    "early_probe": 2,
+    "adaptive_probe": 3,
+    "mirror_adaptive": 2,
+}
+
+# Strategy complexity is related but not identical to thinking level.
+FAMILY_COMPLEXITY: dict[str, int] = {
+    "anchor": 0,
+    "random": 0,
+    "nice": 1,
+    "forgiving": 1,
+    "punitive": 1,
+    "defect": 1,
+    "late": 1,
+    "noisy": 1,
+    "delayed_grim": 1,
+    "wild": 2,
+    "extort": 2,
+    "temporal": 2,
+    "memory_two": 2,
+    "noise_adaptive": 3,
+    "contrition_cycle": 3,
+    "adaptive": 3,
+    "phase_switch": 3,
+    "adaptive_mix": 4,
+    "probe_exploit": 3,
+    "delayed_extort": 2,
+    "reputation_grim": 3,
+    "endgame_hunter": 3,
+    "pattern_breaker": 4,
+    "conditional_extort": 4,
+    "lookahead": 4,
+    "portfolio": 4,
+    "axelrod": 2,
+    "axelrod_mix": 3,
+    "meta_mix": 4,
+    "policy": 4,
+    "early_harvest": 2,
+    "frequent_kamikaze": 2,
+    "probe_harvest": 3,
+    "hyper_extort": 2,
+    "early_probe": 2,
+    "adaptive_probe": 3,
+    "mirror_adaptive": 2,
+}
+
+AXELROD_LEVELS: dict[str, int] = {
+    "Cooperator": 0, "Defector": 0, "Random": 0, "Alternator": 0,
+    "CyclerCCD": 0, "CyclerCCCD": 0,
+    "TitForTat": 1, "TitFor2Tats": 1, "TwoTitsForTat": 1, "Grudger": 1,
+    "Forgiver": 1, "ForgivingTitForTat": 1, "GTFT": 1,
+    "ContriteTitForTat": 1, "FirmButFair": 1, "WinStayLoseShift": 1,
+    "GoByMajority": 1, "HardGoByMajority": 1, "SoftGrudger": 1,
+    "Grumpy": 1, "LimitedRetaliate": 1, "Retaliate2": 1, "Retaliate3": 1,
+    "HardTitFor2Tats": 1, "SlowTitForTwoTats2": 1,
+    "DynamicTwoTitsForTat": 1, "MEM2": 1, "ShortMem": 1,
+    "ThueMorse": 1, "ThueMorseInverse": 1,
+    "Prober": 2, "RemorsefulProber": 2, "NaiveProber": 2, "HardProber": 2,
+    "Adaptive": 2, "AdaptiveTitForTat": 2, "BackStabber": 2,
+    "DoubleCrosser": 2, "Bully": 2, "Predator": 2, "Ripoff": 2,
+    "SneakyTitForTat": 2, "TrickyCooperator": 2, "TrickyDefector": 2,
+    "RandomTitForTat": 2, "ZDExtort2": 2, "ZDExtort3": 2,
+    "ZDExtortion": 2, "ZDGTFT2": 2, "Calculator": 2, "OmegaTFT": 2,
+    "Stalker": 2, "Thumper": 2,
+    "MetaHunter": 3, "Winner12": 3, "Winner21": 3, "EvolvedFSM16": 3,
+    "EvolvedANN": 3, "KnowledgeableWorseAndWorse": 3,
+    "PSOGambler1_1_1": 3, "PSOGambler2_2_2": 3, "PSOGamblerMem1": 3,
+    "EvolvedHMM5": 4, "EvolvedFSM16Noise05": 4,
+    "EvolvedANNNoise05": 4,
+}
 
 MANIFEST_PATH = CONFIG_DIR / "splits" / PROTOCOL_NAME / "manifest.json"
 USAGE_PATH = RESULTS_DIR / PROTOCOL_NAME / "usage.json"
@@ -649,6 +767,103 @@ class ConditionalExtort(Strategy):
         return theirs[-1]
 
 
+class LookaheadOpponent(Strategy):
+    """High-level style: model opponent cooperation and look ahead."""
+
+    def __init__(self, window: int = 12, gamma: float = 0.9,
+                 horizon: int = 2, retaliation: float = 0.35,
+                 rng: random.Random | None = None):
+        self.window = int(window)
+        self.gamma = float(gamma)
+        self.horizon = int(horizon)
+        self.retaliation = float(retaliation)
+        super().__init__(rng)
+        self.name = f"Lookahead:{horizon}"
+
+    def reset(self) -> None:
+        self.p_coop = 0.5
+
+    def _future(self, p: float, depth: int) -> float:
+        if depth <= 0:
+            return 0.0
+        p_c = min(1.0, p + 0.10)
+        p_d = max(0.0, p - self.retaliation)
+        v_c = 6.0 * p + self.gamma * self._future(p_c, depth - 1)
+        v_d = 10.0 * p + 1.0 * (1.0 - p) \
+            + self.gamma * self._future(p_d, depth - 1)
+        return max(v_c, v_d)
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        if t == 0:
+            return C
+        recent = theirs[-self.window:]
+        observed = 1.0 - sum(1 for x in recent if x == D) / max(1, len(recent))
+        self.p_coop = 0.7 * self.p_coop + 0.3 * observed
+        p = self.p_coop
+        p_c = min(1.0, p + 0.10)
+        p_d = max(0.0, p - self.retaliation)
+        v_c = 6.0 * p + self.gamma * self._future(p_c, self.horizon - 1)
+        v_d = 10.0 * p + 1.0 * (1.0 - p) \
+            + self.gamma * self._future(p_d, self.horizon - 1)
+        return C if v_c >= v_d else D
+
+
+class VotingPortfolio(Strategy):
+    """High-level style: vote over a portfolio of simple strategies."""
+
+    def __init__(self, members: Sequence[str] = ("tft", "grim", "extort",
+                                                 "adaptive"),
+                 tie: str = "D", rng: random.Random | None = None):
+        self.members = tuple(str(x) for x in members)
+        self.tie = str(tie)
+        self.bots = []
+        super().__init__(rng)
+        self.name = "Portfolio:" + "/".join(self.members)
+
+    def _make_bot(self, mode: str):
+        if mode == "tft":
+            return TFT(self.rng)
+        if mode == "grim":
+            return Grim(self.rng)
+        if mode == "extort":
+            return ExtortZD(3.0, self.rng)
+        if mode == "harvest":
+            return HarvestFactor(30, True, 1.0, self.rng)
+        if mode == "adaptive":
+            return Responsive3(rng=self.rng)
+        if mode == "probe":
+            return TFTProbe(6, 2, True, self.rng)
+        if mode == "random":
+            return RandomMoves(0.5, self.rng)
+        if mode == "coop":
+            return AllC(self.rng)
+        return AllD(self.rng)
+
+    def reset(self) -> None:
+        self.bots = [self._make_bot(mode) for mode in self.members]
+        for bot in self.bots:
+            bot.reset()
+
+    def set_rounds(self, rounds: int) -> None:
+        for bot in self.bots:
+            if hasattr(bot, "set_rounds"):
+                bot.set_rounds(rounds)
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if t == 99:
+            return D
+        votes = [bot.act(t, mine, theirs) for bot in self.bots]
+        c = votes.count(C)
+        d = votes.count(D)
+        if c > d:
+            return C
+        if d > c:
+            return D
+        return C if self.tie == "C" else D
+
+
 class AxelrodMix(Strategy):
     """Complex family: one Axelrod strategy drawn per match."""
 
@@ -1007,6 +1222,17 @@ def _b_gradual(rng: random.Random) -> Strategy:
     return Gradual(rng)
 
 
+def _b_lookahead(rng: random.Random, window: int, gamma: float,
+                 horizon: int, retaliation: float) -> Strategy:
+    return LookaheadOpponent(int(window), float(gamma), int(horizon),
+                             float(retaliation), rng)
+
+
+def _b_portfolio(rng: random.Random, members: Sequence[str],
+                 tie: str) -> Strategy:
+    return VotingPortfolio(tuple(str(x) for x in members), str(tie), rng)
+
+
 def _b_axelrod(rng: random.Random, strategy: str) -> Strategy:
     from ..core.opponents.axelrod_bank import axelrod_by_name
 
@@ -1145,6 +1371,8 @@ _BUILDERS: dict[str, Callable[..., Strategy]] = {
     "PatternBreaker": _b_pattern_breaker,
     "ConditionalExtort": _b_conditional_extort,
     "Gradual": _b_gradual,
+    "LookaheadOpponent": _b_lookahead,
+    "VotingPortfolio": _b_portfolio,
     "Axelrod": _b_axelrod,
     "AxelrodMix": _b_axelrod_mix,
     "PolicyFinal": _b_policy_final,
@@ -1172,6 +1400,8 @@ class OpponentConfig:
     tier: str = "train"
     weight: float = 1.0
     anchor: bool = False
+    thinking_level: int = 1
+    complexity: int = 1
 
     @property
     def group(self) -> str:
@@ -1195,6 +1425,8 @@ class OpponentConfig:
             "tier": self.tier,
             "weight": self.weight,
             "anchor": self.anchor,
+            "thinking_level": self.thinking_level,
+            "complexity": self.complexity,
         }
 
 
@@ -1458,6 +1690,29 @@ def _catalog_specs() -> list[dict[str, Any]]:
             for chi in (2.5, 3.5):
                 _add(specs, "conditional_extort", "ConditionalExtort",
                      window=window, coop_threshold=coop, chi=chi)
+    for window in (8, 12, 20):
+        for gamma in (0.80, 0.92, 0.98):
+            for horizon in (2, 3):
+                for retaliation in (0.20, 0.40):
+                    _add(specs, "lookahead", "LookaheadOpponent",
+                         window=window, gamma=gamma, horizon=horizon,
+                         retaliation=retaliation)
+    portfolio_members = (
+        ("tft", "grim", "extort"),
+        ("tft", "extort", "adaptive"),
+        ("grim", "extort", "harvest"),
+        ("tft", "grim", "adaptive"),
+        ("extort", "harvest", "random"),
+        ("tft", "probe", "extort"),
+        ("coop", "grim", "extort"),
+        ("tft", "grim", "extort", "adaptive"),
+        ("tft", "harvest", "adaptive"),
+        ("grim", "harvest", "alld"),
+    )
+    for members in portfolio_members:
+        for tie in ("C", "D"):
+            _add(specs, "portfolio", "VotingPortfolio",
+                 members=members, tie=tie)
 
     # ------------------------------------------------------------------
     # Axelrod strategies and custom combinations
@@ -1563,6 +1818,18 @@ def _family_tiers(family: str, n: int) -> list[str]:
     return tiers
 
 
+def _entry_level(family: str, type_name: str) -> int:
+    if family == "axelrod":
+        return AXELROD_LEVELS.get(type_name, 2)
+    return FAMILY_LEVELS.get(family, 1)
+
+
+def _entry_complexity(family: str, type_name: str) -> int:
+    if family == "axelrod":
+        return min(4, AXELROD_LEVELS.get(type_name, 2) + 1)
+    return FAMILY_COMPLEXITY.get(family, 1)
+
+
 @lru_cache(maxsize=1)
 def build_catalog() -> tuple[OpponentConfig, ...]:
     """Build the deterministic, frozen opponent catalog."""
@@ -1585,6 +1852,8 @@ def build_catalog() -> tuple[OpponentConfig, ...]:
             entries.append(OpponentConfig(
                 key=row["key"], family=family, type_name=row["type_name"],
                 params=row["params"], tier=tier, weight=base,
+                thinking_level=_entry_level(family, row["type_name"]),
+                complexity=_entry_complexity(family, row["type_name"]),
             ))
 
     # Fixed anchors appear in every tier; their behaviour is identical, so
@@ -1601,7 +1870,7 @@ def build_catalog() -> tuple[OpponentConfig, ...]:
         entries.append(OpponentConfig(
             key=f"anchor:{name}", family="anchor",
             type_name=type_name, params=params, tier="anchor",
-            anchor=True, weight=1.0,
+            anchor=True, weight=1.0, thinking_level=0, complexity=0,
         ))
 
     entries.sort(key=lambda e: (e.tier, e.family, e.key))
@@ -1650,6 +1919,16 @@ def protocol_manifest() -> dict[str, Any]:
             "test_red": [dict(entry) for entry in TEST_RED_POOL],
         },
         "counts": catalog_counts(catalog),
+        "thinking_level_counts": {
+            str(level): sum(1 for entry in catalog
+                            if entry.thinking_level == level)
+            for level in range(5)
+        },
+        "complexity_counts": {
+            str(level): sum(1 for entry in catalog
+                            if entry.complexity == level)
+            for level in range(5)
+        },
         "entries": [entry.to_dict() for entry in catalog],
     }
 
@@ -1808,6 +2087,15 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
         if n < 3:
             warnings.append(f"small group {group!r}: {n} configs")
 
+    for level in range(5):
+        if not any(entry.thinking_level == level and not entry.anchor
+                   for entry in rows):
+            errors.append(f"empty thinking level: {level}")
+    for level in range(5):
+        if not any(entry.complexity == level and not entry.anchor
+                   for entry in rows):
+            errors.append(f"empty complexity level: {level}")
+
     manifest = read_manifest()
     manifest_check = verify_manifest()
     if manifest is not None and not manifest_check["ok"]:
@@ -1851,7 +2139,52 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
 # ---------------------------------------------------------------------------
 
 
+def _family_weights(rows: Sequence[OpponentConfig]) -> list[float]:
+    counts: dict[str, int] = {}
+    for entry in rows:
+        counts[entry.family] = counts.get(entry.family, 0) + 1
+    return [
+        FAMILY_WEIGHTS.get(entry.family, 1.0)
+        / max(1, counts[entry.family])
+        for entry in rows
+    ]
+
+
+def _sample_from_entries(rows: Sequence[OpponentConfig], seed: int,
+                         n: int) -> list[Strategy]:
+    weights = _family_weights(rows)
+    rng = random.Random(int(seed))
+    chosen = rng.choices(rows, weights=weights, k=int(n))
+    field: list[Strategy] = []
+    for entry in chosen:
+        bot = entry.build(random.Random(rng.randrange(1 << 30)))
+        bot.name = f"{entry.family}:{entry.key}"
+        bot.thinking_level = entry.thinking_level
+        bot.complexity = entry.complexity
+        field.append(bot)
+    return field
+
+
+def _derived_entries(tier: str) -> list[OpponentConfig] | None:
+    if tier in LEVEL_TIERS:
+        level = int(tier.rsplit("level", 1)[1])
+        return [entry for entry in build_catalog()
+                if entry.thinking_level == level
+                and entry.tier.startswith("dev") and not entry.anchor]
+    if tier in COMPLEXITY_TIERS:
+        level = int(tier.rsplit("complexity", 1)[1])
+        return [entry for entry in build_catalog()
+                if entry.complexity == level
+                and entry.tier.startswith("dev") and not entry.anchor]
+    return None
+
+
 def _weighted_entries(tier: str) -> tuple[list[OpponentConfig], list[float]]:
+    derived = _derived_entries(tier)
+    if derived is not None:
+        if not derived:
+            raise ValueError(f"derived tier {tier!r} has no configs")
+        return derived, _family_weights(derived)
     if tier not in TIER_GROUPS:
         raise ValueError(f"unknown protocol tier {tier!r}; "
                          f"choose from {tuple(TIER_GROUPS)}")
@@ -1901,6 +2234,8 @@ def build_protocol_field(tier: str, seed: int,
     for entry in chosen:
         bot = entry.build(random.Random(rng.randrange(1 << 30)))
         bot.name = f"{entry.family}:{entry.key}"
+        bot.thinking_level = entry.thinking_level
+        bot.complexity = entry.complexity
         field.append(bot)
     return field
 
@@ -1922,6 +2257,30 @@ def build_training_field(profile: str, seed: int,
                          n: int = PROTOCOL_N_PLAYERS
                          ) -> list[Strategy]:
     """Build a training profile (easy / hard / complex / policy mixture)."""
+    if profile.startswith("train_level"):
+        try:
+            level = int(profile.rsplit("level", 1)[1])
+        except ValueError as exc:
+            raise ValueError(f"bad training profile: {profile!r}") from exc
+        rows = [entry for entry in build_catalog()
+                if entry.thinking_level == level
+                and entry.tier in ("train", "train_complex",
+                                   "train_policy", "train_axelrod")]
+        if not rows:
+            raise ValueError(f"training profile {profile!r} has no configs")
+        return _sample_from_entries(rows, seed, n)
+    if profile.startswith("train_complexity"):
+        try:
+            level = int(profile.rsplit("complexity", 1)[1])
+        except ValueError as exc:
+            raise ValueError(f"bad training profile: {profile!r}") from exc
+        rows = [entry for entry in build_catalog()
+                if entry.complexity == level
+                and entry.tier in ("train", "train_complex",
+                                   "train_policy", "train_axelrod")]
+        if not rows:
+            raise ValueError(f"training profile {profile!r} has no configs")
+        return _sample_from_entries(rows, seed, n)
     if profile not in TRAIN_PROFILES:
         raise ValueError(f"unknown training profile {profile!r}; "
                          f"choose from {tuple(TRAIN_PROFILES)}")
@@ -1941,22 +2300,7 @@ def build_training_field(profile: str, seed: int,
                  else "train_axelrod")]
     if not rows:
         raise ValueError(f"training profile {profile!r} has no configs")
-    counts: dict[str, int] = {}
-    for entry in rows:
-        counts[entry.family] = counts.get(entry.family, 0) + 1
-    weights = [
-        FAMILY_WEIGHTS.get(entry.family, 1.0)
-        / max(1, counts[entry.family])
-        for entry in rows
-    ]
-    rng = random.Random(int(seed))
-    chosen = rng.choices(rows, weights=weights, k=int(n))
-    field: list[Strategy] = []
-    for entry in chosen:
-        bot = entry.build(random.Random(rng.randrange(1 << 30)))
-        bot.name = f"{entry.family}:{entry.key}"
-        field.append(bot)
-    return field
+    return _sample_from_entries(rows, seed, n)
 
 
 def red_pool(tier: str) -> tuple[dict[str, Any], ...]:
@@ -2045,8 +2389,10 @@ def record_usage(tier: str, candidate: str, result_path: str, *,
 
 __all__ = [
     "PROTOCOL_NAME", "PROTOCOL_VERSION", "TEST_TIER", "TIER_NAMES",
-    "DEV_TIERS", "TEST_TIERS", "SPLIT_TIERS", "TIER_GROUPS",
-    "FAMILY_WEIGHTS", "TRAIN_PROFILES", "ANCHORS", "COMPLEX_FAMILIES",
+    "DEV_TIERS", "TEST_TIERS", "SPLIT_TIERS", "LEVEL_TIERS",
+    "COMPLEXITY_TIERS", "TIER_GROUPS", "FAMILY_WEIGHTS",
+    "FAMILY_LEVELS", "FAMILY_COMPLEXITY", "AXELROD_LEVELS",
+    "TRAIN_PROFILES", "ANCHORS", "COMPLEX_FAMILIES",
     "POLICY_FAMILIES", "AXELROD_FAMILIES", "AXELROD_STRATEGIES",
     "AXELROD_MIXES", "PROTOCOL_N_PLAYERS", "DEV_FIELDS", "TEST_FIELDS",
     "DEV_ONLY_FAMILIES", "TEST_ONLY_FAMILIES", "MANIFEST_PATH",
@@ -2054,7 +2400,8 @@ __all__ = [
     "PhaseSwitcher", "AdaptiveMix", "ProbeExploit", "DelayedExtort",
     "MemoryTwo", "MetaMix", "NoiseAdaptive", "ReputationGrim",
     "ContritionCycle", "EndgameHunter", "PatternBreaker",
-    "ConditionalExtort", "AxelrodMix", "build_catalog",
+    "ConditionalExtort", "LookaheadOpponent", "VotingPortfolio",
+    "AxelrodMix", "build_catalog",
     "catalog_sha256", "catalog_counts", "protocol_manifest",
     "write_manifest", "read_manifest", "verify_manifest", "audit_protocol",
     "build_protocol_field", "build_training_field",

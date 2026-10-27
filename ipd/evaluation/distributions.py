@@ -29,9 +29,12 @@ DISTS = ("original", "late", "grim30", "wide")
 # tournament rules (4.14.0: Darwin only).
 AXELROD_DISTS = ("axelrod", "axelrod-fast", "axelrod-cheating")
 EVAL_DISTS = DISTS + AXELROD_DISTS
+PROTOCOL_LEVEL_TRAIN = tuple(f"train_level{i}" for i in range(5))
+PROTOCOL_COMPLEXITY_TRAIN = tuple(f"train_complexity{i}" for i in range(5))
 PROTOCOL_TRAIN_DISTS = ("train_v4", "train_v3", "train_easy",
                         "train_hard", "train_complex", "train_policy",
-                        "train_axelrod")
+                        "train_axelrod") + PROTOCOL_LEVEL_TRAIN \
+    + PROTOCOL_COMPLEXITY_TRAIN
 PROTOCOL_VAL_DISTS = ("dev_param", "dev_family", "dev_complex",
                       "dev_axelrod", "dev_ood")
 TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair") \
@@ -252,6 +255,7 @@ def sample_blind_field(seed: int, n: int = N_PLAYERS):
 
 __all__ = [
     "N_PLAYERS", "DISTS", "TRAIN_DISTS", "PROTOCOL_TRAIN_DISTS",
+    "PROTOCOL_LEVEL_TRAIN", "PROTOCOL_COMPLEXITY_TRAIN",
     "PROTOCOL_VAL_DISTS", "VALIDATION_DISTS", "AXELROD_DISTS", "EVAL_DISTS",
     "HIGH_GRIM_BASE", "ORIGINAL_SCENARIO_WEIGHTS", "HARD_OPPONENTS",
     "FAMILY_MULT", "EXTRA", "build_field", "build_dist_field",

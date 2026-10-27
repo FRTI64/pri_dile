@@ -43,13 +43,18 @@ python3 -m ipd protocol eval --candidates all \
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 50 --n 2048 --acknowledge-once \
   --out results/protocol_v4/protocol_v4_test.json
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_level3 --fields 30 --n 2048
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_complexity4 --fields 30 --n 2048
 python3 -m ipd protocol red --candidates all --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
   --seeds 30 --acknowledge-once
 ```
 
 参数：`--candidates`、`--tiers`（`dev_param` / `dev_family` /
-`dev_complex` / `dev_axelrod` / `dev_ood` / `test_v7`）、`--fields`、`--n`、
+`dev_complex` / `dev_axelrod` / `dev_ood` / `dev_level0..4` /
+`dev_complexity0..4` / `test_v7`）、`--fields`、`--n`、
 `--rounds`、`--workers`、`--seed`、`--baseline`、`--acknowledge-once`、
 `--force`、`--out`。默认 `n=2048`、dev 30 fields、test 50 fields；
 `test_v7` 必须显式确认，并写入 usage ledger。详见

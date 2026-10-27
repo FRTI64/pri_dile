@@ -33,7 +33,8 @@
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
   `dev_complex` / `dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final；
-  2048 人 / dev 30 / test 50）；旧四分布 / blind / v2 / v3 是 legacy。
+  另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /
+  test 50）；旧四分布 / blind / v2 / v3 是 legacy。
 - `test_v7` **尚未消费**；下一个通过 dev 的候选可用一次，之后需要 `test_v8`。
 - anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 
@@ -73,7 +74,8 @@ legacy，不能与新表混用。
 
 1. **比赛提交硬化（若近期提交）**
    - 在 v4 上重跑 RL-Repair 的 `dev_param` / `dev_family` /
-     `dev_complex` / `dev_axelrod` / `dev_ood`；
+     `dev_complex` / `dev_axelrod` / `dev_ood`；补跑
+     `dev_level0..4` / `dev_complexity0..4` 分级诊断；
    - `test_v7` 尚未消费；可用于一次独立 final，之后建 `test_v8`；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
@@ -91,7 +93,8 @@ legacy，不能与新表混用。
 ## 数据/评估纪律
 
 - 新候选用 `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
-  `dev_ood` 选模；`test_v7` 尚未消费。
+  `dev_ood` 选模；`dev_level0..4` / `dev_complexity0..4` 是分级诊断；
+  `test_v7` 尚未消费。
 - `test_v7` 消费后，下一个候选需要新建 `test_v8`，并重新走
   `protocol manifest` + `protocol audit`。
 - 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red

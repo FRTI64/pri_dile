@@ -51,6 +51,8 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `dev_complex` | complex family 的参数 held-out | 选模 / 复杂对手 |
 | `dev_axelrod` | Axelrod 策略 / 组合 | 选模 / Axelrod 泛化 |
 | `dev_ood` | dev / complex / family / Axelrod 的偏移混合 | 选模 / OOD |
+| `dev_level0..4` | 按思考等级划分的派生对手集 | 选模 / 分级诊断 |
+| `dev_complexity0..4` | 按策略复杂度划分的派生对手集 | 选模 / 复杂度诊断 |
 | `test_v7` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 一次性 final |
 
 - 默认 2048 人，dev 30 fields，test 50 fields。
@@ -58,9 +60,12 @@ CC = 6, CD = 0, DC = 10, DD = 1
 - complex family：`phase_switch`、`adaptive_mix`、`probe_exploit`、
   `delayed_extort`、`memory_two`、`meta_mix`、`noise_adaptive`、
   `reputation_grim`、`contrition_cycle`、`endgame_hunter`、
-  `pattern_breaker`、`conditional_extort`。
-- Axelrod：50 个策略 + 15 个 `AxelrodMix` 组合，需安装
+  `pattern_breaker`、`conditional_extort`、`lookahead`、`portfolio`。
+- Axelrod：66 个策略 + 15 个 `AxelrodMix` 组合，需安装
   `requirements-axelrod.txt`。
+- thinking level：0 非策略 / 1 固定启发式 / 2 反应自适应 /
+  3 对手感知 meta / 4 搜索/集成/学习。
+- complexity：0 无状态 / 1 简单反应 / 2 有状态 / 3 复合 / 4 高阶。
 - policy opponent：训练用 RL-BC / SelfPlay-BC / Neural / GRU；test 用
   Final-tuned / Triple / RL-scratch / SelfPlay / Neural-retrain / GRU-retrain。
 - 报告 `mean`、`min`、`p05`、per-family、`worst_family`、`min_norm`。

@@ -16,10 +16,11 @@ from ..paths import result_path
 from ..policies.registry import CandidateSpec, candidate_specs
 from .common import evaluate_field_details, quantile, run_match
 from .protocol import (
-    DEV_FIELDS, DEV_TIERS, PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS,
-    TEST_FIELDS, TEST_TIER, audit_protocol, build_protocol_field,
-    build_protocol_red_field, catalog_sha256, guard_test_usage,
-    record_usage, verify_manifest, write_manifest,
+    COMPLEXITY_TIERS, DEV_FIELDS, DEV_TIERS, LEVEL_TIERS,
+    PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_FIELDS, TEST_TIER,
+    audit_protocol, build_protocol_field, build_protocol_red_field,
+    catalog_sha256, guard_test_usage, record_usage, verify_manifest,
+    write_manifest,
 )
 
 DEV_DEFAULT = "dev_param,dev_family,dev_complex,dev_axelrod,dev_ood"
@@ -248,6 +249,9 @@ def _eval(argv: Sequence[str]) -> int:
     if out is None:
         if TEST_TIER in tiers:
             out = result_path(f"protocol_v4/{PROTOCOL_NAME}_test.json")
+        elif len(tiers) == 1 and tiers[0] in LEVEL_TIERS + COMPLEXITY_TIERS:
+            out = result_path(
+                f"protocol_v4/{PROTOCOL_NAME}_{tiers[0]}.json")
         else:
             out = result_path(f"protocol_v4/{PROTOCOL_NAME}_dev.json")
     out_path = Path(out)

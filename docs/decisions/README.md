@@ -15,6 +15,7 @@
 | [0006](0006-protocol-v3-complex-sets.md) | Protocol v3 扩大并复杂化 train/dev/test | Accepted |
 | [0007](0007-protocol-v4-axelrod-scale.md) | Protocol v4 接入 Axelrod 并扩大赛场 | Accepted |
 | [0008](0008-protocol-v4-style-expansion.md) | Protocol v4 新增风格集与旧 family 扩展 | Accepted |
+| [0009](0009-protocol-v4-level-complexity.md) | Protocol v4 按思考等级/复杂度划分对手集 | Accepted |
 
 ## 新 ADR 模板
 
