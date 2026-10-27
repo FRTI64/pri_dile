@@ -11,6 +11,7 @@
 | [0002](0002-no-promotion-without-reproduction.md) | 未独立复现不得替换主权重 | Accepted |
 | [0003](0003-anti-exploitation-unsolved.md) | 不把 red 训练收益当成 anti-exploitation | Accepted |
 | [0004](0004-archive-no-go-research.md) | No-Go 实验归档而非删除 | Accepted |
+| [0005](0005-protocol-v2-splits.md) | 用 Protocol v2 取代混用的 official / heldout 口径 | Accepted |
 
 ## 新 ADR 模板
 

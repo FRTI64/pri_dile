@@ -25,6 +25,7 @@ COMMANDS = {
     "benchmark": "four-distribution benchmark",
     "blind": "blind ranking on unseen fields",
     "eval-split": "per-candidate parameters + per-opponent result files",
+    "protocol": "Protocol v2 train/dev/test split audit and evaluation",
     "suite": "nine family-weighted suites",
     "matchup": "per-opponent-type matchup matrix",
     "league": "E0 cross-play / Nash / exploitability harness",
@@ -89,6 +90,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         from .evaluation.blind import main as run
     elif command in ("eval-split", "split-eval"):
         from .evaluation.split import main as run
+    elif command in ("protocol", "split-v2"):
+        from .evaluation.protocol_cli import main as run
     elif command == "suite":
         from .evaluation.suite import main as run
     elif command == "matchup":

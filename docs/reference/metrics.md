@@ -3,6 +3,10 @@
 本文定义分数、分布、指标和协议差异。跑命令见
 [../guides/evaluation.md](../guides/evaluation.md)。
 
+> **2026-10-27 起：Protocol v2 是新主口径。** `official` / `blind` 只保留
+> 为 legacy 诊断，不再作为 held-out 证据；详细 split 见
+> [protocol-v2.md](protocol-v2.md)。
+
 ## 1. 基础收益
 
 每轮收益：
@@ -36,6 +40,20 @@ CC = 6, CD = 0, DC = 10, DD = 1
 - `worst`：最差排名。
 
 默认 10 fields；当前正式比较建议 20。**10-field 与 20-field 不可直接比较。**
+
+## 3.1 Protocol v2（新主口径）
+
+| 层 | 含义 | 用途 |
+|---|---|---|
+| `train` | catalog 中 70% 参数 config + anchors | 训练 |
+| `dev_param` | catalog 中 15% 参数 config + anchors | 选模 |
+| `dev_family` | 训练中未出现的 family + anchors | 选模 / 病理检测 |
+| `test_v5` | 60% seen-family test + 25% test-only + 15% anchors | 一次性 final |
+
+- 具体 config 不跨层；`test_v5` 的 test-only family 不出现在 train/dev。
+- `test_v5` 用 manifest hash + usage ledger 锁定，同一候选只能消费一次。
+- 报告 `mean`、`min`、`p05`、per-family、`worst_family`、`min_norm`。
+- 旧的 `official` / `blind` 数字不能与 Protocol v2 数字混表。
 
 ## 4. suite
 
@@ -75,27 +93,30 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `red win` | red 胜率，越低越好 |
 | `exploitability` | 池内/red 对候选的最大可获利差 |
 
-`heldout_v2` 是 validation；`heldout_v3` 已被 E1c 一次性使用；
-`heldout_v4` 未使用，只留给下一个通过 validation 的候选做 final test。
+旧的 `heldout_v2/v3/v4` 与 `official/blind` 已进入 legacy。新候选使用
+Protocol v2：`dev_param` / `dev_family` 选模，`test_v5` 一次性 final。
 
 ## 7. 协议差异速查
 
-| 协议 | official | blind | policy seed | 用途 |
+| 协议 | 评估集 | fields | policy seed | 用途 |
 |---|---|---|---|---|
-| 标准 CLI | 20 fields × 299 | 10/20 fields | 默认独立 seed | 日常/复现 |
-| E0/E1c league | 20 fields × 299 | 20 fields | 固定 index-based seed | 候选冻结比较 |
-| suite | 9 个家族加权 | - | 默认 | 场景鲁棒性 |
-| matchup | 158 类 | - | 默认 | 逐类型/家族诊断 |
-| split | 每候选独立 | 每候选独立 | 可配置 | 多权重比较 |
+| **Protocol v2** | `dev_param` / `dev_family` / `test_v5` | 20 / 20 / 30 | 默认独立 seed | **新主口径** |
+| 标准 CLI（legacy） | official 四分布 | 20 | 默认独立 seed | 历史复现 |
+| E0/E1c league（legacy） | official + blind + heldout | 20 | 固定 index-based seed | 历史比较 |
+| suite | 9 个家族加权 | 12 | 默认 | 场景诊断 |
+| matchup | 158 类 | - | 默认 | 逐类型诊断 |
+| eval-split | 每候选独立 | 可配置 | 可配置 | 多权重比较 |
 
 同一候选在标准 CLI 与 league 上可能差 0.0x～1 分，这是 policy RNG 不同，
-不是数据错误。**任何跨表比较都必须先确认协议。**
+不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v2 与 legacy
+official/blind 的第一位数字不同是 split 不同，不是实现差异。
 
 ## 8. 报告最低要求
 
-- 协议：fields、n、seed、policy seed、suite；
-- official / blind / held-out；
-- per-family、`min_norm`、CVaR10；
-- E4 red blue / red win；
+- 协议：`protocol_v2` / legacy，fields、n、seed、policy seed、suite；
+- Protocol v2：`dev_param` / `dev_family` / `test_v5`，manifest hash；
+- per-family、`min_norm`、`worst_family`；
+- red：blue mean / red win / diff；
 - 权重 checksum 和配置路径；
+- test usage ledger 路径和是否 contaminated；
 - Go/No-Go 结论和失败原因。

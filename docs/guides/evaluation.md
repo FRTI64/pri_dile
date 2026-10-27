@@ -8,18 +8,38 @@
 
 ## 1. 先选协议
 
+**新候选默认走 Protocol v2**：`dev_param` / `dev_family` 选模，
+`test_v5` 只给预注册 top 3 跑一次。
+
+```bash
+python3 -m ipd protocol audit
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family --fields 20 --baseline RL-PPO
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v5 --fields 30 --acknowledge-once
+```
+
 | 目标 | 协议 | 命令 |
 |---|---|---|
-| 快速烟测 | 四分布，少 fields | `benchmark --fields 1..8` |
-| 正式四分布 | 20 fields × 299 | `benchmark --fields 20` |
-| 正式盲测 | 20 个未见 seed | `blind --fields 20` |
+| 正式选模 | Protocol v2 dev | `protocol eval --tiers dev_param,dev_family` |
+| 一次性 final | Protocol v2 test | `protocol eval --tiers test_v5 --acknowledge-once` |
+| 快速烟测 | 四分布（legacy），少 fields | `benchmark --fields 1..8` |
+| 历史四分布 | 20 fields × 299（legacy） | `benchmark --fields 20` |
+| 历史盲测 | 20 个未见 seed（legacy） | `blind --fields 20` |
 | 9 个场景加权 | suite | `suite --fields 12` |
 | 逐对手类型 | 158 类 × 10 家族 | `matchup --opponent-set all` |
 | 候选冻结对比 | E0/E1c league | `league --config ...` |
 | 每个候选独立参数 | eval-split | `eval-split --config ...` |
 
+Protocol v2 的 manifest 在 `configs/splits/protocol_v2/manifest.json`，
+test 使用记录在 `results/protocol_v2/usage.json`。审计失败（family 泄漏、
+config 重叠、manifest hash 不匹配）时不要继续跑 test。`test_v5` 已于
+2026-10-27 对 Adv-RL / RL-Repair / A60 消费一次；不要复用。详见
+[../reference/protocol-v2.md](../reference/protocol-v2.md)。
+
 **不要混表：**
 
+- Protocol v2 与旧 `official` / `blind` 不可直接比较；
 - 10-field 与 20-field blind 不可直接比较；
 - 标准 CLI（独立 policy seed）与 E0/E1c 冻结 league（固定 policy seed）会有
   0.0x～1 分差异；
@@ -123,8 +143,8 @@ python3 -m ipd league --config configs/eval/e0_league.json \
 以及 `min_norm_family`、CVaR、Nash/Elo/exploitability。详见
 [../research/e0-league.md](../research/e0-league.md)。
 
-`heldout_v3` 已被 E1c 一次性使用；下一个通过 validation 的候选只能用新的
-`heldout_v4` 做 final test。
+以上 league 输出是 legacy 口径。新候选使用 Protocol v2：`test_v5` 已消费，
+下一个通过 dev 的候选需要新建 `test_v6`。
 
 ## 7. 拆分评估
 

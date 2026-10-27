@@ -1,0 +1,136 @@
+{
+  "schema": "ipd-protocol-eval-v1",
+  "protocol": "protocol_v2",
+  "catalog_sha256": "096498df11792b5b84fc1cbffb0e16a0a2ad6d7a1f77bc233fdb162eda6e074b",
+  "created": "2026-10-27T15:06:37",
+  "seconds": 9.68,
+  "tiers": [
+    "test_v5"
+  ],
+  "fields": 30,
+  "n": 299,
+  "rounds": 100,
+  "seed": 20261027,
+  "baseline": null,
+  "candidates": [
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-repair",
+      "name": "RL-Repair",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-hard60",
+      "name": "RL-PPO-Hard60",
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ],
+  "results": {
+    "Adv-RL": {
+      "test_v5": {
+        "fields": 30,
+        "mean": 534.2374581939799,
+        "min": 512.1505016722408,
+        "p05": 517.4811036789298,
+        "max": 557.0468227424749,
+        "std": 10.075612505477974,
+        "worst_family": 321.1421947449768,
+        "min_norm": null,
+        "families": {
+          "adaptive": 604.0,
+          "anchor": 486.95208655332306,
+          "defect": 784.7775229357799,
+          "delayed_punisher": 595.0,
+          "extort": 338.63221153846155,
+          "forgiving": 595.0,
+          "late": 321.1421947449768,
+          "nice": 604.0,
+          "noisy": 421.4018018018018,
+          "prob_grim": 595.0,
+          "punitive": 604.0,
+          "random": 558.9298642533937,
+          "reset_grim": 595.0,
+          "spiteful_grim": 595.0,
+          "temporal": 481.1869158878505,
+          "wild": 435.48754448398574,
+          "window_tft": 595.0
+        },
+        "family_norm": {}
+      }
+    },
+    "RL-Repair": {
+      "test_v5": {
+        "fields": 30,
+        "mean": 537.935005574136,
+        "min": 516.5418060200669,
+        "p05": 522.5481605351171,
+        "max": 558.5986622073578,
+        "std": 9.310127931852401,
+        "worst_family": 313.6182380216383,
+        "min_norm": null,
+        "families": {
+          "adaptive": 604.0,
+          "anchor": 484.95054095826896,
+          "defect": 800.947247706422,
+          "delayed_punisher": 595.0,
+          "extort": 389.95913461538464,
+          "forgiving": 595.0,
+          "late": 313.6182380216383,
+          "nice": 604.0,
+          "noisy": 444.71711711711714,
+          "prob_grim": 595.0,
+          "punitive": 604.0,
+          "random": 565.5972850678733,
+          "reset_grim": 595.0,
+          "spiteful_grim": 595.0,
+          "temporal": 464.28598130841124,
+          "wild": 454.62633451957294,
+          "window_tft": 595.0
+        },
+        "family_norm": {}
+      }
+    },
+    "RL-PPO-Hard60": {
+      "test_v5": {
+        "fields": 30,
+        "mean": 534.454403567447,
+        "min": 513.8528428093646,
+        "p05": 519.2886287625417,
+        "max": 555.5785953177258,
+        "std": 9.51219612377167,
+        "worst_family": 321.4976816074189,
+        "min_norm": null,
+        "families": {
+          "adaptive": 604.0,
+          "anchor": 484.5687789799073,
+          "defect": 800.8761467889908,
+          "delayed_punisher": 595.0,
+          "extort": 351.3870192307692,
+          "forgiving": 595.0,
+          "late": 321.4976816074189,
+          "nice": 604.0,
+          "noisy": 433.76756756756754,
+          "prob_grim": 595.0,
+          "punitive": 604.0,
+          "random": 562.4162895927602,
+          "reset_grim": 595.0,
+          "spiteful_grim": 595.0,
+          "temporal": 452.74205607476637,
+          "wild": 432.9572953736655,
+          "window_tft": 595.0
+        },
+        "family_norm": {}
+      }
+    }
+  }
+}

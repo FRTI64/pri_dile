@@ -7,6 +7,15 @@
 
 ### Added
 
+- **Protocol v2**：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
+  版本化 `train` / `dev_param` / `dev_family` / `test_v5` split、catalog
+  manifest、泄漏审计和 test usage ledger。
+- `configs/splits/protocol_v2/manifest.json`（224 configs）和
+  `results/protocol_v2/` dev/test baseline。
+- baseline 结果：RL-Repair test 477.05 > A60 469.91 > Adv-RL 467.95；
+  Red-v5/v6 仍 100% 击败 top 3。
+- `train_v2` 训练分布；`dev_param` / `dev_family` validation 支持。
+- 红队评估：`protocol red --tier dev_red|test_red`。
 - `LICENSE`（MIT，与 `pyproject.toml` 一致）。
 - 文档重组为现代工程结构：`architecture/`、`guides/`、`reference/`、
   `policies/`、`research/`、`operations/`、`history/`、`decisions/`。
@@ -15,6 +24,12 @@
 - 统一当前候选表为 E0/E1c 冻结协议（20 fields），旧 10-field 结果标为历史基线。
 - 更新 `docs/operations/handover.md`：RL-Repair 为最佳候选但未 promotion；
   `heldout_v3` 已使用，`heldout_v4` 未使用。
+
+### Changed
+
+- `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
+  Protocol v2 dev/test，旧表不再作为 held-out 证据。
+- `heldout_v2/v3/v4` 的选模流程被 Protocol v2 取代；历史结果保留为 legacy。
 
 ### Fixed
 

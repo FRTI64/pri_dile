@@ -1,0 +1,40 @@
+{
+  "schema": "ipd-protocol-red-eval-v1",
+  "protocol": "protocol_v2",
+  "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+  "created": "2026-10-27T15:15:06",
+  "seconds": 0.25,
+  "tier": "dev_red",
+  "seeds": 20,
+  "rounds": 100,
+  "seed": 20261027,
+  "results": {
+    "Adv-RL": {
+      "seeds": 20,
+      "blue_mean": 375.9,
+      "blue_min": 361.0,
+      "blue_p05": 364.79999999999995,
+      "red_mean": 723.9,
+      "diff": -348.0,
+      "red_win": 1.0
+    },
+    "RL-Repair": {
+      "seeds": 20,
+      "blue_mean": 378.05,
+      "blue_min": 365.0,
+      "blue_p05": 365.95000000000005,
+      "red_mean": 713.55,
+      "diff": -335.5,
+      "red_win": 1.0
+    },
+    "RL-PPO-Hard60": {
+      "seeds": 20,
+      "blue_mean": 378.0,
+      "blue_min": 356.0,
+      "blue_p05": 362.65,
+      "red_mean": 711.0,
+      "diff": -333.0,
+      "red_win": 1.0
+    }
+  }
+}

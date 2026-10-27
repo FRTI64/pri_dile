@@ -18,7 +18,8 @@ A60（`rl-hard60`）和 E1c（`rl-repair`）在多个指标上超过当前主权
 
 新候选只有满足以下条件才允许替换主权重：
 
-1. 用独立 seeds 复现 official / blind / heldout v2；
+1. 用独立 seeds 复现 Protocol v2 的 `dev_param` / `dev_family`；
+   `test_v5` 已消费，若要独立 final 复现需新建 `test_v6`；
 2. 确认 C++ 导出、第 1/100 天行为、安全规则和权重 checksum；
 3. 不出现 family 崩塌或 anti-exploitation 明显退化；
 4. 得到明确确认，并更新 `README.md`、`handover.md`、checksum 和报告。

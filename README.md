@@ -1,7 +1,8 @@
 # 100 天囚徒困境策略项目
 
 100 天迭代囚徒困境（IPD）策略工具包：规则状态机、贝叶斯推断、多数投票融合、
-MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估覆盖四分布、
+MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估以
+**Protocol v2**（train / dev / test 泄漏审计）为主，另保留 legacy 四分布、
 blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 
 > **当前状态（2026-10-27）**
@@ -9,8 +10,10 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
 > - 最佳候选：`rl-repair`（RL-Repair），但**未 promotion**；
 > - fallback：`rl-hard60`（A60）；
-> - 测试：`python3 -m ipd test` → **183 tests OK**；注册候选 **20 个**；
-> - anti-exploitation **未解决**：E4 red 仍接近 100% 击败当前蓝军。
+> - Protocol v2 test_v5：**RL-Repair 477.05** > A60 469.91 > Adv-RL 467.95
+>   （30 fields；top 3 预注册，已消费）；
+> - 测试：`python3 -m ipd test` → **202 tests OK**；注册候选 **20 个**；
+> - anti-exploitation **未解决**：Red-v5 / Red-v6 仍 100% 击败 top 3。
 >
 > 完整结论、权重、风险和 promotion 条件见
 > **[docs/operations/handover.md](docs/operations/handover.md)**。
@@ -22,10 +25,17 @@ python3 -m pip install -e .
 python3 -m ipd list-policies
 python3 -m ipd test
 
-# 四分布烟测 / 当前候选正式评估
+# Protocol v2：审计 split，跑 dev 选模
+python3 -m ipd protocol audit
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family --fields 20 --workers 20 --baseline RL-PPO
+
+# test_v5 只给预注册 top 3 跑一次
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v5 --fields 30 --acknowledge-once
+
+# 旧口径（legacy，仅历史复现）
 python3 -m ipd benchmark --candidates core --fields 8 --workers 8
-python3 -m ipd benchmark --candidates rl,rl-hard60,rl-repair \
-  --fields 20 --workers 20
 python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
   --fields 20 --workers 10
 ```
@@ -33,23 +43,27 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 训练需要 PyTorch（`requirements-train.txt`）；推理和 C++ 部署不需要。
 完整命令见 [docs/guides/](docs/guides/)，参考见 [docs/reference/](docs/reference/)。
 
-## 当前候选
+## 当前候选（Protocol v2）
 
-E0/E1c 冻结协议，20-field official/blind；旧 10-field 结果已归档。
+dev = 20 fields × 299；test_v5 = 30 fields × 299，top 3 一次性消费。
+完整 20 候选见 [results/protocol_v2/README.md](results/protocol_v2/README.md)。
 
-| 候选 | 注册名 | official | blind 20 | heldout v2 | heldout v3 | 状态 |
-|---|---|---:|---:|---:|---:|---|
-| **RL-Repair** | `rl-repair` | **554.72** | **564.68** | **503.17** | **509.88** | 最佳候选，未 promotion |
-| RL-PPO-Hard60 | `rl-hard60` | 554.27 | 563.87 | 500.07 | 505.97 | 候选 / fallback |
-| RL-PPO | `rl` | 553.22 | 562.80 | 494.97 | 502.31 | 当前主权重 |
-| Adv-RL | `adv-rl` | 554.05 | 562.97 | 502.39 | 504.84 | 仅分布匹配时考虑 |
-| SelfPlay-GRU | `selfplay` | 550.97 | 561.13 | 491.86 | - | 21 维备选 |
-| Triple-majority | `triple-majority` | 547.37 | 551.33 | 491.94 | - | 规则中最均衡 |
-| Final-tuned | `final-tuned` | 546.35 | 547.75 | 490.04 | - | 纯规则基线 |
+| 候选 | 注册名 | dev_param | dev_family | test_v5 | 状态 |
+|---|---|---:|---:|---:|---|
+| **RL-Repair** | `rl-repair` | 520.09 | 582.71 | **477.05** | 最佳候选，未 promotion |
+| RL-PPO-Hard60 | `rl-hard60` | 514.18 | 582.73 | 469.91 | 候选 / fallback |
+| Adv-RL | `adv-rl` | **520.19** | 583.03 | 467.95 | dev 最高；red 弱 |
+| Adv-GRU | `adv-gru` | 512.71 | 582.96 | - | dev only |
+| Adv-MLP | `adv-mlp` | 512.18 | 582.98 | - | dev only |
+| RL-PPO | `rl` | 510.55 | 582.53 | - | 当前主权重；baseline |
+| SelfPlay-GRU | `selfplay` | 506.58 | 582.34 | - | 21 维备选 |
+| Triple-majority | `triple-majority` | 505.63 | 582.88 | - | 规则中最均衡 |
 
-- 标准 CLI（独立 policy seed）：RL-PPO 553.33 / 562.83、A60 554.36 / 564.17、
-  RL-Repair 554.76 / 564.61；与冻结协议略有差异，不能混表。
-- `heldout_v3` 已被 E1c 使用；`heldout_v4` 未使用。
+- dev top 3 由 dev_param mean 预注册；Adv-RL 与 RL-Repair 的 dev 差 0.10，
+  属于噪声；test_v5 上 RL-Repair +7.14 vs A60、+9.10 vs Adv-RL（paired
+  bootstrap CI 均不跨 0）。
+- 旧 `official` / `blind` / `heldout_v2/v3/v4` 已进入 legacy，不要与新表混用；
+  历史数字见 [docs/operations/handover.md](docs/operations/handover.md)。
 - 指标定义见 [docs/reference/metrics.md](docs/reference/metrics.md)。
 
 ## 目录
@@ -70,14 +84,16 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 
 | 阶段 | 结论 |
 |---|---|
-| A60 / hard×2 | 候选；official 554.36 / blind 20-field 564.17 |
-| E0 league | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
+| Protocol v2 split | **启用**；dev/test 可审计，test_v5 已消费 |
+| Protocol v2 baseline | RL-Repair test 第一；anti-exploitation 仍 100% 失败 |
+| A60 / hard×2 | 候选 / fallback；Protocol v2 test 469.91 |
+| E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |
 | E1c repair | **Go candidate**（RL-Repair），未 promotion |
 | E2 CVaR / DRO | No-Go |
 | P3 red pool | red pool Go；league-lite / expansion Gate D **FAIL** |
 | P2 C1 / C2 / C3 | 全部 offline No-Go |
 | SelfPlay 改进 | No-Go；保留 21 维部署备选 |
-| Axelrod | 可选对手库；默认口径不变 |
+| Axelrod | 可选对手库；不进入 Protocol v2 主口径 |
 
 完整记录见 [docs/research/](docs/research/) 和
 `results/sweep_20261026/README.md`（66 候选 × 158 类对手）。

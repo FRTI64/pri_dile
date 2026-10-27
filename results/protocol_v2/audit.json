@@ -1,0 +1,134 @@
+{
+  "ok": true,
+  "protocol": "protocol_v2",
+  "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+  "catalog_size": 224,
+  "counts": {
+    "dev": {
+      "adaptive": 1,
+      "defect": 1,
+      "extort": 3,
+      "forgiving": 2,
+      "late": 3,
+      "nice": 1,
+      "noisy": 4,
+      "punitive": 1,
+      "random": 3,
+      "temporal": 5,
+      "wild": 1
+    },
+    "anchor": {
+      "anchor": 20
+    },
+    "dev_family": {
+      "delayed_grim": 4,
+      "mirror_adaptive": 6
+    },
+    "test": {
+      "adaptive": 1,
+      "defect": 1,
+      "extort": 4,
+      "forgiving": 2,
+      "late": 2,
+      "nice": 1,
+      "noisy": 3,
+      "punitive": 1,
+      "random": 4,
+      "temporal": 6,
+      "wild": 1
+    },
+    "test_only": {
+      "adaptive_probe": 5,
+      "early_harvest": 5,
+      "early_probe": 5,
+      "frequent_kamikaze": 5,
+      "hyper_extort": 5,
+      "probe_harvest": 5
+    },
+    "train": {
+      "adaptive": 2,
+      "defect": 5,
+      "extort": 16,
+      "forgiving": 8,
+      "late": 13,
+      "nice": 3,
+      "noisy": 17,
+      "punitive": 6,
+      "random": 15,
+      "temporal": 24,
+      "wild": 4
+    }
+  },
+  "tier_families": {
+    "train": [
+      "adaptive",
+      "defect",
+      "extort",
+      "forgiving",
+      "late",
+      "nice",
+      "noisy",
+      "punitive",
+      "random",
+      "temporal",
+      "wild"
+    ],
+    "dev_param": [
+      "adaptive",
+      "defect",
+      "extort",
+      "forgiving",
+      "late",
+      "nice",
+      "noisy",
+      "punitive",
+      "random",
+      "temporal",
+      "wild"
+    ],
+    "dev_family": [
+      "delayed_grim",
+      "mirror_adaptive"
+    ],
+    "test_seen": [
+      "adaptive",
+      "defect",
+      "extort",
+      "forgiving",
+      "late",
+      "nice",
+      "noisy",
+      "punitive",
+      "random",
+      "temporal",
+      "wild"
+    ],
+    "test_only": [
+      "adaptive_probe",
+      "early_harvest",
+      "early_probe",
+      "frequent_kamikaze",
+      "hyper_extort",
+      "probe_harvest"
+    ]
+  },
+  "manifest": {
+    "ok": true,
+    "reason": "ok",
+    "path": "/home/frti64/pri_dile/configs/splits/protocol_v2/manifest.json",
+    "manifest_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+    "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a"
+  },
+  "red_pools": {
+    "dev_red": [
+      "Red-v5"
+    ],
+    "test_red": [
+      "Red-v6"
+    ]
+  },
+  "errors": [],
+  "warnings": [
+    "red pools are legacy P3 artifacts; retrain before final"
+  ]
+}

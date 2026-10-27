@@ -1,0 +1,44 @@
+progress 40/800 field tasks
+progress 80/800 field tasks
+progress 120/800 field tasks
+progress 160/800 field tasks
+progress 200/800 field tasks
+progress 240/800 field tasks
+progress 280/800 field tasks
+progress 320/800 field tasks
+progress 360/800 field tasks
+progress 400/800 field tasks
+progress 440/800 field tasks
+progress 480/800 field tasks
+progress 520/800 field tasks
+progress 560/800 field tasks
+progress 600/800 field tasks
+progress 640/800 field tasks
+progress 680/800 field tasks
+progress 720/800 field tasks
+progress 760/800 field tasks
+progress 800/800 field tasks
+
+Protocol v2 evaluation (20 fields, n=299)
+  Final-base           dev_param=485.73  dev_family=582.83
+  Final-tuned          dev_param=493.08  dev_family=582.85
+  Resp3-base           dev_param=486.38  dev_family=582.45
+  Resp3-tuned          dev_param=499.57  dev_family=582.89
+  Bayes-base           dev_param=510.95  dev_family=583.39
+  Bayes-tuned          dev_param=510.69  dev_family=583.39
+  Final+Resp3          dev_param=503.19  dev_family=582.94
+  Harvest45            dev_param=467.48  dev_family=460.38
+  Triple-majority      dev_param=505.63  dev_family=582.88
+  Harvest-tuned        dev_param=479.21  dev_family=537.27
+  GapStart             dev_param=466.34  dev_family=209.49
+  Neural               dev_param=509.92  dev_family=582.97
+  GRU                  dev_param=510.68  dev_family=582.98
+  RL-PPO               dev_param=510.55  dev_family=582.53
+  RL-PPO-Hard60        dev_param=514.18  dev_family=582.73
+  RL-Repair            dev_param=520.09  dev_family=582.71
+  Adv-MLP              dev_param=512.18  dev_family=582.98
+  Adv-GRU              dev_param=512.71  dev_family=582.96
+  Adv-RL               dev_param=520.19  dev_family=583.03
+  SelfPlay-GRU         dev_param=506.58  dev_family=582.34
+
+written results/protocol_v2/protocol_v2_dev.json

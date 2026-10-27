@@ -1,0 +1,31 @@
+progress 4/90 field tasks
+progress 8/90 field tasks
+progress 12/90 field tasks
+progress 16/90 field tasks
+progress 20/90 field tasks
+progress 24/90 field tasks
+progress 28/90 field tasks
+progress 32/90 field tasks
+progress 36/90 field tasks
+progress 40/90 field tasks
+progress 44/90 field tasks
+progress 48/90 field tasks
+progress 52/90 field tasks
+progress 56/90 field tasks
+progress 60/90 field tasks
+progress 64/90 field tasks
+progress 68/90 field tasks
+progress 72/90 field tasks
+progress 76/90 field tasks
+progress 80/90 field tasks
+progress 84/90 field tasks
+progress 88/90 field tasks
+progress 90/90 field tasks
+
+Protocol v2 evaluation (30 fields, n=299)
+  Adv-RL               test_v5=467.95
+  RL-Repair            test_v5=477.05
+  RL-PPO-Hard60        test_v5=469.91
+
+written results/protocol_v2/protocol_v2_test.json
+test_v5 usage recorded

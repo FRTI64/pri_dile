@@ -6,15 +6,17 @@
 
 ## 评估协议
 
-- 标准 CLI：`benchmark --fields 20` / `blind --fields 20`；
-- 冻结 league：`python3 -m ipd league --config configs/eval/e0_league.json`；
-- `heldout_v2` 作 validation；`heldout_v3` 已被 E1c 使用；`heldout_v4` 未使用；
+- **新主口径：Protocol v2**，见 [../reference/protocol-v2.md](../reference/protocol-v2.md)；
+- legacy：`benchmark --fields 20` / `blind --fields 20` /
+  `league --config configs/eval/e0_league.json`；
+- `heldout_v2/v3/v4` 与 `official/blind` 只保留为历史记录；
 - 指标定义见 [../reference/metrics.md](../reference/metrics.md)。
 
 ## 实验总表
 
 | 阶段 | 文档 | 结论 |
 |---|---|---|
+| Protocol v2 | [../reference/protocol-v2.md](../reference/protocol-v2.md) | **启用**；RL-Repair test 第一；test_v5 已消费 |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |

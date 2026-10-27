@@ -62,7 +62,9 @@ from concurrent.futures import ProcessPoolExecutor
 from typing import Any, Sequence
 
 from ipd.core.simulator import C, D, payoff
-from ipd.evaluation.distributions import DISTS, TRAIN_DISTS, build_train_dist_field
+from ipd.evaluation.distributions import (
+    DISTS, PROTOCOL_VAL_DISTS, TRAIN_DISTS, build_train_dist_field,
+)
 from ipd.policies.neural import FEATURE_VERSION, extract_features
 from ipd.training.neural import describe_device, resolve_device
 from ipd.training.risk import (
@@ -768,7 +770,7 @@ def main(argv=None) -> None:
         )
 
     val_dists = tuple(x.strip() for x in args.dists.split(",") if x.strip())
-    unknown = [d for d in val_dists if d not in DISTS]
+    unknown = [d for d in val_dists if d not in DISTS + PROTOCOL_VAL_DISTS]
     if unknown:
         raise SystemExit(f"unknown validation distributions: {unknown}")
 

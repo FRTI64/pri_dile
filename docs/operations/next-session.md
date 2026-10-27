@@ -18,33 +18,35 @@
 - `docs/research/e1-robust-finetune.md` / `docs/research/e2-risk-ppo.md`
 - `docs/research/p2-c1-belief-planner.md`、`docs/research/p2-c2c3-*.md`、`docs/research/p2-c3-*.md`
 - `docs/guides/axelrod.md`
+- `docs/reference/protocol-v2.md`（**新主口径**）
+- `results/protocol_v2/README.md`
 
 ## 当前状态
 
 - 文档重组前最新提交：`efa9fbb Finalize handover after Axelrod and P2 C3`。
 - 工作区在文档重组提交后应为 clean；`python3 -m ipd test` 为
-  **183 tests OK**；`python3 -m ipd list-policies` 为 **20 个注册候选**。
+  **202 tests OK**；`python3 -m ipd list-policies` 为 **20 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Repair（`rl-repair`）是当前最佳候选**，但未 promotion：
   `weights/rl_policy_weights_repair.json`，sha256
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-- 默认评估口径：四分布 `original/late/grim30/wide`，299 人；正式比较用
-  20 fields。Axelrod 是可选库，不改变默认 benchmark/blind。
-- anti-exploitation 未解决：E4 red 对当前蓝军仍接近 100% 胜率。
+- 默认评估口径：**Protocol v2**（`dev_param` / `dev_family` 选模，
+  `test_v5` 一次性 final）；旧四分布 / blind 是 legacy。
+- `test_v5` 已在 2026-10-27 对 top 3 消费一次；下一个候选需要 `test_v6`。
+- anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 
-### 头部候选（E0/E1c 冻结协议，20 fields）
+### 头部候选（Protocol v2，20 / 30 fields）
 
-| 策略 | 注册名 | 权重 | official | blind 20 | heldout v2 | heldout v3 | E4 red blue |
-|---|---|---|---:|---:|---:|---:|---:|
-| **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | **554.72** | **564.68** | **503.17** | **509.88** | 303.45 |
-| RL-PPO-Hard60 | `rl-hard60` | `weights/rl_policy_weights_hard60.json` | 554.27 | 563.87 | 500.07 | 505.97 | 299.20 |
-| RL-PPO（主权重） | `rl` | `weights/rl_policy_weights.json` | 553.22 | 562.80 | 494.97 | 502.31 | 310.55 |
-| Adv-RL | `adv-rl` | aggressive config | 554.05 | 562.97 | 502.39 | 504.84 | 325.55 |
-| SelfPlay-GRU | `selfplay` | `weights/selfplay_gru_policy.json` | 550.97 | 561.13 | 491.86 | - | 301.65 |
+| 策略 | 注册名 | 权重 | dev_param | dev_family | test_v5 | dev_red blue |
+|---|---|---|---:|---:|---:|---:|
+| **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | 520.09 | 582.71 | **477.05** | 378.05 |
+| RL-PPO-Hard60 | `rl-hard60` | `weights/rl_policy_weights_hard60.json` | 514.18 | 582.73 | 469.91 | 378.00 |
+| Adv-RL | `adv-rl` | aggressive config | **520.19** | 583.03 | 467.95 | 375.90 |
+| RL-PPO（主权重） | `rl` | `weights/rl_policy_weights.json` | 510.55 | 582.53 | - | - |
 
-标准 CLI（独立 policy seed）：RL-PPO 553.33 / 562.83、A60 554.36 / 564.17、
-RL-Repair 554.76 / 564.61。**10-field blind 与 20-field 不能混表。**
+Red-v5 / Red-v6 对 top 3 仍 100% 胜率。旧 official/blind/heldout 表已进入
+legacy，不能与新表混用。
 
 ### 已完成的 Gate 结论
 
@@ -67,7 +69,8 @@ RL-Repair 554.76 / 564.61。**10-field blind 与 20-field 不能混表。**
 按用户优先级选择：
 
 1. **比赛提交硬化（若近期提交）**
-   - 用独立 seeds 复现 RL-Repair 的 official / blind / heldout v2；
+   - 用独立 seeds 复现 RL-Repair 的 `dev_param` / `dev_family`；
+   - `test_v5` 已消费；独立 final 需先建 `test_v6`；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
 2. **E3 multi-teacher distillation + gating（研究首选）**
@@ -83,10 +86,9 @@ RL-Repair 554.76 / 564.61。**10-field blind 与 20-field 不能混表。**
 
 ## 数据/评估纪律
 
-- `heldout_v2` 是 validation；`heldout_v3` 已被 E1c 使用；
-  **`heldout_v4` 未使用**，下一个通过 validation 的候选只能用它做一次
-  final test，之后新建 heldout_v5。
-- `final` suite 已多次用于 A/B/C，现在更像 validation，不要再当 final。
+- 新候选用 `dev_param` / `dev_family` 选模；`test_v5` 已消费，不得复用。
+- 下一个通过 dev 的候选需要新建 `test_v6`，并重新走
+  `protocol manifest` + `protocol audit`。
 - 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red
   best response。
 - `min_family` 跨 family 不可比；看 `min_norm_family` / per-family /
@@ -113,12 +115,14 @@ RL-Repair 554.76 / 564.61。**10-field blind 与 20-field 不能混表。**
 ```bash
 cd /home/frti64/pri_dile
 git status                    # 文档重组提交后应为 clean
-python3 -m ipd test           # 183 tests OK
+python3 -m ipd test           # 全量测试
 python3 -m ipd list-policies  # 20 candidates
-python3 -m ipd benchmark --candidates core --fields 8 --workers 8
+python3 -m ipd protocol audit
+python3 -m ipd protocol eval --candidates core --tiers dev_param \
+  --fields 1 --n 32 --workers 4
 ```
 
-确认默认口径和 183 tests；之后根据用户优先级选择“比赛提交硬化”、E3，
+确认默认口径和测试；之后根据用户优先级选择“比赛提交硬化”、E3，
 或可选的 E9 容量/特征 ablation。不要回到 C3 threshold sweep。
 
 ## 复现命令
@@ -165,5 +169,7 @@ bash results/p2_repeated_calib_20261026/run.sh
 - **P3 cross-play 退化**：所有 blue 互相合作（594–595），Elo/Nash 不可区分；
   必须加入 red/exploiter pool。
 - **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
-- **10 vs 20 fields 不可混用**：旧表多为 10-field blind；当前主表用 20-field
-  或 E0 冻结协议。
+- **10 vs 20 fields 不可混用**：旧表多为 10-field blind；当前主表用
+  Protocol v2 20/30 fields。
+- **`test_v5` 已消费**：不要用它继续选模；下一个候选需要 `test_v6`。
+- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` 只做历史对照。

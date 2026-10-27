@@ -7,12 +7,13 @@
 > - **RL-Repair（`rl-repair`）是当前最佳候选**，但只注册、不 promotion：
 >   `weights/rl_policy_weights_repair.json`，sha256
 >   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-> - `python3 -m ipd test`：**183 tests OK**；`python3 -m ipd list-policies`：
+> - `python3 -m ipd test`：**202 tests OK**；`python3 -m ipd list-policies`：
 >   20 个注册候选。
-> - `heldout_v3` 已被 E1c 一次性使用；**`heldout_v4` 未使用**，只留给下一个
->   通过 validation 的候选做 final test。
-> - anti-exploitation **未解决**：E4 red best response 对当前蓝军仍接近
->   100% 胜率。
+> - **Protocol v2 已启用**：`dev_param` / `dev_family` 选模，`test_v5`
+>   已在 2026-10-27 对 top 3 消费一次。
+> - **Protocol v2 test_v5**：RL-Repair **477.05** > A60 469.91 > Adv-RL
+>   467.95（30 fields；paired bootstrap 均显著）。
+> - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 > - 文档重组前最新提交：`efa9fbb Finalize handover after Axelrod and P2 C3`。
 
 本文只保留当前结论和可执行信息。实验细节、逐 family 表和复现脚本在
@@ -20,28 +21,99 @@
 
 ---
 
+## 0. Protocol v2（2026-10-27 起的新主口径）
+
+旧的 `official` / `blind` / `heldout_v2` 表进入 legacy，不再作为泛化证据。
+新候选按以下流程评估：
+
+```bash
+# 1. 审计 split（必须 OK）
+python3 -m ipd protocol audit
+
+# 2. dev 选模：所有候选
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family --fields 20 --n 299 --workers 20 \
+  --seed 20261027 --baseline RL-PPO \
+  --out results/protocol_v2/protocol_v2_dev.json
+
+# 3. test_v5：只对预注册 top 3 跑一次
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v5 --fields 30 --n 299 --workers 20 \
+  --seed 20261027 --acknowledge-once \
+  --out results/protocol_v2/protocol_v2_test.json
+
+# 4. red（diagnostic / final）
+python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 20
+python3 -m ipd protocol red --candidates <top3> --tier test_red \
+  --seeds 20 --acknowledge-once
+```
+
+规则：
+
+- `dev_param` 是主排序；`dev_family` 是病理门禁，不单独排名；
+- 必须同时看 per-family、`min_norm`、`worst_family`；
+- `test_v5` 已消费一次，不能继续调参；下一个候选需要 `test_v6`；
+- usage ledger：`results/protocol_v2/usage.json`；
+- manifest：`configs/splits/protocol_v2/manifest.json`；
+- 旧 `official` / `blind` 只能作为 legacy 对照，不能与新表混用。
+
+详见 [../reference/protocol-v2.md](../reference/protocol-v2.md)。
+
+---
+
 ## 1. 当前建议
 
 | 场景 | 建议 | 依据 |
 |---|---|---|
-| 现在提交，允许新候选 | **RL-Repair** | 官方 / blind / heldout v2/v3 均优于 A60 和主权重 |
-| 保守提交，不替换主权重 | **RL-PPO（从零 + hard）** | 当前主权重，尾部 min_norm 最好 |
-| 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | 官方与 blind 高，heldout 稳定，独立 seed 有复现 |
-| 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维、纯标准库；但四分布低约 2.6 分 |
+| 现在提交，允许新候选 | **RL-Repair** | Protocol v2 test 477.05 第一；dev 520.09 |
+| 保守提交，不替换主权重 | **RL-PPO（从零 + hard）** | 当前主权重；Protocol v2 dev 510.55 |
+| 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | Protocol v2 test 469.91 第二；min_norm 0.9982 |
+| dev 最高、接受 red 风险 | **Adv-RL** | dev 520.19；test 467.95；red 弱 |
+| 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维、纯标准库；dev 506.58 |
 | 需要 C++ | 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
-| 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | Triple 更均衡，Final 最易移植 |
+| 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | Triple dev 505.63，Final 493.08 |
 
-**Promotion 条件：** 先用独立 seeds 复现 RL-Repair 的 official / blind /
-heldout v2，再确认 C++ 导出、第 1/100 天行为、权重 checksum；得到确认后才把
+**Promotion 条件：** 用独立 seeds 复现 RL-Repair 的 `dev_param` /
+`dev_family`，再确认 C++ 导出、第 1/100 天行为、权重 checksum；`test_v5`
+已消费，若要独立 final 复现需新建 `test_v6`。得到确认后才把
 `weights/rl_policy_weights.json` 替换为 RL-Repair。当前文档不假设已经替换。
 
 ---
 
 ## 2. 评估口径（先看这一节）
 
+**新主口径是 Protocol v2**；下面 2.1 / 2.2 的 official/blind/league 仅用于
+复现历史结果，不能作为新候选的 held-out 证据。Protocol v2 的定义和命令见
+[../reference/protocol-v2.md](../reference/protocol-v2.md)。
+
 项目里同时存在几种协议，数字略有差异是正常的，**不能混表**。
 
-### 2.1 标准 CLI
+### 2.0 Protocol v2
+
+| 层 | 用途 | 规模 |
+|---|---|---|
+| `dev_param` | 选模（参数不相交） | 20 fields × 299 |
+| `dev_family` | 选模（family held-out） | 20 fields × 299 |
+| `test_v5` | 一次性 final | 30 fields × 299 |
+| `dev_red` / `test_red` | exploitability | 20 seeds |
+
+`test_v5` 已消费；不要用它继续选模。新候选通过 dev 后需要新 test suite。
+
+2026-10-27 baseline（20 fields dev；30 fields test）：
+
+| 候选 | dev_param | dev_family | test_v5 | dev_red blue | test_red blue |
+|---|---:|---:|---:|---:|---:|
+| **RL-Repair** | 520.09 | 582.71 | **477.05** | 378.05 | 314.65 |
+| RL-PPO-Hard60 | 514.18 | 582.73 | 469.91 | 378.00 | 319.00 |
+| Adv-RL | **520.19** | 583.03 | 467.95 | 375.90 | 342.95 |
+| RL-PPO | 510.55 | 582.53 | - | - | - |
+
+- test 差值：RL-Repair +7.14 vs A60（CI [6.44, 7.88]）、+9.10 vs Adv-RL
+  （CI [7.84, 10.41]），均显著；
+- Red-v5 / Red-v6 对 top 3 仍 100% 胜率，anti-exploitation 未解决；
+- 完整 20 候选表：`results/protocol_v2/README.md`。
+
+### 2.1 标准 CLI（legacy）
 
 ```bash
 python3 -m ipd benchmark --candidates <name> --fields 20 --workers 20
@@ -55,7 +127,7 @@ python3 -m ipd blind --candidates <name> --fields 20 --workers 10
 - 标准 CLI 的 policy seed 来自默认值，和 E0/E1c 冻结的 index-based policy
   seed 不同，因此同一候选会差 0.0x～1 分。
 
-### 2.2 E0 / E1c 冻结 league
+### 2.2 E0 / E1c 冻结 league（legacy）
 
 ```bash
 python3 -m ipd league --config configs/eval/e0_league.json \
@@ -63,14 +135,14 @@ python3 -m ipd league --config configs/eval/e0_league.json \
 ```
 
 - 固定候选 spec、权重路径、suite、opponent seeds 和 policy seeds；
-- official / blind 均为 20 fields；
+- official / blind 均为 20 fields（legacy）；
 - 额外输出 validation、heldout_v2、min_norm、CVaR10、E4 red、cross-play、
   Nash / Elo；
 - E1c 的 heldout_v3 final 用 `configs/eval/e1c_final_league.json` 单独跑一次。
 
-### 2.3 结果表
+### 2.3 结果表（legacy）
 
-E0/E1c 冻结协议（推荐用于候选比较）：
+以下 E0/E1c 冻结协议数字只用于历史复现；新候选比较用 Protocol v2。
 
 | 候选 | 注册名 | official | blind 20 | heldout_v2 | heldout_v3 | min_norm | CVaR10 | E4 red blue |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -221,6 +293,17 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 
 ## 4. 实验结论账本
 
+### Protocol v2 baseline（2026-10-27）
+
+- 新 split catalog 224 configs，manifest `f6705fbb...`；
+- 20 候选 dev 重跑；top 3（Adv-RL / RL-Repair / A60）预注册后只跑一次
+  test_v5；
+- test：RL-Repair 477.05、A60 469.91、Adv-RL 467.95；
+- Red-v5 / Red-v6 仍 100% 击败 top 3；
+- 旧 `official/blind/heldout_v2` 数字进入 legacy；
+- 报告：`results/protocol_v2/README.md`，ADR：
+  `docs/decisions/0005-protocol-v2-splits.md`。
+
 ### E0 — league / cross-play / exploitability（PASS）
 
 - 入口：`python3 -m ipd league`，报告
@@ -335,6 +418,22 @@ python3 -m ipd self-test --candidates all
 ```
 
 ### 5.2 当前头部候选
+
+Protocol v2（新主口径）：
+
+```bash
+python3 -m ipd protocol audit
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family --fields 20 --workers 20 --baseline RL-PPO
+python3 -m ipd protocol eval --candidates Adv-RL,RL-Repair,RL-PPO-Hard60 \
+  --tiers test_v5 --fields 30 --acknowledge-once
+python3 -m ipd protocol red --candidates Adv-RL,RL-Repair,RL-PPO-Hard60 \
+  --tier dev_red --seeds 20
+python3 -m ipd protocol red --candidates Adv-RL,RL-Repair,RL-PPO-Hard60 \
+  --tier test_red --seeds 20 --acknowledge-once
+```
+
+Legacy 四分布 / blind（只用于历史复现）：
 
 ```bash
 # 主权重
@@ -478,8 +577,9 @@ mine/theirs = 到此日之前的动作
    `Extort3`、`Random.50/70` 也可能回退；`ProbeBot` 已修复到约 603。
 5. **10 vs 20 fields 不可混用**：旧表多为 10-field blind；当前主表用 20-field
    或 E0 冻结协议。
-6. **`heldout_v2` 是 validation**：它已被多次用于选模；`heldout_v3` 已被
-   E1c 使用；`heldout_v4` 仍未使用，只做一次性 final test。
+6. **split 已重划**：`heldout_v2` 已泄漏，`heldout_v3` 已被 E1c 使用，
+   `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v2。
+   `test_v5` 已在 2026-10-27 消费一次，不要复用。
 7. **SelfPlay 不是 anti-exploitation 证据**：final test 中的 held-out red
    是 RL-BC 互惠型对照，不能证明能防针对性 red。
 8. **GRU / SelfPlay-GRU 有状态**：每场必须 `reset()`；同一时间步不要重复
@@ -503,9 +603,12 @@ mine/theirs = 到此日之前的动作
 - [ ] 确认是否允许提交权重文件；单文件限制下决定是否内嵌。
 - [ ] 确定提交版本：RL-Repair / A60 / RL-PPO / Adv-RL / SelfPlay / 规则。
 - [ ] 若提交 RL-Repair，先做独立 seed 复现，再决定是否替换主权重。
-- [ ] 运行 `python3 -m ipd test`（183 tests）和
+- [ ] 运行 `python3 -m ipd test` 和
       `python3 -m ipd self-test --candidates all`。
-- [ ] 对学习策略跑一次 `benchmark --fields 20` 和 `blind --fields 20`。
+- [ ] 运行 `python3 -m ipd protocol audit`，确认 manifest / family / config
+      无泄漏。
+- [ ] 对学习策略跑 `protocol eval --tiers dev_param,dev_family`；
+      `test_v5` 只给预注册 top 3 跑一次，并检查 usage ledger。
 - [ ] 检查第 1 天、第 100 天和“对手未 D 时 C”的安全规则。
 - [ ] 确认 GRU / SelfPlay 每场 `reset()`，同一时间步只调用一次。
 - [ ] 若提交 C++，刷新权重头文件并重新编译；Triple 需要自行移植。
@@ -523,7 +626,9 @@ mine/theirs = 到此日之前的动作
 | `ipd/policies/registry.py` | 候选名、别名、集合、构造入口 |
 | `ipd/policies/candidates/` | 每个候选一个独立文件 |
 | `ipd/evaluation/league.py` | E0 冻结评估 harness |
-| `ipd/evaluation/opponent_suite.py` | validation / heldout_v2 / v3 |
+| `ipd/evaluation/opponent_suite.py` | legacy validation / heldout_v2 / v3 / v4 |
+| `ipd/evaluation/protocol.py` | Protocol v2 catalog / audit / manifest / ledger |
+| `ipd/evaluation/protocol_cli.py` | `python -m ipd protocol` |
 | `ipd/evaluation/policy_pool.py` | P3 frozen blue/red pool |
 | `ipd/training/rl.py` | PPO 训练、rollout、验证、导出 |
 | `ipd/training/risk.py` | E2 CVaR / Dirichlet / DRO |

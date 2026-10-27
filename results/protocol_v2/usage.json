@@ -1,0 +1,62 @@
+{
+  "schema": "ipd-protocol-usage-v1",
+  "protocol": "protocol_v2",
+  "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+  "entries": [
+    {
+      "tier": "test_v5",
+      "candidate": "Adv-RL",
+      "result": "results/protocol_v2/protocol_v2_test.json",
+      "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+      "created": "2026-10-27T15:14:59",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_v5",
+      "candidate": "RL-Repair",
+      "result": "results/protocol_v2/protocol_v2_test.json",
+      "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+      "created": "2026-10-27T15:14:59",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_v5",
+      "candidate": "RL-PPO-Hard60",
+      "result": "results/protocol_v2/protocol_v2_test.json",
+      "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+      "created": "2026-10-27T15:14:59",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_red",
+      "candidate": "Adv-RL",
+      "result": "results/protocol_v2/protocol_v2_test_red.json",
+      "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+      "created": "2026-10-27T15:15:08",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_red",
+      "candidate": "RL-Repair",
+      "result": "results/protocol_v2/protocol_v2_test_red.json",
+      "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+      "created": "2026-10-27T15:15:08",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_red",
+      "candidate": "RL-PPO-Hard60",
+      "result": "results/protocol_v2/protocol_v2_test_red.json",
+      "catalog_sha256": "f6705fbb2ced34dd66b3aec1b8ee2cddc629a8d2c6b54fc470ef009e8cc4e36a",
+      "created": "2026-10-27T15:15:08",
+      "contaminated": false,
+      "note": ""
+    }
+  ],
+  "updated": "2026-10-27T15:15:08"
+}

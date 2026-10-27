@@ -29,7 +29,9 @@ DISTS = ("original", "late", "grim30", "wide")
 # tournament rules (4.14.0: Darwin only).
 AXELROD_DISTS = ("axelrod", "axelrod-fast", "axelrod-cheating")
 EVAL_DISTS = DISTS + AXELROD_DISTS
-TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair")
+TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair", "train_v2")
+PROTOCOL_VAL_DISTS = ("dev_param", "dev_family")
+VALIDATION_DISTS = DISTS + PROTOCOL_VAL_DISTS
 
 # Base weights for a fixed high-Grim population.  Late harvesters remain a
 # significant block, so raising Grim tests the safety/exploitation tradeoff.
@@ -201,6 +203,12 @@ def build_dist_field(dist: str, seed: int, n: int):
 
 def build_train_dist_field(dist: str, seed: int, n: int):
     """Build a training field, including the tail-risk ``hard`` mixture."""
+    if dist == "train_v2":
+        from .protocol import build_protocol_field
+        return build_protocol_field("train", seed, n)
+    if dist in PROTOCOL_VAL_DISTS:
+        from .protocol import build_protocol_field
+        return build_protocol_field(dist, seed, n)
     if dist == "hard2":
         from .hard2 import build_hard2_field
         return build_hard2_field(seed, n)
@@ -233,7 +241,8 @@ def sample_blind_field(seed: int, n: int = N_PLAYERS):
 
 
 __all__ = [
-    "N_PLAYERS", "DISTS", "TRAIN_DISTS", "AXELROD_DISTS", "EVAL_DISTS",
+    "N_PLAYERS", "DISTS", "TRAIN_DISTS", "PROTOCOL_VAL_DISTS",
+    "VALIDATION_DISTS", "AXELROD_DISTS", "EVAL_DISTS",
     "HIGH_GRIM_BASE", "ORIGINAL_SCENARIO_WEIGHTS", "HARD_OPPONENTS",
     "FAMILY_MULT", "EXTRA", "build_field", "build_dist_field",
     "build_train_dist_field", "sample_wide", "sample_suite_field",

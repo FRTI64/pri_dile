@@ -12,8 +12,9 @@ python3 -m ipd <command> --help
 
 | 命令 | 用途 |
 |---|---|
-| `benchmark` | 四个官方分布的四分布基准；也支持 Axelrod 分布 |
-| `blind` | 未见 seed 的 blind 排名 |
+| `protocol` | **Protocol v2**：train/dev/test split 审计与评估 |
+| `benchmark` | legacy 四分布基准；也支持 Axelrod 分布 |
+| `blind` | legacy blind 排名（只换 seed） |
 | `suite` | 9 个家族加权测试集 |
 | `matchup` | 逐对手类型矩阵 + 9 测试集加权 |
 | `eval-split` | 每个候选独立参数的拆分评估 |
@@ -30,7 +31,28 @@ python3 -m ipd <command> --help
 
 ## 2. 评估命令
 
-### benchmark
+### protocol
+
+```bash
+python3 -m ipd protocol audit
+python3 -m ipd protocol manifest
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family --fields 20 --n 299 --workers 20 \
+  --baseline RL-PPO --out results/protocol_v2/protocol_v2_dev.json
+python3 -m ipd protocol eval --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
+  --tiers test_v5 --fields 30 --acknowledge-once \
+  --out results/protocol_v2/protocol_v2_test.json
+python3 -m ipd protocol red --candidates all --tier dev_red --seeds 20
+python3 -m ipd protocol red --candidates <top3> --tier test_red \
+  --seeds 20 --acknowledge-once
+```
+
+参数：`--candidates`、`--tiers`（`dev_param` / `dev_family` / `test_v5`）、
+`--fields`、`--n`、`--rounds`、`--workers`、`--seed`、`--baseline`、
+`--acknowledge-once`、`--force`、`--out`。`test_v5` 必须显式确认，并写入
+usage ledger。详见 [protocol-v2.md](protocol-v2.md)。
+
+### benchmark（legacy）
 
 ```bash
 python3 -m ipd benchmark --candidates core --fields 20 --workers 20

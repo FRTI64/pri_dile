@@ -1,0 +1,35 @@
+{
+  "schema": "ipd-protocol-usage-v1",
+  "protocol": "protocol_v2",
+  "catalog_sha256": "096498df11792b5b84fc1cbffb0e16a0a2ad6d7a1f77bc233fdb162eda6e074b",
+  "entries": [
+    {
+      "tier": "test_v5",
+      "candidate": "Adv-RL",
+      "result": "results/protocol_v2/protocol_v2_test.json",
+      "catalog_sha256": "096498df11792b5b84fc1cbffb0e16a0a2ad6d7a1f77bc233fdb162eda6e074b",
+      "created": "2026-10-27T15:06:38",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_v5",
+      "candidate": "RL-Repair",
+      "result": "results/protocol_v2/protocol_v2_test.json",
+      "catalog_sha256": "096498df11792b5b84fc1cbffb0e16a0a2ad6d7a1f77bc233fdb162eda6e074b",
+      "created": "2026-10-27T15:06:38",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_v5",
+      "candidate": "RL-PPO-Hard60",
+      "result": "results/protocol_v2/protocol_v2_test.json",
+      "catalog_sha256": "096498df11792b5b84fc1cbffb0e16a0a2ad6d7a1f77bc233fdb162eda6e074b",
+      "created": "2026-10-27T15:06:38",
+      "contaminated": false,
+      "note": ""
+    }
+  ],
+  "updated": "2026-10-27T15:06:38"
+}

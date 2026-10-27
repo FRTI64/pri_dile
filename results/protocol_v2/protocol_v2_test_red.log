@@ -1,0 +1,7 @@
+
+test_red: 20 seeds
+  Adv-RL               blue= 342.95 red= 681.95 diff=-339.00 red_win=100.0%
+  RL-Repair            blue= 314.65 red= 746.15 diff=-431.50 red_win=100.0%
+  RL-PPO-Hard60        blue= 319.00 red= 741.00 diff=-422.00 red_win=100.0%
+written results/protocol_v2/protocol_v2_test_red.json
+test_red usage recorded

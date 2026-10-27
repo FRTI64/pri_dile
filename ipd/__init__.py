@@ -19,7 +19,7 @@ All code and command-line entry points live in this package.
 """
 from __future__ import annotations
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 from .core.simulator import C, D, Strategy, payoff, play_match  # noqa: F401
 from .policies.base import Policy, PolicyAdapter, ensure_policy  # noqa: F401

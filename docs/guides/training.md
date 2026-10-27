@@ -102,6 +102,23 @@ python3 -m ipd train rl --device auto --seed 20261032 \
   --history-out results/robust_20261026/E1c_history.json
 ```
 
+### 3.4 Protocol v2 训练入口
+
+新候选不再用 `original,late,grim30,wide` 作为训练分布，而是：
+
+```bash
+python3 -m ipd train rl --device auto --iterations 40 \
+  --train-dists train_v2 \
+  --dists dev_param,dev_family \
+  --val-fields-per-dist 5 --val-n 100 --val-every 5 \
+  --select-metric avg \
+  --out weights/my_protocol_v2_policy.json \
+  --checkpoint-out weights/my_protocol_v2_checkpoint.json
+```
+
+`train_v2` 从 Protocol v2 的 train catalog 采样；`dev_param` / `dev_family`
+只用于 validation。不要传 `test_v5`，训练代码会拒绝它。
+
 PPO 的 MDP、网络、损失、验证指标见 [../policies/rl.md](../policies/rl.md)；
 E1 的 Gate 和结果见 [../research/e1-robust-finetune.md](../research/e1-robust-finetune.md)。
 

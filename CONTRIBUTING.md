@@ -20,7 +20,7 @@ python3 -m ipd test
 ```text
 ipd/core/        模拟内核、对手库、特征、规则状态机
 ipd/policies/    策略接口、候选、模型推理、注册表
-ipd/evaluation/  四分布、blind、suite、matchup、league、split
+ipd/evaluation/  Protocol v2、四分布、blind、suite、matchup、league、split
 ipd/training/    BC / PPO / adversarial / self-play / opponent-model
 ipd/tools/       C++ 导出、matchup 透视
 tests/           分层测试
@@ -107,18 +107,19 @@ docs/decisions/      ADR
 
 ## 7. 评估与选模纪律
 
-- 正式比较用 20 fields；不要用 8-field 烟测结果做排名；
+- 新候选用 **Protocol v2**：`dev_param` / `dev_family` 选模；正式 dev 用
+  20 fields；
+- `test_v5` 已消费一次；新候选通过 dev 后需要新建 `test_v6`；
 - 学习策略默认 `sample`，`argmax` 只作对照；
-- 不混用 10-field / 20-field、标准 CLI / league；
+- 不混用 Protocol v2 与 legacy official/blind/heldout 数字；
 - 不只看均值：报告 per-family、`min_norm`、CVaR、held-out red；
-- `heldout_v2` 是 validation；`heldout_v3` 已被 E1c 使用；`heldout_v4`
-  未使用，只能做一次性 final test；
 - 不把“对训练 red 有效”当成 anti-exploitation 解决。
 
 ## 8. 提交前检查
 
-- [ ] `python3 -m ipd test` 通过（当前 183 tests）；
+- [ ] `python3 -m ipd test` 通过（当前 202 tests）；
 - [ ] `python3 -m ipd self-test --candidates all` 通过；
+- [ ] `python3 -m ipd protocol audit` 通过；test 结果已写入 usage ledger；
 - [ ] 新候选/命令已注册，文档已更新；
 - [ ] 权重/配置/报告路径一致；
 - [ ] 没有覆盖主权重或历史结果；
