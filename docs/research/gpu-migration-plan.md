@@ -1,7 +1,7 @@
 # GPU/批处理迁移计划（计划 1–4）
 
-> 状态：修订草案 v2（2026-10-27）
-> 依据：`/tmp/opencode/gpu_ipd.py` 原型 + Protocol v4 实测微基准 + 240 tests
+> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）
+> 依据：`/tmp/opencode/gpu_ipd.py` 原型 + Protocol v4 实测微基准 + 256 tests
 > 目标：在不破坏 Protocol v4 语义的前提下，把 dev/test 评估从小时级降到分钟级，并把训练 rollout 提速 10–50×。
 > 本次修订：基于 2026-10-27 的实测成本结构，修正了收益归因、RNG 契约、验收指标和时间线。关键变化见“实测基线”和“关键约束”。
 
@@ -15,6 +15,11 @@
 | 4 | 训练 rollout GPU 化 | 4–6 周 | 10–50×，但需先 profile；同 B 与大 B 分开验收 | 高 | 计划 2/3 |
 
 建议顺序：**1 → 2 → 3 → 4**。计划 3 与 4 可以合并为“训练环境批处理”；如果只有 1 名工程师，按顺序执行的总周期按 14–17 周估算。
+
+> **Plan 1 状态：已实现并提交。** test_v7 all24 实测 3052.42s =
+> 0.85h（2.97×），PSS 13.1GB，256 tests 全绿；确定性 parity 通过。
+> Gate 1 性能目标 0.5–0.6h 未达；详见
+> [plan1-benchmark.md](plan1-benchmark.md)。
 
 ### 收益归因（修订）
 
@@ -83,6 +88,14 @@
 
 ## 计划 1：CPU 评估管线提速（1–2 周）
 
+> **状态（2026-10-27）：实现完成并提交。**
+> `test_v7 all24`（n=2048、50 fields、20 workers）实测 **3052.42s = 0.85h**，
+> 相对仓库旧结果 **2.97×**；未达到 0.5–0.6h 的性能目标，原因是 24 核
+> 混合 CPU（8 P-core + 16 E-core）的 5→20 worker 扩展低于 4×。
+> RNG parity、确定性候选逐位一致、256 tests 和 PSS <16GB 均通过。
+> 详细数据、field 复用收益和 Plan 2/3 交接提醒见
+> [plan1-benchmark.md](plan1-benchmark.md)。
+
 ### 目标
 
 不改任何策略语义，主要靠 worker 扩容和可观测性：
@@ -94,37 +107,52 @@
 
 ### 任务
 
-- [ ] **1.1 worker 自适应与基线记录**
+- [x] **1.1 worker 自适应与基线记录**
   - 当前默认已经是 20；增加 `--workers auto`，取 `min(20, cpu_count - 2, RAM 预算)`；
   - 记录实际 worker 数、每 task/每 family 耗时、总 wall time、峰值 RSS；
   - 用 n=2048、all24 做一次 20-worker 压测，而不是只用 n=256。
+  - **结果**：`--workers auto` 已接入；test_v7 all24（50 fields，n=2048）
+    20-worker 压测完成，wall 3052.42s，PSS 13.1GB；见
+    `results/protocol_v4/plan1_test_v7_all24.json`。
 
-- [ ] **1.2 field 级调度（带 RNG 契约）**
+- [x] **1.2 field 级调度（带 RNG 契约）**
   - task 改为 `(field, candidate_chunk)`，不是只按 `(tier, seed)`；一个 worker 构建一次 field，循环评估一小批候选（建议 4–6 个/批）；
   - 每个候选开始前：`reset()` 对手并恢复构建时保存的 `rng.getstate()`；候选 policy 按 `(candidate, field)` 重建，保持匹配顺序；
   - 如果无法保证 RNG 恢复，回退到“每个候选重建 field”，不要复用对象；
   - 记录 `field_build_seconds`、`eval_seconds`、`candidate_build_seconds`。
+  - **结果**：实现于 `ipd/evaluation/protocol_cli.py:_eval_field_task`；
+    RNG 快照/恢复在 `protocol.py`；`Neural/GRU/SelfPlay` 已纳入快照；
+    parity 测试见 `tests/test_protocol_scheduler.py`。
 
-- [ ] **1.3 field 构建缓存（可选，先测量）**
+- [x] **1.3 field 构建缓存（可选，先测量）**
   - 实测热 build：test_v7 约 0.6–0.8s，dev_param 约 0.06s；相对 all24 的 672s/field，收益只有 1–2%；
   - 如启用，缓存“已构建对象 + 初始 RNG 状态”，每个候选前 reset+restore；不要只缓存“对手描述 + seed”，那不会避免 Axelrod/策略对象的构建成本；
   - 对 `Darwin` 等类级状态对手禁用对象复用；对 Axelrod 可考虑延迟 reset/懒初始化，避免构建时重复 reset；
   - 缓存收益必须用 1.6 的基准证明；否则删掉该任务。
+  - **结果**：实测 field 构建复用只省 **2.59%** wall time，低于 5% 门槛；
+    不新增跨 field 对象缓存。同一 field 内的 RNG-safe 复用保留，作为
+    Plan 2/3 的 field 批处理接口。
 
-- [ ] **1.4 进度与 ETA**
+- [x] **1.4 进度与 ETA**
   - 输出 `done/total fields`、当前候选、tier、已用时间、预计剩余；
   - 记录每候选每 tier 的 `eval_seconds`、`field_build_seconds`、`candidate_build_seconds`。
+  - **结果**：`ProgressTracker` 输出 fields/tasks、当前 tier/candidate、elapsed、ETA；
+    profile 同时记录每候选和每 tier 计时。
 
-- [ ] **1.5 性能剖析开关**
+- [x] **1.5 性能剖析开关**
   - `--profile` 输出 per-family、per-candidate 时间；
   - 结果写入 `results/protocol_v4/profile_*.json`；
   - 基线运行默认开启，否则无法审计“5 workers / 9.2h / 75%”这类数字。
+  - **结果**：结果 JSON 默认包含 profile 摘要；`--profile` 写出
+    `results/protocol_v4/profile_plan1_test_v7_all24.json`。
 
-- [ ] **1.6 回归测试**
+- [x] **1.6 回归测试**
   - 用固定 seed 跑 `dev_param --fields 2 --n 256`（不要只用 n=64）；
   - workers=1 vs 4、候选正序 vs 逆序，各跑一次；
   - 确定性候选必须逐位一致；sample 候选允许 RNG 顺序差异，但均值差和分布要在预定容忍内；
   - 增加一个专门捕获 RNG 泄漏的测试：同一 field 连续评估两个候选，与重建 field 的结果比对。
+  - **结果**：`tests/test_protocol_scheduler.py` 16 tests 覆盖 workers=1 vs 4、
+    正序/逆序、RNG 泄漏、learned policy 快照和 profile；全量 256 tests 全绿。
 
 ### 交付物
 
@@ -135,12 +163,16 @@
 
 ### 验收标准
 
-- [ ] test_v7 all24 ≤0.5–0.6h（20 workers；记录实际 workers 和 per-family 时间）；
-- [ ] dev 五层 all24 ≤2.3h；
-- [ ] 240 tests 全绿；
-- [ ] 固定 RNG 契约下，确定性候选结果逐位一致；sample 候选分布等价；
-- [ ] 内存峰值 <16GB；
-- [ ] field 缓存若启用，必须有 ≥5% 的实测 wall-time 收益，否则不作为交付项。
+- [ ] test_v7 all24 ≤0.5–0.6h（20 workers；记录实际 workers 和 per-family 时间）
+  — **未达**：实测 3052.42s = 0.85h；2.97×；混合 CPU 扩展低于 4×；
+- [ ] dev 五层 all24 ≤2.3h
+  — **未重跑**：按 2.97× 外推约 3.1h，预计不达；
+- [x] 240 tests 全绿 — **通过**：256 tests（原 240 + 新增 16）55.46s；
+- [x] 固定 RNG 契约下，确定性候选结果逐位一致；sample 候选分布等价
+  — **通过**：23 个非 SelfPlay 候选逐位一致；SelfPlay sample mean 差 +0.00224；
+- [x] 内存峰值 <16GB — **通过（PSS）**：13,091MB；RSS 19,089MB 含共享库重复计数；
+- [x] field 缓存若启用，必须有 ≥5% 的实测 wall-time 收益，否则不作为交付项
+  — **未启用跨 field 缓存**：per-field 复用实测 2.59%，低于 5%。
 
 ### 风险与回退
 
@@ -232,7 +264,7 @@
 - [ ] argmax/float64 0 动作差异；
 - [ ] sample：方案 A 保持 CPU 且结果一致；方案 B 有 v5 基线和分布等价报告；
 - [ ] CPU fallback 结果与旧实现一致；
-- [ ] 240 tests + 新测试全绿。
+- [ ] 256 tests + 新测试全绿。
 
 ### 风险与回退
 
@@ -321,7 +353,7 @@
 - [ ] 评估侧不回归；快速规则候选有可测量的增量；
 - [ ] 不承诺 test_v7 6–10× 来自规则批处理；如要该指标，必须把 Plan 2 的蓝方/policy 收益一起计入；
 - [ ] Axelrod 仍 CPU，结果不变；
-- [ ] 240 tests + 新测试全绿。
+- [ ] 256 tests + 新测试全绿。
 
 ### 风险与回退
 
@@ -394,7 +426,7 @@
 - [ ] 放大 B 的 rollout ≥10×，并附带重新调参后的曲线，不要求与 CPU 逐点一致；
 - [ ] 显存 <20GB（B、T 可调）；
 - [ ] CPU fallback 可用；
-- [ ] 240 tests + 新测试全绿。
+- [ ] 256 tests + 新测试全绿。
 
 ### 风险与回退
 
@@ -421,6 +453,10 @@
 
 注意：计划 3 第 5–10 周与计划 4 第 8–14 周仍有重叠；1 名工程师无法同时全职做两条线。上表按“计划 3 的训练部分与计划 4 共享代码”估算，实际排期应留 2–3 周缓冲。
 
+**Gate 1 状态（2026-10-27）：** 功能、RNG parity、256 tests、PSS <16GB
+通过；`test_v7` 实测 0.85h，性能目标 0.5–0.6h 未达。Plan 2 可以开始，
+但 2.5 必须基于已提交的 Plan 1 接口，并用 GPU 路径重新定义端到端基线。
+
 ## 资源与成本
 
 - 1 名工程师，14–17 周；或 2 名工程师，10–12 周；
@@ -434,14 +470,22 @@
 
 ## 立即可做的三件事（今天）
 
-1. 用 `--workers 20` 重跑一次 `dev_param --fields 2 --n 2048` 和 `test_v7` 的小规模全候选，记录 workers、峰值 RSS、per-family 时间；不要只用 n=256。
-2. 给 `protocol eval` 加 RNG 快照/恢复和回归测试（计划 1.6）；在 RNG 契约通过前，不要启用 field 对象复用。
-3. 对 test_v7 all24 做一次 per-family 剖析，分别统计“蓝方推理 / policy 对手 / Axelrod / 规则”，确认 Plan 2 的 GPU 路由应按“蓝方全 field”而不是“policy 子集”设计。
+1. [x] 用 `--workers 20` 重跑一次 `dev_param --fields 2 --n 2048` 和 `test_v7` 的小规模全候选，记录 workers、峰值 RSS、per-family 时间；不要只用 n=256。
+   — 已完成 test_v7 all24 全量（50 fields，n=2048，20 workers）；dev_param 小规模未单独重跑。
+2. [x] 给 `protocol eval` 加 RNG 快照/恢复和回归测试（计划 1.6）；在 RNG 契约通过前，不要启用 field 对象复用。
+   — 已完成并提交。
+3. [x] 对 test_v7 all24 做一次 per-family 剖析，分别统计“蓝方推理 / policy 对手 / Axelrod / 规则”，确认 Plan 2 的 GPU 路由应按“蓝方全 field”而不是“policy 子集”设计。
+   — 已完成；`policy` family 占 27%，SelfPlay-GRU 单候选占 36.8%。
 
 ---
 
 ## 变更记录
 
+- **v3（2026-10-27）**：Plan 1 实现并提交；test_v7 all24 实测
+  3052.42s（0.85h，2.97×），PSS 13.1GB，256 tests 全绿；确定性候选
+  parity 通过；field 复用收益 2.59%，未新增跨 field 缓存。Gate 1 性能
+  目标（0.5–0.6h）未达，原因记录为混合 CPU 的 worker 扩展低于 4×。
+  Plan 2 可以开始，但 2.5 需基于已提交接口并重新建立 GPU 端到端基线。
 - **v2（2026-10-27）**：
   - 增加实测基线和成本结构；修正 Plan 1/2/3 的收益归因；
   - 明确 RNG 契约：`reset()` 不重置 RNG，field 复用必须先快照/恢复；

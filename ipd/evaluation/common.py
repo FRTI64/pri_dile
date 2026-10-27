@@ -7,6 +7,7 @@ both 0-based ``act`` and legacy 1-based ``move`` implementations work.
 from __future__ import annotations
 
 import statistics
+import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Sequence
@@ -92,19 +93,31 @@ def evaluate_field(policy: Any, opponents: Sequence[Any],
 
 def evaluate_field_details(
         policy: Any, opponents: Sequence[Any], rounds: int = 100,
+        timings: dict[str, float] | None = None,
 ) -> tuple[FieldStats, dict[str, list[int]]]:
     """Like :func:`evaluate_field`, but also group scores by opponent type.
 
     A field normally contains several copies of the same opponent type.  The
     returned mapping keeps every individual match score so callers can compute
     means, minima, and quantiles per type.
+
+    If ``timings`` is provided, wall time per family (the part of the
+    opponent name before ``:``) is accumulated into it.  Profiling is opt-in
+    so the default path keeps its original overhead.
     """
     p = ensure_policy(policy)
     scores: list[int] = []
     names: list[str] = []
     by_opponent: dict[str, list[int]] = defaultdict(list)
     for opponent in opponents:
-        result = run_match(p, opponent, rounds=rounds)
+        if timings is None:
+            result = run_match(p, opponent, rounds=rounds)
+        else:
+            started = time.perf_counter()
+            result = run_match(p, opponent, rounds=rounds)
+            family = result.opponent_name.split(":", 1)[0]
+            timings[family] = timings.get(family, 0.0) \
+                + (time.perf_counter() - started)
         scores.append(result.score)
         names.append(result.opponent_name)
         by_opponent[result.opponent_name].append(result.score)

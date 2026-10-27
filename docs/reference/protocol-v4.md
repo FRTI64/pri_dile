@@ -208,6 +208,33 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
   --seeds 30 --no-consume
 ```
 
+### 5.1 调度、RNG 与剖析（Plan 1）
+
+`protocol eval` 现在按 `(field, candidate_chunk)` 调度：一个 worker 构建一次
+field，串行评估 4–6 个候选，而不是每个候选都重建一次 field。
+
+```bash
+# 自动 worker 数：min(20, cpu_count - 2, RAM 预算)
+python3 -m ipd protocol eval --candidates all --tiers dev_param \
+  --fields 30 --n 2048 --workers auto \
+  --candidate-chunk 6 --field-reuse auto --profile \
+  --out results/protocol_v4/protocol_v4_dev_param.json
+```
+
+- **RNG 契约**：`reset()` 不会回退对手的 Mersenne Twister。复用 field 前，
+  worker 保存每个对手/学习策略的 `rng.getstate()`，每个候选开始前恢复；
+  候选 policy 仍按 `(candidate, field)` 重建，保持原有匹配顺序。这样复用与
+  逐候选重建逐位一致。
+- `--field-reuse auto`：能恢复 RNG 时复用；`on` 显式请求；`off` 退回每个
+  候选重建。`Darwin` 等类级状态对手始终重建。
+- `--candidate-chunk 6`：候选交错分组，避免长任务聚在同一 chunk。
+- `--profile`：把 per-candidate / per-tier / per-family 耗时写到
+  `profile_<result>.json`；结果 JSON 始终包含 `workers`、
+  `worker_budget`、`peak_rss_mb`、`peak_pss_mb`（物理内存估计）、
+  `peak_anon_mb` 和 `profile` 摘要。
+- `--workers auto` 解析出的实际值、CPU/RAM 预算和候选分块都会写入结果文件，
+  便于审计“workers / 耗时 / RSS”结论。
+
 ## 6. 选模规则
 
 1. `dev_family` 过滤 family 崩塌；

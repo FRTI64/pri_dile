@@ -7,6 +7,14 @@
 
 ### Added
 
+- **Plan 1 CPU 评估管线**：`protocol eval` 支持 `--workers auto`、
+  `--candidate-chunk`（默认 6）、`--field-reuse auto|on|off` 和
+  `--profile`；新增 `ipd/evaluation/scheduler.py`（worker/RAM 预算、进度
+  ETA、per-family 剖析、RSS/PSS 采样）；field 复用前保存/恢复对手与学习策略
+  RNG 快照，保持逐位一致；新增 `tests/test_protocol_scheduler.py` 与
+  `docs/research/plan1-benchmark.md`。全量 `test_v7` all24：3052.42s
+  （0.85h，2.97×），确定性 parity 通过，256 tests 全绿；Gate 1 性能目标
+  0.5–0.6h 未达（混合 CPU 扩展不足 4×）。
 - **PSRO**：`ipd/training/psro.py`（blue-vs-red 元博弈、maximin、
   PPO best-response oracle、population/report/checksum）；`ipd/policies/psro.py`
   （meta-policy，每场按 blue maximin 采样）；候选 `psro` / `psro-br`；

@@ -55,9 +55,12 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 参数：`--candidates`、`--tiers`（`dev_param` / `dev_family` /
 `dev_complex` / `dev_axelrod` / `dev_ood` / `dev_level0..4` /
 `dev_complexity0..4` / `test_v7`）、`--fields`、`--n`、
-`--rounds`、`--workers`、`--seed`、`--baseline`、`--acknowledge-once`、
-`--force`、`--no-consume`、`--out`。默认 `n=2048`、dev 30 fields、
-test 50 fields。`test_v7` / `test_red` 由
+`--rounds`、`--workers`（整数或 `auto`）、`--candidate-chunk`、
+`--field-reuse auto|on|off`、`--profile`、`--profile-out`、`--seed`、
+`--baseline`、`--acknowledge-once`、`--force`、`--no-consume`、`--out`。
+默认 `n=2048`、dev 30 fields、test 50 fields、20 workers、6 candidates/field。
+调度、RNG 契约和剖析说明见
+[protocol-v4.md 5.1](protocol-v4.md#51-调度rng-与剖析plan-1)。`test_v7` / `test_red` 由
 `configs/splits/protocol_v4/test_policy.json` 永久锁定
 （`consume_test=false`），CLI 没有覆盖开关；test 运行必须显式传
 `--no-consume`，且一律 provisional、不写 usage ledger，

@@ -2313,6 +2313,105 @@ def build_protocol_field(tier: str, seed: int,
     return field
 
 
+# Field objects may be reused across candidates only when their whole mutable
+# RNG state can be restored.  Axelrod's cheating bank (Darwin) keeps state on
+# the class instead of the player instance, so it must always be rebuilt.
+FIELD_REUSE_UNSAFE_TYPES = frozenset({"Darwin", "Geller", "MindReader"})
+
+
+def _is_policy_like(value: Any) -> bool:
+    """True for protocol strategies and policy opponents with an RNG."""
+    if isinstance(value, (Strategy, random.Random)):
+        return True
+    return (hasattr(value, "__dict__") and hasattr(value, "rng")
+            and callable(getattr(value, "act", None)))
+
+
+def _container_has_state(value: Any) -> bool:
+    items = value.values() if isinstance(value, dict) else value
+    return any(_is_policy_like(item) for item in items)
+
+
+def _iter_field_rngs(value: Any, seen: set[int] | None = None) -> Iterable[
+        random.Random]:
+    """Yield random generators reachable from one field object graph.
+
+    Hand-written strategies subclass :class:`Strategy`, but learned policy
+    opponents (Neural/GRU/SelfPlay) are plain objects.  Walk both kinds while
+    pruning large weight tensors: containers are only descended into when
+    they directly hold a strategy, policy or RNG.
+    """
+    if isinstance(value, random.Random):
+        yield value
+        return
+    if seen is None:
+        seen = set()
+    if id(value) in seen:
+        return
+    seen.add(id(value))
+    if isinstance(value, (list, tuple, dict)):
+        if _container_has_state(value):
+            items = value.values() if isinstance(value, dict) else value
+            for item in items:
+                if isinstance(item, (random.Random, list, tuple, dict)) \
+                        or _is_policy_like(item):
+                    yield from _iter_field_rngs(item, seen)
+        return
+    if not _is_policy_like(value):
+        return
+    for item in vars(value).values():
+        if isinstance(item, (random.Random, list, tuple, dict)) \
+                or _is_policy_like(item):
+            yield from _iter_field_rngs(item, seen)
+
+
+def snapshot_field_rng(field: Sequence[Any]
+                       ) -> list[tuple[random.Random, object]]:
+    """Capture the RNG state of every opponent in a freshly built field.
+
+    ``reset()`` does not rewind an opponent's Mersenne Twister: several
+    opponents explicitly keep their stream across matches.  A field can only
+    be reused for another candidate after restoring these states, because the
+    first candidate advances every opponent RNG.
+    """
+    snapshot: list[tuple[random.Random, object]] = []
+    seen: set[int] = set()
+    for rng in _iter_field_rngs(field):
+        if id(rng) in seen:
+            continue
+        seen.add(id(rng))
+        snapshot.append((rng, rng.getstate()))
+    return snapshot
+
+
+def restore_field_rng(field: Sequence[Any],
+                      snapshot: Sequence[tuple[random.Random, object]]) -> None:
+    """Restore states captured by :func:`snapshot_field_rng`."""
+    for rng, state in snapshot:
+        rng.setstate(state)
+
+
+def _opponent_type_names(opponent: Any) -> set[str]:
+    names = {type(opponent).__name__}
+    player_cls = getattr(opponent, "player_cls", None)
+    if isinstance(player_cls, type):
+        names.add(player_cls.__name__)
+    nested = getattr(opponent, "_bot", None)
+    if nested is not None and nested is not opponent:
+        names.add(type(nested).__name__)
+    return names
+
+
+def field_reuse_safe(field: Sequence[Strategy]) -> bool:
+    """Return whether every opponent supports object reuse after reset()."""
+    for opponent in field:
+        if bool(getattr(opponent, "reuse_unsafe", False)):
+            return False
+        if _opponent_type_names(opponent) & FIELD_REUSE_UNSAFE_TYPES:
+            return False
+    return True
+
+
 TRAIN_PROFILES: dict[str, tuple[str, ...] | None] = {
     "train_v4": None,
     "train_v3": None,  # legacy alias for the same full mixture
@@ -2526,4 +2625,6 @@ __all__ = [
     "build_protocol_field", "build_training_field",
     "build_protocol_red_field", "red_pool", "load_usage",
     "guard_test_usage", "record_usage",
+    "FIELD_REUSE_UNSAFE_TYPES", "snapshot_field_rng", "restore_field_rng",
+    "field_reuse_safe",
 ]

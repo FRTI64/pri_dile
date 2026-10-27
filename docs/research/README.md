@@ -17,6 +17,7 @@
 | 阶段 | 文档 | 结论 |
 |---|---|---|
 | Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | **已定义**；977 configs + level/complexity + Axelrod；baseline 未运行 |
+| Plan 1 | [plan1-benchmark.md](plan1-benchmark.md) | 实现完成；test_v7 0.85h（2.97×），RNG parity 通过；0.5–0.6h 目标未达 |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |
