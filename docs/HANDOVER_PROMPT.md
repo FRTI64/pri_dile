@@ -1,4 +1,4 @@
-# 交班 Prompt（2026-10-26，E0/E1/E2/P3 之后）
+# 交班 Prompt（2026-10-27，Axelrod + P2 C3 之后）
 
 > 下一 session 直接复制下面这一段作为起始 prompt。
 
@@ -6,19 +6,29 @@
 
 你在 `/home/frti64/pri_dile` 继续 IPD（100 轮重复囚徒困境）策略项目。先读：
 
-- `docs/ipd-long-term-improvement-plan.md`
 - `HANDOVER.md`
-- `docs/E0_LEAGUE.md`
-- `docs/e1-robust-finetune.md`
-- `docs/e2-risk-ppo.md`
-- `docs/p3-red-league.md`
-- `docs/RL_POLICY.md`
-- `results/e0_league_20261026/README.md`
-- `results/robust_20261026/README.md`
-- `results/risk_20261026/README.md`
-- `results/red_pool_20261026/README.md`
+- `docs/ipd-long-term-improvement-plan.md`
+- `docs/AXELROD_OPPONENTS.md`
+- `results/axelrod_20261027/README.md`
+- `docs/p2-c3-threeway-moe.md`
+- `docs/p2-c3-repeated-calib.md`
+- `results/p2_repeated_calib_20261026/README.md`
+- `docs/p2-c2c3-excitation.md`
+- `docs/p2-c2c3-opponent-model.md`
+- `docs/p2-c1-belief-planner.md`
 
 ## 当前状态
+
+- 最新提交：`e7475e0 P2 C3 repeated counterfactual calibration (No-Go)`。
+- **工作区当前是 dirty**：Axelrod 可选对手库已实现但**尚未提交**；
+  不要丢弃或覆盖这些改动。当前 `python3 -m ipd test` 为 **183 tests OK**。
+- 主权重未替换：
+  `weights/rl_policy_weights.json` sha256
+  `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`；
+  `weights/rl_policy_weights_repair.json` sha256
+  `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
+- 默认评估口径仍是四分布（original/late/grim30/wide）和 85/158 对手集合；
+  Axelrod 是**可选**对手库，不改变默认 benchmark/blind 结果。
 
 ### 基线与候选
 
@@ -30,107 +40,124 @@
 | Adv-RL | `adv-rl` | aggressive config | 554.29 | 562.91 / 8.00 | 502.39 | 325.55 |
 | SelfPlay-GRU | `selfplay` | `weights/selfplay_gru_policy.json` | 550.76 | 560.43 / 8.10 | 491.86 | 301.65 |
 
-- **主权重未替换**：`weights/rl_policy_weights.json` 的 sha256 仍是
-  `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-- **RL-Repair（E1c）是 Go candidate**：heldout v2 503.17（A60 +3.10）、
-  heldout v3 final 509.88（A60 +3.91）；official +0.45、blind +0.80；
-  min_norm 0.9930、CVaR10 390.39、E4 red blue 303.45。已注册但未
-  promotion；如果要替换主权重，先做独立 seed 复现并得到用户确认。
-- **21 维不是硬约束**。主线继续用 85 维 RL-PPO / RL-Repair；SelfPlay-GRU
+- **RL-Repair 仍是 Go candidate，但未 promotion**；heldout v3 final
+  509.88（A60 505.97）。如果要替换主权重，先做独立 seed 复现并得到用户确认。
+- **21 维不是硬约束**；主线继续用 85 维 RL-PPO / RL-Repair。SelfPlay-GRU
   只作为 21 维/无 PyTorch 部署备选。
 
 ### 已完成的 Gate 结论
 
 - **E0：PASS。** `python3 -m ipd league` 冻结 cross-play / Nash / Elo /
-  exploitability / heldout red。9 候选同 suite/seeds；报告
-  `results/e0_league_20261026/report.json`。
-- **E1a：No-Go。** `robust` domain-randomized A60 fine-tune，heldout v2 +1.36，
-  min_norm +0.0036，CVaR -2.15。
-- **E1b：No-Go。** 更强更新（KL 0.05, lr 2e-4）selection +3.05，但 full
-  +1.94，min_norm -0.0036，CVaR -2.32。
-- **E1c：Go candidate。** `repair` 分布修复 random 尾部，heldout v2 +3.10，
-  heldout v3 final +3.91，official/blind 不降；注册 `rl-repair`。
-- **E2a/E2b/E2c：No-Go。** CVaR episode weighting（coef 1.0/3.0）和
-  worst-family DRO 都没有把 heldout CVaR 抬起：
-  CVaR item +1.2% / +0.5% / -0.5%，min_norm +0.0001/+0.0027/+0.0025。
-  不注册 `rl-risk`/`rl-dro`；E2 代码保留为研究 artifact。
-- **P3 red pool：第一里程碑 Go。** 85 维 `Red-RL-v1`（from scratch,
-  `safe=False`）在全部 held-out blue 上都比 E4 red 更强：
-  RL-Repair red 727.6 vs 703.8；Adv-RL 666.6 vs 611.8；red win 100%。
-  这说明当前 blue 比 E4 结果更易被针对，**不等于 anti-exploitation 已解决**。
-- **P3 league-lite：No-Go。** competitive blue response（50% official/repair
-  + 50% Red-RL-v1，reward=own-opponent）把 E4 exploitability
-  407.0→355.0（-12.8%），official 554.74、blind 563.80；
-  未达 Gate D 的 -20%，不 promotion。E4 red 仍 100% 击败。
-
-### 已提交 commits
-
-```text
-09a9ec2 P3 red pool + league-lite blue response
-467c42b E2c worst-family DRO / No-Go
-b445969 E2 CVaR risk PPO / No-Go
-c95371b E1c repair fine-tune + register rl-repair
-501fe46 E0 league harness + E1 robust fine-tune
-efb4924 long-term plan
-```
-
-当前工作区应为 clean；测试 **112 tests OK**。
+  exploitability / heldout red；报告 `results/e0_league_20261026/`。
+- **E1c：Go candidate。** `repair` fine-tune，heldout v2 +3.10、heldout v3
+  final +3.91，official/blind 不降；注册 `rl-repair`，未覆盖主权重。
+- **E2：No-Go。** CVaR/DRO 没有把 heldout CVaR 抬起；不注册 `rl-risk`/`rl-dro`。
+- **P3 red pool：第一里程碑 Go。** Red-RL-v1 在全部 held-out blue 上强于
+  E4 red；但 **P3 league-lite / expansion 均 No-Go**，Gate D 未达 -20%，
+  E4 red 仍 100% 击败当前 blue。不要继续盲调 red fraction。
+- **P2 C1：No-Go。** belief planner 激进/保守版都没有达到 Gate C；诊断是
+  opponent model discrimination，而不是 planning horizon。
+- **P2 C2/C3 binary gate：No-Go。** heldout_v2 gate 70.6%，false positives
+  全部来自 adaptive/noisy；gated conservative +1.20，红色无变化。
+- **C2/C3 exploratory/counterfactual 数据：数据层 Go / planner No-Go。**
+  `excited` 率 25.8%→59.3%；calibrated/mixed gate 改善，但部署轨迹仍
+  excitation 不足；conservative planner 3-seed +0.88。
+- **C3 three-way gate + MoE：No-Go。** safe/risky/unknown + safe→AllD；
+  5-seed heldout +4.04（validation +0.53），best-validation +0.90/+1.41；
+  safe→planner 3-seed -1.28；红色 0.00。
+- **C3 repeated counterfactual 校准：No-Go。** 每 state 重复 10 次 C/D；
+  calibrated safe precision/recall 74.7%/62.1%（旧 82.6%/31.7%）。
+  no-veto AllD 在 extort 崩坏（-137.1）；response veto 0.2 后 5-seed
+  validation -0.31、heldout +2.93、safe rate 2.5%。
+- **C3 EV probe screen：No-Go。** 一次性 belief planner override 最好
+  1-seed +1.29，3-seed -5.22；无条件 early probe -10.7~-20.8。
+  不要继续调 C3 threshold；需要显式 value-of-information 或更好的后验/特征。
+- **Axelrod 可选对手库（未提交）**：243 普通 / 224 fast / 1 cheating
+  (Darwin)；默认依赖不变，`axelrod==4.14.0` 仅在 `requirements-axelrod.txt`
+  或 `pip install -e '.[axelrod]'` 时安装。224 fast × 100 回合：Triple 560.95、
+  Resp3 555.37、Final 555.27、Bayes 546.25（不能与四分布 554.x 直接比较）。
 
 ## 任务（下一 session）
 
-按 `docs/ipd-long-term-improvement-plan.md` 继续。优先级建议：
+### 1. 先 review + commit Axelrod 改动（优先级最高）
 
-1. **P3 扩展（首选）**
-   - 扩大 red pool：`Red-RL-v1` + E4 + 新 red（对 Adv-RL / SelfPlay /
-     规则池训练，至少 3–5 个 red checkpoint）；
-   - 用 PSRO / meta-Nash 权重训练 blue response，而不是只针对单个 red；
-   - held-out red 必须不参与 blue 训练；
-   - Gate D：exploitability 降低 ≥20%，official 不降 >2，无 family 崩塌。
-2. **P2 对手建模（最高上限）**
-   - C1：Bayesian opponent model + finite-horizon planning；
-   - C2：auxiliary opponent prediction；
-   - C3：opponent classifier + MoE；
-   - 先做 belief/planner 的离线评估和 fallback，不要直接改主策略。
-3. **E3 multi-teacher distillation + gating**
+当前未提交文件：
+
+```text
+M HANDOVER.md README.md docs/IPD_README.md docs/STRUCTURE.md
+M ipd/core/opponents/__init__.py ipd/core/simulator.py
+M ipd/evaluation/benchmark.py common.py distributions.py matchup.py split_config.py
+M pyproject.toml
+?? docs/AXELROD_OPPONENTS.md
+?? ipd/core/opponents/axelrod_bank.py
+?? requirements-axelrod.txt
+?? results/axelrod_20261027/
+?? tests/test_axelrod_opponents.py
+```
+
+Review 重点：
+
+- 默认 `import ipd` / 四分布 benchmark 不因 Axelrod 缺失而失败；适配器必须
+  lazy import。
+- 默认四分布、85/158 对手集合、主权重完全不变；只新增
+  `--dists axelrod|axelrod-fast|axelrod-cheating` /
+  `--opponent-set axelrod*`。
+- `set_rounds` hook、随机 seed/reset、Meta history、Darwin class genome
+  顺序相关等测试是否覆盖。
+- 用 `python3 -m ipd test` 确认 183 tests；再跑一次 core 四分布 benchmark
+  对比提交前结果。
+- 如果确认无误，**单独提交 Axelrod**，并把 `HANDOVER.md` 顶部
+  “改动尚未提交” 状态改掉。不要把它和下一轮研究混在一个 commit。
+
+### 2. 再决定主线
+
+P2 C1/C2/C3 已经连续 No-Go，**不要继续调 C3 threshold / planner horizon**。
+优先级建议：
+
+1. **比赛提交硬化（若近期要提交）**
+   - 用独立 seeds 复现 RL-Repair 的 official/blind/heldout v2/v3；
+   - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
+   - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
+2. **E3 multi-teacher distillation + gating（研究首选）**
    - 教师：RL-Repair / A60 / Adv-RL / SelfPlay / 规则策略；
-   - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune。
-4. **E1c promotion（可选）**
-   - 用新 seeds 独立复现 RL-Repair 的 official/blind/heldout v2/v3；
-   - 只有确认稳定后才考虑替换主权重。
+   - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune；
+   - Gate C 之外也要报告 per-family、min_norm、CVaR、held-out red。
+3. **P3 anti-exploitation（仅在有新 held-out red 时）**
+   - 之前的 red pool / PSRO-lite 都未过 Gate D；不要复读相同实验。
 
-**不建议**继续调 E2 的 risk coef/quantile；三次 No-Go 已经说明
-episode-level CVaR/DRO 不是有效信号。
+### 3. 数据/评估纪律
+
+- `heldout_v2` 是 validation；`heldout_v3` 已被 E1c 使用；
+  **`heldout_v4` 仍未使用**，下一个通过 validation 的候选只能用它做一次
+  final test，之后新建 heldout_v5。
+- `final` suite 已多次用于 A/B/C，现在更像 validation，不要再当 final。
+- 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red
+  best response。
 
 ## 硬性要求
 
-- 先读代码和文档，再写短计划；不要直接堆功能。
-- 所有新模块先写 tests，再训练。
+- 先读代码和文档，再写短计划；新模块先写 tests，再训练。
 - 不只用官方四分布选模；必须报告 per-family、min_norm、CVaR、held-out red。
-- 保留当前 RL-PPO / A60 / RL-Repair 作为 fallback；**未确认前不要覆盖**
+- 保留 RL-PPO / A60 / RL-Repair 作为 fallback；**未确认前不要覆盖**
   `weights/rl_policy_weights.json`。
-- `heldout_v2` 已作为 validation；`heldout_v3` 已被 E1c 使用；
-  **`heldout_v4` 仍未使用**，下一个通过 validation 的候选只能用它做一次
-  final test。之后必须新建 heldout_v5。
-- 不把 final test 用于反复选模；每次新候选先过 validation，再跑 final。
-- 不要把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out
-  red best response。E4 red 只是 21 维压力测试，Red-RL-v1 是更强的 85 维
-  exploiter，但两者都仍 100% 击败当前 blue。
-- 不要硬编码 statistical TFT / 硬切 AllD / 动态抢跑；先作为特征/对手/评估。
-- `.pt` checkpoint 被 `*.pt` 忽略；提交代码、JSON 权重和报告即可，必要时
-  `git add -f`。
+- **不要丢弃当前未提交的 Axelrod 改动**；它是可选功能，不是主线权重。
+- Axelrod 是重量级可选依赖（torch/scipy/pandas/dask）；默认安装保持零第三方
+  依赖，版本固定 `4.14.0`。
+- `.pt` checkpoint 被 `*.pt` 忽略；提交代码、JSON 权重和报告即可。
 - 结束时更新 README/HANDOVER、checksum、Go/No-Go 结论，并提交。
 
 ## 建议的第一个动作
 
-先读 `results/red_pool_20261026/README.md` 和 `docs/p3-red-league.md`，
-检查 `ipd/training/rl.py` 的 opponent-pool flags 和
-`ipd/evaluation/policy_pool.py`。然后写一个 **P3 扩展短计划**：
+```bash
+cd /home/frti64/pri_dile
+git status
+git diff --stat
+python3 -m ipd test          # 应为 183 tests OK
+python3 -m ipd benchmark --candidates core --fields 8 --workers 8
+```
 
-- 多 red 池（不同 blue 训练池 + 不同 seed）；
-- PSRO/meta-Nash blue response；
-- held-out red 评估和 Gate D（-20% exploitability，official -2 内）。
-
-如果 P3 扩展仍无信号，转 P2 C1 Bayesian planner；不要回头继续调 E2。
+先确认 Axelrod 改动不改变默认口径，再单独提交。之后根据用户的优先级选择
+“比赛提交硬化”或 E3；不要回到 C3 threshold sweep。
 
 ## 复现命令
 
@@ -143,56 +170,54 @@ episode-level CVaR/DRO 不是有效信号。
 .venv/bin/python -m ipd benchmark --candidates rl-repair --fields 20 --workers 20
 .venv/bin/python -m ipd blind --candidates rl-repair --fields 20 --workers 10
 
-# E0 league（全量约 11 分钟；含 SelfPlay）
-.venv/bin/python -m ipd league --config configs/eval/e0_league.json \
-  --workers 20 --out /tmp/e0_full/report.json --md-out /tmp/e0_full/README.md
+# Axelrod（可选）
+python3 -m pip install -r requirements-axelrod.txt
+python3 -m ipd benchmark --candidates core --dists axelrod-fast \
+  --fields 1 --n 224 --workers 5
+python3 -m ipd matchup --candidates final-tuned --opponent-set axelrod-fast \
+  --reps 4 --workers 12
+python3 -m ipd benchmark --candidates core --dists axelrod-cheating \
+  --fields 1 --n 1 --workers 4
 
-# red pool 评估
-.venv/bin/python -m ipd league --config configs/eval/red_pool_eval.json \
-  --skip-suites --skip-cross-play --workers 20 \
-  --out /tmp/red_eval.json
-
-# 训练 Red-RL（示例）
-.venv/bin/python -m ipd train rl --device auto --seed 20261036 --from-scratch \
-  --iterations 20 --fields-per-dist 20 --n 80 --workers 20 \
-  --opponent-weights weights/rl_policy_weights.json,weights/rl_policy_weights_hard60.json,weights/rl_policy_weights_repair.json \
-  --allow-probe --no-validation \
-  --lr 2e-4 --ent-coef 0.01 --target-kl 0.03 \
-  --out /tmp/red_pool/red_rl_v2.json \
-  --checkpoint-out /tmp/red_pool/red_rl_checkpoint_v2.json
-
-# league-lite blue response（混合 official + red pool）
-.venv/bin/python -m ipd train rl --device auto --seed 20261038 \
-  --iterations 20 --fields-per-dist 5 --n 80 --workers 20 \
-  --train-dists original,late,grim30,wide,repair \
-  --dist-weights 1,1,1,2,2 \
-  --opponent-weights weights/red_pool/red_rl_v1.json \
-  --opponent-fraction 0.5 --opponent-penalty 1.0 \
-  --init-weights weights/rl_policy_checkpoint_repair.json \
-  --bc-kl-coef 0.05 --lr 1e-4 --ent-coef 0.0001 --target-kl 0.02 \
-  --val-fields-per-dist 5 --val-n 100 --val-every 5 \
-  --select-metric avg \
-  --out /tmp/blue_vs_red_comp_v2.json \
-  --checkpoint-out /tmp/blue_vs_red_comp_checkpoint_v2.json
+# C3 复现（只用于对照，不要继续调参）
+bash results/p2_threeway_moe_20261026/run.sh
+bash results/p2_repeated_calib_20261026/run.sh
+PYTHONPATH=. .venv/bin/python \
+  results/p2_repeated_calib_20261026/bayes_probe_screen.py
 ```
 
 ## 已知坑
 
-- raw `min_family` 跨 family 不可比；看 `min_norm_family` / per-family /
+- **Axelrod 完整 243 很慢**：19 个 `long_run_time`（主要是 Meta）会主导
+  100 回合耗时；日常用 `axelrod-fast`（224），完整集只做定向分析或
+  `matchup --rounds 10` smoke。
+- **Axelrod 内部 3/0/5/1，外部 6/0/10/1**：不要为了统一改内部矩阵，ZD
+  四向量会越界。
+- **Darwin genome 是类变量**：跨对局/重复/worker 顺序相关；604 只是机制
+  检查，不进入正式排名。
+- **Axelrod cheating 不是完整旧版家族**：4.14.0 只有 Darwin；
+  Geller/MindReader 需要 candidate peek/改写 harness。
+- **P2 C3 的信息瓶颈**：calibration 提高 recall 但不提高 precision；
+  extort 的少量 false positive 足以让 AllD 崩坏。不要继续扫 threshold。
+- **P3 cross-play 退化**：所有 blue 互相合作（594–595），Elo/Nash 不可区分；
+  必须加入 red/exploiter pool。
+- **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
+- **`min_family` 跨 family 不可比**：看 `min_norm_family` / per-family /
   per-opponent。
-- `final` suite 已用于 A/B/C 比较，现在更像 validation；不要再当 final。
-- `heldout_v2` 是 validation；`heldout_v3` 已被 E1c 使用；
-  `heldout_v4` 未使用；不要重复使用已消费的 final。
-- cross-play 蓝军池退化：所有 blue 互相合作（594–595），Elo/Nash 不可区分。
-  必须加入 red/exploiter pool；不要只靠蓝军 cross-play 选模。
-- E4 red（21 维 GRU）是 upper-bound 压力测试，不代表真实比赛一定 100%
-  被击败；Red-RL-v1（85 维）更强，但同样不是 solved anti-exploitation。
-- E2 的 CVaR/DRO 没有改善 heldout CVaR；不要继续盲调 coef/quantile。
-- DRO 权重归一化后必须按初始 `dist_weights` 总和缩放，否则 rollout field
-  总数会缩水（这个 bug 已修复）。
-- `--opponent-fraction` / `--opponent-penalty` 只在有
-  `--opponent-weights` 时生效；red-only 用 fraction=1.0。
-- `RL-Repair` 的 official 554.76 是独立 benchmark；E0/E1 报告的
-  554.72 是 league 同 suite 结果，两者差在 policy seed，不要混用。
-- 主权重 checksum 未变；A60 仍是 fallback；E1c/ P3 的权重都是 JSON，
-  可直接审计。
+
+## 已提交 commits
+
+```text
+e7475e0 P2 C3 repeated counterfactual calibration (No-Go)
+601426c P2 C3 three-way gate + MoE (No-Go)
+b19d4f9 P2 C2/C3 exploratory/counterfactual data (data Go / planner No-Go)
+7ab85fb P2 C2/C3 learned opponent model + gate (No-Go); fair-RNG C1 correction
+b9abfbe P2 C1 belief planner offline prototype (No-Go)
+c4da6c0 P3 expansion: multi-red pool + PSRO-lite (Gate D No-Go)
+5a62daa Update handover prompt after E0/E1/E2/P3
+09a9ec2 Add P3 red pool and league-lite blue response
+467c42b E2c worst-family DRO / No-Go
+b445969 E2 CVaR risk PPO / No-Go
+c95371b E1c repair fine-tune + register rl-repair
+501fe46 E0 league harness + E1 robust fine-tune evaluation
+```
