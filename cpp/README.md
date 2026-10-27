@@ -47,7 +47,7 @@ ipd::BayesPlus bayes(ipd::BayesPlusParams::tuned());
 ipd::GRUPolicy gru(20261024u, ipd::GRUParams{true, true, true});
 ipd::NeuralPolicy mlp(20261024u, ipd::NeuralParams{true, true, true});
 ipd::AdversarialRLPolicy adv(20261024u, true,
-    ipd::AdvRLParams{0.05, 12, 2, 50, false});
+    ipd::AdvRLParams{0.2, 12, 2, 40, true});
 ```
 
 `FinalParams::tuned()`、`Responsive3Params::tuned()`、`BayesPlusParams::tuned()`

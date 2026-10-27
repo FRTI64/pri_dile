@@ -1,439 +1,113 @@
 # 100 天囚徒困境策略项目
 
-本项目实现并比较了多类 100 天迭代囚徒困境（IPD）策略：规则策略、贝叶斯策略、
-多数投票融合策略，可导出到 C++ 的 MLP / GRU-Net 神经策略、约束对抗剥削版本，
-以及直接用比赛收益训练的完整 PPO 强化学习策略。当前主基线是从零训练的
-RL-PPO；E1c `RL-Repair` 是目前最强候选（官方 554.76、blind 564.61 / 5.75、
-heldout v2/v3 均高于 A60），但主权重尚未替换。
+100 天迭代囚徒困境（IPD）策略工具包：规则状态机、贝叶斯推断、多数投票融合、
+MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估覆盖四分布、
+blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 
-当前推荐版本和完整实验结论见 **[HANDOVER.md](HANDOVER.md)**。
-
-## 目录结构
-
-```text
-.
-├── ipd/                  规范 Python 包
-│   ├── core/             模拟内核、对手库、规则状态机、特征
-│   ├── policies/         参赛策略（每候选独立文件）+ 统一接口 + 注册表
-│   ├── evaluation/       四分布/盲测/拆分评估/9 测试集/逐类型对阵
-│   ├── training/         MLP/GRU/RL/对抗训练与规则参数搜索
-│   ├── tools/            C++ 权重导出
-│   └── cli.py            `python3 -m ipd ...` 统一入口
-├── cpp/                  C++17 推理实现、共用特征头文件和生成的权重头文件
-├── configs/              对抗策略配置（需与 weights/ 中的权重配对使用）
-│   └── eval/             按候选拆分参数的评估配置
-├── weights/              训练好的 MLP / GRU / RL 权重（JSON）
-├── results/              基准测试、盲测、训练曲线和搜索记录（JSON / CSV）
-├── docs/                 方法说明、结果表、流程图、结构规范
-├── tests/                分层测试（core/policies/evaluation/training）
-├── HANDOVER.md           交接文档：推荐方案、参数、风险、检查清单
-└── requirements-train.txt
-```
-
-项目分层和接口规范见 **[docs/STRUCTURE.md](docs/STRUCTURE.md)**。核心规则：
-
-- `core` 不依赖策略、评估或训练；
-- `policies` 是唯一放参赛策略的目录，统一实现 `reset()` + `act(t, mine, theirs)`；
-- `evaluation` 只通过候选注册表取策略，不再直接 import 具体策略类；
-- `training` 不定义参赛策略，训练入口统一为 `python3 -m ipd train <task>`。
-
-请在仓库根目录运行；路径由 `ipd.paths` 统一解析。如需从其他目录运行，先执行 `pip install -e .`：
-
-```bash
-python3 -m ipd benchmark --candidates core --fields 8
-python3 -m ipd blind --candidates core --fields 10 --seed 20261025
-```
-
-## 统一接口
-
-参赛策略规范接口（0-based）：
-
-```python
-from ipd import C, D
-
-class MyPolicy:
-    name = "MyPolicy"
-
-    def reset(self) -> None:
-        ...
-
-    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
-        return C if t < 99 else D
-```
-
-旧式 1-based `move(day, mine, theirs)` 会被 `ipd.policies.base.ensure_policy`
-自动适配；非法动作会被拒绝。新策略注册到
-`ipd/policies/registry.py` 后，所有评估脚本都可以通过名字使用：
-
-```bash
-python3 -m ipd benchmark --candidates final-tuned,my-policy
-```
+> **当前状态（2026-10-27）**
+>
+> - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
+> - 最佳候选：`rl-repair`（RL-Repair），但**未 promotion**；
+> - fallback：`rl-hard60`（A60）；
+> - 测试：`python3 -m ipd test` → **183 tests OK**；注册候选 **20 个**；
+> - anti-exploitation **未解决**：E4 red 仍接近 100% 击败当前蓝军。
+>
+> 完整结论、权重、风险和 promotion 条件见
+> **[docs/operations/handover.md](docs/operations/handover.md)**。
 
 ## 快速开始
 
-### 测试
+```bash
+python3 -m pip install -e .
+python3 -m ipd list-policies
+python3 -m ipd test
+
+# 四分布烟测 / 当前候选正式评估
+python3 -m ipd benchmark --candidates core --fields 8 --workers 8
+python3 -m ipd benchmark --candidates rl,rl-hard60,rl-repair \
+  --fields 20 --workers 20
+python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
+  --fields 20 --workers 10
+```
+
+训练需要 PyTorch（`requirements-train.txt`）；推理和 C++ 部署不需要。
+完整命令见 [docs/guides/](docs/guides/)，参考见 [docs/reference/](docs/reference/)。
+
+## 当前候选
+
+E0/E1c 冻结协议，20-field official/blind；旧 10-field 结果已归档。
+
+| 候选 | 注册名 | official | blind 20 | heldout v2 | heldout v3 | 状态 |
+|---|---|---:|---:|---:|---:|---|
+| **RL-Repair** | `rl-repair` | **554.72** | **564.68** | **503.17** | **509.88** | 最佳候选，未 promotion |
+| RL-PPO-Hard60 | `rl-hard60` | 554.27 | 563.87 | 500.07 | 505.97 | 候选 / fallback |
+| RL-PPO | `rl` | 553.22 | 562.80 | 494.97 | 502.31 | 当前主权重 |
+| Adv-RL | `adv-rl` | 554.05 | 562.97 | 502.39 | 504.84 | 仅分布匹配时考虑 |
+| SelfPlay-GRU | `selfplay` | 550.97 | 561.13 | 491.86 | - | 21 维备选 |
+| Triple-majority | `triple-majority` | 547.37 | 551.33 | 491.94 | - | 规则中最均衡 |
+| Final-tuned | `final-tuned` | 546.35 | 547.75 | 490.04 | - | 纯规则基线 |
+
+- 标准 CLI（独立 policy seed）：RL-PPO 553.33 / 562.83、A60 554.36 / 564.17、
+  RL-Repair 554.76 / 564.61；与冻结协议略有差异，不能混表。
+- `heldout_v3` 已被 E1c 使用；`heldout_v4` 未使用。
+- 指标定义见 [docs/reference/metrics.md](docs/reference/metrics.md)。
+
+## 目录
+
+```text
+ipd/          Python 包：core / policies / evaluation / training / tools
+cpp/          C++17 推理与生成头文件
+configs/      评估、对抗、league、self-play 配置
+weights/      训练权重与 checkpoint
+results/      基准、盲测、实验报告、训练曲线
+tests/        分层测试
+docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历史 / ADR
+```
+
+分层和接口规范见 [docs/architecture/overview.md](docs/architecture/overview.md)。
+
+## 当前实验结论
+
+| 阶段 | 结论 |
+|---|---|
+| A60 / hard×2 | 候选；official 554.36 / blind 20-field 564.17 |
+| E0 league | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
+| E1c repair | **Go candidate**（RL-Repair），未 promotion |
+| E2 CVaR / DRO | No-Go |
+| P3 red pool | red pool Go；league-lite / expansion Gate D **FAIL** |
+| P2 C1 / C2 / C3 | 全部 offline No-Go |
+| SelfPlay 改进 | No-Go；保留 21 维部署备选 |
+| Axelrod | 可选对手库；默认口径不变 |
+
+完整记录见 [docs/research/](docs/research/) 和
+`results/sweep_20261026/README.md`（66 候选 × 158 类对手）。
+
+## 文档
+
+- 文档总入口：[docs/README.md](docs/README.md)
+- 交接 / 下一 session：[docs/operations/handover.md](docs/operations/handover.md)
+- 评估 / 训练 / 部署：[docs/guides/](docs/guides/)
+- CLI / 候选 / 配置 / 指标：[docs/reference/](docs/reference/)
+- 策略方法：[docs/policies/](docs/policies/)
+- 实验与 Go/No-Go：[docs/research/](docs/research/)
+- 历史快照：[docs/history/](docs/history/)
+- 架构决策：[docs/decisions/](docs/decisions/)
+
+## 参与开发
 
 ```bash
 python3 -m ipd test
 python3 -m ipd self-test --candidates all
-# 等价命令
-python3 -m unittest discover -s tests -v
 ```
 
-### 规则策略与评估
+开发约定、添加候选/评估任务、文档规则见 [CONTRIBUTING.md](CONTRIBUTING.md)；
+版本变更见 [CHANGELOG.md](CHANGELOG.md)。
 
-```bash
-python3 -m ipd list-policies
-python3 -m ipd benchmark --candidates core --fields 20 --workers 24
-python3 -m ipd blind --candidates core --fields 10 --workers 12
-python3 -m ipd suite --fields 12 --workers 24
-python3 -m ipd matchup --candidates base --reps 16
-python3 -m ipd matchup --candidates all --opponent-set all --reps 16
-# 全策略 × 158 对手 + 9 个测试集加权
-python3 -m ipd matchup \
-  --spec-config configs/eval/sweep_all_weights_20261026.json \
-  --opponent-set all --reps 16 --workers 24 \
-  --out results/sweep_20261026/matchup.csv
-# 66 个策略/模型/权重 × 158 对手 × 10 家族；结果见 results/sweep_20261026/
-```
+## 注意
 
-### Axelrod 对手库（可选）
-
-安装 Axelrod 后，可把它的 **243 个普通策略**作为对手加入 benchmark。该依赖
-较重（会带入 torch/scipy/pandas/dask），只在需要时安装：
-
-```bash
-pip install -r requirements-axelrod.txt
-# 或者：pip install -e '.[axelrod]'
-
-# 243 个策略（含 19 个 long-run 策略，主要是 Meta；完整但较慢）
-python3 -m ipd benchmark --candidates final-tuned \
-  --dists axelrod --fields 1 --n 243 --out results/axelrod_benchmark.json
-
-# 224 个策略（剔除 19 个 long-run 策略，适合日常跑分）
-python3 -m ipd benchmark --candidates core \
-  --dists axelrod-fast --fields 4 --n 224 --workers 20
-
-# 完整 243 个策略的快速 smoke（10 回合；100 回合会慢很多）
-python3 -m ipd matchup --candidates final-tuned --opponent-set axelrod \
-  --reps 1 --rounds 10 --out results/axelrod_matchup_smoke.csv
-
-# 日常逐对手矩阵：224 个非 long-run 策略，标准 100 回合
-python3 -m ipd matchup --candidates base --opponent-set axelrod-fast \
-  --reps 4 --out results/axelrod_fast_matchup.csv
-
-# 额外 cheating 测试集（4.14.0 只有 Darwin）
-python3 -m ipd benchmark --candidates final-tuned \
-  --dists axelrod-cheating --fields 1 --n 1 \
-  --out results/axelrod_cheating_benchmark.json
-python3 -m ipd matchup --candidates final-tuned \
-  --opponent-set axelrod-cheating --reps 4 \
-  --out results/axelrod_cheating_matchup.csv
-```
-
-`axelrod` 使用完整的普通策略集合（`axelrod.strategies`，243 个；不含
-`Darwin` 等 cheating 策略）；`axelrod-fast` 去掉 Axelrod 标记为
-`long_run_time` 的 19 个策略；`axelrod-cheating` 收集
-`axelrod.cheating_strategies`（4.14.0 只有 `Darwin`，具备跨对局持久 genome）。
-旧版 `Geller`/`MindReader` 系列已被上游移除，且需要直接读取或改写候选策略，
-当前适配器不包含它们。采样按洗牌后的整轮进行，`--n 243` 时每个策略恰好出现
-一次。
-
-### 神经策略推理（不需要 PyTorch）
-
-```bash
-python3 -m ipd self-test --candidates neural \
-  --weights weights/neural_policy_weights.json
-python3 -m ipd self-test --candidates gru \
-  --weights weights/gru_policy_weights.json
-python3 -m ipd self-test --candidates adv-mlp \
-  --config configs/adversarial_policy_config.json
-```
-
-### 训练（需要 PyTorch）
-
-```bash
-python3 -m venv .venv && . .venv/bin/activate
-pip install -r requirements-train.txt
-
-python3 -m ipd train neural --device auto
-python3 -m ipd train gru --device auto
-python3 -m ipd train adversarial --arch mlp --seed 20261026
-python3 -m ipd train rl --device auto --iterations 100 \
-  --dist-weights 1,1,1,2 --bc-kl-coef 0.1
-# 非对称自博弈（蓝/红 GRU，三阶段课程）
-python3 -m ipd train selfplay --config configs/selfplay/full.json \
-  --device auto --final-test
-# 可选：将现有 RL-PPO 蒸馏为 21 维 GRU，再做 self-play 微调
-python3 -m ipd train selfplay-bc --device auto --episodes 4000 --epochs 10
-# C2/C3：base + exploratory + counterfactual opponent-model 数据
-python3 -m ipd train opponent-model --data-mode mixed \
-  --episodes 2 --explore-episodes 2 --counterfactual-episodes 1 \
-  --counterfactual-branches 8 --counterfactual-horizon 6 \
-  --counterfactual-prefix explore,base
-# C3 三路 gate + MoE 离线评估
-python3 -m ipd moe-eval --suite validation,heldout_v2 --seeds 3 \
-  --gate-model weights/opponent_gate_threeway.json \
-  --safe-expert alld --safe-threshold 0.6 --min-day 10
-```
-
-训练文件也支持直接执行，例如：
-
-```bash
-python3 ipd/training/neural.py --device auto
-python3 ipd/training/search/multiobj.py --workers 24
-```
-
-### 学习策略的四分布与盲测
-
-```bash
-python3 -m ipd benchmark --candidates core,neural --fields 20 --workers 20
-python3 -m ipd benchmark --candidates core,gru --fields 20 --workers 20
-python3 -m ipd benchmark --candidates core,adv-mlp \
-  --config configs/adversarial_policy_config_aggressive.json --fields 20 --workers 20
-python3 -m ipd benchmark --candidates core,rl --fields 20 --workers 20
-python3 -m ipd benchmark --candidates core,adv-rl \
-  --config configs/adversarial_rl_policy_config_aggressive.json --fields 20 --workers 20
-
-python3 -m ipd blind --candidates core,neural --fields 10 --workers 12
-python3 -m ipd blind --candidates core,adv-mlp \
-  --config configs/adversarial_policy_config_aggressive.json --fields 10 --workers 12
-python3 -m ipd blind --candidates core,rl --fields 10 --workers 12
-python3 -m ipd blind --candidates core,adv-rl \
-  --config configs/adversarial_rl_policy_config_aggressive.json --fields 10 --workers 12
-python3 -m ipd benchmark --candidates selfplay \
-  --weights weights/selfplay_gru_policy.json --fields 20 --workers 20
-python3 -m ipd blind --candidates selfplay \
-  --weights weights/selfplay_gru_policy.json --fields 10 --workers 12
-```
-
-按策略/模型拆分参数并输出独立结果文件：
-
-```bash
-python3 -m ipd eval-split --config configs/eval/retrain_20261025.json
-python3 -m ipd eval-split --config configs/eval/retrain_20261025_fast.json
-```
-
-每次运行会生成 `results/split_<name>/`，其中每个候选有独立的
-`benchmark.json`、`blind.json`、`opponents.json`，另有一个
-`by_opponent/<opponent>.json` 汇总所有候选对单个对手类型的成绩。配置格式见
-[docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md)。
-
-旧的平铺入口已移除；所有评估统一使用上面的
-`python3 -m ipd benchmark|blind|eval-split|suite|matchup` 命令。拆分评估的
-配置格式和输出布局见 [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md)。
-
-### C++ 推理
-
-```bash
-# MLP / GRU（权重头文件已生成在 cpp/）
-g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
-g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
-./neural_demo
-./gru_demo
-
-# BayesPlus / Responsive3
-g++ -std=c++17 -O2 -DRESP_BAYES_DEMO cpp/bayesplus_responsive3.cpp -o demo
-./demo
-
-# 完整 RL 策略（权重头文件已生成）
-g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
-  -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o rl_demo
-./rl_demo
-
-# Adv-RL（RL + 两条约束剥削规则；最终 RL base）
-g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
-  -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_demo
-./adv_rl_demo
-
-# Adv-RL（BC 初始化 base，对应 554.29 / 562.91）
-g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_BC_WEIGHTS \
-  -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_bc_demo
-./adv_rl_bc_demo
-```
-
-重新训练权重后，刷新 C++ 头文件：
-
-```bash
-python3 -m ipd export --arch mlp   # weights/neural_policy_weights.json -> cpp/neural_policy_weights.hpp
-python3 -m ipd export --arch gru   # weights/gru_policy_weights.json    -> cpp/gru_policy_weights.hpp
-python3 -m ipd export --weights weights/rl_policy_weights.json \
-  --out cpp/rl_policy_weights.hpp  # 最终 RL -> cpp/rl_policy_weights.hpp
-python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
-  --out cpp/rl_policy_weights_bc.hpp  # Adv-RL base
-```
-
-策略实现已按模型拆到 `cpp/policies/`，对手拆到 `cpp/opponents/`。每个策略的
-构造函数都接受参数结构体，例如 `ipd::FinalParams::tuned()`、
-`ipd::Responsive3Params::tuned()`、`ipd::BayesPlusParams::tuned()`；顶层的
-`cpp/neural_policy.hpp` / `cpp/gru_policy.hpp` 仍保留为兼容入口。详见
-[docs/STRUCTURE.md](docs/STRUCTURE.md#11-按策略模型对手拆分)。
-
-## 结果摘要
-
-统一四分布测试（20 个赛场 × 299 人）：
-
-| 策略 | 四分布均值 | 盲测均分 / 平均排名 |
-|---|---:|---:|
-| **RL-PPO（从零 + hard，最终）** | **553.33** | **563.23 / 8.00** |
-| **RL-PPO-Hard60（hard×2 fine-tune，候选）** | **554.36** | **564.17 / 5.75（20 fields）** |
-| **RL-Repair（E1c repair，候选）** | **554.76** | **564.61 / 5.75（20 fields）** |
-| **Adv-RL 激进（RL + 约束剥削）** | **554.29** | **562.91 / 8.00** |
-| **SelfPlay-GRU（21 维，BC 蒸馏）** | **550.76** | **560.43 / 8.10** |
-| RL-PPO（从零 base） | 551.87 | 559.27 / 8.30 |
-| RL-PPO（BC 初始化 + hard） | 550.50 | 558.60 / 8.30 |
-| Adv-MLP 激进 | 552.24 | 559.51 / 8.10 |
-| Adv-GRU 激进 | 551.69 | 559.05 / 8.10 |
-| Adv-MLP 保守 | 551.62 | 557.44 / 8.30 |
-| GRU-Net | 547.81 | 555.22 / 8.30 |
-| Neural MLP | 548.15 | 555.10 / 8.30 |
-| Triple-majority | 547.51 | 552.52 / 9.20 |
-| Final-tuned | 546.35 | 549.39 / 10.40 |
-
-新增的 21 维 SelfPlay-GRU（BC 蒸馏 + self-play 训练器）在 20-field 四分布上
-550.76、blind 560.43 / 8.10；纯从零 15k self-play 为 524.77（2 fields）/
-504.57 final test。2026-10-26 的改进 A/B（BC+red fine-tune、red best
-response）为 **No-Go**：E1a 仅 +0.43 mean / +0.016 min_norm，E1b 崩坏，
-red best response 100% 击败 BC/RL/Adv；详见
-`results/selfplay_improvement/final_decision.md`。最终 sanity check（2026-10-26）：
-benchmark/blind 完全复现，权重 checksum 与冻结建议见
-`results/selfplay_improvement/sanity/README.md`；主提交建议 RL-PPO，21 维备选
-SelfPlay-GRU，Adv-RL 仅在官方四分布构成匹配时使用。
-
-新候选 **RL-PPO-Hard60**（`rl-hard60`，实验名 A60）：
-官方 20-field 554.36、blind 20-field 564.17 / 5.75、held-out final 509.76
-（RL-PPO 506.49），且 held-out family 无回退。权重在
-`weights/rl_policy_weights_hard60.json`；报告见
-`results/hard2_20261026/README.md`。当前未替换主权重，作为下一提交候选。
-
-### E0：cross-play / Nash / exploitability（2026-10-26）
-
-新增 `python3 -m ipd league` 冻结评估 harness（`docs/E0_LEAGUE.md`）。
-9 个候选在官方四分布、blind 20 fields、validation、**新 held-out v2** 和
-E4 red 上使用同一 suite/seeds：A60 overall **552.11**（RL-PPO 550.80），
-held-out v2 **500.07**（RL-PPO 494.97），CVaR10 391.13（RL-PPO 387.26）；
-但 A60 的 min_norm 0.9928（blind wild 略降），E4 red blue 299.20
-（RL-PPO 310.55）。cross-play 所有候选互相合作（594–595），Elo/Nash
-无法区分，说明 P3 必须加入 red/exploiter 池。E0 Gate PASS，主权重未替换，
-结论与明细见 `results/e0_league_20261026/README.md`。
-
-E1 从 A60 做 domain-randomized `robust` / `repair` fine-tune
-（`ipd/evaluation/robust.py`）。E1a（held-out +1.36）与 E1b（+1.94，
-selection +3.05）均 No-Go；**E1c `RL-Repair` Go candidate**：
-heldout_v2 503.17（A60 500.07，+3.10；selection +4.90）、official 554.72、
-blind 564.68、min_norm 0.9930、CVaR10 390.39、E4 red blue 303.45。
-**heldout_v3 final：509.88 vs A60 505.97（+3.91）**，两次 validation 与
-final 方向一致；per-family extort +23.4、random +4.7，无 family 崩塌。
-已注册 `rl-repair`（`weights/rl_policy_weights_repair.json`），但**未覆盖
-主权重**；A60/RL-PPO 仍是 fallback。`heldout_v3` 已被使用，后续需
-heldout_v4。详见 `results/robust_20261026/README.md`。
-
-E2 新增 CVaR episode weighting、Dirichlet mixture 和 worst-family DRO
-（`ipd/training/risk.py`）。E2a/E2b（CVaR）和 E2c（DRO）在 heldout_v2
-上最好 mean 505.78，CVaR item 只有 -0.5%~+1.2%，min_norm +0.003，
-未达 +10%/+0.02 Gate；official validation 也未超过 RL-Repair。
-E2 判 **No-Go**，不注册 `rl-risk`/`rl-dro`，`heldout_v4` 保留未用。
-详见 `results/risk_20261026/README.md`。
-
-P3 新增 frozen policy pool + red/exploiter 训练：85 维 `Red-RL-v1` 在全部
-held-out blue 上强于 E4 red（对 RL-Repair red 727.6 vs 703.8），red pool
-第一里程碑 Go。League-lite competitive blue response 把 E4 exploitability
-407.0→355.0（-12.8%），official 554.74 / blind 563.80；未达 -20% Gate，
-判 **No-Go**，不 promotion。E4 red 仍 100% 击败，anti-exploitation 未解决。
-P3 扩展又训练了 v2–v4 和严格 held-out v5/v6，使用 maximin 权重和
-`--opponent-pool`；选中 50% red 的 Blue-Meta-v2 在 held-out red 上只把
-exploitability 从 390.33 降到 367.33（**-5.9%**），且 `validation:extort`
-掉 3.21%，**Gate D 仍 FAIL**。不注册 `rl-meta`，RL-Repair 仍是候选；
-下一步转 P2 C1。详见 `results/red_pool_20261026/README.md`、
-`results/p3_league_20261026/README.md`、`docs/p3-red-league.md`、
-`docs/p3-expansion-plan.md`。
-
-P2 C1 首版实现 Bayesian belief + finite-horizon planner（离线，不注册、
-不改权重）。fair-RNG 复跑后，激进版 validation -12.11 / heldout_v2 -16.15；
-保守 fallback 版 heldout_v2 +2.06，但 validation -2.19、noisy -3.0，
-held-out red E4 仅 +0.35，未达 Gate C 的 +10。判 **No-Go**。
-P2 C2/C3 又训练了 family / binary gate / next-action 三个 opponent model；
-gate 在 held-out type 上 86.6%，但 heldout_v2 只有 70.6% 且 false positives
-集中在 adaptive/noisy。gated conservative 仅 heldout_v2 +1.20、red 不变；
-gated aggressive 因 extort -107.6 崩坏。C2/C3 也判 **No-Go**。
-
-随后补做了 exploratory / counterfactual 数据（2026-10-26）：open-loop
-probe/block/random 轨迹把训练 `excited` 率从 25.8% 提到 59.3%，
-cooperative/forgiving 从 0% 提到 56.9%/48.6%；counterfactual C/D 分支
-给出 536 个 response pair（43.7% responsive）。gate 在 heldout_v2 提到
-73.1%（mixed，precision 69.0%、recall 52.7%），counterfactual 轨迹上
-77.1%，responsiveness head 71.8%；但部署轨迹 excitation 仍不足，
-adaptive/noisy false positives 仍在，conservative planner 3-seed 只有
-+0.88、held-out red 0.00，gated aggressive 仍崩坏。**数据层 Go，
-planner 仍 No-Go**。
-
-随后实现三路 `safe/risky/unknown` gate + MoE（2026-10-26）：safe →
-AllD / conservative planner，risky/unknown → RL-Repair。三路 gate
-validation 94.3%，heldout_v2 safe precision/recall 65.6%/20.7%；
-MoE safe→AllD 5-seed heldout_v2 +4.04、validation +0.53，best-validation
-配置 +0.90/+1.41，仍远低于 Gate C 的 +10，且 seed 方差大；safe→planner
-3-seed heldout_v2 -1.28；held-out red 全部 0.00。无条件 early probe
-成本 screen 为 -10.7~-20.8，暂不实现。**C3 三路 gate + MoE 也判
-No-Go**。
-
-随后做 repeated counterfactual 校准（2026-10-26）：每个 branch state
-重复 10 次 C/D，得到 `p(response)` 并训练 calibrated
-safe/risky/unknown gate。heldout counterfactual safe precision/recall
-**74.7%/62.1%**（旧 82.6%/31.7%）；但 no-veto AllD MoE 在 extort
-上崩坏（day5 heldout -25.87、extort -137.12）。加 response veto 0.2
-后 5-seed validation **-0.31**、heldout_v2 **+2.93**、min_norm 0.9988，
-safe rate 只有 2.5%；held-out red E4 +0.35、v5/v6 0.00。One-shot
-Bayesian/EV probe best 1-seed +1.29、3-seed -5.22。**C3 calibration
-和 EV probe screen 均 No-Go**，不改主权重。详见
-`docs/p2-c1-belief-planner.md`、`docs/p2-c2c3-opponent-model.md`、
-`docs/p2-c2c3-excitation.md`、`docs/p2-c3-threeway-moe.md`、
-`docs/p2-c3-repeated-calib.md`、`results/p2_belief_20261026/`、
-`results/p2_opponent_model_20261026/`、`results/p2_excitation_20261026/`、
-`results/p2_threeway_moe_20261026/`、`results/p2_repeated_calib_20261026/`。
-
-当前重新生成的统一结果见 `results/benchmark.json` 和 `results/blind_results.json`；
-按候选/对手拆分的结果见 `results/split_retrain_20261025/`；全策略 × 全对手
-逐类型结果和 9 个测试集加权结果见 `results/matchup_all_README.md`，透视表见
-`results/matchup_all_wide.csv`。历史快照与 tuned 参数来源仍保留在 `results/`。
-详细说明见 `HANDOVER.md`。
-
-## 文档索引
-
-| 文档 | 内容 |
-|---|---|
-| [HANDOVER.md](HANDOVER.md) | 交接总览、推荐方案、参数、风险、检查清单 |
-| [docs/STRUCTURE.md](docs/STRUCTURE.md) | 目录分层、Policy/评估/训练统一接口 |
-| [docs/AXELROD_OPPONENTS.md](docs/AXELROD_OPPONENTS.md) | Axelrod 243/224/cheating 对手库、适配器与结果 |
-| [docs/SPLIT_EVALUATION.md](docs/SPLIT_EVALUATION.md) | 按策略/模型/对手拆分评估 |
-| [docs/SELFPLAY.md](docs/SELFPLAY.md) | 非对称自博弈：21 维观测、对手池、red league、验证拆分 |
-| [docs/E0_LEAGUE.md](docs/E0_LEAGUE.md) | E0 cross-play / Nash / exploitability harness |
-| [docs/e0-league-plan.md](docs/e0-league-plan.md) | E0 评估/元博弈计划 |
-| [docs/e1-robust-finetune.md](docs/e1-robust-finetune.md) | E1 domain-randomized / repair fine-tune |
-| [docs/e2-risk-ppo.md](docs/e2-risk-ppo.md) | E2 CVaR / risk-sensitive PPO |
-| [docs/p3-red-league.md](docs/p3-red-league.md) | P3 red/exploiter pool + league-lite |
-| [docs/p3-expansion-plan.md](docs/p3-expansion-plan.md) | P3 multi-red + PSRO-lite（No-Go） |
-| [docs/p2-c1-belief-planner.md](docs/p2-c1-belief-planner.md) | P2 C1 Bayesian belief planner（offline No-Go） |
-| [docs/p2-c2c3-opponent-model.md](docs/p2-c2c3-opponent-model.md) | P2 C2/C3 learned opponent model + gate（offline No-Go） |
-| [docs/p2-c2c3-excitation.md](docs/p2-c2c3-excitation.md) | P2 C2/C3 exploratory / counterfactual 数据（data Go / planner No-Go） |
-| [docs/p2-c3-threeway-moe.md](docs/p2-c3-threeway-moe.md) | P2 C3 three-way gate + MoE（offline No-Go） |
-| [docs/p2-c3-repeated-calib.md](docs/p2-c3-repeated-calib.md) | P2 C3 repeated counterfactual 校准（offline No-Go） |
-| [docs/IPD_README.md](docs/IPD_README.md) | 模块与结果索引 |
-| [docs/NEURAL_POLICY.md](docs/NEURAL_POLICY.md) | MLP 策略：训练、接口、结果、风险 |
-| [docs/GRU_POLICY.md](docs/GRU_POLICY.md) | GRU-Net 策略 |
-| [docs/RL_POLICY.md](docs/RL_POLICY.md) | 完整 PPO 强化学习策略：MDP、训练、结果、风险 |
-| [docs/ADVERSARIAL_POLICY.md](docs/ADVERSARIAL_POLICY.md) | 约束对抗剥削规则与调参 |
-| [docs/FINAL_COMPARISON.md](docs/FINAL_COMPARISON.md) | 各测试集主表 |
-| [docs/SUITE_RESULTS.md](docs/SUITE_RESULTS.md) | 9 个测试集结果 |
-| [docs/OPPONENT_PERFORMANCE.md](docs/OPPONENT_PERFORMANCE.md) | 85 类对手逐类型表现 |
-| [docs/ADVANCED_RESULTS.md](docs/ADVANCED_RESULTS.md) | P0/P1/P2 完整过程 |
-| [docs/MATCHUP_RESULTS.md](docs/MATCHUP_RESULTS.md) | 早期对阵汇总 |
-| [docs/BAYES_RESPONSIVE_FLOW.md](docs/BAYES_RESPONSIVE_FLOW.md) | BayesPlus / Responsive3 C++ 流程图 |
-
-## 注意事项
-
-- 参赛/评估候选现在位于 `ipd/policies/candidates/`，每个候选一个独立文件；
-  候选文件之间不要互相 import，`ipd/policies/rules/` 仅供训练/搜索复用。
-- `ipd/core/machine.py` / `cpp/ipd_strategy.cpp` 的默认参数是早期版本，不是 Final-tuned。
-- GRU 是有状态策略：每场必须 `reset()`，同一时间步只调用一次 `act()`。
-- 所有候选策略都应在第 100 天选择背叛。
-- Adv-MLP / Adv-GRU 目前只有 Python 版；Adv-RL 另有 `cpp/adversarial_rl.cpp`。
+- 所有候选都应在第 100 天选择背叛；
+- GRU / SelfPlay-GRU 是有状态策略，每场必须 `reset()`；
+- `ipd/core/machine.py` / `cpp/ipd_strategy.cpp` 默认参数不是 Final-tuned；
+- 没有真实 300 人比赛数据，结论来自合成对手库和 held-out 评估；
+- 未确认前不要替换主权重；promotion 规则见
+  [docs/decisions/0002-no-promotion-without-reproduction.md](docs/decisions/0002-no-promotion-without-reproduction.md)。

@@ -4,7 +4,7 @@
 
 **C1 首版：No-Go（离线）。** 未注册候选、未改主权重；RL-Repair 仍是
 base/fallback。详细设计、Gate C 评估和复现见
-`docs/p2-c1-belief-planner.md`。
+`docs/research/p2-c1-belief-planner.md`。
 
 > 早期一次 screen 复用了同一个 base policy RNG，产生了 E4 +6.6 等伪影。
 > 本目录已替换为 **fair-RNG** 结果：base 与 planner 使用独立、同 seed 的
@@ -44,7 +44,7 @@ results/p2_belief_20261026/
 ipd/policies/belief_planner.py
 ipd/evaluation/planner_eval.py
 tests/test_belief_planner.py
-docs/p2-c1-belief-planner.md
+docs/research/p2-c1-belief-planner.md
 ```
 
 主权重 `weights/rl_policy_weights.json` 的 sha256 仍为

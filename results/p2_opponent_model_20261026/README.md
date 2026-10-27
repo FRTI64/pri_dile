@@ -6,7 +6,7 @@
 accuracy 86.6%），但部署时过度保守：gated conservative 只把 heldout_v2 抬
 +1.20，held-out red 完全不变；gated aggressive 则因 adaptive/noisy false
 positives 把 extort 打掉 107.6。未注册候选、未改主权重。详细设计、指标和
-下一步见 `docs/p2-c2c3-opponent-model.md`。
+下一步见 `docs/research/p2-c2c3-opponent-model.md`。
 
 ## 1. 模型指标
 
@@ -59,12 +59,12 @@ results/p2_opponent_model_20261026/
   planner_gated_red.json
   run_planner_screens.sh / red_screen.py
   checksums.txt
-docs/p2-c2c3-opponent-model.md
+docs/research/p2-c2c3-opponent-model.md
 ```
 
 主权重 `weights/rl_policy_weights.json` sha256 仍为
 `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 
 后续 exploratory / counterfactual 数据实验见
-`results/p2_excitation_20261026/` 和 `docs/p2-c2c3-excitation.md`：
+`results/p2_excitation_20261026/` 和 `docs/research/p2-c2c3-excitation.md`：
 训练 excitation 已解决，gate 改善，但 planner 仍 No-Go。

@@ -23,7 +23,7 @@
 
 ## 1. Red pool 结果
 
-训练 pool 与 seed 见 `docs/p3-expansion-plan.md`。下表是 20 seeds 下
+训练 pool 与 seed 见 `docs/research/p3-expansion.md`。下表是 20 seeds 下
 red − blue 的均值（learned blues = RL-PPO/A60/RL-Repair/Adv-RL/
 SelfPlay/Blue-vs-Red-Comp-v1；越高表示 red 越强）：
 

@@ -2,7 +2,7 @@
 
 The historical evaluation scripts read these values from ``results/*.json``.
 A policy should still be usable in a minimal submit bundle, so every lookup has
-an embedded fallback with the values documented in ``HANDOVER.md``.
+an embedded fallback with the values documented in ``docs/operations/handover.md``.
 """
 from __future__ import annotations
 

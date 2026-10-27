@@ -1,0 +1,37 @@
+# 研究记录
+
+这里保存实验设计、协议、完整结果和 Go/No-Go。**实验文档不回写历史数字**；
+当前推荐和 promotion 状态以 [../operations/handover.md](../operations/handover.md)
+为准。
+
+## 评估协议
+
+- 标准 CLI：`benchmark --fields 20` / `blind --fields 20`；
+- 冻结 league：`python3 -m ipd league --config configs/eval/e0_league.json`；
+- `heldout_v2` 作 validation；`heldout_v3` 已被 E1c 使用；`heldout_v4` 未使用；
+- 指标定义见 [../reference/metrics.md](../reference/metrics.md)。
+
+## 实验总表
+
+| 阶段 | 文档 | 结论 |
+|---|---|---|
+| E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
+| E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
+| E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |
+| E2 | [e2-risk-ppo.md](e2-risk-ppo.md) | **No-Go**（CVaR/DRO 未过 tail Gate） |
+| P3 | [p3-red-league.md](p3-red-league.md) | red pool Go；league-lite No-Go |
+| P3 expansion | [p3-expansion.md](p3-expansion.md) | **No-Go**（Gate D FAIL） |
+| P2 C1 | [p2-c1-belief-planner.md](p2-c1-belief-planner.md) | **No-Go** |
+| P2 C2/C3 | [p2-c2c3-opponent-model.md](p2-c2c3-opponent-model.md) | **No-Go** |
+| P2 C2/C3 数据 | [p2-c2c3-excitation.md](p2-c2c3-excitation.md) | 数据层 Go；planner No-Go |
+| P2 C3 | [p2-c3-threeway-moe.md](p2-c3-threeway-moe.md) | **No-Go** |
+| P2 C3 校准 | [p2-c3-repeated-calib.md](p2-c3-repeated-calib.md) | **No-Go** |
+| SelfPlay | [selfplay-plan.md](selfplay-plan.md) / [selfplay-improvement.md](selfplay-improvement.md) | implemented；改进 **No-Go** |
+| Roadmap | [long-term-plan.md](long-term-plan.md) | 长期路线与 Gate 状态 |
+
+## 相关目录
+
+- 策略方法：[../policies/](../policies/)
+- 历史快照：[../history/](../history/)
+- 架构决策：[../decisions/](../decisions/)
+- 结构化结果与逐 family 表：`results/<experiment>/README.md`

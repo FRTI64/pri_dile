@@ -1,6 +1,6 @@
 """Asymmetric self-play PPO for 100-round IPD.
 
-This package implements the plan in ``docs/ipd-selfplay-plan.md``:
+This package implements the plan in ``docs/research/selfplay-plan.md``:
 
 * a frozen 21-dimensional public-history observation,
 * a 32-environment lock-step simulator,

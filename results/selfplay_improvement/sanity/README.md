@@ -108,8 +108,8 @@ OK
 
 - `README.md`：No-Go；E1a +0.43 mean / +0.016 min_norm；red best response
   100% 击败 BC/RL/Adv；指向 `results/selfplay_improvement/final_decision.md`。
-- `HANDOVER.md`：No-Go；停止 self-play 方向，不替换现有权重。
-- `docs/SELFPLAY.md`：No-Go 表格、E1a/E1b、E4 red best response、参数量更正。
+- `docs/operations/handover.md`：No-Go；停止 self-play 方向，不替换现有权重。
+- `docs/policies/selfplay.md`：No-Go 表格、E1a/E1b、E4 red best response、参数量更正。
 - `results/selfplay_final/README.md`：No-Go、参数量 43,777/45,890 vs 7,617、
   held-out red 595 只是互惠型对照。
 - `results/selfplay_improvement/final_decision.md`：完整 No-Go 决策树与 E4 表。

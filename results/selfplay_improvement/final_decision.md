@@ -1,7 +1,7 @@
 # SelfPlay 改进实验：Go / No-Go 结论
 
 - **Date:** 2026-10-26
-- **Plan:** `docs/ipd-selfplay-improvement-plan.md`
+- **Plan:** `docs/research/selfplay-improvement.md`
 - **结论:** **No-Go（停止 self-play 方向）**。不替换 `weights/selfplay_gru_policy.json`，
   不覆盖 `results/selfplay_final/`。
 - **最终策略建议：**
@@ -110,7 +110,7 @@ best response（6,000 episodes，red fraction 30–40%，blue 不更新）。
   Adv-RL（328.0）；不能据此说 BC 特别脆弱，但也不能宣称 anti-exploitation；
 - 旧 `final_test.json` 中的 held-out red（RL-BC 595 | 595）只是互惠型
   对照，**不能作为 anti-exploitation 证据**，已在 `results/selfplay_final/README.md`
-  和 `docs/SELFPLAY.md` 中标注。
+  和 `docs/policies/selfplay.md` 中标注。
 
 ---
 

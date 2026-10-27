@@ -6,7 +6,7 @@ Usage::
     python3 -m ipd train selfplay --config configs/selfplay/full.json --device auto
     python3 -m ipd train selfplay --smoke
 
-The implementation follows ``docs/ipd-selfplay-plan.md``.  Blue and red have
+The implementation follows ``docs/research/selfplay-plan.md``.  Blue and red have
 independent GRU actor-critics and optimizers; red rollouts use a constrained
 difference reward, and blue periodically faces snapshots from the red league.
 """

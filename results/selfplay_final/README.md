@@ -11,8 +11,9 @@
 | 四分布 original / late / grim30 / wide | 551.43 / 546.37 / 549.82 / 555.41 |
 | 四分布 worst | 546.37 |
 | 8-field 快速对照（`benchmark.json`） | 552.52 |
-| 官方 blind（10 个未见 299 人赛场） | **560.43** |
+| 官方 blind（10 fields，历史） | **560.43** |
 | blind 平均排名 / 第一名 / 前 10 / 最差 | 8.10 / 7/10 / 7/10 / 25 |
+| E0 冻结协议 blind 20 fields | 561.13 |
 | Held-out validation（51 对手 × 5 seed） | 502.93 |
 | Held-out final test（86 对手 × 20 seed + held-out red） | 505.06 |
 | final test min-family | 360.77 |
