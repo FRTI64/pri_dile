@@ -18,26 +18,28 @@
 - `docs/research/e1-robust-finetune.md` / `docs/research/e2-risk-ppo.md`
 - `docs/research/p2-c1-belief-planner.md`、`docs/research/p2-c2c3-*.md`、`docs/research/p2-c3-*.md`
 - `docs/guides/axelrod.md`
-- `docs/reference/protocol-v3.md`（**新主口径**）
-- `results/protocol_v3/README.md`
+- `docs/reference/protocol-v4.md`（**新主口径**）
+- `results/protocol_v4/README.md`
 
 ## 当前状态
 
-- 最近提交：`git log -1`（Protocol v3 baseline）。
-- 工作区在文档重组提交后应为 clean；`python3 -m ipd test` 为
-  **204 tests OK**；`python3 -m ipd list-policies` 为 **20 个注册候选**。
+- 最近提交：`git log -1`（Protocol v4 Axelrod/scale；baseline 未运行）。
+- 工作区在文档重组提交后应为 clean；最近完整测试为 v3 的 **204 tests**，
+  v4 改动后未运行；`python3 -m ipd list-policies` 为 **20 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Repair（`rl-repair`）是当前最佳候选**，但未 promotion：
   `weights/rl_policy_weights_repair.json`，sha256
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-- 默认评估口径：**Protocol v3**（`dev_param` / `dev_family` /
-  `dev_complex` / `dev_ood` 选模，`test_v6` 一次性 final）；旧四分布 /
-  blind / Protocol v2 是 legacy。
-- `test_v6` 已在 2026-10-27 对 top 3 消费一次；下一个候选需要 `test_v7`。
+- 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
+  `dev_complex` / `dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final；
+  499 人 / dev 30 / test 50）；旧四分布 / blind / v2 / v3 是 legacy。
+- `test_v7` **尚未消费**；下一个通过 dev 的候选可用一次，之后需要 `test_v8`。
 - anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 
-### 头部候选（Protocol v3，20 / 40 fields）
+### 头部候选（legacy v3 baseline，299 人 / 20 / 40 fields）
+
+下表不是 v4 排名；v4 baseline 尚未运行。
 
 | 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_ood | test_v6 |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -70,9 +72,9 @@ legacy，不能与新表混用。
 按用户优先级选择：
 
 1. **比赛提交硬化（若近期提交）**
-   - 用独立 seeds 复现 RL-Repair 的 `dev_param` / `dev_family` /
-     `dev_complex` / `dev_ood`；
-   - `test_v6` 已消费；独立 final 需先建 `test_v7`；
+   - 在 v4 上重跑 RL-Repair 的 `dev_param` / `dev_family` /
+     `dev_complex` / `dev_axelrod` / `dev_ood`；
+   - `test_v7` 尚未消费；可用于一次独立 final，之后建 `test_v8`；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
 2. **E3 multi-teacher distillation + gating（研究首选）**
@@ -88,9 +90,9 @@ legacy，不能与新表混用。
 
 ## 数据/评估纪律
 
-- 新候选用 `dev_param` / `dev_family` / `dev_complex` / `dev_ood` 选模；
-  `test_v6` 已消费，不得复用。
-- 下一个通过 dev 的候选需要新建 `test_v7`，并重新走
+- 新候选用 `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
+  `dev_ood` 选模；`test_v7` 尚未消费。
+- `test_v7` 消费后，下一个候选需要新建 `test_v8`，并重新走
   `protocol manifest` + `protocol audit`。
 - 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red
   best response。
@@ -172,8 +174,9 @@ bash results/p2_repeated_calib_20261026/run.sh
 - **P3 cross-play 退化**：所有 blue 互相合作（594–595），Elo/Nash 不可区分；
   必须加入 red/exploiter pool。
 - **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
-- **10 vs 20 / 40 fields 不可混用**：旧表多为 10-field blind；当前主表用
-  Protocol v3 的 20-field dev / 40-field test。
-- **`test_v6` 已消费**：不要用它继续选模；下一个候选需要 `test_v7`。
-- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / Protocol v2
+- **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 用
+  499 人 / dev 30 fields / test 50 fields。
+- **`test_v7` 未消费**：只给预注册 top 3 用一次；之后下一个候选需要
+  `test_v8`。
+- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / v2 / v3
   只做历史对照。

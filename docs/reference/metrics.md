@@ -3,9 +3,9 @@
 本文定义分数、分布、指标和协议差异。跑命令见
 [../guides/evaluation.md](../guides/evaluation.md)。
 
-> **2026-10-27 起：Protocol v3 是当前主口径。** `official` / `blind` 只保留
+> **2026-10-27 起：Protocol v4 是当前主口径。** `official` / `blind` 只保留
 > 为 legacy 诊断，不再作为 held-out 证据；详细 split 见
-> [protocol-v3.md](protocol-v3.md)。
+> [protocol-v4.md](protocol-v4.md)。
 
 ## 1. 基础收益
 
@@ -41,24 +41,28 @@ CC = 6, CD = 0, DC = 10, DD = 1
 
 默认 10 fields；当前正式比较建议 20。**10-field 与 20-field 不可直接比较。**
 
-## 3.1 Protocol v3（当前主口径）
+## 3.1 Protocol v4（当前主口径）
 
 | 层 | 含义 | 用途 |
 |---|---|---|
-| `train` | 标准 + complex + policy 的训练 config | 训练 |
-| `dev_param` | 标准 family 的参数 held-out config | 选模 |
+| `train` | 标准 + complex + policy + Axelrod config | 训练 |
+| `dev_param` | 标准 family + Axelrod 的参数 held-out | 选模 |
 | `dev_family` | `mirror_adaptive` / `delayed_grim` family held-out | 选模 / 病理检测 |
-| `dev_complex` | complex family 的参数 held-out config | 选模 / 复杂对手 |
-| `dev_ood` | dev / dev_complex / dev_family 的偏移混合 | 选模 / OOD |
-| `test_v6` | 35% seen test + 20% test-only + 20% complex + 15% policy + 10% anchors | 一次性 final |
+| `dev_complex` | complex family 的参数 held-out | 选模 / 复杂对手 |
+| `dev_axelrod` | Axelrod 策略 / 组合 | 选模 / Axelrod 泛化 |
+| `dev_ood` | dev / complex / family / Axelrod 的偏移混合 | 选模 / OOD |
+| `test_v7` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 一次性 final |
 
-- 具体 config 不跨层；`test_v6` 的 test-only family 不出现在 train/dev。
+- 默认 499 人，dev 30 fields，test 50 fields。
+- 具体 config 不跨层；`test_v7` 的 test-only family 不出现在 train/dev。
 - complex family：`phase_switch`、`adaptive_mix`、`probe_exploit`、
   `delayed_extort`、`memory_two`、`meta_mix`。
+- Axelrod：50 个策略 + 15 个 `AxelrodMix` 组合，需安装
+  `requirements-axelrod.txt`。
 - policy opponent：训练用 RL-BC / SelfPlay-BC / Neural / GRU；test 用
   Final-tuned / Triple / RL-scratch / SelfPlay / Neural-retrain / GRU-retrain。
 - 报告 `mean`、`min`、`p05`、per-family、`worst_family`、`min_norm`。
-- 旧的 `official` / `blind` / Protocol v2 数字不能与 v3 混表。
+- 旧的 `official` / `blind` / v2 / v3 数字不能与 v4 混表。
 
 ## 4. suite
 
@@ -98,15 +102,15 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `red win` | red 胜率，越低越好 |
 | `exploitability` | 池内/red 对候选的最大可获利差 |
 
-旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2 已进入 legacy。
-新候选使用 Protocol v3：`dev_param` / `dev_family` / `dev_complex` /
-`dev_ood` 选模，`test_v6` 一次性 final。
+旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2/v3 已进入 legacy。
+新候选使用 Protocol v4：`dev_param` / `dev_family` / `dev_complex` /
+`dev_axelrod` / `dev_ood` 选模，`test_v7` 一次性 final。
 
 ## 7. 协议差异速查
 
 | 协议 | 评估集 | fields | policy seed | 用途 |
 |---|---|---|---|---|
-| **Protocol v3** | `dev_param` / `dev_family` / `dev_complex` / `dev_ood` / `test_v6` | 20 / 20 / 20 / 20 / 40 | 默认独立 seed | **当前主口径** |
+| **Protocol v4** | `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` / `test_v7` | 30 / 30 / 30 / 30 / 30 / 50 | 默认独立 seed | **当前主口径** |
 | 标准 CLI（legacy） | official 四分布 | 20 | 默认独立 seed | 历史复现 |
 | E0/E1c league（legacy） | official + blind + heldout | 20 | 固定 index-based seed | 历史比较 |
 | suite | 9 个家族加权 | 12 | 默认 | 场景诊断 |
@@ -114,14 +118,14 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | eval-split | 每候选独立 | 可配置 | 可配置 | 多权重比较 |
 
 同一候选在标准 CLI 与 league 上可能差 0.0x～1 分，这是 policy RNG 不同，
-不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v3 与 legacy
+不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v4 与 legacy
 official/blind 的第一位数字不同是 split 不同，不是实现差异。
 
 ## 8. 报告最低要求
 
-- 协议：`protocol_v3` / legacy，fields、n、seed、policy seed、suite；
-- Protocol v3：`dev_param` / `dev_family` / `dev_complex` / `dev_ood` /
-  `test_v6`，manifest hash；
+- 协议：`protocol_v4` / legacy，fields、n、seed、policy seed、suite；
+- Protocol v4：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
+  `dev_ood` / `test_v7`，manifest hash；
 - per-family、`min_norm`、`worst_family`；
 - red：blue mean / red win / diff；
 - 权重 checksum 和配置路径；

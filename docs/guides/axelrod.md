@@ -1,7 +1,7 @@
 # Axelrod 对手库与 cheating 测试集
 
-状态：可选功能，已接入 benchmark/matchup/eval-split；不改变原有四分布和
-85/158 对手集合的默认口径。
+状态：可选功能。已接入 benchmark/matchup/eval-split；Protocol v4 另外使用
+50 个精选策略 + 15 个 `AxelrodMix` 组合。默认四分布和 85/158 对手集合不变。
 
 依赖：`axelrod==4.14.0`（`requirements-axelrod.txt` 或
 `pip install -e '.[axelrod]'`）。Axelrod 会带入 torch/scipy/pandas/dask，
@@ -132,7 +132,7 @@ python3 -m ipd matchup --candidates final-tuned \
 
 ```bash
 python3 -m ipd test
-# 204 tests, OK
+# 最近完整测试是 v3 的 204 tests；v4 改动后未运行
 ```
 
 新增测试：`tests/test_axelrod_opponents.py`，覆盖 243/224/1 数量、

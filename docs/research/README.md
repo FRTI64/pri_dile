@@ -6,7 +6,7 @@
 
 ## 评估协议
 
-- **当前主口径：Protocol v3**，见 [../reference/protocol-v3.md](../reference/protocol-v3.md)；
+- **当前主口径：Protocol v4**，见 [../reference/protocol-v4.md](../reference/protocol-v4.md)；
 - legacy：`benchmark --fields 20` / `blind --fields 20` /
   `league --config configs/eval/e0_league.json`；
 - `heldout_v2/v3/v4` 与 `official/blind` 只保留为历史记录；
@@ -16,7 +16,7 @@
 
 | 阶段 | 文档 | 结论 |
 |---|---|---|
-| Protocol v3 | [../reference/protocol-v3.md](../reference/protocol-v3.md) | **启用**；RL-Repair test 第一；test_v6 已消费 |
+| Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | **已定义**；Axelrod + 499/30/50；baseline 未运行 |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |

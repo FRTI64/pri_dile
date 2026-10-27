@@ -29,9 +29,11 @@ DISTS = ("original", "late", "grim30", "wide")
 # tournament rules (4.14.0: Darwin only).
 AXELROD_DISTS = ("axelrod", "axelrod-fast", "axelrod-cheating")
 EVAL_DISTS = DISTS + AXELROD_DISTS
-PROTOCOL_TRAIN_DISTS = ("train_v3", "train_easy", "train_hard",
-                        "train_complex", "train_policy")
-PROTOCOL_VAL_DISTS = ("dev_param", "dev_family", "dev_complex", "dev_ood")
+PROTOCOL_TRAIN_DISTS = ("train_v4", "train_v3", "train_easy",
+                        "train_hard", "train_complex", "train_policy",
+                        "train_axelrod")
+PROTOCOL_VAL_DISTS = ("dev_param", "dev_family", "dev_complex",
+                      "dev_axelrod", "dev_ood")
 TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair") \
     + PROTOCOL_TRAIN_DISTS
 VALIDATION_DISTS = DISTS + PROTOCOL_VAL_DISTS

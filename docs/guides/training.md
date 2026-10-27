@@ -102,29 +102,35 @@ python3 -m ipd train rl --device auto --seed 20261032 \
   --history-out results/robust_20261026/E1c_history.json
 ```
 
-### 3.4 Protocol v3 训练入口
+### 3.4 Protocol v4 训练入口
 
 新候选不再用 `original,late,grim30,wide` 作为训练分布，而是：
 
 ```bash
 python3 -m ipd train rl --device auto --iterations 40 \
-  --train-dists train_v3 \
-  --dists dev_param,dev_family,dev_complex,dev_ood \
-  --val-fields-per-dist 5 --val-n 100 --val-every 5 \
+  --train-dists train_v4 --n 160 \
+  --dists dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
+  --val-fields-per-dist 5 --val-n 160 --val-every 5 \
   --select-metric avg \
-  --out weights/my_protocol_v3_policy.json \
-  --checkpoint-out weights/my_protocol_v3_checkpoint.json
+  --out weights/my_protocol_v4_policy.json \
+  --checkpoint-out weights/my_protocol_v4_checkpoint.json
 ```
 
 训练 profile：
 
-- `train_v3`：标准 + complex + policy 的完整混合；
+- `train_v4`：标准 + complex + policy + Axelrod 的完整混合；
 - `train_easy` / `train_hard`：课程分段；
 - `train_complex`：complex families；
-- `train_policy`：policy opponents only。
+- `train_policy`：policy opponents only；
+- `train_axelrod`：Axelrod 策略 + 组合。
 
-`dev_param` / `dev_family` / `dev_complex` / `dev_ood` 只用于 validation。
-不要传 `test_v6`，训练代码会拒绝它。
+`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood`
+只用于 validation。
+不要传 `test_v7`，训练代码会拒绝它。
+
+`train_v4` 和 `train_axelrod` 含 Axelrod 对手，需要先安装
+`requirements-axelrod.txt`；不用 Axelrod 时改用 `train_easy` /
+`train_hard` / `train_complex`。
 
 PPO 的 MDP、网络、损失、验证指标见 [../policies/rl.md](../policies/rl.md)；
 E1 的 Gate 和结果见 [../research/e1-robust-finetune.md](../research/e1-robust-finetune.md)。

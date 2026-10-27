@@ -2,7 +2,7 @@
 
 100 天迭代囚徒困境（IPD）策略工具包：规则状态机、贝叶斯推断、多数投票融合、
 MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估以
-**Protocol v3**（更大 catalog / complex / policy 对手 / train-dev-test 审计）
+**Protocol v4**（更大 catalog / complex / policy 对手 / train-dev-test 审计）
 为主，另保留 legacy 四分布、
 blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 
@@ -11,9 +11,11 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
 > - 最佳候选：`rl-repair`（RL-Repair），但**未 promotion**；
 > - fallback：`rl-hard60`（A60）；
-> - Protocol v3 test_v6：**RL-Repair 484.32** > A60 476.54 > Adv-RL 471.44
->   （40 fields；top 3 预注册，已消费）；
-> - 测试：`python3 -m ipd test` → **204 tests OK**；注册候选 **20 个**；
+> - **Protocol v4**：597 configs；50 个 Axelrod 策略 + 15 个 AxelrodMix；
+>   默认 499 人 / dev 30 fields / test 50 fields；
+> - v4 baseline **尚未运行**（按本次要求不做测试）；v3 的 299/20/40 结果
+>   只作 legacy；
+> - 上次完整测试为 v3 的 204 tests；v4 改动后未运行测试；
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 仍 100% 击败 top 3。
 >
 > 完整结论、权重、风险和 promotion 条件见
@@ -26,15 +28,15 @@ python3 -m pip install -e .
 python3 -m ipd list-policies
 python3 -m ipd test
 
-# Protocol v3：审计 split，跑 dev 选模
+# Protocol v4：审计 split，跑 dev 选模（默认 499 人 × 30 fields）
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
-  --tiers dev_param,dev_family,dev_complex,dev_ood \
-  --fields 20 --workers 20 --baseline RL-PPO
+  --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
+  --fields 30 --n 499 --workers 20 --baseline RL-PPO
 
-# test_v6 只给预注册 top 3 跑一次
+# test_v7 只给预注册 top 3 跑一次（默认 50 fields）
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v6 --fields 40 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 499 --acknowledge-once
 
 # 旧口径（legacy，仅历史复现）
 python3 -m ipd benchmark --candidates core --fields 8 --workers 8
@@ -45,10 +47,11 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 训练需要 PyTorch（`requirements-train.txt`）；推理和 C++ 部署不需要。
 完整命令见 [docs/guides/](docs/guides/)，参考见 [docs/reference/](docs/reference/)。
 
-## 当前候选（Protocol v3）
+## 当前候选（Protocol v4；下表是 legacy v3 baseline）
 
-dev = 20 fields × 299；test_v6 = 40 fields × 299，top 3 一次性消费。
-完整 20 候选见 [results/protocol_v3/README.md](results/protocol_v3/README.md)。
+下表是 **Protocol v3** 的 299/20/40 baseline，不是 v4 排名；v4 的
+499/30/50 baseline 尚未运行。完整 v3 表见
+[results/protocol_v3/README.md](results/protocol_v3/README.md)。
 
 | 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_ood | test_v6 | 状态 |
 |---|---|---:|---:|---:|---:|---:|---|
@@ -61,12 +64,10 @@ dev = 20 fields × 299；test_v6 = 40 fields × 299，top 3 一次性消费。
 | SelfPlay-GRU | `selfplay` | 513.85 | 582.45 | 390.57 | 471.19 | - | 21 维备选 |
 | Adv-MLP | `adv-mlp` | 515.24 | 583.18 | 406.65 | 478.26 | - | dev only |
 
-- dev top 3 由 dev_param mean 预注册；test_v6 上 RL-Repair +7.78 vs A60、
-  +12.88 vs Adv-RL（paired bootstrap CI 均不跨 0）。
-- `dev_complex` 是主要区分层；标准 family 在 `dev_family` 接近饱和。
-- 旧 `official` / `blind` / `heldout_v2/v3/v4` / Protocol v2 已进入 legacy，
-  不要与新表混用；历史数字见
-  [docs/operations/handover.md](docs/operations/handover.md)。
+- 旧 v3 baseline：RL-Repair test 484.32，A60 476.54，Adv-RL 471.44。
+- v4 增加 Axelrod 和更大规模后必须重跑 dev/test；不要直接沿用 v3 排名。
+- `dev_complex` / `dev_axelrod` 是主要新增区分层。
+- `official` / `blind` / `heldout_v2/v3/v4` / v2 / v3 均为 legacy。
 - 指标定义见 [docs/reference/metrics.md](docs/reference/metrics.md)。
 
 ## 目录
@@ -87,16 +88,16 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 
 | 阶段 | 结论 |
 |---|---|
-| Protocol v3 split | **启用**；532 configs + complex/policy，test_v6 已消费 |
-| Protocol v3 baseline | RL-Repair test 第一；anti-exploitation 仍 100% 失败 |
-| A60 / hard×2 | 候选 / fallback；Protocol v3 test 476.54 |
+| Protocol v4 split | **启用**；597 configs + Axelrod/complex/policy；test_v7 未消费 |
+| Protocol v4 baseline | **未运行**（本次不测试）；v3 baseline 仅作 legacy |
+| A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |
 | E1c repair | **Go candidate**（RL-Repair），未 promotion |
 | E2 CVaR / DRO | No-Go |
 | P3 red pool | red pool Go；league-lite / expansion Gate D **FAIL** |
 | P2 C1 / C2 / C3 | 全部 offline No-Go |
 | SelfPlay 改进 | No-Go；保留 21 维部署备选 |
-| Axelrod | 可选对手库；不进入 Protocol v3 主口径 |
+| Axelrod | **已接入 Protocol v4**：50 策略 + 15 组合；可选依赖 |
 
 完整记录见 [docs/research/](docs/research/) 和
 `results/sweep_20261026/README.md`（66 候选 × 158 类对手）。

@@ -1,7 +1,7 @@
 # ADR 0006：Protocol v3 扩大并复杂化 train/dev/test
 
 - 状态：Accepted（2026-10-27）
-- 关联：`docs/reference/protocol-v3.md`、`ipd/evaluation/protocol.py`
+- 关联：`docs/reference/protocol-v4.md`、`ipd/evaluation/protocol.py`
 
 ## 背景
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI for Protocol v3: audit, freeze and evaluate train/dev/test splits."""
+"""CLI for Protocol v4: audit, freeze and evaluate train/dev/test splits."""
 from __future__ import annotations
 
 import argparse
@@ -16,19 +16,21 @@ from ..paths import result_path
 from ..policies.registry import CandidateSpec, candidate_specs
 from .common import evaluate_field_details, quantile, run_match
 from .protocol import (
-    DEV_TIERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_TIER, audit_protocol,
-    build_protocol_field, build_protocol_red_field, catalog_sha256,
-    guard_test_usage, record_usage, verify_manifest, write_manifest,
+    DEV_FIELDS, DEV_TIERS, PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS,
+    TEST_FIELDS, TEST_TIER, audit_protocol, build_protocol_field,
+    build_protocol_red_field, catalog_sha256, guard_test_usage,
+    record_usage, verify_manifest, write_manifest,
 )
 
-DEV_DEFAULT = "dev_param,dev_family,dev_complex,dev_ood"
+DEV_DEFAULT = "dev_param,dev_family,dev_complex,dev_axelrod,dev_ood"
 ALL_DEFAULT = DEV_DEFAULT
 
 
 def _parse_tiers(raw: str) -> list[str]:
     text = raw.strip()
     if text in ("dev", "dev_all"):
-        return ["dev_param", "dev_family", "dev_complex", "dev_ood"]
+        return ["dev_param", "dev_family", "dev_complex", "dev_axelrod",
+                "dev_ood"]
     if text == "all":
         return list(SPLIT_TIERS)
     tiers = [x.strip() for x in text.split(",") if x.strip()]
@@ -103,7 +105,7 @@ def _aggregate(rows: Sequence[dict[str, Any]],
 
 
 def _audit(argv: Sequence[str]) -> int:
-    ap = argparse.ArgumentParser(description="Audit Protocol v3 splits.")
+    ap = argparse.ArgumentParser(description="Audit Protocol v4 splits.")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
@@ -128,7 +130,8 @@ def _audit(argv: Sequence[str]) -> int:
                   + ", ".join(f"{k}={v}" for k, v in sorted(families.items())))
         print("\nfamily groups:")
         for key in ("dev_param", "dev_family", "dev_complex",
-                    "train_complex", "test_complex", "test_policy",
+                    "dev_axelrod", "train_complex", "train_axelrod",
+                    "test_complex", "test_policy", "test_axelrod",
                     "test_only"):
             values = report["tier_families"].get(key, [])
             print(f"  {key:13}: " + ", ".join(values))
@@ -145,7 +148,7 @@ def _audit(argv: Sequence[str]) -> int:
 
 
 def _manifest(argv: Sequence[str]) -> int:
-    ap = argparse.ArgumentParser(description="Write or verify Protocol v3 manifest.")
+    ap = argparse.ArgumentParser(description="Write or verify Protocol v4 manifest.")
     ap.add_argument("--write", action="store_true", default=True)
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
@@ -159,14 +162,15 @@ def _manifest(argv: Sequence[str]) -> int:
 
 def _eval(argv: Sequence[str]) -> int:
     ap = argparse.ArgumentParser(
-        description="Evaluate candidates on Protocol v3 dev/test tiers.")
+        description="Evaluate candidates on Protocol v4 dev/test tiers.")
     ap.add_argument("--candidates", default="all",
                     help="comma-separated registry names or sets")
     ap.add_argument("--tiers", default=DEV_DEFAULT,
                     help=f"{DEV_DEFAULT}, all, or a comma list from {SPLIT_TIERS}")
     ap.add_argument("--fields", type=int, default=None,
-                    help="fields per tier (default: 20 dev, 40 test)")
-    ap.add_argument("--n", type=int, default=299)
+                    help=f"fields per tier (default: {DEV_FIELDS} dev, "
+                         f"{TEST_FIELDS} test)")
+    ap.add_argument("--n", type=int, default=PROTOCOL_N_PLAYERS)
     ap.add_argument("--rounds", type=int, default=100)
     ap.add_argument("--workers", type=int, default=20)
     ap.add_argument("--seed", type=int, default=20261027)
@@ -174,7 +178,7 @@ def _eval(argv: Sequence[str]) -> int:
     ap.add_argument("--baseline", default=None,
                     help="candidate name used for per-family min_norm")
     ap.add_argument("--acknowledge-once", action="store_true",
-                    help="required for test_v6; records one-shot usage")
+                    help="required for test_v7; records one-shot usage")
     ap.add_argument("--force", action="store_true",
                     help="rerun a consumed test tier and mark it contaminated")
     args = ap.parse_args(argv)
@@ -183,9 +187,9 @@ def _eval(argv: Sequence[str]) -> int:
     if TEST_TIER in tiers and not args.acknowledge_once:
         raise SystemExit(f"{TEST_TIER} requires --acknowledge-once")
     if TEST_TIER in tiers and args.fields is None:
-        fields = 40
+        fields = TEST_FIELDS
     else:
-        fields = args.fields if args.fields is not None else 20
+        fields = args.fields if args.fields is not None else DEV_FIELDS
     if fields <= 0:
         raise SystemExit("--fields must be positive")
 
@@ -243,9 +247,9 @@ def _eval(argv: Sequence[str]) -> int:
     out = args.out
     if out is None:
         if TEST_TIER in tiers:
-            out = result_path(f"protocol_v3/{PROTOCOL_NAME}_test.json")
+            out = result_path(f"protocol_v4/{PROTOCOL_NAME}_test.json")
         else:
-            out = result_path(f"protocol_v3/{PROTOCOL_NAME}_dev.json")
+            out = result_path(f"protocol_v4/{PROTOCOL_NAME}_dev.json")
     out_path = Path(out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -267,7 +271,7 @@ def _eval(argv: Sequence[str]) -> int:
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                         encoding="utf-8")
 
-    print(f"\nProtocol v3 evaluation ({fields} fields, n={args.n})")
+    print(f"\nProtocol v4 evaluation ({fields} fields, n={args.n})")
     for name in names:
         cells = []
         for tier in tiers:
@@ -303,11 +307,11 @@ def _red_task(task: dict[str, Any]) -> dict[str, Any]:
 
 def _red(argv: Sequence[str]) -> int:
     ap = argparse.ArgumentParser(
-        description="Evaluate candidates against Protocol v3 red pools.")
+        description="Evaluate candidates against Protocol v4 red pools.")
     ap.add_argument("--candidates", default="all")
     ap.add_argument("--tier", default="dev_red",
                     choices=("dev_red", "test_red"))
-    ap.add_argument("--seeds", type=int, default=20)
+    ap.add_argument("--seeds", type=int, default=30)
     ap.add_argument("--rounds", type=int, default=100)
     ap.add_argument("--workers", type=int, default=20)
     ap.add_argument("--seed", type=int, default=20261027)
@@ -356,7 +360,7 @@ def _red(argv: Sequence[str]) -> int:
 
     out = args.out
     if out is None:
-        out = result_path(f"protocol_v3/protocol_v3_{args.tier}.json")
+        out = result_path(f"protocol_v4/protocol_v4_{args.tier}.json")
     out_path = Path(out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {

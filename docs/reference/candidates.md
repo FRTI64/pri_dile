@@ -10,8 +10,8 @@ python3 -m ipd list-policies
 
 ## 1. 当前候选
 
-> 新候选比较使用 Protocol v3；2026-10-27 baseline：RL-Repair test 484.32，
-> A60 476.54，Adv-RL 471.44（top 3 预注册）。下表状态已按 Protocol v3 更新。
+> 新候选比较使用 Protocol v4（597 configs + Axelrod，499/30/50）。
+> v4 baseline 尚未运行；下表状态仍基于 legacy v3 baseline（299/20/40）。
 
 | 注册名 | 显示名 | 类型 | 权重 / 配置 | 状态 |
 |---|---|---|---|---|
@@ -29,11 +29,11 @@ python3 -m ipd list-policies
 | `neural` | Neural | MLP | `weights/neural_policy_weights.json` | 可部署；低于 RL 系列 |
 | `gru` | GRU | GRU | `weights/gru_policy_weights.json` | 有状态；低于 RL 系列 |
 | `rl` | RL-PPO | RL | `weights/rl_policy_weights.json` | **当前主权重** |
-| `rl-hard60` | RL-PPO-Hard60 | RL | `weights/rl_policy_weights_hard60.json` | A60；Protocol v3 test 第二 |
-| `rl-repair` | RL-Repair | RL | `weights/rl_policy_weights_repair.json` | **Protocol v3 test 第一；未 promotion** |
+| `rl-hard60` | RL-PPO-Hard60 | RL | `weights/rl_policy_weights_hard60.json` | A60；v3 test 第二（legacy） |
+| `rl-repair` | RL-Repair | RL | `weights/rl_policy_weights_repair.json` | **v3 test 第一（legacy）；未 promotion** |
 | `adv-mlp` | Adv-MLP | MLP + 规则 | base 权重 + `configs/adversarial_policy_config*.json` | 只有 Python |
 | `adv-gru` | Adv-GRU | GRU + 规则 | base 权重 + `configs/adversarial_gru_policy_config*.json` | 只有 Python |
-| `adv-rl` | Adv-RL | RL + 规则 | `rl_policy_weights_bc.json` + `configs/adversarial_rl_policy_config*.json` | dev 第一；test 第三；red 弱 |
+| `adv-rl` | Adv-RL | RL + 规则 | `rl_policy_weights_bc.json` + `configs/adversarial_rl_policy_config*.json` | v3 dev 高；test 第三；red 弱（legacy） |
 | `selfplay` | SelfPlay-GRU | 21 维 GRU | `weights/selfplay_gru_policy.json` | 21 维备选；改进 No-Go |
 
 ## 2. 集合别名

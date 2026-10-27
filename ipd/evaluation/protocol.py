@@ -1,4 +1,4 @@
-"""Protocol v3: versioned train / dev / test opponent splits.
+"""Protocol v4: versioned train / dev / test opponent splits.
 
 The old evaluation stack mixes training and reporting distributions: the four
 ``official`` distributions are also used by RL training, ``blind`` only changes
@@ -15,10 +15,10 @@ Design
 * ``dev_family`` and ``test_only`` families are held out by family, not just
   by parameter draw.  ``dev_complex`` validates the complex families and
   ``dev_ood`` is a deliberately shifted validation mixture.
-* ``test_v6`` is a weighted field: 35% seen-family test configs, 20%
-  test-only adversarial families, 20% complex families, 15% policy opponents
-  and 10% anchors.  It is guarded by a usage ledger and must be consumed once
-  per candidate family.
+* ``test_v7`` is a weighted field: 30% seen-family test configs, 20%
+  test-only adversarial families, 15% complex families, 10% policy opponents,
+  15% Axelrod opponents and 10% anchors.  It is guarded by a usage ledger and
+  must be consumed once per candidate family.
 * Training profiles (``train_v3`` / ``train_easy`` / ``train_hard`` /
   ``train_complex`` / ``train_policy``) provide different curricula over the
   same frozen catalog.
@@ -59,30 +59,41 @@ from .opponent_suite import (
     DelayedPunisher, ProbabilisticGrim, ResetGrim, SpitefulGrim, WindowTFT,
 )
 
-PROTOCOL_NAME = "protocol_v3"
-PROTOCOL_VERSION = "3"
-TEST_TIER = "test_v6"
-TIER_NAMES = ("train", "dev_param", "dev_family", "dev_complex", "dev_ood",
-              TEST_TIER, "dev_red", "test_red", "legacy")
-DEV_TIERS = ("dev_param", "dev_family", "dev_complex", "dev_ood", "dev_red")
+PROTOCOL_NAME = "protocol_v4"
+PROTOCOL_VERSION = "4"
+TEST_TIER = "test_v7"
+TIER_NAMES = ("train", "dev_param", "dev_family", "dev_complex",
+              "dev_axelrod", "dev_ood", TEST_TIER, "dev_red", "test_red",
+              "legacy")
+DEV_TIERS = ("dev_param", "dev_family", "dev_complex", "dev_axelrod",
+             "dev_ood", "dev_red")
 TEST_TIERS = (TEST_TIER, "test_red")
 SPLIT_TIERS = ("train", "dev_param", "dev_family", "dev_complex",
-               "dev_ood", TEST_TIER)
+               "dev_axelrod", "dev_ood", TEST_TIER)
+
+# Larger default match sizes for Protocol v4.  The old v3 baseline used
+# 299/20/40; these constants make the new scale explicit for CLI and docs.
+PROTOCOL_N_PLAYERS = 499
+DEV_FIELDS = 30
+TEST_FIELDS = 50
 
 # Group membership used by the field builder.  The values are mixture weights;
-# a group may contain several families.  Protocol v3 adds complex and policy
-# groups, and two validation mixtures (dev_complex / dev_ood).
+# a group may contain several families.  Protocol v4 adds complex, policy and
+# Axelrod groups, and validation mixtures (dev_axelrod / dev_ood).
 TIER_GROUPS: dict[str, dict[str, float]] = {
-    "train": {"train": 0.80, "train_complex": 0.12,
-              "train_policy": 0.05, "anchor": 0.03},
-    "dev_param": {"dev": 0.95, "anchor": 0.05},
+    "train": {"train": 0.70, "train_complex": 0.12,
+              "train_policy": 0.05, "train_axelrod": 0.10,
+              "anchor": 0.03},
+    "dev_param": {"dev": 0.80, "dev_axelrod": 0.15, "anchor": 0.05},
     "dev_family": {"dev_family": 0.85, "anchor": 0.15},
     "dev_complex": {"dev_complex": 0.90, "anchor": 0.10},
-    "dev_ood": {"dev": 0.35, "dev_complex": 0.35,
-                "dev_family": 0.10, "anchor": 0.20},
-    TEST_TIER: {"test": 0.35, "test_only": 0.20,
-                "test_complex": 0.20, "test_policy": 0.15,
-                "anchor": 0.10},
+    "dev_axelrod": {"dev_axelrod": 0.90, "anchor": 0.10},
+    "dev_ood": {"dev": 0.30, "dev_complex": 0.25,
+                "dev_family": 0.10, "dev_axelrod": 0.15,
+                "anchor": 0.20},
+    TEST_TIER: {"test": 0.30, "test_only": 0.20,
+                "test_complex": 0.15, "test_policy": 0.10,
+                "test_axelrod": 0.15, "anchor": 0.10},
 }
 
 # Relative family weights inside a group.  Counts are normalised per family so
@@ -106,6 +117,8 @@ FAMILY_WEIGHTS: dict[str, float] = {
     "memory_two": 1.0,
     "meta_mix": 1.0,
     "policy": 1.5,
+    "axelrod": 1.5,
+    "axelrod_mix": 1.2,
     "anchor": 1.0,
     "early_harvest": 1.0,
     "frequent_kamikaze": 1.0,
@@ -125,6 +138,42 @@ TEST_ONLY_FAMILIES = ("early_harvest", "frequent_kamikaze",
 COMPLEX_FAMILIES = ("phase_switch", "adaptive_mix", "probe_exploit",
                     "delayed_extort", "memory_two", "meta_mix")
 POLICY_FAMILIES = ("policy",)
+AXELROD_FAMILIES = ("axelrod", "axelrod_mix")
+
+# Curated Axelrod 4.14.0 classics plus modern/adaptive/ZD strategies.  These
+# names are resolved lazily, so building the catalog does not require Axelrod;
+# building a field does.
+AXELROD_STRATEGIES = (
+    "TitForTat", "TitFor2Tats", "TwoTitsForTat", "Grudger", "Forgiver",
+    "ForgivingTitForTat", "GTFT", "ContriteTitForTat", "FirmButFair",
+    "WinStayLoseShift", "GoByMajority", "HardGoByMajority", "SoftGrudger",
+    "Grumpy", "Prober", "RemorsefulProber", "NaiveProber", "HardProber",
+    "Adaptive", "AdaptiveTitForTat", "BackStabber", "DoubleCrosser",
+    "Bully", "Predator", "Ripoff", "SneakyTitForTat", "TrickyCooperator",
+    "TrickyDefector", "Alternator", "CyclerCCD", "CyclerCCCD",
+    "RandomTitForTat", "Random", "Defector", "Cooperator", "ZDExtort2",
+    "ZDExtort3", "ZDExtortion", "ZDGTFT2", "MetaMajority", "MetaWinner",
+    "MetaHunter", "EvolvedFSM16", "EvolvedANN", "PSOGambler1_1_1",
+    "Calculator", "OmegaTFT", "Stalker", "Thumper", "LimitedRetaliate",
+)
+
+AXELROD_MIXES = (
+    ("TitForTat", "Grudger", "Adaptive"),
+    ("TitForTat", "BackStabber", "Prober"),
+    ("GTFT", "FirmButFair", "Random"),
+    ("GoByMajority", "HardGoByMajority", "SoftGrudger"),
+    ("ZDExtort2", "ZDExtort3", "ZDExtortion"),
+    ("Adaptive", "EvolvedFSM16", "MetaMajority"),
+    ("TitForTat", "DoubleCrosser", "RemorsefulProber"),
+    ("Forgiver", "Grumpy", "Predator"),
+    ("MetaWinner", "MetaHunter", "AdaptiveTitForTat"),
+    ("Cooperator", "Defector", "Alternator"),
+    ("TitFor2Tats", "TwoTitsForTat", "LimitedRetaliate"),
+    ("RandomTitForTat", "SneakyTitForTat", "TrickyCooperator"),
+    ("Calculator", "Stalker", "Thumper"),
+    ("ZDGTFT2", "OmegaTFT", "PSOGambler1_1_1"),
+    ("TitForTat", "Grudger", "Forgiver", "Random"),
+)
 
 MANIFEST_PATH = CONFIG_DIR / "splits" / PROTOCOL_NAME / "manifest.json"
 USAGE_PATH = RESULTS_DIR / PROTOCOL_NAME / "usage.json"
@@ -406,6 +455,37 @@ class MetaMix(Strategy):
         if self.mode == "coop":
             return C
         return C if self.rng.random() < 0.5 else D
+
+
+class AxelrodMix(Strategy):
+    """Complex family: one Axelrod strategy drawn per match."""
+
+    def __init__(self, strategies: Sequence[str], rng: random.Random | None = None):
+        self.strategies = tuple(str(x) for x in strategies)
+        self._bot = None
+        super().__init__(rng)
+        self.name = "AxelrodMix"
+
+    def reset(self) -> None:
+        from ..core.opponents.axelrod_bank import axelrod_by_name
+
+        bank = axelrod_by_name(include_long_run=False)
+        name = self.rng.choice(self.strategies)
+        spec = bank.get(name)
+        if spec is None:
+            raise KeyError(f"Axelrod strategy not available: {name}")
+        self._bot = spec.factory(self.rng)
+        self._bot.reset()
+        self.name = f"AxelrodMix:{name}"
+
+    def set_rounds(self, rounds: int) -> None:
+        if self._bot is not None and hasattr(self._bot, "set_rounds"):
+            self._bot.set_rounds(rounds)
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if self._bot is None:
+            self.reset()
+        return self._bot.act(t, mine, theirs)
 
 
 def _b_allc(rng: random.Random) -> Strategy:
@@ -699,6 +779,22 @@ def _b_meta_mix(rng: random.Random, modes: Sequence[str]) -> Strategy:
     return MetaMix(tuple(str(x) for x in modes), rng)
 
 
+def _b_axelrod(rng: random.Random, strategy: str) -> Strategy:
+    from ..core.opponents.axelrod_bank import axelrod_by_name
+
+    bank = axelrod_by_name(include_long_run=False)
+    spec = bank.get(str(strategy))
+    if spec is None:
+        raise KeyError(f"Axelrod strategy not available: {strategy}")
+    bot = spec.factory(rng)
+    bot.name = f"Axelrod:{strategy}"
+    return bot
+
+
+def _b_axelrod_mix(rng: random.Random, strategies: Sequence[str]) -> Strategy:
+    return AxelrodMix(tuple(str(x) for x in strategies), rng)
+
+
 def _policy_path(weights: str) -> str:
     path = Path(str(weights))
     return str(path if path.is_absolute() else ROOT / path)
@@ -814,6 +910,8 @@ _BUILDERS: dict[str, Callable[..., Strategy]] = {
     "DelayedExtort": _b_delayed_extort,
     "MemoryTwo": _b_memory_two,
     "MetaMix": _b_meta_mix,
+    "Axelrod": _b_axelrod,
+    "AxelrodMix": _b_axelrod_mix,
     "PolicyFinal": _b_policy_final,
     "PolicyTriple": _b_policy_triple,
     "PolicyRL": _b_policy_rl,
@@ -1073,6 +1171,14 @@ def _catalog_specs() -> list[dict[str, Any]]:
         _add(specs, "meta_mix", "MetaMix", modes=modes)
 
     # ------------------------------------------------------------------
+    # Axelrod strategies and custom combinations
+    # ------------------------------------------------------------------
+    for name in AXELROD_STRATEGIES:
+        _add(specs, "axelrod", "Axelrod", strategy=name)
+    for mix in AXELROD_MIXES:
+        _add(specs, "axelrod_mix", "AxelrodMix", strategies=mix)
+
+    # ------------------------------------------------------------------
     # Policy opponents (complex, but not parameterised rules)
     # ------------------------------------------------------------------
     for name, type_name, weights in (
@@ -1156,6 +1262,8 @@ def _family_tiers(family: str, n: int) -> list[str]:
     n_train, n_dev, n_test = _split_counts(n)
     if family in COMPLEX_FAMILIES:
         names = ("train_complex", "dev_complex", "test_complex")
+    elif family in AXELROD_FAMILIES:
+        names = ("train_axelrod", "dev_axelrod", "test_axelrod")
     else:
         names = ("train", "dev", "test")
     tiers = ([names[0]] * n_train + [names[1]] * n_dev
@@ -1232,7 +1340,7 @@ def catalog_counts(catalog: Sequence[OpponentConfig] | None = None
 def protocol_manifest() -> dict[str, Any]:
     catalog = build_catalog()
     return {
-        "schema": "ipd-protocol-v3",
+        "schema": "ipd-protocol-v4",
         "protocol": PROTOCOL_NAME,
         "version": PROTOCOL_VERSION,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -1241,6 +1349,9 @@ def protocol_manifest() -> dict[str, Any]:
         "tiers": list(SPLIT_TIERS),
         "complex_families": list(COMPLEX_FAMILIES),
         "policy_families": list(POLICY_FAMILIES),
+        "axelrod_families": list(AXELROD_FAMILIES),
+        "axelrod_strategies": list(AXELROD_STRATEGIES),
+        "axelrod_mixes": [list(x) for x in AXELROD_MIXES],
         "dev_only_families": list(DEV_ONLY_FAMILIES),
         "test_only_families": list(TEST_ONLY_FAMILIES),
         "anchors": list(ANCHORS),
@@ -1303,9 +1414,10 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
     errors: list[str] = []
     warnings: list[str] = []
 
-    group_names = ("train", "train_complex", "train_policy", "dev",
-                   "dev_family", "dev_complex", "test", "test_complex",
-                   "test_policy", "test_only", "anchor")
+    group_names = ("train", "train_complex", "train_policy",
+                   "train_axelrod", "dev", "dev_family", "dev_complex",
+                   "dev_axelrod", "test", "test_complex", "test_policy",
+                   "test_axelrod", "test_only", "anchor")
     counts = catalog_counts(rows)
     for group in group_names:
         if group not in counts:
@@ -1326,12 +1438,15 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
     train_families = _tier_families(rows, "train")
     train_complex = _tier_families(rows, "train_complex")
     train_policy = _tier_families(rows, "train_policy")
+    train_axelrod = _tier_families(rows, "train_axelrod")
     dev_families = _tier_families(rows, "dev")
     dev_family_families = _tier_families(rows, "dev_family")
     dev_complex = _tier_families(rows, "dev_complex")
+    dev_axelrod = _tier_families(rows, "dev_axelrod")
     test_families = _tier_families(rows, "test")
     test_complex = _tier_families(rows, "test_complex")
     test_policy = _tier_families(rows, "test_policy")
+    test_axelrod = _tier_families(rows, "test_axelrod")
     test_only_families = _tier_families(rows, "test_only")
 
     for family in DEV_ONLY_FAMILIES:
@@ -1340,7 +1455,8 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
         if family in train_families or family in dev_families \
                 or family in test_families or family in test_only_families \
                 or family in train_complex or family in dev_complex \
-                or family in test_complex:
+                or family in test_complex or family in train_axelrod \
+                or family in dev_axelrod or family in test_axelrod:
             errors.append(f"dev-only family leaked: {family}")
     for family in TEST_ONLY_FAMILIES:
         if family not in test_only_families:
@@ -1348,7 +1464,8 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
         if family in train_families or family in dev_families \
                 or family in dev_family_families or family in test_families \
                 or family in train_complex or family in dev_complex \
-                or family in test_complex:
+                or family in test_complex or family in train_axelrod \
+                or family in dev_axelrod or family in test_axelrod:
             errors.append(f"test-only family leaked: {family}")
 
     # Complex families must appear in all three complex tiers.
@@ -1356,6 +1473,10 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
         if family not in train_complex or family not in dev_complex \
                 or family not in test_complex:
             errors.append(f"complex family missing from split: {family}")
+    for family in AXELROD_FAMILIES:
+        if family not in train_axelrod or family not in dev_axelrod \
+                or family not in test_axelrod:
+            errors.append(f"Axelrod family missing from split: {family}")
 
     # Policy train/test pools are checked by the exact-config audit above.
 
@@ -1363,6 +1484,17 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
     leaked_dev = dev_family_families & test_only_families
     if leaked_dev:
         errors.append(f"dev/test family overlap: {sorted(leaked_dev)}")
+
+    # Axelrod is optional; the catalog can still be audited without it, but
+    # field evaluation needs the package installed.
+    try:
+        from ..core.opponents.axelrod_bank import require_axelrod
+
+        require_axelrod()
+    except RuntimeError:
+        warnings.append(
+            "Axelrod missing: install requirements-axelrod.txt before "
+            "evaluating Protocol v4 tiers")
 
     # Red pool separation.  The P3 reds are frozen artifacts, so they are
     # accepted but flagged until a protocol-specific pair is trained.
@@ -1379,9 +1511,10 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
         warnings.append("red pools are legacy P3 artifacts; retrain before final")
 
     # Coverage checks.
-    for group in ("train", "train_complex", "train_policy", "dev",
-                  "dev_family", "dev_complex", "test", "test_complex",
-                  "test_policy", "test_only"):
+    for group in ("train", "train_complex", "train_policy",
+                  "train_axelrod", "dev", "dev_family", "dev_complex",
+                  "dev_axelrod", "test", "test_complex", "test_policy",
+                  "test_axelrod", "test_only"):
         n = sum(count for count in counts.get(group, {}).values())
         if n < 3:
             warnings.append(f"small group {group!r}: {n} configs")
@@ -1403,12 +1536,15 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
             "train": sorted(train_families),
             "train_complex": sorted(train_complex),
             "train_policy": sorted(train_policy),
+            "train_axelrod": sorted(train_axelrod),
             "dev_param": sorted(dev_families),
             "dev_family": sorted(dev_family_families),
             "dev_complex": sorted(dev_complex),
+            "dev_axelrod": sorted(dev_axelrod),
             "test_seen": sorted(test_families),
             "test_complex": sorted(test_complex),
             "test_policy": sorted(test_policy),
+            "test_axelrod": sorted(test_axelrod),
             "test_only": sorted(test_only_families),
         },
         "manifest": manifest_check,
@@ -1459,11 +1595,13 @@ def _weighted_entries(tier: str) -> tuple[list[OpponentConfig], list[float]]:
     return rows, weights
 
 
-def build_protocol_field(tier: str, seed: int, n: int = 299) -> list[Strategy]:
+def build_protocol_field(tier: str, seed: int,
+                         n: int = PROTOCOL_N_PLAYERS) -> list[Strategy]:
     """Build one deterministic field for a protocol tier.
 
     ``tier`` is one of ``train``, ``dev_param``, ``dev_family``,
-    ``dev_complex``, ``dev_ood`` or ``test_v6``.  Field membership is fixed
+    ``dev_complex``, ``dev_axelrod``, ``dev_ood`` or ``test_v7``.  Field
+    membership is fixed
     by the catalog; ``seed`` only changes the mixture and the per-opponent
     behaviour RNG.
     """
@@ -1479,33 +1617,39 @@ def build_protocol_field(tier: str, seed: int, n: int = 299) -> list[Strategy]:
 
 
 TRAIN_PROFILES: dict[str, tuple[str, ...] | None] = {
-    "train_v3": None,
+    "train_v4": None,
+    "train_v3": None,  # legacy alias for the same full mixture
     "train_easy": ("nice", "forgiving", "punitive", "defect", "late",
                    "anchor"),
     "train_hard": ("noisy", "random", "extort", "temporal", "wild",
                    "adaptive", "anchor"),
     "train_complex": tuple(COMPLEX_FAMILIES) + ("anchor",),
     "train_policy": ("policy",),
+    "train_axelrod": ("axelrod", "axelrod_mix"),
 }
 
 
-def build_training_field(profile: str, seed: int, n: int = 299
+def build_training_field(profile: str, seed: int,
+                         n: int = PROTOCOL_N_PLAYERS
                          ) -> list[Strategy]:
     """Build a training profile (easy / hard / complex / policy mixture)."""
     if profile not in TRAIN_PROFILES:
         raise ValueError(f"unknown training profile {profile!r}; "
                          f"choose from {tuple(TRAIN_PROFILES)}")
-    if profile == "train_v3":
+    if profile in ("train_v3", "train_v4"):
         return build_protocol_field("train", seed, n)
     allowed = set(TRAIN_PROFILES[profile] or ())
     rows = [
         entry for entry in build_catalog()
         if entry.family in allowed
-        and (entry.tier in ("train", "train_complex", "train_policy")
+        and (entry.tier in ("train", "train_complex", "train_policy",
+                            "train_axelrod")
              or entry.anchor)
     ]
-    if profile == "train_policy":
-        rows = [entry for entry in rows if entry.tier == "train_policy"]
+    if profile in ("train_policy", "train_axelrod"):
+        rows = [entry for entry in rows if entry.tier ==
+                ("train_policy" if profile == "train_policy"
+                 else "train_axelrod")]
     if not rows:
         raise ValueError(f"training profile {profile!r} has no configs")
     counts: dict[str, int] = {}
@@ -1614,10 +1758,12 @@ __all__ = [
     "PROTOCOL_NAME", "PROTOCOL_VERSION", "TEST_TIER", "TIER_NAMES",
     "DEV_TIERS", "TEST_TIERS", "SPLIT_TIERS", "TIER_GROUPS",
     "FAMILY_WEIGHTS", "TRAIN_PROFILES", "ANCHORS", "COMPLEX_FAMILIES",
-    "POLICY_FAMILIES", "DEV_ONLY_FAMILIES", "TEST_ONLY_FAMILIES",
-    "MANIFEST_PATH", "USAGE_PATH", "OpponentConfig", "MirrorAdaptive",
-    "DelayedGrim", "PhaseSwitcher", "AdaptiveMix", "ProbeExploit",
-    "DelayedExtort", "MemoryTwo", "MetaMix", "build_catalog",
+    "POLICY_FAMILIES", "AXELROD_FAMILIES", "AXELROD_STRATEGIES",
+    "AXELROD_MIXES", "PROTOCOL_N_PLAYERS", "DEV_FIELDS", "TEST_FIELDS",
+    "DEV_ONLY_FAMILIES", "TEST_ONLY_FAMILIES", "MANIFEST_PATH",
+    "USAGE_PATH", "OpponentConfig", "MirrorAdaptive", "DelayedGrim",
+    "PhaseSwitcher", "AdaptiveMix", "ProbeExploit", "DelayedExtort",
+    "MemoryTwo", "MetaMix", "AxelrodMix", "build_catalog",
     "catalog_sha256", "catalog_counts", "protocol_manifest",
     "write_manifest", "read_manifest", "verify_manifest", "audit_protocol",
     "build_protocol_field", "build_training_field",

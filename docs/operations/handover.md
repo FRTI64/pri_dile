@@ -7,21 +7,22 @@
 > - **RL-Repair（`rl-repair`）是当前最佳候选**，但只注册、不 promotion：
 >   `weights/rl_policy_weights_repair.json`，sha256
 >   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-> - `python3 -m ipd test`：**204 tests OK**；`python3 -m ipd list-policies`：
->   20 个注册候选。
-> - **Protocol v3 已启用**：532 configs；`dev_param` / `dev_family` /
->   `dev_complex` / `dev_ood` 选模；`test_v6` 已对 top 3 消费一次。
-> - **Protocol v3 test_v6**：RL-Repair **484.32** > A60 476.54 > Adv-RL
->   471.44（40 fields；paired bootstrap 均显著）。
+> - 最近完整测试为 v3 的 **204 tests OK**；v4 改动后未运行测试（按要求）。
+>   `python3 -m ipd list-policies`：20 个注册候选。
+> - **Protocol v4 已定义**：597 configs；50 Axelrod 策略 + 15 组合；
+>   499 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
+>   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
+> - **v4 baseline 尚未运行**；v3 的 RL-Repair 484.32 / A60 476.54 /
+>   Adv-RL 471.44 只作 legacy。`test_v7` 未消费。
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
-> - 文档重组前最新提交：`efa9fbb Finalize handover after Axelrod and P2 C3`。
+> - 最近提交：`git log -1`（Protocol v4 Axelrod/scale）。
 
 本文只保留当前结论和可执行信息。实验细节、逐 family 表和复现脚本在
 `results/*/README.md` 与 `docs/**/*.md`；文档导航见 `docs/README.md`。
 
 ---
 
-## 0. Protocol v3（2026-10-27 起的当前主口径）
+## 0. Protocol v4（2026-10-27 起的当前主口径）
 
 旧的 `official` / `blind` / `heldout_v2` / Protocol v2 表进入 legacy，不再作为
 泛化证据。新候选按以下流程评估：
@@ -30,34 +31,35 @@
 # 1. 审计 split（必须 OK）
 python3 -m ipd protocol audit
 
-# 2. dev 选模：所有候选，四个 validation tier
+# 2. dev 选模：所有候选，五个 validation tier
 python3 -m ipd protocol eval --candidates all \
-  --tiers dev_param,dev_family,dev_complex,dev_ood \
-  --fields 20 --n 299 --workers 20 --seed 20261027 --baseline RL-PPO \
-  --out results/protocol_v3/protocol_v3_dev.json
+  --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
+  --fields 30 --n 499 --workers 20 --seed 20261027 --baseline RL-PPO \
+  --out results/protocol_v4/protocol_v4_dev.json
 
-# 3. test_v6：只对预注册 top 3 跑一次
+# 3. test_v7：只对预注册 top 3 跑一次
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v6 --fields 40 --n 299 --workers 20 \
+  --tiers test_v7 --fields 50 --n 499 --workers 20 \
   --seed 20261027 --acknowledge-once \
-  --out results/protocol_v3/protocol_v3_test.json
+  --out results/protocol_v4/protocol_v4_test.json
 
 # 4. red（diagnostic / final）
-python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 20
+python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
-  --seeds 20 --acknowledge-once
+  --seeds 30 --acknowledge-once
 ```
 
 规则：
 
-- `dev_param` 是主排序；`dev_family` / `dev_complex` / `dev_ood` 是门禁；
+- `dev_param` 是主排序；`dev_family` / `dev_complex` / `dev_axelrod` /
+  `dev_ood` 是门禁；
 - 必须同时看 per-family、`min_norm`、`worst_family`；
-- `test_v6` 已消费一次，不能继续调参；下一个候选需要 `test_v7`；
-- usage ledger：`results/protocol_v3/usage.json`；
-- manifest：`configs/splits/protocol_v3/manifest.json`；
+- `test_v7` 尚未消费；消费后下一个候选需要 `test_v8`；
+- usage ledger：`results/protocol_v4/usage.json`；
+- manifest：`configs/splits/protocol_v4/manifest.json`；
 - 旧 `official` / `blind` / v2 只能作为 legacy 对照，不能与新表混用。
 
-详见 [../reference/protocol-v3.md](../reference/protocol-v3.md)。
+详见 [../reference/protocol-v4.md](../reference/protocol-v4.md)。
 
 ---
 
@@ -65,44 +67,45 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 
 | 场景 | 建议 | 依据 |
 |---|---|---|
-| 现在提交，允许新候选 | **RL-Repair** | Protocol v3 test 484.32 第一；dev 532.44 |
-| 保守提交，不替换主权重 | **RL-PPO（从零 + hard）** | 当前主权重；v3 dev 524.37 |
-| 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | v3 test 476.54 第二；min_norm 0.9989 |
-| dev_complex / OOD 高 | **Adv-RL** | dev 526.58；complex 415.19；test 471.44 |
-| 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维；v3 dev 513.85 |
+| 现在提交，允许新候选 | **RL-Repair** | v3 legacy test 484.32 第一；v4 需重跑 |
+| 保守提交，不替换主权重 | **RL-PPO（从零 + hard）** | 当前主权重；v3 legacy dev 524.37 |
+| 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | v3 legacy test 476.54；min_norm 0.9989 |
+| dev_complex / OOD 高 | **Adv-RL** | v3 legacy dev 526.58；complex 415.19 |
+| 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维；v3 legacy dev 513.85 |
 | 需要 C++ | 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
-| 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | v3 dev 523.39 / 517.07 |
+| 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | v3 legacy dev 523.39 / 517.07 |
 
-**Promotion 条件：** 用独立 seeds 复现 RL-Repair 的 `dev_param` /
-`dev_family` / `dev_complex` / `dev_ood`，再确认 C++ 导出、第 1/100 天行为、
-权重 checksum；`test_v6` 已消费，若要独立 final 复现需新建 `test_v7`。
-得到确认后才把 `weights/rl_policy_weights.json` 替换为 RL-Repair。当前文档
-不假设已经替换。
+**Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
+`dev_axelrod` / `dev_ood` 上重新验证 RL-Repair，再确认 C++ 导出、第 1/100 天
+行为、权重 checksum；`test_v7` 尚未消费，可用于一次独立 final。得到确认后才
+把 `weights/rl_policy_weights.json` 替换为 RL-Repair。当前文档不假设已经替换。
 
 ---
 
 ## 2. 评估口径（先看这一节）
 
-**当前主口径是 Protocol v3**；下面 2.1 / 2.2 的 official/blind/league 仅用于
-复现历史结果，不能作为新候选的 held-out 证据。Protocol v3 的定义和命令见
-[../reference/protocol-v3.md](../reference/protocol-v3.md)。
+**当前主口径是 Protocol v4**；下面 2.1 / 2.2 的 official/blind/league 仅用于
+复现历史结果，不能作为新候选的 held-out 证据。Protocol v4 的定义和命令见
+[../reference/protocol-v4.md](../reference/protocol-v4.md)。
 
 项目里同时存在几种协议，数字略有差异是正常的，**不能混表**。
 
-### 2.0 Protocol v3
+### 2.0 Protocol v4
 
 | 层 | 用途 | 规模 |
 |---|---|---|
-| `dev_param` | 选模（标准 family 参数不相交） | 20 fields × 299 |
-| `dev_family` | 选模（family held-out） | 20 fields × 299 |
-| `dev_complex` | 选模（complex family） | 20 fields × 299 |
-| `dev_ood` | 选模（偏移混合） | 20 fields × 299 |
-| `test_v6` | 一次性 final | 40 fields × 299 |
-| `dev_red` / `test_red` | exploitability | 20 seeds |
+| `dev_param` | 选模（标准 + Axelrod 参数 held-out） | 30 fields × 499 |
+| `dev_family` | 选模（family held-out） | 30 fields × 499 |
+| `dev_complex` | 选模（complex family） | 30 fields × 499 |
+| `dev_axelrod` | 选模（Axelrod） | 30 fields × 499 |
+| `dev_ood` | 选模（偏移混合） | 30 fields × 499 |
+| `test_v7` | 一次性 final | 50 fields × 499 |
+| `dev_red` / `test_red` | exploitability | 30 seeds |
 
-`test_v6` 已消费；不要用它继续选模。新候选通过 dev 后需要 `test_v7`。
+`test_v7` **尚未消费**；消费后下一个候选需要 `test_v8`。
 
-2026-10-27 baseline（20 fields dev；40 fields test）：
+v4 baseline **尚未运行**。下面是 legacy v3 baseline（20/40 fields × 299），
+仅用于历史对照：
 
 | 候选 | dev_param | dev_family | dev_complex | dev_ood | test_v6 |
 |---|---:|---:|---:|---:|---:|
@@ -112,10 +115,9 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | RL-PPO | 524.37 | 582.72 | 397.90 | 478.61 | - |
 | Final-tuned | 523.39 | 583.13 | 413.64 | 484.57 | - |
 
-- test 差值：RL-Repair +7.78 vs A60（CI [7.02, 8.58]）、+12.88 vs Adv-RL
-  （CI [11.65, 14.08]），均显著；
+- 以上是 v3 数字，不能作为 v4 排名；v4 加入 Axelrod 并扩大规模后必须重跑。
 - Red-v5 / Red-v6 对 top 3 仍 100% 胜率，anti-exploitation 未解决；
-- 完整 20 候选表：`results/protocol_v3/README.md`。
+- 完整 v3 表：`results/protocol_v3/README.md`。
 
 ### 2.1 标准 CLI（legacy）
 
@@ -146,7 +148,7 @@ python3 -m ipd league --config configs/eval/e0_league.json \
 
 ### 2.3 结果表（legacy）
 
-以下 E0/E1c 冻结协议数字只用于历史复现；新候选比较用 Protocol v3。
+以下 E0/E1c 冻结协议数字只用于历史复现；新候选比较用 Protocol v4。
 
 | 候选 | 注册名 | official | blind 20 | heldout_v2 | heldout_v3 | min_norm | CVaR10 | E4 red blue |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -297,16 +299,21 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 
 ## 4. 实验结论账本
 
-### Protocol v3 baseline（2026-10-27）
+### Protocol v4（2026-10-27）
 
-- 新 split catalog 532 configs，manifest `00b435c7...`；
-- 6 个 complex family、10 个 policy opponent、`dev_complex` / `dev_ood`；
-- 20 候选 dev 重跑；top 3（RL-Repair / A60 / Adv-RL）预注册后只跑一次
-  test_v6；
-- test：RL-Repair 484.32、A60 476.54、Adv-RL 471.44；
-- Red-v5 / Red-v6 仍 100% 击败 top 3；
-- 报告：`results/protocol_v3/README.md`，ADR：
-  `docs/decisions/0006-protocol-v3-complex-sets.md`。
+- 新 catalog 597 configs，manifest `d6a674aa...`；
+- 50 个 Axelrod 策略 + 15 个 AxelrodMix；6 个 complex family、10 个 policy
+  opponent；
+- 新增 `dev_axelrod` / `train_axelrod`；默认 499 人 / dev 30 / test 50；
+- **baseline 尚未运行**（按要求不做测试）；`test_v7` 未消费；
+- Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；
+- 文档：`docs/reference/protocol-v4.md`，ADR 0007。
+
+### Protocol v3 baseline（legacy）
+
+- 532 configs；20 candidates dev；test_v6：
+  RL-Repair 484.32、A60 476.54、Adv-RL 471.44；
+- 报告：`results/protocol_v3/README.md`，ADR 0006。
 - Protocol v2（224 configs、test_v5 477.05）保留为 legacy；
   `results/protocol_v2/`、ADR 0005。
 
@@ -425,19 +432,19 @@ python3 -m ipd self-test --candidates all
 
 ### 5.2 当前头部候选
 
-Protocol v3（当前主口径）：
+Protocol v4（当前主口径）：
 
 ```bash
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
-  --tiers dev_param,dev_family,dev_complex,dev_ood \
-  --fields 20 --workers 20 --baseline RL-PPO
+  --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
+  --fields 30 --n 499 --workers 20 --baseline RL-PPO
 python3 -m ipd protocol eval --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tiers test_v6 --fields 40 --acknowledge-once
+  --tiers test_v7 --fields 50 --n 499 --acknowledge-once
 python3 -m ipd protocol red --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tier dev_red --seeds 20
+  --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tier test_red --seeds 20 --acknowledge-once
+  --tier test_red --seeds 30 --acknowledge-once
 ```
 
 Legacy 四分布 / blind（只用于历史复现）：
@@ -582,11 +589,11 @@ mine/theirs = 到此日之前的动作
    P3 的 red pool / league-lite / expansion 都没有过 Gate D。
 4. **RL 有尾部风险**：最终从零 RL 在 `Rand3->TFT` 上约 347（BC 约 554），
    `Extort3`、`Random.50/70` 也可能回退；`ProbeBot` 已修复到约 603。
-5. **10 vs 20 fields 不可混用**：旧表多为 10-field blind；当前主表用 20-field
-   或 E0 冻结协议。
+5. **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 默认
+   499 人、dev 30 fields、test 50 fields。
 6. **split 已重划**：`heldout_v2` 已泄漏，`heldout_v3` 已被 E1c 使用，
-   `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v3。
-   `test_v6` 已在 2026-10-27 消费一次，不要复用。
+   `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v4。
+   `test_v7` 尚未消费；v3 的 `test_v6` 已消费。
 7. **SelfPlay 不是 anti-exploitation 证据**：final test 中的 held-out red
    是 RL-BC 互惠型对照，不能证明能防针对性 red。
 8. **GRU / SelfPlay-GRU 有状态**：每场必须 `reset()`；同一时间步不要重复
@@ -595,8 +602,9 @@ mine/theirs = 到此日之前的动作
    的默认参数是早期版本；提交时使用候选或 `FinalParams::tuned()`。
 10. **权重文件必需**：Neural / GRU / RL / SelfPlay 都要带 JSON 权重；单文件
     提交时需要内嵌。
-11. **Axelrod 是可选重量级依赖**：固定 `4.14.0`；完整 243 很慢；Darwin 的
-    genome 是类变量，结果与顺序相关，不能当稳定强度。
+11. **Axelrod 是可选重量级依赖**：v4 full tiers 需要
+    `requirements-axelrod.txt`；使用 50 个精选策略 + 15 个组合，不跑完整
+    243；Darwin genome 是类变量，结果与顺序相关，不能当稳定强度。
 12. **所有候选都应在第 100 天 D**；移植时漏掉会损失最后一天收益。
 13. **NPU 路径未实机验证**：代码支持 `--device npu`，本轮只在 CUDA/CPU
     上完成训练和测试。
@@ -614,8 +622,9 @@ mine/theirs = 到此日之前的动作
       `python3 -m ipd self-test --candidates all`。
 - [ ] 运行 `python3 -m ipd protocol audit`，确认 manifest / family / config
       无泄漏。
-- [ ] 对学习策略跑 `protocol eval --tiers dev_param,dev_family,dev_complex,dev_ood`；
-      `test_v6` 只给预注册 top 3 跑一次，并检查 usage ledger。
+- [ ] 对学习策略跑 `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood`
+      （499 人 / 30 fields）；`test_v7` 只给预注册 top 3 跑一次，并检查
+      usage ledger。
 - [ ] 检查第 1 天、第 100 天和“对手未 D 时 C”的安全规则。
 - [ ] 确认 GRU / SelfPlay 每场 `reset()`，同一时间步只调用一次。
 - [ ] 若提交 C++，刷新权重头文件并重新编译；Triple 需要自行移植。
@@ -634,7 +643,7 @@ mine/theirs = 到此日之前的动作
 | `ipd/policies/candidates/` | 每个候选一个独立文件 |
 | `ipd/evaluation/league.py` | E0 冻结评估 harness |
 | `ipd/evaluation/opponent_suite.py` | legacy validation / heldout_v2 / v3 / v4 |
-| `ipd/evaluation/protocol.py` | Protocol v3 catalog / audit / manifest / ledger |
+| `ipd/evaluation/protocol.py` | Protocol v4 catalog / audit / manifest / ledger |
 | `ipd/evaluation/protocol_cli.py` | `python -m ipd protocol` |
 | `ipd/evaluation/policy_pool.py` | P3 frozen blue/red pool |
 | `ipd/training/rl.py` | PPO 训练、rollout、验证、导出 |

@@ -7,7 +7,11 @@
 
 ### Added
 
-- **Protocol v3**：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
+- **Protocol v4**：597-config catalog；50 个 Axelrod 4.14.0 策略 + 15 个
+  `AxelrodMix` 组合；新增 `train_axelrod` / `dev_axelrod` / `test_axelrod`；
+  默认 499 人 / dev 30 fields / test 50 fields；final 为 `test_v7`。
+  v4 baseline 尚未运行（按要求不做测试）。
+- **Protocol v3**（legacy）：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
   532-config catalog、6 个 complex family、10 个 policy opponent；
   `train` / `dev_param` / `dev_family` / `dev_complex` / `dev_ood` /
   `test_v6` split、manifest、泄漏审计和 test usage ledger。
@@ -32,8 +36,8 @@
 ### Changed
 
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
-  Protocol v3 dev/test，旧表不再作为 held-out 证据。
-- `heldout_v2/v3/v4` 与 Protocol v2 的选模流程被 v3 取代；历史结果保留为
+  Protocol v4 dev/test，旧表不再作为 held-out 证据。
+- `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为
   legacy。
 
 ### Fixed

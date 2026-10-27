@@ -1,9 +1,9 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go; **Protocol v3 已启用（2026-10-27）**
-- **New split:** `train_v3` / `dev_param` / `dev_family` / `dev_complex` /
-  `dev_ood` / `test_v6`，见
-  [../reference/protocol-v3.md](../reference/protocol-v3.md)。旧 heldout / v2
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go; **Protocol v4 已定义（2026-10-27，baseline 未运行）**
+- **New split:** `train_v4` / `dev_param` / `dev_family` / `dev_complex` /
+  `dev_axelrod` / `dev_ood` / `test_v7`，见
+  [../reference/protocol-v4.md](../reference/protocol-v4.md)。旧 heldout / v2
   流程仅作历史记录。
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-Repair` / `rl-repair`（E1c；未 promotion）

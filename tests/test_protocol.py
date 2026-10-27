@@ -12,7 +12,7 @@ from ipd.evaluation.distributions import (
 )
 from ipd.evaluation.protocol_cli import main as protocol_main
 from ipd.evaluation.protocol import (
-    COMPLEX_FAMILIES, DEV_ONLY_FAMILIES, TEST_ONLY_FAMILIES, TEST_TIER,
+    AXELROD_FAMILIES, COMPLEX_FAMILIES, DEV_ONLY_FAMILIES, TEST_ONLY_FAMILIES, TEST_TIER,
     TRAIN_PROFILES, audit_protocol, build_catalog, build_protocol_field,
     build_protocol_red_field, build_training_field, catalog_sha256,
     guard_test_usage, load_usage, record_usage, verify_manifest,
@@ -67,9 +67,10 @@ class ProtocolCatalogTests(unittest.TestCase):
 
     def test_every_tier_has_entries(self) -> None:
         counts = Counter(entry.tier for entry in build_catalog())
-        for tier in ("train", "train_complex", "train_policy", "dev",
-                     "dev_family", "dev_complex", "test", "test_complex",
-                     "test_policy", "test_only"):
+        for tier in ("train", "train_complex", "train_policy", "train_axelrod",
+                     "dev", "dev_family", "dev_complex", "dev_axelrod",
+                     "test", "test_complex", "test_policy", "test_axelrod",
+                     "test_only"):
             self.assertGreaterEqual(counts[tier], 3, tier)
 
     def test_complex_families_are_split(self) -> None:
@@ -81,6 +82,15 @@ class ProtocolCatalogTests(unittest.TestCase):
             self.assertIn("dev_complex", tiers, family)
             self.assertIn("test_complex", tiers, family)
 
+    def test_axelrod_families_are_split(self) -> None:
+        catalog = build_catalog()
+        for family in AXELROD_FAMILIES:
+            tiers = {entry.tier for entry in catalog
+                     if entry.family == family}
+            self.assertIn("train_axelrod", tiers, family)
+            self.assertIn("dev_axelrod", tiers, family)
+            self.assertIn("test_axelrod", tiers, family)
+
 
 class ProtocolFieldTests(unittest.TestCase):
     def test_field_size_and_determinism(self) -> None:
@@ -89,13 +99,13 @@ class ProtocolFieldTests(unittest.TestCase):
         self.assertEqual(len(first), 64)
         self.assertEqual([b.name for b in first], [b.name for b in second])
 
-    def test_test_v6_contains_all_test_only_families(self) -> None:
+    def test_test_v7_contains_all_test_only_families(self) -> None:
         field = build_protocol_field(TEST_TIER, 777, 8000)
         names = Counter(bot.name.split(":", 1)[0] for bot in field)
         for family in TEST_ONLY_FAMILIES:
             self.assertGreater(names[family], 0, family)
 
-    def test_test_v6_mixture_weights(self) -> None:
+    def test_test_v7_mixture_weights(self) -> None:
         field = build_protocol_field(TEST_TIER, 20261027, 8000)
         names = Counter(bot.name.split(":", 1)[0] for bot in field)
         total = sum(names.values())
@@ -103,10 +113,12 @@ class ProtocolFieldTests(unittest.TestCase):
         test_only_share = sum(names[f] for f in TEST_ONLY_FAMILIES) / total
         complex_share = sum(names[f] for f in COMPLEX_FAMILIES) / total
         policy_share = names["policy"] / total
+        axelrod_share = sum(names[f] for f in AXELROD_FAMILIES) / total
         self.assertAlmostEqual(anchor_share, 0.10, delta=0.03)
         self.assertAlmostEqual(test_only_share, 0.20, delta=0.04)
-        self.assertAlmostEqual(complex_share, 0.20, delta=0.04)
-        self.assertAlmostEqual(policy_share, 0.15, delta=0.04)
+        self.assertAlmostEqual(complex_share, 0.15, delta=0.04)
+        self.assertAlmostEqual(policy_share, 0.10, delta=0.04)
+        self.assertAlmostEqual(axelrod_share, 0.15, delta=0.04)
 
     def test_dev_family_contains_only_heldout_families(self) -> None:
         field = build_protocol_field("dev_family", 20261027, 1000)
@@ -127,7 +139,8 @@ class ProtocolFieldTests(unittest.TestCase):
             self.assertEqual([b.name for b in field], [b.name for b in field2])
 
     def test_protocol_validation_distributions(self) -> None:
-        for dist in ("dev_param", "dev_family", "dev_complex", "dev_ood"):
+        for dist in ("dev_param", "dev_family", "dev_complex",
+                     "dev_axelrod", "dev_ood"):
             field = build_train_dist_field(dist, 12345, 50)
             self.assertEqual(len(field), 50)
             self.assertEqual(len(build_dist_field(dist, 12345, 50)), 50)
@@ -179,7 +192,7 @@ class ProtocolManifestTests(unittest.TestCase):
             path = Path(tmp) / "manifest.json"
             write_manifest(path)
             data = json.loads(path.read_text(encoding="utf-8"))
-            self.assertEqual(data["schema"], "ipd-protocol-v3")
+            self.assertEqual(data["schema"], "ipd-protocol-v4")
             self.assertEqual(data["catalog_sha256"], catalog_sha256())
             self.assertTrue(verify_manifest(path)["ok"])
             data["catalog_sha256"] = "broken"

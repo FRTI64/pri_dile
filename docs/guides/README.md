@@ -5,7 +5,7 @@
 
 | 文档 | 适用场景 |
 |---|---|
-| [evaluation.md](evaluation.md) | 跑 Protocol v3 dev/test、legacy 四分布、suite、matchup、league |
+| [evaluation.md](evaluation.md) | 跑 Protocol v4 dev/test、legacy 四分布、suite、matchup、league |
 | [training.md](training.md) | 训练 MLP/GRU/RL/self-play/opponent-model；复现 A60/E1c |
 | [deployment.md](deployment.md) | Python 推理、C++ 编译、权重导出、单文件提交 |
 | [split-evaluation.md](split-evaluation.md) | 为每个候选设置独立参数并拆分结果 |
