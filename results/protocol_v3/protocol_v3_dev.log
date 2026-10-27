@@ -1,0 +1,44 @@
+progress 80/1600 field tasks
+progress 160/1600 field tasks
+progress 240/1600 field tasks
+progress 320/1600 field tasks
+progress 400/1600 field tasks
+progress 480/1600 field tasks
+progress 560/1600 field tasks
+progress 640/1600 field tasks
+progress 720/1600 field tasks
+progress 800/1600 field tasks
+progress 880/1600 field tasks
+progress 960/1600 field tasks
+progress 1040/1600 field tasks
+progress 1120/1600 field tasks
+progress 1200/1600 field tasks
+progress 1280/1600 field tasks
+progress 1360/1600 field tasks
+progress 1440/1600 field tasks
+progress 1520/1600 field tasks
+progress 1600/1600 field tasks
+
+Protocol v3 evaluation (20 fields, n=299)
+  Final-base           dev_param=522.55  dev_family=583.03  dev_complex=402.20  dev_ood=479.29
+  Final-tuned          dev_param=523.39  dev_family=583.13  dev_complex=413.64  dev_ood=484.57
+  Resp3-base           dev_param=521.54  dev_family=582.65  dev_complex=399.45  dev_ood=478.86
+  Resp3-tuned          dev_param=517.38  dev_family=583.11  dev_complex=396.13  dev_ood=474.88
+  Bayes-base           dev_param=502.21  dev_family=583.55  dev_complex=388.47  dev_ood=467.58
+  Bayes-tuned          dev_param=501.18  dev_family=583.61  dev_complex=387.93  dev_ood=466.73
+  Final+Resp3          dev_param=515.99  dev_family=583.16  dev_complex=404.36  dev_ood=477.48
+  Harvest45            dev_param=489.35  dev_family=461.79  dev_complex=402.33  dev_ood=451.03
+  Triple-majority      dev_param=517.07  dev_family=583.14  dev_complex=410.02  dev_ood=480.14
+  Harvest-tuned        dev_param=502.93  dev_family=536.35  dev_complex=390.34  dev_ood=461.31
+  GapStart             dev_param=462.18  dev_family=197.24  dev_complex=448.77  dev_ood=424.30
+  Neural               dev_param=515.27  dev_family=583.18  dev_complex=408.54  dev_ood=479.38
+  GRU                  dev_param=515.26  dev_family=583.16  dev_complex=409.39  dev_ood=479.19
+  RL-PPO               dev_param=524.37  dev_family=582.72  dev_complex=397.90  dev_ood=478.61
+  RL-PPO-Hard60        dev_param=527.97  dev_family=582.94  dev_complex=410.09  dev_ood=485.12
+  RL-Repair            dev_param=532.44  dev_family=582.92  dev_complex=420.38  dev_ood=489.84
+  Adv-MLP              dev_param=515.24  dev_family=583.18  dev_complex=406.65  dev_ood=478.26
+  Adv-GRU              dev_param=513.73  dev_family=583.13  dev_complex=406.90  dev_ood=477.47
+  Adv-RL               dev_param=526.58  dev_family=583.20  dev_complex=415.19  dev_ood=487.22
+  SelfPlay-GRU         dev_param=513.85  dev_family=582.45  dev_complex=390.57  dev_ood=471.19
+
+written results/protocol_v3/protocol_v3_dev.json

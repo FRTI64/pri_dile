@@ -132,7 +132,7 @@ python3 -m ipd matchup --candidates final-tuned \
 
 ```bash
 python3 -m ipd test
-# 202 tests, OK
+# 204 tests, OK
 ```
 
 新增测试：`tests/test_axelrod_opponents.py`，覆盖 243/224/1 数量、

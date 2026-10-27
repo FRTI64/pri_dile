@@ -1,7 +1,7 @@
 # ADR 0005：用 Protocol v2 取代混用的 official / heldout 口径
 
 - 状态：Accepted（2026-10-27）
-- 相关：`docs/reference/protocol-v2.md`、`ipd/evaluation/protocol.py`
+- 相关：`docs/reference/protocol-v3.md`、`ipd/evaluation/protocol.py`
 
 ## 背景
 

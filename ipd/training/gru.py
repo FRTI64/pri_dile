@@ -49,7 +49,9 @@ from ipd.training.neural import (
     save_json,
 )
 from ipd.core.simulator import payoff
-from ipd.evaluation.distributions import DISTS
+from ipd.evaluation.distributions import (
+    DISTS, PROTOCOL_VAL_DISTS, TRAIN_DISTS,
+)
 from ipd.policies.neural import FEATURE_VERSION, extract_features, C, D
 
 STEPS = 100
@@ -301,7 +303,7 @@ def main(argv=None) -> None:
         )
 
     dists = tuple(x.strip() for x in args.dists.split(",") if x.strip())
-    unknown = [d for d in dists if d not in DISTS]
+    unknown = [d for d in dists if d not in TRAIN_DISTS + PROTOCOL_VAL_DISTS]
     if unknown:
         raise SystemExit(f"unknown distributions: {unknown}")
 

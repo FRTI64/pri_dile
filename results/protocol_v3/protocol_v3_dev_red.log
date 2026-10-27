@@ -1,0 +1,6 @@
+
+dev_red: 20 seeds
+  RL-Repair            blue= 378.05 red= 713.55 diff=-335.50 red_win=100.0%
+  RL-PPO-Hard60        blue= 378.00 red= 711.00 diff=-333.00 red_win=100.0%
+  Adv-RL               blue= 375.90 red= 723.90 diff=-348.00 red_win=100.0%
+written results/protocol_v3/protocol_v3_dev_red.json

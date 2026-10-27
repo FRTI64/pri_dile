@@ -64,7 +64,7 @@ ipd/
 │   ├── blind.py           未见赛场盲测
 │   ├── split.py           按候选/对手拆分的评估驱动
 │   ├── split_config.py    每个候选独立参数配置
-│   ├── protocol.py        Protocol v2 train/dev/test catalog + audit
+│   ├── protocol.py        Protocol v3 train/dev/test catalog + audit
 │   ├── protocol_cli.py    `python -m ipd protocol` 入口
 │   ├── suite.py           9 个家族加权测试集
 │   ├── matchup.py         逐对手类型矩阵 + 9 测试集加权
@@ -193,9 +193,10 @@ action = policy.act(t, mine, theirs)
 ## 4. 评估接口
 
 ```bash
-# Protocol v2（新主口径）
+# Protocol v3（当前主口径）
 python3 -m ipd protocol audit
-python3 -m ipd protocol eval --candidates all --tiers dev_param,dev_family \
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family,dev_complex,dev_ood \
   --fields 20 --baseline RL-PPO
 
 # 四分布（legacy；默认 8 fields；正式比较建议 20）
@@ -313,7 +314,7 @@ tests/test_moe.py                C3 three-way gate + MoE
 tests/test_selfplay.py           21 维观测、GRU、PPO、BC、resume
 tests/test_axelrod_opponents.py  Axelrod 243/224/1、适配器、CLI
 tests/test_training.py           训练任务可导入、统一参数、JSON 工具
-tests/test_protocol.py           Protocol v2 catalog / audit / manifest / usage
+tests/test_protocol.py           Protocol v3 catalog / audit / manifest / usage
 ```
 
 运行：
@@ -323,4 +324,4 @@ python3 -m ipd test
 # 等价：python3 -m unittest discover -s tests -t . -v
 ```
 
-当前为 **202 tests OK**。新模块先写测试，再训练/评估。
+当前为 **204 tests OK**。新模块先写测试，再训练/评估。

@@ -1,0 +1,194 @@
+{
+  "ok": true,
+  "protocol": "protocol_v3",
+  "catalog_sha256": "00b435c7387ae1e2ffd07f105f6ea1ed56edf165a4b800dc8c8d577144b45d05",
+  "catalog_size": 532,
+  "counts": {
+    "anchor": {
+      "anchor": 5
+    },
+    "dev": {
+      "adaptive": 6,
+      "defect": 2,
+      "extort": 5,
+      "forgiving": 4,
+      "late": 4,
+      "nice": 2,
+      "noisy": 5,
+      "punitive": 2,
+      "random": 5,
+      "temporal": 15,
+      "wild": 4
+    },
+    "dev_complex": {
+      "adaptive_mix": 3,
+      "delayed_extort": 3,
+      "memory_two": 2,
+      "meta_mix": 2,
+      "phase_switch": 5,
+      "probe_exploit": 2
+    },
+    "dev_family": {
+      "delayed_grim": 6,
+      "mirror_adaptive": 8
+    },
+    "test": {
+      "adaptive": 6,
+      "defect": 1,
+      "extort": 6,
+      "forgiving": 4,
+      "late": 4,
+      "nice": 2,
+      "noisy": 6,
+      "punitive": 3,
+      "random": 6,
+      "temporal": 14,
+      "wild": 4
+    },
+    "test_complex": {
+      "adaptive_mix": 2,
+      "delayed_extort": 2,
+      "memory_two": 1,
+      "meta_mix": 2,
+      "phase_switch": 6,
+      "probe_exploit": 2
+    },
+    "test_only": {
+      "adaptive_probe": 6,
+      "early_harvest": 6,
+      "early_probe": 6,
+      "frequent_kamikaze": 6,
+      "hyper_extort": 6,
+      "probe_harvest": 6
+    },
+    "test_policy": {
+      "policy": 6
+    },
+    "train": {
+      "adaptive": 27,
+      "defect": 7,
+      "extort": 24,
+      "forgiving": 18,
+      "late": 20,
+      "nice": 8,
+      "noisy": 25,
+      "punitive": 10,
+      "random": 25,
+      "temporal": 68,
+      "wild": 19
+    },
+    "train_complex": {
+      "adaptive_mix": 13,
+      "delayed_extort": 13,
+      "memory_two": 7,
+      "meta_mix": 8,
+      "phase_switch": 25,
+      "probe_exploit": 8
+    },
+    "train_policy": {
+      "policy": 4
+    }
+  },
+  "tier_families": {
+    "train": [
+      "adaptive",
+      "defect",
+      "extort",
+      "forgiving",
+      "late",
+      "nice",
+      "noisy",
+      "punitive",
+      "random",
+      "temporal",
+      "wild"
+    ],
+    "train_complex": [
+      "adaptive_mix",
+      "delayed_extort",
+      "memory_two",
+      "meta_mix",
+      "phase_switch",
+      "probe_exploit"
+    ],
+    "train_policy": [
+      "policy"
+    ],
+    "dev_param": [
+      "adaptive",
+      "defect",
+      "extort",
+      "forgiving",
+      "late",
+      "nice",
+      "noisy",
+      "punitive",
+      "random",
+      "temporal",
+      "wild"
+    ],
+    "dev_family": [
+      "delayed_grim",
+      "mirror_adaptive"
+    ],
+    "dev_complex": [
+      "adaptive_mix",
+      "delayed_extort",
+      "memory_two",
+      "meta_mix",
+      "phase_switch",
+      "probe_exploit"
+    ],
+    "test_seen": [
+      "adaptive",
+      "defect",
+      "extort",
+      "forgiving",
+      "late",
+      "nice",
+      "noisy",
+      "punitive",
+      "random",
+      "temporal",
+      "wild"
+    ],
+    "test_complex": [
+      "adaptive_mix",
+      "delayed_extort",
+      "memory_two",
+      "meta_mix",
+      "phase_switch",
+      "probe_exploit"
+    ],
+    "test_policy": [
+      "policy"
+    ],
+    "test_only": [
+      "adaptive_probe",
+      "early_harvest",
+      "early_probe",
+      "frequent_kamikaze",
+      "hyper_extort",
+      "probe_harvest"
+    ]
+  },
+  "manifest": {
+    "ok": true,
+    "reason": "ok",
+    "path": "/home/frti64/pri_dile/configs/splits/protocol_v3/manifest.json",
+    "manifest_sha256": "00b435c7387ae1e2ffd07f105f6ea1ed56edf165a4b800dc8c8d577144b45d05",
+    "catalog_sha256": "00b435c7387ae1e2ffd07f105f6ea1ed56edf165a4b800dc8c8d577144b45d05"
+  },
+  "red_pools": {
+    "dev_red": [
+      "Red-v5"
+    ],
+    "test_red": [
+      "Red-v6"
+    ]
+  },
+  "errors": [],
+  "warnings": [
+    "red pools are legacy P3 artifacts; retrain before final"
+  ]
+}

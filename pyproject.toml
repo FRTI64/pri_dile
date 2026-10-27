@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ipd-tournament"
-version = "2.1.0"
+version = "2.2.0"
 description = "100-day iterated prisoner's dilemma strategy toolkit"
 readme = "README.md"
 requires-python = ">=3.10"

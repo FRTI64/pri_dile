@@ -7,15 +7,19 @@
 
 ### Added
 
-- **Protocol v2**：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
-  版本化 `train` / `dev_param` / `dev_family` / `test_v5` split、catalog
-  manifest、泄漏审计和 test usage ledger。
-- `configs/splits/protocol_v2/manifest.json`（224 configs）和
-  `results/protocol_v2/` dev/test baseline。
-- baseline 结果：RL-Repair test 477.05 > A60 469.91 > Adv-RL 467.95；
+- **Protocol v3**：`ipd/evaluation/protocol.py` + `python3 -m ipd protocol`，
+  532-config catalog、6 个 complex family、10 个 policy opponent；
+  `train` / `dev_param` / `dev_family` / `dev_complex` / `dev_ood` /
+  `test_v6` split、manifest、泄漏审计和 test usage ledger。
+- `configs/splits/protocol_v3/manifest.json`（532 configs）和
+  `results/protocol_v3/` dev/test baseline。
+- baseline 结果：RL-Repair test 484.32 > A60 476.54 > Adv-RL 471.44；
   Red-v5/v6 仍 100% 击败 top 3。
-- `train_v2` 训练分布；`dev_param` / `dev_family` validation 支持。
+- 训练 profile：`train_v3` / `train_easy` / `train_hard` / `train_complex` /
+  `train_policy`；validation 支持 `dev_param` / `dev_family` /
+  `dev_complex` / `dev_ood`。
 - 红队评估：`protocol red --tier dev_red|test_red`。
+- Protocol v2（224 configs、test_v5）保留在 `results/protocol_v2/` 作为 legacy。
 - `LICENSE`（MIT，与 `pyproject.toml` 一致）。
 - 文档重组为现代工程结构：`architecture/`、`guides/`、`reference/`、
   `policies/`、`research/`、`operations/`、`history/`、`decisions/`。
@@ -28,8 +32,9 @@
 ### Changed
 
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
-  Protocol v2 dev/test，旧表不再作为 held-out 证据。
-- `heldout_v2/v3/v4` 的选模流程被 Protocol v2 取代；历史结果保留为 legacy。
+  Protocol v3 dev/test，旧表不再作为 held-out 证据。
+- `heldout_v2/v3/v4` 与 Protocol v2 的选模流程被 v3 取代；历史结果保留为
+  legacy。
 
 ### Fixed
 

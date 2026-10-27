@@ -50,7 +50,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any
 
 from ipd.core.simulator import C, D, payoff
-from ipd.evaluation.distributions import DISTS, build_dist_field
+from ipd.evaluation.distributions import (
+    DISTS, PROTOCOL_VAL_DISTS, TRAIN_DISTS, build_dist_field,
+)
 from ipd.policies.neural import FEATURE_VERSION, NeuralPolicy, extract_features
 from ipd.training.common import save_json, seed_map as _seed_map
 
@@ -481,7 +483,7 @@ def main(argv=None) -> None:
         )
 
     dists = tuple(x.strip() for x in args.dists.split(",") if x.strip())
-    unknown = [d for d in dists if d not in DISTS]
+    unknown = [d for d in dists if d not in TRAIN_DISTS + PROTOCOL_VAL_DISTS]
     if unknown:
         raise SystemExit(f"unknown distributions: {unknown}")
 

@@ -1,0 +1,28 @@
+progress 6/120 field tasks
+progress 12/120 field tasks
+progress 18/120 field tasks
+progress 24/120 field tasks
+progress 30/120 field tasks
+progress 36/120 field tasks
+progress 42/120 field tasks
+progress 48/120 field tasks
+progress 54/120 field tasks
+progress 60/120 field tasks
+progress 66/120 field tasks
+progress 72/120 field tasks
+progress 78/120 field tasks
+progress 84/120 field tasks
+progress 90/120 field tasks
+progress 96/120 field tasks
+progress 102/120 field tasks
+progress 108/120 field tasks
+progress 114/120 field tasks
+progress 120/120 field tasks
+
+Protocol v3 evaluation (40 fields, n=299)
+  RL-Repair            test_v6=484.32
+  RL-PPO-Hard60        test_v6=476.54
+  Adv-RL               test_v6=471.44
+
+written results/protocol_v3/protocol_v3_test.json
+test_v6 usage recorded

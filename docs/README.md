@@ -11,7 +11,7 @@
 | 了解项目和当前结论 | [根 README](../README.md) |
 | 安装、跑测试、提交改动 | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | 评估当前候选 | [docs/guides/evaluation.md](guides/evaluation.md) |
-| 新 split / 审计 / test 规则 | [docs/reference/protocol-v2.md](reference/protocol-v2.md) |
+| 新 split / 审计 / test 规则 | [docs/reference/protocol-v3.md](reference/protocol-v3.md) |
 | 训练模型 / 复现实验 | [docs/guides/training.md](guides/training.md) |
 | 部署 Python / C++ | [docs/guides/deployment.md](guides/deployment.md) |
 | 查 CLI / 候选 / 配置 / 指标 | [docs/reference/](reference/) |
@@ -26,11 +26,12 @@
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
 | 当前最佳候选 | `rl-repair`（RL-Repair，未 promotion） |
 | 第二候选 / fallback | `rl-hard60`（A60） |
-| 测试 | `python3 -m ipd test` → 202 tests OK |
+| 测试 | `python3 -m ipd test` → 204 tests OK |
 | 注册候选 | 20 个（`python3 -m ipd list-policies`） |
-| 默认评估 | **Protocol v2**：`dev_param` / `dev_family` 选模，`test_v5` 一次性 final |
-| Protocol v2 | RL-Repair test 477.05 > A60 469.91 > Adv-RL 467.95 |
-| held-out | `test_v5` 已消费一次；`test_red` 已消费；下一个候选需 `test_v6` |
+| 默认评估 | **Protocol v3**：`dev_param` / `dev_family` / `dev_complex` / `dev_ood` 选模，`test_v6` 一次性 final |
+| 规模 | 532 configs；6 个 complex family；10 个 policy opponent |
+| Protocol v3 | RL-Repair test 484.32 > A60 476.54 > Adv-RL 471.44 |
+| held-out | `test_v6` 已消费一次；下一个候选需 `test_v7`；v2 已进入 legacy |
 | 已知未解决 | anti-exploitation；Red-v5/v6 仍 100% 击败 top 3 |
 
 推荐、权重、风险和 promotion 条件以
@@ -63,7 +64,7 @@
 | [reference/candidates.md](reference/candidates.md) | 20 个候选、别名、集合、权重、状态 |
 | [reference/configuration.md](reference/configuration.md) | `configs/`、`weights/`、`results/`、路径与配置格式 |
 | [reference/metrics.md](reference/metrics.md) | 四分布、blind、suite、league、CVaR、min_norm 的定义与口径 |
-| [reference/protocol-v2.md](reference/protocol-v2.md) | Protocol v2 的 train/dev/test 划分、manifest、usage ledger |
+| [reference/protocol-v3.md](reference/protocol-v3.md) | Protocol v3 的 train/dev/test 划分、manifest、usage ledger |
 
 ### 策略方法
 

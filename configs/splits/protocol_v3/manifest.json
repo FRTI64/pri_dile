@@ -1,0 +1,6781 @@
+{
+  "schema": "ipd-protocol-v3",
+  "protocol": "protocol_v3",
+  "version": "3",
+  "created": "2026-10-27T16:03:53",
+  "catalog_sha256": "00b435c7387ae1e2ffd07f105f6ea1ed56edf165a4b800dc8c8d577144b45d05",
+  "catalog_size": 532,
+  "tiers": [
+    "train",
+    "dev_param",
+    "dev_family",
+    "dev_complex",
+    "dev_ood",
+    "test_v6"
+  ],
+  "complex_families": [
+    "phase_switch",
+    "adaptive_mix",
+    "probe_exploit",
+    "delayed_extort",
+    "memory_two",
+    "meta_mix"
+  ],
+  "policy_families": [
+    "policy"
+  ],
+  "dev_only_families": [
+    "mirror_adaptive",
+    "delayed_grim"
+  ],
+  "test_only_families": [
+    "early_harvest",
+    "frequent_kamikaze",
+    "probe_harvest",
+    "hyper_extort",
+    "early_probe",
+    "adaptive_probe"
+  ],
+  "anchors": [
+    "AllC",
+    "AllD",
+    "TFT",
+    "Grim",
+    "Random.50"
+  ],
+  "group_weights": {
+    "train": {
+      "train": 0.8,
+      "train_complex": 0.12,
+      "train_policy": 0.05,
+      "anchor": 0.03
+    },
+    "dev_param": {
+      "dev": 0.95,
+      "anchor": 0.05
+    },
+    "dev_family": {
+      "dev_family": 0.85,
+      "anchor": 0.15
+    },
+    "dev_complex": {
+      "dev_complex": 0.9,
+      "anchor": 0.1
+    },
+    "dev_ood": {
+      "dev": 0.35,
+      "dev_complex": 0.35,
+      "dev_family": 0.1,
+      "anchor": 0.2
+    },
+    "test_v6": {
+      "test": 0.35,
+      "test_only": 0.2,
+      "test_complex": 0.2,
+      "test_policy": 0.15,
+      "anchor": 0.1
+    }
+  },
+  "red_pools": {
+    "dev_red": [
+      {
+        "name": "Red-v5",
+        "path": "weights/red_pool/red_rl_v5_heldout.json"
+      }
+    ],
+    "test_red": [
+      {
+        "name": "Red-v6",
+        "path": "weights/red_pool/red_rl_v6_heldout.json"
+      }
+    ]
+  },
+  "counts": {
+    "anchor": {
+      "anchor": 5
+    },
+    "dev": {
+      "adaptive": 6,
+      "defect": 2,
+      "extort": 5,
+      "forgiving": 4,
+      "late": 4,
+      "nice": 2,
+      "noisy": 5,
+      "punitive": 2,
+      "random": 5,
+      "temporal": 15,
+      "wild": 4
+    },
+    "dev_complex": {
+      "adaptive_mix": 3,
+      "delayed_extort": 3,
+      "memory_two": 2,
+      "meta_mix": 2,
+      "phase_switch": 5,
+      "probe_exploit": 2
+    },
+    "dev_family": {
+      "delayed_grim": 6,
+      "mirror_adaptive": 8
+    },
+    "test": {
+      "adaptive": 6,
+      "defect": 1,
+      "extort": 6,
+      "forgiving": 4,
+      "late": 4,
+      "nice": 2,
+      "noisy": 6,
+      "punitive": 3,
+      "random": 6,
+      "temporal": 14,
+      "wild": 4
+    },
+    "test_complex": {
+      "adaptive_mix": 2,
+      "delayed_extort": 2,
+      "memory_two": 1,
+      "meta_mix": 2,
+      "phase_switch": 6,
+      "probe_exploit": 2
+    },
+    "test_only": {
+      "adaptive_probe": 6,
+      "early_harvest": 6,
+      "early_probe": 6,
+      "frequent_kamikaze": 6,
+      "hyper_extort": 6,
+      "probe_harvest": 6
+    },
+    "test_policy": {
+      "policy": 6
+    },
+    "train": {
+      "adaptive": 27,
+      "defect": 7,
+      "extort": 24,
+      "forgiving": 18,
+      "late": 20,
+      "nice": 8,
+      "noisy": 25,
+      "punitive": 10,
+      "random": 25,
+      "temporal": 68,
+      "wild": 19
+    },
+    "train_complex": {
+      "adaptive_mix": 13,
+      "delayed_extort": 13,
+      "memory_two": 7,
+      "meta_mix": 8,
+      "phase_switch": 25,
+      "probe_exploit": 8
+    },
+    "train_policy": {
+      "policy": 4
+    }
+  },
+  "entries": [
+    {
+      "key": "anchor:AllC",
+      "family": "anchor",
+      "type": "AllC",
+      "params": {},
+      "tier": "anchor",
+      "weight": 1.0,
+      "anchor": true
+    },
+    {
+      "key": "anchor:AllD",
+      "family": "anchor",
+      "type": "AllD",
+      "params": {},
+      "tier": "anchor",
+      "weight": 1.0,
+      "anchor": true
+    },
+    {
+      "key": "anchor:Grim",
+      "family": "anchor",
+      "type": "Grim",
+      "params": {},
+      "tier": "anchor",
+      "weight": 1.0,
+      "anchor": true
+    },
+    {
+      "key": "anchor:Random.50",
+      "family": "anchor",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.5
+      },
+      "tier": "anchor",
+      "weight": 1.0,
+      "anchor": true
+    },
+    {
+      "key": "anchor:TFT",
+      "family": "anchor",
+      "type": "TFT",
+      "params": {},
+      "tier": "anchor",
+      "weight": 1.0,
+      "anchor": true
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=12|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 12,
+        "recover": 2
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=30|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 30,
+        "recover": 2
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive:g=0.3|max_tests=3|min_c=5|min_d=2|rate=0.15|resp=0.4",
+      "family": "adaptive",
+      "type": "Responsive",
+      "params": {
+        "g": 0.3,
+        "max_tests": 3,
+        "min_c": 5,
+        "min_d": 2,
+        "rate": 0.15,
+        "resp": 0.4
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTNoisyForgive:g=0.45",
+      "family": "adaptive",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.45
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=6|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 6,
+        "recover": 2
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=8|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 8,
+        "recover": 2
+      },
+      "tier": "dev",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=10",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 10
+      },
+      "tier": "dev",
+      "weight": 0.75,
+      "anchor": false
+    },
+    {
+      "key": "defect:RemorsefulProber",
+      "family": "defect",
+      "type": "RemorsefulProber",
+      "params": {},
+      "tier": "dev",
+      "weight": 0.75,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.05",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.05
+      },
+      "tier": "dev",
+      "weight": 0.36,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.15",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.15
+      },
+      "tier": "dev",
+      "weight": 0.36,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.35",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.35
+      },
+      "tier": "dev",
+      "weight": 0.36,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.45",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.45
+      },
+      "tier": "dev",
+      "weight": 0.36,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.95",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.95
+      },
+      "tier": "dev",
+      "weight": 0.36,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:ForgiveTFT:missed_limit=1",
+      "family": "forgiving",
+      "type": "ForgiveTFT",
+      "params": {
+        "missed_limit": 1
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.09",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.09
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.18",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.18
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TwoStrike:strikes=4",
+      "family": "forgiving",
+      "type": "TwoStrike",
+      "params": {
+        "strikes": 4
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=21",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 21
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=39",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 39
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=48",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 48
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=97",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 97
+      },
+      "tier": "dev",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "nice:TwoTitsForTat",
+      "family": "nice",
+      "type": "TwoTitsForTat",
+      "params": {},
+      "tier": "dev",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "nice:WSLS2",
+      "family": "nice",
+      "type": "WSLS2",
+      "params": {},
+      "tier": "dev",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.16",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.16
+      },
+      "tier": "dev",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.31",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.31
+      },
+      "tier": "dev",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.01",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.01
+      },
+      "tier": "dev",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.16",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.16
+      },
+      "tier": "dev",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.22",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.22
+      },
+      "tier": "dev",
+      "weight": 0.4,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=1",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 1
+      },
+      "tier": "dev",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=2",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 2
+      },
+      "tier": "dev",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 1, 1, 0)|start=2",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "start": 2
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.15",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.15
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.3",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.3
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.66",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.66
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.9",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.9
+      },
+      "tier": "dev",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=20",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 20
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=7",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 7
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=9",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 9
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=16",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 16
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=20",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 20
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=2",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 2
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=73",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 73
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=40",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 40
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=22",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 22
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=7",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 7
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=8",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 8
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=12",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 12
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=3",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 3
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=5",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 5
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=7",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 7
+      },
+      "tier": "dev",
+      "weight": 0.14666666666666667,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.55, 0.2, 0.4, 0.45)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.55,
+          0.2,
+          0.4,
+          0.45
+        ]
+      },
+      "tier": "dev",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.6|p_after_d=0.4",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.6,
+        "p_after_d": 0.4
+      },
+      "tier": "dev",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.7|p_after_d=0.3",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.7,
+        "p_after_d": 0.3
+      },
+      "tier": "dev",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=1|p_after_c=0.85|p_after_d=0.05",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 1,
+        "p_after_c": 0.85,
+        "p_after_d": 0.05
+      },
+      "tier": "dev",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.35|window=10",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.35,
+        "window": 10
+      },
+      "tier": "dev_complex",
+      "weight": 0.39999999999999997,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.35|window=20",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.35,
+        "window": 20
+      },
+      "tier": "dev_complex",
+      "weight": 0.39999999999999997,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.35|window=20",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.35,
+        "window": 20
+      },
+      "tier": "dev_complex",
+      "weight": 0.39999999999999997,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=3.0|delay=15",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 3.0,
+        "delay": 15
+      },
+      "tier": "dev_complex",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=4.0|delay=25",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 4.0,
+        "delay": 25
+      },
+      "tier": "dev_complex",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=4.0|delay=55",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 4.0,
+        "delay": 55
+      },
+      "tier": "dev_complex",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=False|punish=16",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": false,
+        "punish": 16
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=True|punish=3",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": true,
+        "punish": 3
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('coop', 'grim', 'extort')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "coop",
+          "grim",
+          "extort"
+        ]
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('coop', 'tft', 'extort', 'random')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "coop",
+          "tft",
+          "extort",
+          "random"
+        ]
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=alld|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "alld",
+        "switch": 70
+      },
+      "tier": "dev_complex",
+      "weight": 0.24,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=alld|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "alld",
+        "switch": 55
+      },
+      "tier": "dev_complex",
+      "weight": 0.24,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=harvest|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "harvest",
+        "switch": 70
+      },
+      "tier": "dev_complex",
+      "weight": 0.24,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=alld|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "alld",
+        "switch": 70
+      },
+      "tier": "dev_complex",
+      "weight": 0.24,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=extort|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "extort",
+        "switch": 70
+      },
+      "tier": "dev_complex",
+      "weight": 0.24,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=extort|probe=8",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "extort",
+        "probe": 8
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=harvest|probe=6",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "harvest",
+        "probe": 6
+      },
+      "tier": "dev_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "delayed_grim:DelayedGrim:patience=1",
+      "family": "delayed_grim",
+      "type": "DelayedGrim",
+      "params": {
+        "patience": 1
+      },
+      "tier": "dev_family",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "delayed_grim:DelayedGrim:patience=2",
+      "family": "delayed_grim",
+      "type": "DelayedGrim",
+      "params": {
+        "patience": 2
+      },
+      "tier": "dev_family",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "delayed_grim:DelayedGrim:patience=4",
+      "family": "delayed_grim",
+      "type": "DelayedGrim",
+      "params": {
+        "patience": 4
+      },
+      "tier": "dev_family",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "delayed_grim:DelayedGrim:patience=5",
+      "family": "delayed_grim",
+      "type": "DelayedGrim",
+      "params": {
+        "patience": 5
+      },
+      "tier": "dev_family",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "delayed_grim:DelayedGrim:patience=6",
+      "family": "delayed_grim",
+      "type": "DelayedGrim",
+      "params": {
+        "patience": 6
+      },
+      "tier": "dev_family",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "delayed_grim:DelayedGrim:patience=7",
+      "family": "delayed_grim",
+      "type": "DelayedGrim",
+      "params": {
+        "patience": 7
+      },
+      "tier": "dev_family",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.15|window=11",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.15,
+        "window": 11
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.25|window=3",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.25,
+        "window": 3
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.45|window=5",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.45,
+        "window": 5
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.4|window=18",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.4,
+        "window": 18
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.55|window=7",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.55,
+        "window": 7
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.5|window=15",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.5,
+        "window": 15
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.6|window=12",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.6,
+        "window": 12
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "mirror_adaptive:MirrorAdaptive:forgive=0.7|window=10",
+      "family": "mirror_adaptive",
+      "type": "MirrorAdaptive",
+      "params": {
+        "forgive": 0.7,
+        "window": 10
+      },
+      "tier": "dev_family",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=8|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 8,
+        "recover": 2
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive2:g_mutual=0.15|g_unprov=0.9|max_tests=2|min_c=4|min_d=4|resp=0.25|strike=1",
+      "family": "adaptive",
+      "type": "Responsive2",
+      "params": {
+        "g_mutual": 0.15,
+        "g_unprov": 0.9,
+        "max_tests": 2,
+        "min_c": 4,
+        "min_d": 4,
+        "resp": 0.25,
+        "strike": 1
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=14|g_mutual=0.2|g_resp=0.85|g_unprov=0.3|max_tests=4|min_c=3|min_d=5|rate=0.25|resp=0.5",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 14,
+        "g_mutual": 0.2,
+        "g_resp": 0.85,
+        "g_unprov": 0.3,
+        "max_tests": 4,
+        "min_c": 3,
+        "min_d": 5,
+        "rate": 0.25,
+        "resp": 0.5
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=7|g_mutual=0.3|g_resp=0.9|g_unprov=0.45|max_tests=3|min_c=4|min_d=2|rate=0.18|resp=0.42",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 7,
+        "g_mutual": 0.3,
+        "g_resp": 0.9,
+        "g_unprov": 0.45,
+        "max_tests": 3,
+        "min_c": 4,
+        "min_d": 2,
+        "rate": 0.18,
+        "resp": 0.42
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTNoisyForgive:g=0.25",
+      "family": "adaptive",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.25
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=12|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 12,
+        "recover": 2
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=25",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 25
+      },
+      "tier": "test",
+      "weight": 1.5,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.95",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.95
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.25",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.25
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.45",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.45
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.95",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.95
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "extort:GenerousZD:chi=1.2",
+      "family": "extort",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 1.2
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "extort:GenerousZD:chi=2.0",
+      "family": "extort",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 2.0
+      },
+      "tier": "test",
+      "weight": 0.3,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:ForgiveTFT:missed_limit=2",
+      "family": "forgiving",
+      "type": "ForgiveTFT",
+      "params": {
+        "missed_limit": 2
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.04",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.04
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.22",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.22
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.31",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.31
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=15",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 15
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=3",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 3
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=54",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 54
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=65",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 65
+      },
+      "tier": "test",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "nice:TFT2LastD",
+      "family": "nice",
+      "type": "TFT2LastD",
+      "params": {},
+      "tier": "test",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "nice:TFTLastD",
+      "family": "nice",
+      "type": "TFTLastD",
+      "params": {},
+      "tier": "test",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.03",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.03
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.22",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.22
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.34",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.34
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.1",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.1
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.37",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.37
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.4",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.4
+      },
+      "tier": "test",
+      "weight": 0.3333333333333333,
+      "anchor": false
+    },
+    {
+      "key": "punitive:FirmButFair",
+      "family": "punitive",
+      "type": "FirmButFair",
+      "params": {},
+      "tier": "test",
+      "weight": 0.6666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "punitive:Grudger2",
+      "family": "punitive",
+      "type": "Grudger2",
+      "params": {},
+      "tier": "test",
+      "weight": 0.6666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=4",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 4
+      },
+      "tier": "test",
+      "weight": 0.6666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(1, 0, 0, 0)|start=1",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "start": 1
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.26",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.26
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.58",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.58
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.82",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.82
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.96",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.96
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.98",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.98
+      },
+      "tier": "test",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=16",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 16
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=18",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 18
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=2",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 2
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=4",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 4
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=18",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 18
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=2",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 2
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=9",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 9
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=18",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 18
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=4",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 4
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=48",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 48
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=8",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 8
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=30",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 30
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=6",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 6
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=4",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 4
+      },
+      "tier": "test",
+      "weight": 0.15714285714285717,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.5, 0.3, 0.3, 0.5)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.5,
+          0.3,
+          0.3,
+          0.5
+        ]
+      },
+      "tier": "test",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.85, 0.15, 0.45, 0.1)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.85,
+          0.15,
+          0.45,
+          0.1
+        ]
+      },
+      "tier": "test",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=1|p_after_c=0.55|p_after_d=0.35",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 1,
+        "p_after_c": 0.55,
+        "p_after_d": 0.35
+      },
+      "tier": "test",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=1|p_after_c=0.7|p_after_d=0.2",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 1,
+        "p_after_c": 0.7,
+        "p_after_d": 0.2
+      },
+      "tier": "test",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.35|window=5",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.35,
+        "window": 5
+      },
+      "tier": "test_complex",
+      "weight": 0.6,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.5|window=10",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.5,
+        "window": 10
+      },
+      "tier": "test_complex",
+      "weight": 0.6,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=3.0|delay=25",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 3.0,
+        "delay": 25
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=3.0|delay=55",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 3.0,
+        "delay": 55
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=True|punish=12",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": true,
+        "punish": 12
+      },
+      "tier": "test_complex",
+      "weight": 1.0,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('grim', 'extort', 'alld')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "grim",
+          "extort",
+          "alld"
+        ]
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('tft', 'extort', 'harvest')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "tft",
+          "extort",
+          "harvest"
+        ]
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=alld|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "alld",
+        "switch": 55
+      },
+      "tier": "test_complex",
+      "weight": 0.19999999999999998,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=extort|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "extort",
+        "switch": 55
+      },
+      "tier": "test_complex",
+      "weight": 0.19999999999999998,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=harvest|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "harvest",
+        "switch": 40
+      },
+      "tier": "test_complex",
+      "weight": 0.19999999999999998,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=extort|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "extort",
+        "switch": 40
+      },
+      "tier": "test_complex",
+      "weight": 0.19999999999999998,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=alld|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "alld",
+        "switch": 55
+      },
+      "tier": "test_complex",
+      "weight": 0.19999999999999998,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=extort|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "extort",
+        "switch": 55
+      },
+      "tier": "test_complex",
+      "weight": 0.19999999999999998,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=extort|probe=4",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "extort",
+        "probe": 4
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=harvest|probe=4",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "harvest",
+        "probe": 4
+      },
+      "tier": "test_complex",
+      "weight": 0.5,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_probe:AdaptiveProbe:probe_round=11|recover=2",
+      "family": "adaptive_probe",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 11,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_probe:AdaptiveProbe:probe_round=17|recover=2",
+      "family": "adaptive_probe",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 17,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_probe:AdaptiveProbe:probe_round=23|recover=2",
+      "family": "adaptive_probe",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 23,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_probe:AdaptiveProbe:probe_round=29|recover=2",
+      "family": "adaptive_probe",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 29,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_probe:AdaptiveProbe:probe_round=35|recover=2",
+      "family": "adaptive_probe",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 35,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_probe:AdaptiveProbe:probe_round=7|recover=2",
+      "family": "adaptive_probe",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 7,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_harvest:HarvestFactor:p_defect=1.0|repairable=False|start=10",
+      "family": "early_harvest",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 1.0,
+        "repairable": false,
+        "start": 10
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_harvest:HarvestFactor:p_defect=1.0|repairable=False|start=12",
+      "family": "early_harvest",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 1.0,
+        "repairable": false,
+        "start": 12
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_harvest:HarvestFactor:p_defect=1.0|repairable=False|start=14",
+      "family": "early_harvest",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 1.0,
+        "repairable": false,
+        "start": 14
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_harvest:HarvestFactor:p_defect=1.0|repairable=False|start=4",
+      "family": "early_harvest",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 1.0,
+        "repairable": false,
+        "start": 4
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_harvest:HarvestFactor:p_defect=1.0|repairable=False|start=6",
+      "family": "early_harvest",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 1.0,
+        "repairable": false,
+        "start": 6
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_harvest:HarvestFactor:p_defect=1.0|repairable=False|start=8",
+      "family": "early_harvest",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 1.0,
+        "repairable": false,
+        "start": 8
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_probe:TFTProbe:probe_round=11|recover=2",
+      "family": "early_probe",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 11,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_probe:TFTProbe:probe_round=13|recover=2",
+      "family": "early_probe",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 13,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_probe:TFTProbe:probe_round=3|recover=2",
+      "family": "early_probe",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 3,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_probe:TFTProbe:probe_round=5|recover=2",
+      "family": "early_probe",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 5,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_probe:TFTProbe:probe_round=7|recover=2",
+      "family": "early_probe",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 7,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "early_probe:TFTProbe:probe_round=9|recover=2",
+      "family": "early_probe",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 9,
+        "recover": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "frequent_kamikaze:Kamikaze:p_steal=1.0|period=4",
+      "family": "frequent_kamikaze",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 1.0,
+        "period": 4
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "frequent_kamikaze:Kamikaze:p_steal=1.0|period=5",
+      "family": "frequent_kamikaze",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 1.0,
+        "period": 5
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "frequent_kamikaze:Kamikaze:p_steal=1.0|period=6",
+      "family": "frequent_kamikaze",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 1.0,
+        "period": 6
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "frequent_kamikaze:Kamikaze:p_steal=1.0|period=7",
+      "family": "frequent_kamikaze",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 1.0,
+        "period": 7
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "frequent_kamikaze:Kamikaze:p_steal=1.0|period=8",
+      "family": "frequent_kamikaze",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 1.0,
+        "period": 8
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "frequent_kamikaze:Kamikaze:p_steal=1.0|period=9",
+      "family": "frequent_kamikaze",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 1.0,
+        "period": 9
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "hyper_extort:ExtortZD:chi=4.0",
+      "family": "hyper_extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 4.0
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "hyper_extort:ExtortZD:chi=4.5",
+      "family": "hyper_extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 4.5
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "hyper_extort:ExtortZD:chi=5.0",
+      "family": "hyper_extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 5.0
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "hyper_extort:ExtortZD:chi=5.5",
+      "family": "hyper_extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 5.5
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "hyper_extort:ExtortZD:chi=6.0",
+      "family": "hyper_extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 6.0
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "hyper_extort:ExtortZD:chi=6.5",
+      "family": "hyper_extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 6.5
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "probe_harvest:ProbePhase:harvest_start=35|p_probe=0.8|phase=harvest|probe=2",
+      "family": "probe_harvest",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 35,
+        "p_probe": 0.8,
+        "phase": "harvest",
+        "probe": 2
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "probe_harvest:ProbePhase:harvest_start=40|p_probe=0.8|phase=harvest|probe=3",
+      "family": "probe_harvest",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 40,
+        "p_probe": 0.8,
+        "phase": "harvest",
+        "probe": 3
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "probe_harvest:ProbePhase:harvest_start=45|p_probe=0.8|phase=harvest|probe=4",
+      "family": "probe_harvest",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 45,
+        "p_probe": 0.8,
+        "phase": "harvest",
+        "probe": 4
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "probe_harvest:ProbePhase:harvest_start=50|p_probe=0.8|phase=harvest|probe=5",
+      "family": "probe_harvest",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 50,
+        "p_probe": 0.8,
+        "phase": "harvest",
+        "probe": 5
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "probe_harvest:ProbePhase:harvest_start=55|p_probe=0.8|phase=harvest|probe=6",
+      "family": "probe_harvest",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 55,
+        "p_probe": 0.8,
+        "phase": "harvest",
+        "probe": 6
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "probe_harvest:ProbePhase:harvest_start=60|p_probe=0.8|phase=harvest|probe=7",
+      "family": "probe_harvest",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 60,
+        "p_probe": 0.8,
+        "phase": "harvest",
+        "probe": 7
+      },
+      "tier": "test_only",
+      "weight": 0.16666666666666666,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyFinal:mode=sample",
+      "family": "policy",
+      "type": "PolicyFinal",
+      "params": {
+        "mode": "sample"
+      },
+      "tier": "test_policy",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyGRU:mode=sample|weights=weights/retrain_20261025/gru_policy_weights.json",
+      "family": "policy",
+      "type": "PolicyGRU",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/retrain_20261025/gru_policy_weights.json"
+      },
+      "tier": "test_policy",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyNeural:mode=sample|weights=weights/retrain_20261025/neural_policy_weights.json",
+      "family": "policy",
+      "type": "PolicyNeural",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/retrain_20261025/neural_policy_weights.json"
+      },
+      "tier": "test_policy",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyRL:mode=sample|weights=weights/rl_policy_checkpoint_scratch_base.json",
+      "family": "policy",
+      "type": "PolicyRL",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/rl_policy_checkpoint_scratch_base.json"
+      },
+      "tier": "test_policy",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicySelfPlay:mode=sample|weights=weights/selfplay_gru_policy.json",
+      "family": "policy",
+      "type": "PolicySelfPlay",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/selfplay_gru_policy.json"
+      },
+      "tier": "test_policy",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyTriple:mode=sample",
+      "family": "policy",
+      "type": "PolicyTriple",
+      "params": {
+        "mode": "sample"
+      },
+      "tier": "test_policy",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=16|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 16,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=20|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 20,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=25|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 25,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=40|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 40,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:AdaptiveProbe:probe_round=4|recover=2",
+      "family": "adaptive",
+      "type": "AdaptiveProbe",
+      "params": {
+        "probe_round": 4,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:OmegaTFTLite",
+      "family": "adaptive",
+      "type": "OmegaTFTLite",
+      "params": {},
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:ProbeBot",
+      "family": "adaptive",
+      "type": "ProbeBot",
+      "params": {},
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive2:g_mutual=0.1|g_unprov=1.0|max_tests=3|min_c=4|min_d=2|resp=0.35|strike=2",
+      "family": "adaptive",
+      "type": "Responsive2",
+      "params": {
+        "g_mutual": 0.1,
+        "g_unprov": 1.0,
+        "max_tests": 3,
+        "min_c": 4,
+        "min_d": 2,
+        "resp": 0.35,
+        "strike": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive2:g_mutual=0.2|g_unprov=0.8|max_tests=2|min_c=5|min_d=2|resp=0.3|strike=3",
+      "family": "adaptive",
+      "type": "Responsive2",
+      "params": {
+        "g_mutual": 0.2,
+        "g_unprov": 0.8,
+        "max_tests": 2,
+        "min_c": 5,
+        "min_d": 2,
+        "resp": 0.3,
+        "strike": 3
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive2:g_mutual=0.3|g_unprov=0.6|max_tests=4|min_c=3|min_d=3|resp=0.45|strike=2",
+      "family": "adaptive",
+      "type": "Responsive2",
+      "params": {
+        "g_mutual": 0.3,
+        "g_unprov": 0.6,
+        "max_tests": 4,
+        "min_c": 3,
+        "min_d": 3,
+        "resp": 0.45,
+        "strike": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=10|g_mutual=0.35|g_resp=0.92|g_unprov=0.6|max_tests=2|min_c=5|min_d=3|rate=0.2|resp=0.4",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 10,
+        "g_mutual": 0.35,
+        "g_resp": 0.92,
+        "g_unprov": 0.6,
+        "max_tests": 2,
+        "min_c": 5,
+        "min_d": 3,
+        "rate": 0.2,
+        "resp": 0.4
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=11|g_mutual=0.4|g_resp=0.86|g_unprov=0.5|max_tests=2|min_c=6|min_d=4|rate=0.24|resp=0.36",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 11,
+        "g_mutual": 0.4,
+        "g_resp": 0.86,
+        "g_unprov": 0.5,
+        "max_tests": 2,
+        "min_c": 6,
+        "min_d": 4,
+        "rate": 0.24,
+        "resp": 0.36
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=12|g_mutual=0.25|g_resp=0.88|g_unprov=0.4|max_tests=3|min_c=4|min_d=4|rate=0.22|resp=0.45",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 12,
+        "g_mutual": 0.25,
+        "g_resp": 0.88,
+        "g_unprov": 0.4,
+        "max_tests": 3,
+        "min_c": 4,
+        "min_d": 4,
+        "rate": 0.22,
+        "resp": 0.45
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=16|g_mutual=0.15|g_resp=0.8|g_unprov=0.35|max_tests=4|min_c=3|min_d=3|rate=0.3|resp=0.55",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 16,
+        "g_mutual": 0.15,
+        "g_resp": 0.8,
+        "g_unprov": 0.35,
+        "max_tests": 4,
+        "min_c": 3,
+        "min_d": 3,
+        "rate": 0.3,
+        "resp": 0.55
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=6|g_mutual=0.5|g_resp=0.97|g_unprov=0.7|max_tests=1|min_c=6|min_d=2|rate=0.15|resp=0.32",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 6,
+        "g_mutual": 0.5,
+        "g_resp": 0.97,
+        "g_unprov": 0.7,
+        "max_tests": 1,
+        "min_c": 6,
+        "min_d": 2,
+        "rate": 0.15,
+        "resp": 0.32
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive3:cooldown=8|g_mutual=0.4|g_resp=0.95|g_unprov=0.55|max_tests=2|min_c=5|min_d=3|rate=0.18|resp=0.38",
+      "family": "adaptive",
+      "type": "Responsive3",
+      "params": {
+        "cooldown": 8,
+        "g_mutual": 0.4,
+        "g_resp": 0.95,
+        "g_unprov": 0.55,
+        "max_tests": 2,
+        "min_c": 5,
+        "min_d": 3,
+        "rate": 0.18,
+        "resp": 0.38
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive:g=0.15|max_tests=1|min_c=3|min_d=4|rate=0.22|resp=0.25",
+      "family": "adaptive",
+      "type": "Responsive",
+      "params": {
+        "g": 0.15,
+        "max_tests": 1,
+        "min_c": 3,
+        "min_d": 4,
+        "rate": 0.22,
+        "resp": 0.25
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive:g=0.2|max_tests=2|min_c=4|min_d=3|rate=0.18|resp=0.3",
+      "family": "adaptive",
+      "type": "Responsive",
+      "params": {
+        "g": 0.2,
+        "max_tests": 2,
+        "min_c": 4,
+        "min_d": 3,
+        "rate": 0.18,
+        "resp": 0.3
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:Responsive:g=0.4|max_tests=4|min_c=6|min_d=3|rate=0.12|resp=0.45",
+      "family": "adaptive",
+      "type": "Responsive",
+      "params": {
+        "g": 0.4,
+        "max_tests": 4,
+        "min_c": 6,
+        "min_d": 3,
+        "rate": 0.12,
+        "resp": 0.45
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTNoisyForgive:g=0.08",
+      "family": "adaptive",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.08
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTNoisyForgive:g=0.15",
+      "family": "adaptive",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.15
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTNoisyForgive:g=0.35",
+      "family": "adaptive",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.35
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=10|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 10,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=15|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 15,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=20|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 20,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=2|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 2,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "adaptive:TFTProbe:probe_round=4|recover=2",
+      "family": "adaptive",
+      "type": "TFTProbe",
+      "params": {
+        "probe_round": 4,
+        "recover": 2
+      },
+      "tier": "train",
+      "weight": 0.07407407407407407,
+      "anchor": false
+    },
+    {
+      "key": "defect:Bully",
+      "family": "defect",
+      "type": "Bully",
+      "params": {},
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=1",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 1
+      },
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=15",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 15
+      },
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=2",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 2
+      },
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "defect:EarlyDefector:k=5",
+      "family": "defect",
+      "type": "EarlyDefector",
+      "params": {
+        "k": 5
+      },
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "defect:Prober",
+      "family": "defect",
+      "type": "Prober",
+      "params": {},
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "defect:Tester",
+      "family": "defect",
+      "type": "Tester",
+      "params": {},
+      "tier": "train",
+      "weight": 0.21428571428571427,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.25",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.25
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.45",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.45
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.55",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.55
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.65",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.65
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.75",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.75
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=1.85",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 1.85
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.05",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.05
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.15",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.15
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.35",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.35
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.55",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.55
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.65",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.65
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.75",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.75
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=2.85",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 2.85
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.05",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.05
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.15",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.15
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.25",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.25
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.35",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.35
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.55",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.55
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.65",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.65
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.75",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.75
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:ExtortZD:chi=3.85",
+      "family": "extort",
+      "type": "ExtortZD",
+      "params": {
+        "chi": 3.85
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:GenerousZD:chi=1.6",
+      "family": "extort",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 1.6
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:GenerousZD:chi=2.4",
+      "family": "extort",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 2.4
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "extort:GenerousZD:chi=2.8",
+      "family": "extort",
+      "type": "GenerousZD",
+      "params": {
+        "chi": 2.8
+      },
+      "tier": "train",
+      "weight": 0.075,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:ForgiveTFT:missed_limit=3",
+      "family": "forgiving",
+      "type": "ForgiveTFT",
+      "params": {
+        "missed_limit": 3
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.01",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.01
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.02",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.02
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.05",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.05
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.07",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.07
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.12",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.12
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.15",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.15
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.26",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.26
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.36",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.36
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.42",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.42
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:GenerousTFT:g=0.49",
+      "family": "forgiving",
+      "type": "GenerousTFT",
+      "params": {
+        "g": 0.49
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.08",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.08
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.16",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.16
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.24",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.24
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.33",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.33
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TFTNoisyForgive:g=0.42",
+      "family": "forgiving",
+      "type": "TFTNoisyForgive",
+      "params": {
+        "g": 0.42
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TwoStrike:strikes=2",
+      "family": "forgiving",
+      "type": "TwoStrike",
+      "params": {
+        "strikes": 2
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "forgiving:TwoStrike:strikes=3",
+      "family": "forgiving",
+      "type": "TwoStrike",
+      "params": {
+        "strikes": 3
+      },
+      "tier": "train",
+      "weight": 0.1111111111111111,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=12",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 12
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=18",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 18
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=24",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 24
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=27",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 27
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=30",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 30
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=33",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 33
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=36",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 36
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=42",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 42
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=45",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 45
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=51",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 51
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=57",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 57
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=6",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 6
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=60",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 60
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=70",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 70
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=75",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 75
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=80",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 80
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=85",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 85
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=9",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 9
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=90",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 90
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "late:LateDefector:k=94",
+      "family": "late",
+      "type": "LateDefector",
+      "params": {
+        "k": 94
+      },
+      "tier": "train",
+      "weight": 0.1,
+      "anchor": false
+    },
+    {
+      "key": "nice:ContriteTFT",
+      "family": "nice",
+      "type": "ContriteTFT",
+      "params": {},
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:Majority:k=2",
+      "family": "nice",
+      "type": "Majority",
+      "params": {
+        "k": 2
+      },
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:Majority:k=3",
+      "family": "nice",
+      "type": "Majority",
+      "params": {
+        "k": 3
+      },
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:Majority:k=5",
+      "family": "nice",
+      "type": "Majority",
+      "params": {
+        "k": 5
+      },
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:Pavlov",
+      "family": "nice",
+      "type": "Pavlov",
+      "params": {},
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:SuspiciousTFT",
+      "family": "nice",
+      "type": "SuspiciousTFT",
+      "params": {},
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:TFT2",
+      "family": "nice",
+      "type": "TFT2",
+      "params": {},
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "nice:TFTForgiveOnce",
+      "family": "nice",
+      "type": "TFTForgiveOnce",
+      "params": {},
+      "tier": "train",
+      "weight": 0.25,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.01",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.01
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.05",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.05
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.07",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.07
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.1",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.1
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.13",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.13
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.19",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.19
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.25",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.25
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.28",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.28
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.37",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.37
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.4",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.4
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.43",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.43
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.46",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.46
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:Joss:p=0.49",
+      "family": "noisy",
+      "type": "Joss",
+      "params": {
+        "p": 0.49
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.03",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.03
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.05",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.05
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.07",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.07
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.13",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.13
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.19",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.19
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.25",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.25
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.28",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.28
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.31",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.31
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.34",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.34
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.43",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.43
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.46",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.46
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "noisy:NoisyTFT:p=0.49",
+      "family": "noisy",
+      "type": "NoisyTFT",
+      "params": {
+        "p": 0.49
+      },
+      "tier": "train",
+      "weight": 0.08,
+      "anchor": false
+    },
+    {
+      "key": "punitive:Grim",
+      "family": "punitive",
+      "type": "Grim",
+      "params": {},
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrimForgive:g=0.03",
+      "family": "punitive",
+      "type": "GrimForgive",
+      "params": {
+        "g": 0.03
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrimForgive:g=0.08",
+      "family": "punitive",
+      "type": "GrimForgive",
+      "params": {
+        "g": 0.08
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrimForgive:g=0.15",
+      "family": "punitive",
+      "type": "GrimForgive",
+      "params": {
+        "g": 0.15
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrimForgive:g=0.25",
+      "family": "punitive",
+      "type": "GrimForgive",
+      "params": {
+        "g": 0.25
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=3",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 3
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=5",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 5
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:GrudgerK:k=6",
+      "family": "punitive",
+      "type": "GrudgerK",
+      "params": {
+        "k": 6
+      },
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:Mistrust",
+      "family": "punitive",
+      "type": "Mistrust",
+      "params": {},
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "punitive:OmegaTFTLite",
+      "family": "punitive",
+      "type": "OmegaTFTLite",
+      "params": {},
+      "tier": "train",
+      "weight": 0.2,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 0, 0, 1)|start=3",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "start": 3
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 0, 1)|start=0",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          0,
+          1
+        ],
+        "start": 0
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 0, 1, 1, 0)|start=4",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "start": 4
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:Periodic:pattern=(0, 1)|start=1",
+      "family": "random",
+      "type": "Periodic",
+      "params": {
+        "pattern": [
+          0,
+          1
+        ],
+        "start": 1
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.01",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.01
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.02",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.02
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.03",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.03
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.05",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.05
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.07",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.07
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.09",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.09
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.12",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.12
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.18",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.18
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.22",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.22
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.34",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.34
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.38",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.38
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.42",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.42
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.46",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.46
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.5",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.5
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.54",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.54
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.62",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.62
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.7",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.7
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.74",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.74
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.78",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.78
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.86",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.86
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "random:RandomMoves:p=0.93",
+      "family": "random",
+      "type": "RandomMoves",
+      "params": {
+        "p": 0.93
+      },
+      "tier": "train",
+      "weight": 0.06,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=10",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 10
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=12",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 12
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=14",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 14
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=3",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 3
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=5",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 5
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=6",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 6
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.08|retaliate=0.85|window=8",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.08,
+        "retaliate": 0.85,
+        "window": 8
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=10",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 10
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=12",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 12
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=14",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 14
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=3",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 3
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=4",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 4
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=5",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 5
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=6",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 6
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=7",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 7
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.2|retaliate=0.85|window=8",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.2,
+        "retaliate": 0.85,
+        "window": 8
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=10",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 10
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=12",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 12
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=14",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 14
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=16",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 16
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=20",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 20
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=3",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 3
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=5",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 5
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=6",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 6
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=7",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 7
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=8",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 8
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:DynamicWindow:forgiveness=0.25|p_defect=0.38|retaliate=0.85|window=9",
+      "family": "temporal",
+      "type": "DynamicWindow",
+      "params": {
+        "forgiveness": 0.25,
+        "p_defect": 0.38,
+        "retaliate": 0.85,
+        "window": 9
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=11",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 11
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=17",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 17
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=23",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 23
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=29",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 29
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=53",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 53
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=63",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 63
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=83",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 83
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=False|start=93",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": false,
+        "start": 93
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=14",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 14
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=20",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 20
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=26",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 26
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=32",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 32
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=36",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 36
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=44",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 44
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=58",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 58
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=68",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 68
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=78",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 78
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:HarvestFactor:p_defect=0.95|repairable=True|start=88",
+      "family": "temporal",
+      "type": "HarvestFactor",
+      "params": {
+        "p_defect": 0.95,
+        "repairable": true,
+        "start": 88
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=10",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 10
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=12",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 12
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=14",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 14
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=16",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 16
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=18",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 18
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=20",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 20
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=24",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 24
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=27",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 27
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=4",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 4
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:Kamikaze:p_steal=0.75|period=5",
+      "family": "temporal",
+      "type": "Kamikaze",
+      "params": {
+        "p_steal": 0.75,
+        "period": 5
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=100|p_probe=0.75|phase=harvest|probe=12",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 100,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 12
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=50|p_probe=0.75|phase=harvest|probe=2",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 50,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 2
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=55|p_probe=0.75|phase=harvest|probe=3",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 55,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 3
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=60|p_probe=0.75|phase=harvest|probe=4",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 60,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 4
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=65|p_probe=0.75|phase=harvest|probe=5",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 65,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 5
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=70|p_probe=0.75|phase=harvest|probe=6",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 70,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 6
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=80|p_probe=0.75|phase=harvest|probe=8",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 80,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 8
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:ProbePhase:harvest_start=90|p_probe=0.75|phase=harvest|probe=10",
+      "family": "temporal",
+      "type": "ProbePhase",
+      "params": {
+        "harvest_start": 90,
+        "p_probe": 0.75,
+        "phase": "harvest",
+        "probe": 10
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=10",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 10
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=2",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 2
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=6",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 6
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=8",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 8
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "temporal:WindowTFT:forgive=0.3|retaliate=0.82|window=9",
+      "family": "temporal",
+      "type": "WindowTFT",
+      "params": {
+        "forgive": 0.3,
+        "retaliate": 0.82,
+        "window": 9
+      },
+      "tier": "train",
+      "weight": 0.03235294117647059,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.4, 0.25, 0.15, 0.7)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.4,
+          0.25,
+          0.15,
+          0.7
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.45, 0.1, 0.2, 0.6)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.45,
+          0.1,
+          0.2,
+          0.6
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.6, 0.1, 0.5, 0.4)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.6,
+          0.1,
+          0.5,
+          0.4
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.65, 0.05, 0.6, 0.35)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.65,
+          0.05,
+          0.6,
+          0.35
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.7, 0.4, 0.25, 0.25)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.7,
+          0.4,
+          0.25,
+          0.25
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.75, 0.3, 0.3, 0.2)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.75,
+          0.3,
+          0.3,
+          0.2
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.8, 0.22, 0.35, 0.15)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.8,
+          0.22,
+          0.35,
+          0.15
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.9, 0.08, 0.55, 0.05)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.9,
+          0.08,
+          0.55,
+          0.05
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:MemoryOne:p=(0.95, 0.02, 0.7, 0.02)",
+      "family": "wild",
+      "type": "MemoryOne",
+      "params": {
+        "p": [
+          0.95,
+          0.02,
+          0.7,
+          0.02
+        ]
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=2",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 2
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=3",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 3
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=4",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 4
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=5",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 5
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=6",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 6
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:RandomFSM:k=8",
+      "family": "wild",
+      "type": "RandomFSM",
+      "params": {
+        "k": 8
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.8|p_after_d=0.2",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.8,
+        "p_after_d": 0.2
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.98|p_after_d=0.02",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.98,
+        "p_after_d": 0.02
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=0|p_after_c=0.9|p_after_d=0.1",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 0,
+        "p_after_c": 0.9,
+        "p_after_d": 0.1
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "wild:Reactive:first=1|p_after_c=0.4|p_after_d=0.5",
+      "family": "wild",
+      "type": "Reactive",
+      "params": {
+        "first": 1,
+        "p_after_c": 0.4,
+        "p_after_d": 0.5
+      },
+      "tier": "train",
+      "weight": 0.07894736842105263,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.2|window=10",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.2,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.2|window=20",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.2,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.2|window=5",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.2,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.5|window=20",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.5,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=extort|threshold=0.5|window=5",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "extort",
+        "threshold": 0.5,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.2|window=10",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.2,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.2|window=20",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.2,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.2|window=5",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.2,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.35|window=10",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.35,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.35|window=5",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.35,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.5|window=10",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.5,
+        "window": 10
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.5|window=20",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.5,
+        "window": 20
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "adaptive_mix:AdaptiveMix:chi=3.0|exploit=harvest|threshold=0.5|window=5",
+      "family": "adaptive_mix",
+      "type": "AdaptiveMix",
+      "params": {
+        "chi": 3.0,
+        "exploit": "harvest",
+        "threshold": 0.5,
+        "window": 5
+      },
+      "tier": "train_complex",
+      "weight": 0.0923076923076923,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=2.0|delay=15",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 2.0,
+        "delay": 15
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=2.0|delay=25",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 2.0,
+        "delay": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=2.0|delay=35",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 2.0,
+        "delay": 35
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=2.0|delay=45",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 2.0,
+        "delay": 45
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=2.0|delay=55",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 2.0,
+        "delay": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=2.0|delay=65",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 2.0,
+        "delay": 65
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=3.0|delay=35",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 3.0,
+        "delay": 35
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=3.0|delay=45",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 3.0,
+        "delay": 45
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=3.0|delay=65",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 3.0,
+        "delay": 65
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=4.0|delay=15",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 4.0,
+        "delay": 15
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=4.0|delay=35",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 4.0,
+        "delay": 35
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=4.0|delay=45",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 4.0,
+        "delay": 45
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "delayed_extort:DelayedExtort:chi=4.0|delay=65",
+      "family": "delayed_extort",
+      "type": "DelayedExtort",
+      "params": {
+        "chi": 4.0,
+        "delay": 65
+      },
+      "tier": "train_complex",
+      "weight": 0.07692307692307693,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=False|punish=12",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": false,
+        "punish": 12
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=False|punish=3",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": false,
+        "punish": 3
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=False|punish=6",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": false,
+        "punish": 6
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=False|punish=9",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": false,
+        "punish": 9
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=True|punish=16",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": true,
+        "punish": 16
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=True|punish=6",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": true,
+        "punish": 6
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "memory_two:MemoryTwo:forgive=True|punish=9",
+      "family": "memory_two",
+      "type": "MemoryTwo",
+      "params": {
+        "forgive": true,
+        "punish": 9
+      },
+      "tier": "train_complex",
+      "weight": 0.14285714285714285,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('coop', 'harvest', 'extort', 'random')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "coop",
+          "harvest",
+          "extort",
+          "random"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('extort', 'harvest', 'random')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "extort",
+          "harvest",
+          "random"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('grim', 'harvest', 'random')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "grim",
+          "harvest",
+          "random"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('tft', 'extort', 'alld')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "tft",
+          "extort",
+          "alld"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('tft', 'grim', 'extort', 'alld')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "tft",
+          "grim",
+          "extort",
+          "alld"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('tft', 'grim', 'extort', 'harvest', 'random')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "tft",
+          "grim",
+          "extort",
+          "harvest",
+          "random"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('tft', 'grim', 'random')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "tft",
+          "grim",
+          "random"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "meta_mix:MetaMix:modes=('tft', 'harvest', 'alld')",
+      "family": "meta_mix",
+      "type": "MetaMix",
+      "params": {
+        "modes": [
+          "tft",
+          "harvest",
+          "alld"
+        ]
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=alld|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "alld",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=alld|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "alld",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=extort|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "extort",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=extort|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "extort",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=extort|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "extort",
+        "switch": 70
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=harvest|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "harvest",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=harvest|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "harvest",
+        "switch": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=coop|second=harvest|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "coop",
+        "second": "harvest",
+        "switch": 70
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=alld|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "alld",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=alld|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "alld",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=alld|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "alld",
+        "switch": 70
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=extort|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "extort",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=extort|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "extort",
+        "switch": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=extort|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "extort",
+        "switch": 70
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=harvest|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "harvest",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=harvest|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "harvest",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=probe|second=harvest|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "probe",
+        "second": "harvest",
+        "switch": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=alld|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "alld",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=alld|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "alld",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=extort|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "extort",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=extort|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "extort",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=harvest|switch=25",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "harvest",
+        "switch": 25
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=harvest|switch=40",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "harvest",
+        "switch": 40
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=harvest|switch=55",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "harvest",
+        "switch": 55
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "phase_switch:PhaseSwitcher:chi=3.0|first=tft|second=harvest|switch=70",
+      "family": "phase_switch",
+      "type": "PhaseSwitcher",
+      "params": {
+        "chi": 3.0,
+        "first": "tft",
+        "second": "harvest",
+        "switch": 70
+      },
+      "tier": "train_complex",
+      "weight": 0.048,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=alld|probe=2",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "alld",
+        "probe": 2
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=alld|probe=4",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "alld",
+        "probe": 4
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=alld|probe=6",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "alld",
+        "probe": 6
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=alld|probe=8",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "alld",
+        "probe": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=extort|probe=2",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "extort",
+        "probe": 2
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=extort|probe=6",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "extort",
+        "probe": 6
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=harvest|probe=2",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "harvest",
+        "probe": 2
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "probe_exploit:ProbeExploit:chi=3.0|mode=harvest|probe=8",
+      "family": "probe_exploit",
+      "type": "ProbeExploit",
+      "params": {
+        "chi": 3.0,
+        "mode": "harvest",
+        "probe": 8
+      },
+      "tier": "train_complex",
+      "weight": 0.125,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyGRU:mode=sample|weights=weights/gru_policy_weights.json",
+      "family": "policy",
+      "type": "PolicyGRU",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/gru_policy_weights.json"
+      },
+      "tier": "train_policy",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyNeural:mode=sample|weights=weights/neural_policy_weights.json",
+      "family": "policy",
+      "type": "PolicyNeural",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/neural_policy_weights.json"
+      },
+      "tier": "train_policy",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicyRL:mode=sample|weights=weights/rl_policy_checkpoint_bc.json",
+      "family": "policy",
+      "type": "PolicyRL",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/rl_policy_checkpoint_bc.json"
+      },
+      "tier": "train_policy",
+      "weight": 0.375,
+      "anchor": false
+    },
+    {
+      "key": "policy:PolicySelfPlay:mode=sample|weights=weights/selfplay_bc_policy.json",
+      "family": "policy",
+      "type": "PolicySelfPlay",
+      "params": {
+        "mode": "sample",
+        "weights": "weights/selfplay_bc_policy.json"
+      },
+      "tier": "train_policy",
+      "weight": 0.375,
+      "anchor": false
+    }
+  ]
+}

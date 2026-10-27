@@ -1,9 +1,10 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go; **Protocol v2 已启用（2026-10-27）**
-- **New split:** `train_v2` / `dev_param` / `dev_family` / `test_v5`，见
-  [../reference/protocol-v2.md](../reference/protocol-v2.md)。旧 heldout 流程
-  仅作历史记录。
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go; **Protocol v3 已启用（2026-10-27）**
+- **New split:** `train_v3` / `dev_param` / `dev_family` / `dev_complex` /
+  `dev_ood` / `test_v6`，见
+  [../reference/protocol-v3.md](../reference/protocol-v3.md)。旧 heldout / v2
+  流程仅作历史记录。
 - **Repo:** `/home/frti64/pri_dile`
 - **Current best candidate:** `RL-Repair` / `rl-repair`（E1c；未 promotion）
 - **Fallbacks:** `RL-PPO`（主权重，`rl`）、`RL-PPO-Hard60`（A60，`rl-hard60`）

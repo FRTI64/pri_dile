@@ -18,34 +18,35 @@
 - `docs/research/e1-robust-finetune.md` / `docs/research/e2-risk-ppo.md`
 - `docs/research/p2-c1-belief-planner.md`、`docs/research/p2-c2c3-*.md`、`docs/research/p2-c3-*.md`
 - `docs/guides/axelrod.md`
-- `docs/reference/protocol-v2.md`（**新主口径**）
-- `results/protocol_v2/README.md`
+- `docs/reference/protocol-v3.md`（**新主口径**）
+- `results/protocol_v3/README.md`
 
 ## 当前状态
 
-- 文档重组前最新提交：`efa9fbb Finalize handover after Axelrod and P2 C3`。
+- 最近提交：`git log -1`（Protocol v3 baseline）。
 - 工作区在文档重组提交后应为 clean；`python3 -m ipd test` 为
-  **202 tests OK**；`python3 -m ipd list-policies` 为 **20 个注册候选**。
+  **204 tests OK**；`python3 -m ipd list-policies` 为 **20 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Repair（`rl-repair`）是当前最佳候选**，但未 promotion：
   `weights/rl_policy_weights_repair.json`，sha256
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-- 默认评估口径：**Protocol v2**（`dev_param` / `dev_family` 选模，
-  `test_v5` 一次性 final）；旧四分布 / blind 是 legacy。
-- `test_v5` 已在 2026-10-27 对 top 3 消费一次；下一个候选需要 `test_v6`。
+- 默认评估口径：**Protocol v3**（`dev_param` / `dev_family` /
+  `dev_complex` / `dev_ood` 选模，`test_v6` 一次性 final）；旧四分布 /
+  blind / Protocol v2 是 legacy。
+- `test_v6` 已在 2026-10-27 对 top 3 消费一次；下一个候选需要 `test_v7`。
 - anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 
-### 头部候选（Protocol v2，20 / 30 fields）
+### 头部候选（Protocol v3，20 / 40 fields）
 
-| 策略 | 注册名 | 权重 | dev_param | dev_family | test_v5 | dev_red blue |
-|---|---|---|---:|---:|---:|---:|
-| **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | 520.09 | 582.71 | **477.05** | 378.05 |
-| RL-PPO-Hard60 | `rl-hard60` | `weights/rl_policy_weights_hard60.json` | 514.18 | 582.73 | 469.91 | 378.00 |
-| Adv-RL | `adv-rl` | aggressive config | **520.19** | 583.03 | 467.95 | 375.90 |
-| RL-PPO（主权重） | `rl` | `weights/rl_policy_weights.json` | 510.55 | 582.53 | - | - |
+| 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_ood | test_v6 |
+|---|---|---|---:|---:|---:|---:|---:|
+| **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | **532.44** | 582.92 | **420.38** | **489.84** | **484.32** |
+| RL-PPO-Hard60 | `rl-hard60` | `weights/rl_policy_weights_hard60.json` | 527.97 | 582.94 | 410.09 | 485.12 | 476.54 |
+| Adv-RL | `adv-rl` | aggressive config | 526.58 | 583.20 | 415.19 | 487.22 | 471.44 |
+| RL-PPO（主权重） | `rl` | `weights/rl_policy_weights.json` | 524.37 | 582.72 | 397.90 | 478.61 | - |
 
-Red-v5 / Red-v6 对 top 3 仍 100% 胜率。旧 official/blind/heldout 表已进入
+Red-v5 / Red-v6 对 top 3 仍 100% 胜率。旧 official/blind/heldout/v2 表已进入
 legacy，不能与新表混用。
 
 ### 已完成的 Gate 结论
@@ -69,8 +70,9 @@ legacy，不能与新表混用。
 按用户优先级选择：
 
 1. **比赛提交硬化（若近期提交）**
-   - 用独立 seeds 复现 RL-Repair 的 `dev_param` / `dev_family`；
-   - `test_v5` 已消费；独立 final 需先建 `test_v6`；
+   - 用独立 seeds 复现 RL-Repair 的 `dev_param` / `dev_family` /
+     `dev_complex` / `dev_ood`；
+   - `test_v6` 已消费；独立 final 需先建 `test_v7`；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
 2. **E3 multi-teacher distillation + gating（研究首选）**
@@ -86,8 +88,9 @@ legacy，不能与新表混用。
 
 ## 数据/评估纪律
 
-- 新候选用 `dev_param` / `dev_family` 选模；`test_v5` 已消费，不得复用。
-- 下一个通过 dev 的候选需要新建 `test_v6`，并重新走
+- 新候选用 `dev_param` / `dev_family` / `dev_complex` / `dev_ood` 选模；
+  `test_v6` 已消费，不得复用。
+- 下一个通过 dev 的候选需要新建 `test_v7`，并重新走
   `protocol manifest` + `protocol audit`。
 - 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red
   best response。
@@ -169,7 +172,8 @@ bash results/p2_repeated_calib_20261026/run.sh
 - **P3 cross-play 退化**：所有 blue 互相合作（594–595），Elo/Nash 不可区分；
   必须加入 red/exploiter pool。
 - **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
-- **10 vs 20 fields 不可混用**：旧表多为 10-field blind；当前主表用
-  Protocol v2 20/30 fields。
-- **`test_v5` 已消费**：不要用它继续选模；下一个候选需要 `test_v6`。
-- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` 只做历史对照。
+- **10 vs 20 / 40 fields 不可混用**：旧表多为 10-field blind；当前主表用
+  Protocol v3 的 20-field dev / 40-field test。
+- **`test_v6` 已消费**：不要用它继续选模；下一个候选需要 `test_v7`。
+- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / Protocol v2
+  只做历史对照。

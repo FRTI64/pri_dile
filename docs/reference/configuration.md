@@ -24,7 +24,7 @@ configs/
 ├── adversarial_gru_policy_config*.json      GRU 保守/激进
 ├── adversarial_rl_policy_config*.json       RL 保守/激进
 ├── eval/                                    eval-split / league / sweep 配置
-├── splits/protocol_v2/manifest.json         Protocol v2 catalog manifest
+├── splits/protocol_v3/manifest.json         Protocol v3 catalog manifest
 ├── league/                                  P3 red pool blue manifests
 ├── selfplay/                                full / smoke / BC / E4 red
 └── retrain_20261025/                        复训实验配置
@@ -104,7 +104,7 @@ cross-play、red 和 Nash 预算。关键字段：
 results/
 ├── benchmark.json / blind_results.json / suite_results.json
 ├── split_<name>/                 eval-split 输出
-├── protocol_v2/                  Protocol v2 manifest 使用记录 / dev / test
+├── protocol_v3/                  Protocol v3 manifest 使用记录 / dev / test
 ├── e0_league_<date>/             E0
 ├── robust_<date>/                E1
 ├── risk_<date>/                  E2
@@ -125,4 +125,4 @@ results/
 - Axelrod：`pip install -r requirements-axelrod.txt`（`axelrod==4.14.0`）；
 - 可选安装：`pip install -e '.[train]'` / `.[axelrod]`。
 
-当前测试：`python3 -m ipd test` → 202 tests OK。
+当前测试：`python3 -m ipd test` → 204 tests OK。

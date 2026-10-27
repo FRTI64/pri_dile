@@ -29,8 +29,11 @@ DISTS = ("original", "late", "grim30", "wide")
 # tournament rules (4.14.0: Darwin only).
 AXELROD_DISTS = ("axelrod", "axelrod-fast", "axelrod-cheating")
 EVAL_DISTS = DISTS + AXELROD_DISTS
-TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair", "train_v2")
-PROTOCOL_VAL_DISTS = ("dev_param", "dev_family")
+PROTOCOL_TRAIN_DISTS = ("train_v3", "train_easy", "train_hard",
+                        "train_complex", "train_policy")
+PROTOCOL_VAL_DISTS = ("dev_param", "dev_family", "dev_complex", "dev_ood")
+TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair") \
+    + PROTOCOL_TRAIN_DISTS
 VALIDATION_DISTS = DISTS + PROTOCOL_VAL_DISTS
 
 # Base weights for a fixed high-Grim population.  Late harvesters remain a
@@ -183,7 +186,12 @@ def build_dist_field(dist: str, seed: int, n: int):
     The four headline distributions are drawn from the pri_dile opponent bank.
     ``axelrod`` and ``axelrod-fast`` use the optional Axelrod library bank;
     ``axelrod-cheating`` adds strategies Axelrod classifies as cheating.
+
+    Protocol training profiles and validation tiers are forwarded to
+    :func:`build_train_dist_field` so BC/GRU data generation can use them.
     """
+    if dist in PROTOCOL_TRAIN_DISTS or dist in PROTOCOL_VAL_DISTS:
+        return build_train_dist_field(dist, seed, n)
     if dist == "original":
         return build_field("original", seed, n)[0]
     if dist == "late":
@@ -203,9 +211,9 @@ def build_dist_field(dist: str, seed: int, n: int):
 
 def build_train_dist_field(dist: str, seed: int, n: int):
     """Build a training field, including the tail-risk ``hard`` mixture."""
-    if dist == "train_v2":
-        from .protocol import build_protocol_field
-        return build_protocol_field("train", seed, n)
+    if dist in PROTOCOL_TRAIN_DISTS:
+        from .protocol import build_training_field
+        return build_training_field(dist, seed, n)
     if dist in PROTOCOL_VAL_DISTS:
         from .protocol import build_protocol_field
         return build_protocol_field(dist, seed, n)
@@ -241,8 +249,8 @@ def sample_blind_field(seed: int, n: int = N_PLAYERS):
 
 
 __all__ = [
-    "N_PLAYERS", "DISTS", "TRAIN_DISTS", "PROTOCOL_VAL_DISTS",
-    "VALIDATION_DISTS", "AXELROD_DISTS", "EVAL_DISTS",
+    "N_PLAYERS", "DISTS", "TRAIN_DISTS", "PROTOCOL_TRAIN_DISTS",
+    "PROTOCOL_VAL_DISTS", "VALIDATION_DISTS", "AXELROD_DISTS", "EVAL_DISTS",
     "HIGH_GRIM_BASE", "ORIGINAL_SCENARIO_WEIGHTS", "HARD_OPPONENTS",
     "FAMILY_MULT", "EXTRA", "build_field", "build_dist_field",
     "build_train_dist_field", "sample_wide", "sample_suite_field",

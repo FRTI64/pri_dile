@@ -3,9 +3,9 @@
 本文定义分数、分布、指标和协议差异。跑命令见
 [../guides/evaluation.md](../guides/evaluation.md)。
 
-> **2026-10-27 起：Protocol v2 是新主口径。** `official` / `blind` 只保留
+> **2026-10-27 起：Protocol v3 是当前主口径。** `official` / `blind` 只保留
 > 为 legacy 诊断，不再作为 held-out 证据；详细 split 见
-> [protocol-v2.md](protocol-v2.md)。
+> [protocol-v3.md](protocol-v3.md)。
 
 ## 1. 基础收益
 
@@ -41,19 +41,24 @@ CC = 6, CD = 0, DC = 10, DD = 1
 
 默认 10 fields；当前正式比较建议 20。**10-field 与 20-field 不可直接比较。**
 
-## 3.1 Protocol v2（新主口径）
+## 3.1 Protocol v3（当前主口径）
 
 | 层 | 含义 | 用途 |
 |---|---|---|
-| `train` | catalog 中 70% 参数 config + anchors | 训练 |
-| `dev_param` | catalog 中 15% 参数 config + anchors | 选模 |
-| `dev_family` | 训练中未出现的 family + anchors | 选模 / 病理检测 |
-| `test_v5` | 60% seen-family test + 25% test-only + 15% anchors | 一次性 final |
+| `train` | 标准 + complex + policy 的训练 config | 训练 |
+| `dev_param` | 标准 family 的参数 held-out config | 选模 |
+| `dev_family` | `mirror_adaptive` / `delayed_grim` family held-out | 选模 / 病理检测 |
+| `dev_complex` | complex family 的参数 held-out config | 选模 / 复杂对手 |
+| `dev_ood` | dev / dev_complex / dev_family 的偏移混合 | 选模 / OOD |
+| `test_v6` | 35% seen test + 20% test-only + 20% complex + 15% policy + 10% anchors | 一次性 final |
 
-- 具体 config 不跨层；`test_v5` 的 test-only family 不出现在 train/dev。
-- `test_v5` 用 manifest hash + usage ledger 锁定，同一候选只能消费一次。
+- 具体 config 不跨层；`test_v6` 的 test-only family 不出现在 train/dev。
+- complex family：`phase_switch`、`adaptive_mix`、`probe_exploit`、
+  `delayed_extort`、`memory_two`、`meta_mix`。
+- policy opponent：训练用 RL-BC / SelfPlay-BC / Neural / GRU；test 用
+  Final-tuned / Triple / RL-scratch / SelfPlay / Neural-retrain / GRU-retrain。
 - 报告 `mean`、`min`、`p05`、per-family、`worst_family`、`min_norm`。
-- 旧的 `official` / `blind` 数字不能与 Protocol v2 数字混表。
+- 旧的 `official` / `blind` / Protocol v2 数字不能与 v3 混表。
 
 ## 4. suite
 
@@ -93,14 +98,15 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `red win` | red 胜率，越低越好 |
 | `exploitability` | 池内/red 对候选的最大可获利差 |
 
-旧的 `heldout_v2/v3/v4` 与 `official/blind` 已进入 legacy。新候选使用
-Protocol v2：`dev_param` / `dev_family` 选模，`test_v5` 一次性 final。
+旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2 已进入 legacy。
+新候选使用 Protocol v3：`dev_param` / `dev_family` / `dev_complex` /
+`dev_ood` 选模，`test_v6` 一次性 final。
 
 ## 7. 协议差异速查
 
 | 协议 | 评估集 | fields | policy seed | 用途 |
 |---|---|---|---|---|
-| **Protocol v2** | `dev_param` / `dev_family` / `test_v5` | 20 / 20 / 30 | 默认独立 seed | **新主口径** |
+| **Protocol v3** | `dev_param` / `dev_family` / `dev_complex` / `dev_ood` / `test_v6` | 20 / 20 / 20 / 20 / 40 | 默认独立 seed | **当前主口径** |
 | 标准 CLI（legacy） | official 四分布 | 20 | 默认独立 seed | 历史复现 |
 | E0/E1c league（legacy） | official + blind + heldout | 20 | 固定 index-based seed | 历史比较 |
 | suite | 9 个家族加权 | 12 | 默认 | 场景诊断 |
@@ -108,13 +114,14 @@ Protocol v2：`dev_param` / `dev_family` 选模，`test_v5` 一次性 final。
 | eval-split | 每候选独立 | 可配置 | 可配置 | 多权重比较 |
 
 同一候选在标准 CLI 与 league 上可能差 0.0x～1 分，这是 policy RNG 不同，
-不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v2 与 legacy
+不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v3 与 legacy
 official/blind 的第一位数字不同是 split 不同，不是实现差异。
 
 ## 8. 报告最低要求
 
-- 协议：`protocol_v2` / legacy，fields、n、seed、policy seed、suite；
-- Protocol v2：`dev_param` / `dev_family` / `test_v5`，manifest hash；
+- 协议：`protocol_v3` / legacy，fields、n、seed、policy seed、suite；
+- Protocol v3：`dev_param` / `dev_family` / `dev_complex` / `dev_ood` /
+  `test_v6`，manifest hash；
 - per-family、`min_norm`、`worst_family`；
 - red：blue mean / red win / diff；
 - 权重 checksum 和配置路径；
