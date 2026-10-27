@@ -6,7 +6,7 @@
 ## 背景
 
 Protocol v4 已有 12 个 complex family（加入 lookahead/portfolio 后为 14）
-和 66 个 Axelrod 策略，但缺少按
+和 66 个 curated Axelrod 策略（后续扩展到 224 个 fast 策略），但缺少按
 “对手有多聪明/多复杂”组织的评估口径。只按 family 看，无法回答候选在不同
 thinking level 和策略复杂度上的强弱。
 
@@ -22,7 +22,7 @@ thinking level 和策略复杂度上的强弱。
    不引入 long-run MetaWinner/MetaMajority。
 4. 提供派生对手集 `dev_level0..4` / `dev_complexity0..4`，以及训练
    profile `train_level0..4` / `train_complexity0..4`。
-5. catalog 扩到 **819 configs**；`test_v7` 仍未消费。
+5. catalog 扩到 **977 configs**；`test_v7` 仍未消费。
 
 ## 后果
 

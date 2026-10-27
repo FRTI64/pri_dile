@@ -15,13 +15,13 @@ v3 已有 532 个 config、complex / policy 对手，但仍有局限：
 
 v4 增加：
 
-- **66 个 Axelrod 4.14.0 策略**（经典、noisy、adaptive、ZD、meta、evolved）；
+- **224 个 Axelrod 4.14.0 策略**（经典、noisy、adaptive、ZD、meta、evolved）；
 - **15 个 AxelrodMix 组合**（每场从 2–4 个 Axelrod 策略中抽一个）；
 - `dev_axelrod` / `train_axelrod`；
 - 默认赛场扩大到 **2048 人（2000+）**，dev **30 fields**，test **50 fields**；
 - final 改为 `test_v7`。
 
-catalog 从 532 扩到 **819 个 config**，并新增 8 个复杂/高阶 family 和一批
+catalog 从 532 扩到 **977 个 config**，并新增 8 个复杂/高阶 family 和一批
 旧 family 的新对手；另外按 **thinking level 0–4** 和 **complexity 0–4**
 提供派生对手集。
 
@@ -29,13 +29,13 @@ catalog 从 532 扩到 **819 个 config**，并新增 8 个复杂/高阶 family 
 
 | 层 | 用途 | 组成 | 规模 |
 |---|---|---|---|
-| `train` | 训练 | 标准 + complex + policy + Axelrod + anchors | 292 + 179 + 4 + 56 + 5 |
-| `dev_param` | 选模：标准参数 held-out | 标准 family + Axelrod + anchors | 62 + 12 + 5 |
+| `train` | 训练 | 标准 + complex + policy + Axelrod + anchors | 292 + 179 + 4 + 167 + 5 |
+| `dev_param` | 选模：标准参数 held-out | 标准 family + Axelrod + anchors | 62 + 36 + 5 |
 | `dev_family` | 选模：family held-out | `mirror_adaptive` / `delayed_grim` | 14 + 5 |
 | `dev_complex` | 选模：复杂 family | 14 个 complex family | 39 + 5 |
-| `dev_axelrod` | 选模：Axelrod | Axelrod 策略 + 组合 | 12 + 5 |
+| `dev_axelrod` | 选模：Axelrod | Axelrod 策略 + 组合 | 36 + 5 |
 | `dev_ood` | 选模：偏移混合 | dev / complex / family / Axelrod | - |
-| `test_v7` | 一次性 final | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 40 + 6 + 13 + 5 |
+| `test_v7` | 一次性 final | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 40 + 6 + 36 + 5 |
 
 固定 anchor：`AllC`、`AllD`、`TFT`、`Grim`、`Random.50`。
 
@@ -88,14 +88,14 @@ lookahead          portfolio
 | 集合 | 含义 | dev configs |
 |---|---|---:|
 | `dev_level0` | 非策略型：AllC/AllD/Random/Periodic 等 | 6 |
-| `dev_level1` | 固定启发式：TFT/Grim/GTFT/LateD 等 | 28 |
-| `dev_level2` | 反应/自适应：Probe/Noisy/Responsive/Extort 等 | 54 |
+| `dev_level1` | 固定启发式：TFT/Grim/GTFT/LateD 等 | 62 |
+| `dev_level2` | 反应/自适应：Probe/Noisy/Responsive/Extort 等 | 44 |
 | `dev_level3` | 对手感知/meta：AdaptiveMix/Phase/Reputation 等 | 29 |
 | `dev_level4` | 搜索/组合/学习：Lookahead/Portfolio/MetaMix/Policy/evolved | 10 |
 | `dev_complexity0` | 无状态/极简 | 6 |
 | `dev_complexity1` | 简单反应式 | 28 |
-| `dev_complexity2` | 有状态/参数化 | 41 |
-| `dev_complexity3` | 复合/自适应 | 35 |
+| `dev_complexity2` | 有状态/参数化 | 75 |
+| `dev_complexity3` | 复合/自适应 | 25 |
 | `dev_complexity4` | 搜索/集成/学习/长程 | 17 |
 
 ```bash
@@ -114,7 +114,7 @@ python3 -m ipd protocol eval --candidates all --tiers dev_complexity4 \
 `--train-dists`。`test_v7` 仍按 family 混合；评估报告可再按 level/complexity
 拆分分析。
 
-Axelrod 策略（66）：
+Axelrod 策略（224：66 curated + 158 extra，extra 在 `axelrod_extra` family）：
 
 ```text
 TitForTat / TitFor2Tats / TwoTitsForTat / Grudger / Forgiver /
@@ -181,7 +181,7 @@ python3 -m ipd protocol audit
 python3 -m ipd protocol manifest
 
 # manifest：configs/splits/protocol_v4/manifest.json
-# catalog sha256: 5fa46ea7...
+# catalog sha256: beb594ab...
 # dev：默认 2048 人 × 30 fields
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
@@ -212,6 +212,8 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 ## 7. 当前限制
 
 - 对手仍是合成/Axelrod 库；test_v7 不是真实 300 人比赛数据。
+- 224 个 Axelrod 策略里包含 evolved/meta 等较慢策略；完整 test_v7 会比 v3
+  慢，正式 final 前建议先用 `--fields 1 --n 256` 烟测。
 - v4 的 2048/30/50 规模尚未跑新 baseline；`results/protocol_v3/` 的
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank

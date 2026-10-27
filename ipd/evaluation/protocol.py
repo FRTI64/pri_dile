@@ -129,6 +129,7 @@ FAMILY_WEIGHTS: dict[str, float] = {
     "conditional_extort": 1.1,
     "policy": 1.5,
     "axelrod": 1.5,
+    "axelrod_extra": 1.2,
     "axelrod_mix": 1.2,
     "anchor": 1.0,
     "early_harvest": 1.0,
@@ -153,7 +154,7 @@ COMPLEX_FAMILIES = ("phase_switch", "adaptive_mix", "probe_exploit",
                     "pattern_breaker", "conditional_extort",
                     "lookahead", "portfolio")
 POLICY_FAMILIES = ("policy",)
-AXELROD_FAMILIES = ("axelrod", "axelrod_mix")
+AXELROD_FAMILIES = ("axelrod", "axelrod_extra", "axelrod_mix")
 
 # Curated Axelrod 4.14.0 classics plus modern/adaptive/ZD strategies.  These
 # names are resolved lazily, so building the catalog does not require Axelrod;
@@ -176,6 +177,52 @@ AXELROD_STRATEGIES = (
     "KnowledgeableWorseAndWorse", "ThueMorse", "ThueMorseInverse",
     "LimitedRetaliate3", "Retaliate2", "Retaliate3", "HardTitFor2Tats",
     "SlowTitForTwoTats2", "DynamicTwoTitsForTat", "MEM2", "ShortMem",
+)
+
+# Remaining Axelrod 4.14.0 fast bank (158 strategies), kept as a separate
+# family so the curated core remains lightweight.  Long-run Meta players are
+# intentionally excluded.
+AXELROD_EXTRA = (
+    "ALLCorALLD", "AON2", "APavlov2006", "APavlov2011", "AdaptorBrief",
+    "AdaptorLong", "Aggravater", "Alexei", "AlternatorHunter", "AntiCycler",
+    "AntiTitForTat", "Appeaser", "ArrogantQLearner", "AverageCopier",
+    "BetterAndBetter", "BurnBothEnds", "BushMosteller", "Capri",
+    "CautiousQLearner", "CollectiveStrategy", "CooperatorHunter",
+    "CycleHunter", "CyclerCCCCCD", "CyclerCCCDCD", "CyclerDC", "CyclerDDC",
+    "DefectorHunter", "DelayedAON1", "Desperate", "Detective",
+    "DoubleResurrection", "Doubler", "EasyGo", "EugineNier",
+    "EventualCycleHunter", "EvolvedANN5", "EvolvedFSM4", "EvolvedFSM6",
+    "EvolvedLookerUp1_1_1", "EvolvedLookerUp2_2_2", "FirstByAnonymous",
+    "FirstByDavis", "FirstByDowning", "FirstByFeld", "FirstByGraaskamp",
+    "FirstByGrofman", "FirstByJoss", "FirstByNydegger", "FirstByShubik",
+    "FirstBySteinAndRapoport", "FirstByTidemanAndChieruzzi", "FirstByTullock",
+    "FoolMeOnce", "ForgetfulFoolMeOnce", "ForgetfulGrudger", "Fortress3",
+    "Fortress4", "FrequencyAnalyzer", "GeneralSoftGrudger",
+    "GoByMajority10", "GoByMajority20", "GoByMajority40", "GoByMajority5",
+    "Golden", "Gradual", "GradualKiller", "GrudgerAlternator", "Handshake",
+    "HardGoByMajority10", "HardGoByMajority20", "HardGoByMajority40",
+    "HardGoByMajority5", "HardTitForTat", "HesitantQLearner", "Hopeless",
+    "Inverse", "InversePunisher", "LevelPunisher", "LimitedRetaliate2",
+    "MathConstantHunter", "Michaelos", "Momentum", "NTitsForMTats",
+    "Negation", "NiceAverageCopier", "OnceBitten", "OppositeGrudger",
+    "OriginalGradual", "PSOGambler2_2_2_Noise05", "Pi", "Prober2", "Prober3",
+    "Prober4", "Pun1", "Punisher", "Raider", "RandomHunter", "Resurrection",
+    "Retaliate", "RevisedDowning", "RiskyQLearner", "SecondByAppold",
+    "SecondByBlack", "SecondByBorufsen", "SecondByCave", "SecondByChampion",
+    "SecondByColbert", "SecondByEatherley", "SecondByGetzler",
+    "SecondByGladstein", "SecondByGraaskampKatzen", "SecondByGrofman",
+    "SecondByHarrington", "SecondByKluepfel", "SecondByLeyvraz",
+    "SecondByMikkelson", "SecondByRichardHufford", "SecondByRowsam",
+    "SecondByTester", "SecondByTidemanAndChieruzzi", "SecondByTranquilizer",
+    "SecondByWeiner", "SecondByWhite", "SecondByWmAdams", "SecondByYamachi",
+    "SelfSteem", "SoftJoss", "SolutionB1", "SolutionB5", "SpitefulTitForTat",
+    "SpitefulCC", "StochasticCooperator", "StochasticWSLS",
+    "SuspiciousTitForTat", "TF1", "TF2", "TF3", "TrickyLevelPunisher",
+    "UsuallyCooperates", "UsuallyDefects", "VeryBad", "Willing",
+    "WinShiftLoseStay", "WorseAndWorse", "WorseAndWorse2", "WorseAndWorse3",
+    "ZDExtort2v2", "ZDExtort4", "ZDGen2", "ZDMem2", "ZDMischief",
+    "ZDSet2", "e", "MemoryDecay", "MetaHunterAggressive",
+    "MetaMajorityMemoryOne", "MetaWinnerMemoryOne", "NMWEMemoryOne",
 )
 
 AXELROD_MIXES = (
@@ -1719,6 +1766,8 @@ def _catalog_specs() -> list[dict[str, Any]]:
     # ------------------------------------------------------------------
     for name in AXELROD_STRATEGIES:
         _add(specs, "axelrod", "Axelrod", strategy=name)
+    for name in AXELROD_EXTRA:
+        _add(specs, "axelrod_extra", "Axelrod", strategy=name)
     for mix in AXELROD_MIXES:
         _add(specs, "axelrod_mix", "AxelrodMix", strategies=mix)
 
@@ -1818,15 +1867,36 @@ def _family_tiers(family: str, n: int) -> list[str]:
     return tiers
 
 
+def _axelrod_level(name: str) -> int:
+    if name in AXELROD_LEVELS:
+        return AXELROD_LEVELS[name]
+    lower = name.lower()
+    if any(key in lower for key in (
+            "meta", "winner", "nmwe", "evolved", "pso", "knowledgeable",
+            "qlearner")):
+        return 4 if any(key in lower for key in (
+            "evolved", "meta", "nmwe", "pso")) else 3
+    if any(key in lower for key in (
+            "adaptive", "prober", "hunter", "cycler", "zd", "extort",
+            "grudger", "punisher", "retaliate", "fortress", "detective",
+            "frequency", "predict", "worse", "better", "downing")):
+        return 2
+    if any(key in lower for key in (
+            "random", "cooperator", "defector", "alternator", "allc",
+            "alld", "periodic")):
+        return 0
+    return 1
+
+
 def _entry_level(family: str, type_name: str) -> int:
-    if family == "axelrod":
-        return AXELROD_LEVELS.get(type_name, 2)
+    if family in ("axelrod", "axelrod_extra"):
+        return _axelrod_level(type_name)
     return FAMILY_LEVELS.get(family, 1)
 
 
 def _entry_complexity(family: str, type_name: str) -> int:
-    if family == "axelrod":
-        return min(4, AXELROD_LEVELS.get(type_name, 2) + 1)
+    if family in ("axelrod", "axelrod_extra"):
+        return min(4, _axelrod_level(type_name) + 1)
     return FAMILY_COMPLEXITY.get(family, 1)
 
 
@@ -1909,6 +1979,7 @@ def protocol_manifest() -> dict[str, Any]:
         "policy_families": list(POLICY_FAMILIES),
         "axelrod_families": list(AXELROD_FAMILIES),
         "axelrod_strategies": list(AXELROD_STRATEGIES),
+        "axelrod_extra": list(AXELROD_EXTRA),
         "axelrod_mixes": [list(x) for x in AXELROD_MIXES],
         "dev_only_families": list(DEV_ONLY_FAMILIES),
         "test_only_families": list(TEST_ONLY_FAMILIES),
@@ -2394,7 +2465,8 @@ __all__ = [
     "FAMILY_LEVELS", "FAMILY_COMPLEXITY", "AXELROD_LEVELS",
     "TRAIN_PROFILES", "ANCHORS", "COMPLEX_FAMILIES",
     "POLICY_FAMILIES", "AXELROD_FAMILIES", "AXELROD_STRATEGIES",
-    "AXELROD_MIXES", "PROTOCOL_N_PLAYERS", "DEV_FIELDS", "TEST_FIELDS",
+    "AXELROD_EXTRA", "AXELROD_MIXES", "PROTOCOL_N_PLAYERS", "DEV_FIELDS",
+    "TEST_FIELDS",
     "DEV_ONLY_FAMILIES", "TEST_ONLY_FAMILIES", "MANIFEST_PATH",
     "USAGE_PATH", "OpponentConfig", "MirrorAdaptive", "DelayedGrim",
     "PhaseSwitcher", "AdaptiveMix", "ProbeExploit", "DelayedExtort",

@@ -61,8 +61,8 @@ CC = 6, CD = 0, DC = 10, DD = 1
   `delayed_extort`、`memory_two`、`meta_mix`、`noise_adaptive`、
   `reputation_grim`、`contrition_cycle`、`endgame_hunter`、
   `pattern_breaker`、`conditional_extort`、`lookahead`、`portfolio`。
-- Axelrod：66 个策略 + 15 个 `AxelrodMix` 组合，需安装
-  `requirements-axelrod.txt`。
+- Axelrod：224 个 fast 策略（66 curated + 158 extra）+ 15 个
+  `AxelrodMix` 组合，需安装 `requirements-axelrod.txt`。
 - thinking level：0 非策略 / 1 固定启发式 / 2 反应自适应 /
   3 对手感知 meta / 4 搜索/集成/学习。
 - complexity：0 无状态 / 1 简单反应 / 2 有状态 / 3 复合 / 4 高阶。

@@ -10,7 +10,7 @@ python3 -m ipd list-policies
 
 ## 1. 当前候选
 
-> 新候选比较使用 Protocol v4（819 configs + Axelrod，2048/30/50）。
+> 新候选比较使用 Protocol v4（977 configs + Axelrod，2048/30/50）。
 > v4 baseline 尚未运行；下表状态仍基于 legacy v3 baseline（299/20/40）。
 
 | 注册名 | 显示名 | 类型 | 权重 / 配置 | 状态 |

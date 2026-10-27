@@ -7,7 +7,7 @@
 
 ### Added
 
-- **Protocol v4**：819-config catalog；66 个 Axelrod 4.14.0 策略 + 15 个
+- **Protocol v4**：977-config catalog；224 个 Axelrod 4.14.0 策略 + 15 个
   `AxelrodMix` 组合；6 个新复杂风格 family（noise_adaptive /
   reputation_grim / contrition_cycle / endgame_hunter / pattern_breaker /
   conditional_extort）+ 2 个高阶 style（lookahead / portfolio），并为旧

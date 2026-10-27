@@ -9,7 +9,7 @@
 >   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 > - 最近完整测试为 v3 的 **204 tests OK**；v4 改动后未运行测试（按要求）。
 >   `python3 -m ipd list-policies`：20 个注册候选。
-> - **Protocol v4 已定义**：819 configs；14 complex 风格 + 66 Axelrod + 15 组合；
+> - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
 > - **v4 baseline 尚未运行**；v3 的 RL-Repair 484.32 / A60 476.54 /
@@ -311,8 +311,8 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 
 ### Protocol v4（2026-10-27）
 
-- 新 catalog 819 configs，manifest `5fa46ea7...`；
-- 66 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
+- 新 catalog 977 configs，manifest `beb594ab...`；
+- 224 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
   opponent；每个 entry 带 `thinking_level` / `complexity` 0–4；
 - 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
 - **baseline 尚未运行**（按要求不做测试）；`test_v7` 未消费；

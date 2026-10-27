@@ -2,9 +2,9 @@
   "schema": "ipd-protocol-v4",
   "protocol": "protocol_v4",
   "version": "4",
-  "created": "2026-10-27T16:59:00",
-  "catalog_sha256": "5fa46ea79b503ba767d2cc17ab248772e858e61a54e2d6da28eb46e196c51d60",
-  "catalog_size": 819,
+  "created": "2026-10-27T17:08:22",
+  "catalog_sha256": "beb594ab4a2840675a37079fe5f7b2ce8eac1f98de46aae3c090a5e4fad5fe47",
+  "catalog_size": 977,
   "tiers": [
     "train",
     "dev_param",
@@ -45,6 +45,7 @@
   ],
   "axelrod_families": [
     "axelrod",
+    "axelrod_extra",
     "axelrod_mix"
   ],
   "axelrod_strategies": [
@@ -114,6 +115,166 @@
     "DynamicTwoTitsForTat",
     "MEM2",
     "ShortMem"
+  ],
+  "axelrod_extra": [
+    "ALLCorALLD",
+    "AON2",
+    "APavlov2006",
+    "APavlov2011",
+    "AdaptorBrief",
+    "AdaptorLong",
+    "Aggravater",
+    "Alexei",
+    "AlternatorHunter",
+    "AntiCycler",
+    "AntiTitForTat",
+    "Appeaser",
+    "ArrogantQLearner",
+    "AverageCopier",
+    "BetterAndBetter",
+    "BurnBothEnds",
+    "BushMosteller",
+    "Capri",
+    "CautiousQLearner",
+    "CollectiveStrategy",
+    "CooperatorHunter",
+    "CycleHunter",
+    "CyclerCCCCCD",
+    "CyclerCCCDCD",
+    "CyclerDC",
+    "CyclerDDC",
+    "DefectorHunter",
+    "DelayedAON1",
+    "Desperate",
+    "Detective",
+    "DoubleResurrection",
+    "Doubler",
+    "EasyGo",
+    "EugineNier",
+    "EventualCycleHunter",
+    "EvolvedANN5",
+    "EvolvedFSM4",
+    "EvolvedFSM6",
+    "EvolvedLookerUp1_1_1",
+    "EvolvedLookerUp2_2_2",
+    "FirstByAnonymous",
+    "FirstByDavis",
+    "FirstByDowning",
+    "FirstByFeld",
+    "FirstByGraaskamp",
+    "FirstByGrofman",
+    "FirstByJoss",
+    "FirstByNydegger",
+    "FirstByShubik",
+    "FirstBySteinAndRapoport",
+    "FirstByTidemanAndChieruzzi",
+    "FirstByTullock",
+    "FoolMeOnce",
+    "ForgetfulFoolMeOnce",
+    "ForgetfulGrudger",
+    "Fortress3",
+    "Fortress4",
+    "FrequencyAnalyzer",
+    "GeneralSoftGrudger",
+    "GoByMajority10",
+    "GoByMajority20",
+    "GoByMajority40",
+    "GoByMajority5",
+    "Golden",
+    "Gradual",
+    "GradualKiller",
+    "GrudgerAlternator",
+    "Handshake",
+    "HardGoByMajority10",
+    "HardGoByMajority20",
+    "HardGoByMajority40",
+    "HardGoByMajority5",
+    "HardTitForTat",
+    "HesitantQLearner",
+    "Hopeless",
+    "Inverse",
+    "InversePunisher",
+    "LevelPunisher",
+    "LimitedRetaliate2",
+    "MathConstantHunter",
+    "Michaelos",
+    "Momentum",
+    "NTitsForMTats",
+    "Negation",
+    "NiceAverageCopier",
+    "OnceBitten",
+    "OppositeGrudger",
+    "OriginalGradual",
+    "PSOGambler2_2_2_Noise05",
+    "Pi",
+    "Prober2",
+    "Prober3",
+    "Prober4",
+    "Pun1",
+    "Punisher",
+    "Raider",
+    "RandomHunter",
+    "Resurrection",
+    "Retaliate",
+    "RevisedDowning",
+    "RiskyQLearner",
+    "SecondByAppold",
+    "SecondByBlack",
+    "SecondByBorufsen",
+    "SecondByCave",
+    "SecondByChampion",
+    "SecondByColbert",
+    "SecondByEatherley",
+    "SecondByGetzler",
+    "SecondByGladstein",
+    "SecondByGraaskampKatzen",
+    "SecondByGrofman",
+    "SecondByHarrington",
+    "SecondByKluepfel",
+    "SecondByLeyvraz",
+    "SecondByMikkelson",
+    "SecondByRichardHufford",
+    "SecondByRowsam",
+    "SecondByTester",
+    "SecondByTidemanAndChieruzzi",
+    "SecondByTranquilizer",
+    "SecondByWeiner",
+    "SecondByWhite",
+    "SecondByWmAdams",
+    "SecondByYamachi",
+    "SelfSteem",
+    "SoftJoss",
+    "SolutionB1",
+    "SolutionB5",
+    "SpitefulTitForTat",
+    "SpitefulCC",
+    "StochasticCooperator",
+    "StochasticWSLS",
+    "SuspiciousTitForTat",
+    "TF1",
+    "TF2",
+    "TF3",
+    "TrickyLevelPunisher",
+    "UsuallyCooperates",
+    "UsuallyDefects",
+    "VeryBad",
+    "Willing",
+    "WinShiftLoseStay",
+    "WorseAndWorse",
+    "WorseAndWorse2",
+    "WorseAndWorse3",
+    "ZDExtort2v2",
+    "ZDExtort4",
+    "ZDGen2",
+    "ZDMem2",
+    "ZDMischief",
+    "ZDSet2",
+    "e",
+    "MemoryDecay",
+    "MetaHunterAggressive",
+    "MetaMajorityMemoryOne",
+    "MetaWinnerMemoryOne",
+    "NMWEMemoryOne"
   ],
   "axelrod_mixes": [
     [
@@ -286,6 +447,7 @@
     },
     "dev_axelrod": {
       "axelrod": 10,
+      "axelrod_extra": 24,
       "axelrod_mix": 2
     },
     "dev_complex": {
@@ -323,6 +485,7 @@
     },
     "test_axelrod": {
       "axelrod": 10,
+      "axelrod_extra": 23,
       "axelrod_mix": 3
     },
     "test_complex": {
@@ -367,6 +530,7 @@
     },
     "train_axelrod": {
       "axelrod": 46,
+      "axelrod_extra": 111,
       "axelrod_mix": 10
     },
     "train_complex": {
@@ -391,16 +555,16 @@
   },
   "thinking_level_counts": {
     "0": 45,
-    "1": 158,
-    "2": 335,
+    "1": 382,
+    "2": 269,
     "3": 203,
     "4": 78
   },
   "complexity_counts": {
     "0": 45,
     "1": 158,
-    "2": 242,
-    "3": 251,
+    "2": 466,
+    "3": 185,
     "4": 123
   },
   "entries": [
@@ -1342,8 +1506,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=EvolvedFSM16Noise05",
@@ -1355,8 +1519,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=GTFT",
@@ -1368,8 +1532,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=HardProber",
@@ -1381,8 +1545,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=PSOGamblerMem1",
@@ -1394,8 +1558,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=SoftGrudger",
@@ -1407,8 +1571,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Stalker",
@@ -1420,8 +1584,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ThueMorse",
@@ -1433,8 +1597,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Winner12",
@@ -1446,8 +1610,8 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ZDExtort2",
@@ -1459,8 +1623,320 @@
       "tier": "dev_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AntiCycler",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AntiCycler"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AntiTitForTat",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AntiTitForTat"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=BushMosteller",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "BushMosteller"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CyclerDDC",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CyclerDDC"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EugineNier",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EugineNier"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByDavis",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByDavis"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByGraaskamp",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByGraaskamp"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ForgetfulFoolMeOnce",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ForgetfulFoolMeOnce"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GoByMajority5",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GoByMajority5"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Gradual",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Gradual"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Inverse",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Inverse"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=LimitedRetaliate2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "LimitedRetaliate2"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=OppositeGrudger",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "OppositeGrudger"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=PSOGambler2_2_2_Noise05",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "PSOGambler2_2_2_Noise05"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Prober3",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Prober3"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Raider",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Raider"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByGladstein",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByGladstein"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SolutionB1",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SolutionB1"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SolutionB5",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SolutionB5"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SpitefulTitForTat",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SpitefulTitForTat"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=VeryBad",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "VeryBad"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=WorseAndWorse",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "WorseAndWorse"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=WorseAndWorse2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "WorseAndWorse2"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ZDExtort2v2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ZDExtort2v2"
+      },
+      "tier": "dev_axelrod",
+      "weight": 0.049999999999999996,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod_mix:AxelrodMix:strategies=('GoByMajority', 'HardGoByMajority', 'SoftGrudger')",
@@ -3173,8 +3649,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ContriteTitForTat",
@@ -3186,8 +3662,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Cooperator",
@@ -3199,8 +3675,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=LimitedRetaliate",
@@ -3212,8 +3688,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=LimitedRetaliate3",
@@ -3225,8 +3701,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=PSOGambler2_2_2",
@@ -3238,8 +3714,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Predator",
@@ -3251,8 +3727,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=RandomTitForTat",
@@ -3264,8 +3740,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=TwoTitsForTat",
@@ -3277,8 +3753,8 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ZDGTFT2",
@@ -3290,8 +3766,307 @@
       "tier": "test_axelrod",
       "weight": 0.15,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AON2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AON2"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AlternatorHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AlternatorHunter"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ArrogantQLearner",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ArrogantQLearner"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Doubler",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Doubler"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EventualCycleHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EventualCycleHunter"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EvolvedLookerUp1_1_1",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EvolvedLookerUp1_1_1"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByGrofman",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByGrofman"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByShubik",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByShubik"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByTullock",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByTullock"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FoolMeOnce",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FoolMeOnce"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GradualKiller",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GradualKiller"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Handshake",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Handshake"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=HesitantQLearner",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "HesitantQLearner"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Momentum",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Momentum"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Negation",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Negation"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Prober2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Prober2"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=RiskyQLearner",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "RiskyQLearner"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByAppold",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByAppold"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByCave",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByCave"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByRichardHufford",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByRichardHufford"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SpitefulCC",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SpitefulCC"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=WorseAndWorse3",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "WorseAndWorse3"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ZDMischief",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ZDMischief"
+      },
+      "tier": "test_axelrod",
+      "weight": 0.05217391304347826,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod_mix:AxelrodMix:strategies=('Winner21', 'MetaHunter', 'AdaptiveTitForTat')",
@@ -8737,8 +9512,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=AdaptiveTitForTat",
@@ -8750,8 +9525,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=BackStabber",
@@ -8763,8 +9538,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Bully",
@@ -8776,8 +9551,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=CyclerCCCD",
@@ -8789,8 +9564,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=CyclerCCD",
@@ -8802,8 +9577,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Defector",
@@ -8815,8 +9590,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=DoubleCrosser",
@@ -8828,8 +9603,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=DynamicTwoTitsForTat",
@@ -8841,8 +9616,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=EvolvedANN",
@@ -8854,8 +9629,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=EvolvedANNNoise05",
@@ -8867,8 +9642,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=EvolvedFSM16",
@@ -8880,8 +9655,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=EvolvedHMM5",
@@ -8893,8 +9668,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=FirmButFair",
@@ -8906,8 +9681,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Forgiver",
@@ -8919,8 +9694,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ForgivingTitForTat",
@@ -8932,8 +9707,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=GoByMajority",
@@ -8945,8 +9720,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Grudger",
@@ -8958,8 +9733,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Grumpy",
@@ -8971,8 +9746,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=HardGoByMajority",
@@ -8984,8 +9759,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=HardTitFor2Tats",
@@ -8997,8 +9772,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=KnowledgeableWorseAndWorse",
@@ -9010,8 +9785,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=MEM2",
@@ -9023,8 +9798,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=MetaHunter",
@@ -9036,8 +9811,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=NaiveProber",
@@ -9049,8 +9824,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=OmegaTFT",
@@ -9062,8 +9837,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=PSOGambler1_1_1",
@@ -9075,8 +9850,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Prober",
@@ -9088,8 +9863,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Random",
@@ -9101,8 +9876,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=RemorsefulProber",
@@ -9114,8 +9889,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Retaliate2",
@@ -9127,8 +9902,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Retaliate3",
@@ -9140,8 +9915,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Ripoff",
@@ -9153,8 +9928,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ShortMem",
@@ -9166,8 +9941,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=SlowTitForTwoTats2",
@@ -9179,8 +9954,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=SneakyTitForTat",
@@ -9192,8 +9967,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ThueMorseInverse",
@@ -9205,8 +9980,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Thumper",
@@ -9218,8 +9993,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=TitFor2Tats",
@@ -9231,8 +10006,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=TitForTat",
@@ -9244,8 +10019,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=TrickyCooperator",
@@ -9257,8 +10032,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=TrickyDefector",
@@ -9270,8 +10045,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=WinStayLoseShift",
@@ -9283,8 +10058,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=Winner21",
@@ -9296,8 +10071,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ZDExtort3",
@@ -9309,8 +10084,8 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod:Axelrod:strategy=ZDExtortion",
@@ -9322,8 +10097,1451 @@
       "tier": "train_axelrod",
       "weight": 0.03260869565217391,
       "anchor": false,
-      "thinking_level": 2,
-      "complexity": 3
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ALLCorALLD",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ALLCorALLD"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=APavlov2006",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "APavlov2006"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=APavlov2011",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "APavlov2011"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AdaptorBrief",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AdaptorBrief"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AdaptorLong",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AdaptorLong"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Aggravater",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Aggravater"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Alexei",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Alexei"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Appeaser",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Appeaser"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=AverageCopier",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "AverageCopier"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=BetterAndBetter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "BetterAndBetter"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=BurnBothEnds",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "BurnBothEnds"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Capri",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Capri"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CautiousQLearner",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CautiousQLearner"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CollectiveStrategy",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CollectiveStrategy"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CooperatorHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CooperatorHunter"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CycleHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CycleHunter"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CyclerCCCCCD",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CyclerCCCCCD"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CyclerCCCDCD",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CyclerCCCDCD"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=CyclerDC",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "CyclerDC"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=DefectorHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "DefectorHunter"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=DelayedAON1",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "DelayedAON1"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Desperate",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Desperate"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Detective",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Detective"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=DoubleResurrection",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "DoubleResurrection"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EasyGo",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EasyGo"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EvolvedANN5",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EvolvedANN5"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EvolvedFSM4",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EvolvedFSM4"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EvolvedFSM6",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EvolvedFSM6"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=EvolvedLookerUp2_2_2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "EvolvedLookerUp2_2_2"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByAnonymous",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByAnonymous"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByDowning",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByDowning"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByFeld",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByFeld"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByJoss",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByJoss"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByNydegger",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByNydegger"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstBySteinAndRapoport",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstBySteinAndRapoport"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FirstByTidemanAndChieruzzi",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FirstByTidemanAndChieruzzi"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ForgetfulGrudger",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ForgetfulGrudger"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Fortress3",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Fortress3"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Fortress4",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Fortress4"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=FrequencyAnalyzer",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "FrequencyAnalyzer"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GeneralSoftGrudger",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GeneralSoftGrudger"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GoByMajority10",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GoByMajority10"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GoByMajority20",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GoByMajority20"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GoByMajority40",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GoByMajority40"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Golden",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Golden"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=GrudgerAlternator",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "GrudgerAlternator"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=HardGoByMajority10",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "HardGoByMajority10"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=HardGoByMajority20",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "HardGoByMajority20"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=HardGoByMajority40",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "HardGoByMajority40"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=HardGoByMajority5",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "HardGoByMajority5"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=HardTitForTat",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "HardTitForTat"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Hopeless",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Hopeless"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=InversePunisher",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "InversePunisher"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=LevelPunisher",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "LevelPunisher"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=MathConstantHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "MathConstantHunter"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=MemoryDecay",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "MemoryDecay"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=MetaHunterAggressive",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "MetaHunterAggressive"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=MetaMajorityMemoryOne",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "MetaMajorityMemoryOne"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=MetaWinnerMemoryOne",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "MetaWinnerMemoryOne"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Michaelos",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Michaelos"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=NMWEMemoryOne",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "NMWEMemoryOne"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=NTitsForMTats",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "NTitsForMTats"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=NiceAverageCopier",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "NiceAverageCopier"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=OnceBitten",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "OnceBitten"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=OriginalGradual",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "OriginalGradual"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Pi",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Pi"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Prober4",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Prober4"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Pun1",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Pun1"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Punisher",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Punisher"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=RandomHunter",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "RandomHunter"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Resurrection",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Resurrection"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Retaliate",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Retaliate"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=RevisedDowning",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "RevisedDowning"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByBlack",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByBlack"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByBorufsen",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByBorufsen"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByChampion",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByChampion"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByColbert",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByColbert"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByEatherley",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByEatherley"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByGetzler",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByGetzler"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByGraaskampKatzen",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByGraaskampKatzen"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByGrofman",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByGrofman"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByHarrington",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByHarrington"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByKluepfel",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByKluepfel"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByLeyvraz",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByLeyvraz"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByMikkelson",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByMikkelson"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByRowsam",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByRowsam"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByTester",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByTester"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByTidemanAndChieruzzi",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByTidemanAndChieruzzi"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByTranquilizer",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByTranquilizer"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByWeiner",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByWeiner"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByWhite",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByWhite"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByWmAdams",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByWmAdams"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SecondByYamachi",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SecondByYamachi"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SelfSteem",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SelfSteem"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SoftJoss",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SoftJoss"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=StochasticCooperator",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "StochasticCooperator"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=StochasticWSLS",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "StochasticWSLS"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=SuspiciousTitForTat",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "SuspiciousTitForTat"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=TF1",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "TF1"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=TF2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "TF2"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=TF3",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "TF3"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=TrickyLevelPunisher",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "TrickyLevelPunisher"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=UsuallyCooperates",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "UsuallyCooperates"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=UsuallyDefects",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "UsuallyDefects"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=Willing",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "Willing"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=WinShiftLoseStay",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "WinShiftLoseStay"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ZDExtort4",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ZDExtort4"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ZDGen2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ZDGen2"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ZDMem2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ZDMem2"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=ZDSet2",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "ZDSet2"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
+    },
+    {
+      "key": "axelrod_extra:Axelrod:strategy=e",
+      "family": "axelrod_extra",
+      "type": "Axelrod",
+      "params": {
+        "strategy": "e"
+      },
+      "tier": "train_axelrod",
+      "weight": 0.01081081081081081,
+      "anchor": false,
+      "thinking_level": 1,
+      "complexity": 2
     },
     {
       "key": "axelrod_mix:AxelrodMix:strategies=('Adaptive', 'EvolvedFSM16', 'Winner12')",
