@@ -36,6 +36,7 @@ import hashlib
 import json
 import random
 import time
+import zlib
 from dataclasses import dataclass, replace
 from functools import lru_cache
 from pathlib import Path
@@ -2409,6 +2410,26 @@ def restore_field_rng(field: Sequence[Any],
     """Restore states captured by :func:`snapshot_field_rng`."""
     for rng, state in snapshot:
         rng.setstate(state)
+
+
+def protocol_match_seed(base_seed: int, field_seed: int,
+                        candidate: str, match_index: int) -> int:
+    """Deterministic per-match seed for the opt-in Protocol v5 RNG contract.
+
+    Protocol v4 uses one sequential Mersenne Twister stream per candidate and
+    field.  That stream cannot be batched across matches.  The v5 contract
+    gives every match its own stream, derived from the run seed, field seed,
+    candidate name and match index, so CPU and GPU can reproduce it exactly.
+    """
+    payload = (f"{int(base_seed)}|{int(field_seed)}|{candidate}|"
+               f"{int(match_index)}")
+    return zlib.crc32(payload.encode("utf-8")) & 0x7FFFFFFF
+
+
+def sample_uniforms(seed: int, rounds: int) -> list[float]:
+    """Draw the per-round uniforms consumed by one v5 match."""
+    rng = random.Random(int(seed))
+    return [rng.random() for _ in range(int(rounds))]
 
 
 def _opponent_type_names(opponent: Any) -> set[str]:

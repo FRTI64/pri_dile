@@ -63,13 +63,19 @@ def supports_gpu_policy(policy: Any) -> bool:
 class _PlainActor:
     def __init__(self, policy: Any, rows: Sequence[int],
                  device: torch.device, dtype: torch.dtype,
-                 rounds: int) -> None:
+                 rounds: int, mode: str = "argmax",
+                 uniforms: Any = None) -> None:
         kind = _policy_kind(policy)
         if kind is None:
             raise TypeError(f"unsupported blue policy: {type(policy).__name__}")
         self.kind = kind
         self.rows = list(rows)
         self.rows_t = torch.tensor(self.rows, dtype=torch.long, device=device)
+        self.mode = str(mode)
+        self.uniforms = (uniforms.to(device)
+                         if uniforms is not None else None)
+        self.draw_idx = torch.zeros(len(self.rows), dtype=torch.long,
+                                    device=device)
         state_cls = FeatureState21 if kind == "selfplay" else FeatureState85
         kwargs = {}
         if kind == "selfplay":
@@ -87,7 +93,13 @@ class _PlainActor:
         else:
             logits = self.policy.logits(features)
         no_defect = ~self.state.any_defect("theirs")
-        return self.policy.act_from_logits(logits, t, no_defect)
+        if self.mode == "argmax":
+            return self.policy.act_from_logits(logits, t, no_defect)
+        if self.uniforms is None:
+            raise ValueError("sample mode requires per-match uniforms")
+        action, self.draw_idx = self.policy.act_from_logits_sample(
+            logits, t, no_defect, self.uniforms, self.draw_idx)
+        return action
 
     def observe(self, mine: torch.Tensor, theirs: torch.Tensor) -> None:
         self.state.append(mine[self.rows_t], theirs[self.rows_t])
@@ -98,8 +110,10 @@ class _AdvActor:
 
     def __init__(self, policy: Any, rows: Sequence[int],
                  device: torch.device, dtype: torch.dtype,
-                 rounds: int) -> None:
-        self.base = _PlainActor(policy.base, rows, device, dtype, rounds)
+                 rounds: int, mode: str = "argmax",
+                 uniforms: Any = None) -> None:
+        self.base = _PlainActor(policy.base, rows, device, dtype, rounds,
+                                mode=mode, uniforms=uniforms)
         self.rows = list(rows)
         self.rows_t = torch.tensor(self.rows, dtype=torch.long, device=device)
         self.device = device
@@ -175,7 +189,10 @@ class _AdvActor:
 class _PSROActor:
     def __init__(self, policy: Any, rows: Sequence[int],
                  device: torch.device, dtype: torch.dtype,
-                 rounds: int) -> None:
+                 rounds: int, mode: str = "argmax",
+                 uniforms: Any = None) -> None:
+        if mode != "argmax":
+            raise TypeError("PSRO meta-policy sample mode is not batched")
         self.rows = list(rows)
         # Reproduce the per-match member draw in field order.  Argmax members
         # have no stochastic state, so only the selected weights matter.
@@ -212,19 +229,25 @@ class GpuBlueField:
 
     def __init__(self, policy: Any, rows: Sequence[int],
                  device: torch.device, dtype: torch.dtype,
-                 rounds: int = 100) -> None:
+                 rounds: int = 100, mode: str = "argmax",
+                 uniforms: Any = None) -> None:
         policy = unwrap_policy(policy)
         self.device = torch.device(device)
         self.n = len(rows)
         self.rows = list(rows)
         self.kind = type(policy).__name__
         if _policy_kind(policy) is not None:
-            self.actor: Any = _PlainActor(policy, rows, self.device, dtype,
-                                          rounds)
+            self.actor: Any = _PlainActor(
+                policy, rows, self.device, dtype, rounds, mode=mode,
+                uniforms=uniforms)
         elif self.kind in ("AdvMLPPolicy", "AdvGRUPolicy", "AdvRLPolicy"):
-            self.actor = _AdvActor(policy, rows, self.device, dtype, rounds)
+            self.actor = _AdvActor(
+                policy, rows, self.device, dtype, rounds, mode=mode,
+                uniforms=uniforms)
         elif self.kind == "PSROMetaPolicy":
-            self.actor = _PSROActor(policy, rows, self.device, dtype, rounds)
+            self.actor = _PSROActor(
+                policy, rows, self.device, dtype, rounds, mode=mode,
+                uniforms=uniforms)
         else:
             raise TypeError(f"unsupported GPU blue policy: {self.kind}")
 
@@ -235,4 +258,14 @@ class GpuBlueField:
         self.actor.observe(mine, theirs)
 
 
-__all__ = ["GpuBlueField", "supports_gpu_policy"]
+def supports_gpu_sample_policy(policy: Any) -> bool:
+    """Whether a blue policy supports the v5 batched sample path."""
+    policy = unwrap_policy(policy)
+    if _policy_kind(policy) is not None:
+        return True
+    # Adv wrappers and PSRO meta-policies keep their exact CPU sample stream.
+    return False
+
+
+__all__ = ["GpuBlueField", "supports_gpu_policy",
+           "supports_gpu_sample_policy"]

@@ -26,6 +26,24 @@ import torch
 from .features import C, D
 
 MODE_ARGMAX = "argmax"
+MODE_SAMPLE = "sample"
+
+
+def _sample_from_logits(logits: torch.Tensor, temperature: float,
+                        uniforms: torch.Tensor,
+                        draw_idx: torch.Tensor,
+                        need_draw: torch.Tensor,
+                        hard_action: torch.Tensor) -> tuple[
+                            torch.Tensor, torch.Tensor]:
+    """Bernoulli-sample one action per row and advance the draw pointer."""
+    b = logits.shape[0]
+    rows = torch.arange(b, device=logits.device)
+    index = draw_idx.clamp(min=0, max=uniforms.shape[1] - 1)
+    p_defect = torch.sigmoid(logits / max(1e-6, float(temperature)))
+    draw = uniforms[rows, index] < p_defect
+    action = torch.where(need_draw, draw.to(torch.int8), hard_action)
+    draw_idx = draw_idx + need_draw.to(torch.long)
+    return action, draw_idx
 
 
 def _load_json(weights: str | Path | Mapping[str, Any]) -> dict[str, Any]:
@@ -71,8 +89,8 @@ class BatchMLP:
         self.device = torch.device(device)
         self.dtype = dtype
         self.mode = mode
-        if mode != MODE_ARGMAX:
-            raise ValueError("GPU batch inference only supports argmax mode")
+        if mode not in (MODE_ARGMAX, MODE_SAMPLE):
+            raise ValueError(f"unsupported batch policy mode: {mode!r}")
         if fmt == "ipd-neural-policy-v1":
             self.layers = _fold_mlp_layers(data, self.device, dtype)
             self.temperature = float(data.get("temperature", 1.0))
@@ -126,6 +144,25 @@ class BatchMLP:
             action = torch.ones(b, dtype=torch.int8, device=logits.device)
         return action
 
+    def act_from_logits_sample(
+            self, logits: torch.Tensor, t: int,
+            no_defect: torch.Tensor, uniforms: torch.Tensor,
+            draw_idx: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Sample the MLP head with the v5 per-match uniform stream."""
+        b = logits.shape[0]
+        final = torch.full((b,), t >= 99, dtype=torch.bool,
+                           device=logits.device)
+        safe_c = (self.safe & no_defect & (~final))
+        hard_action = final.to(torch.int8)
+        need = ~(safe_c | final)
+        action, draw_idx = _sample_from_logits(
+            logits, self.temperature, uniforms, draw_idx, need, hard_action)
+        action = torch.where(safe_c,
+                             torch.zeros(b, dtype=torch.int8,
+                                         device=logits.device),
+                             action)
+        return action, draw_idx
+
 
 class BatchGRU:
     """Batched one-or-more-layer GRU over the 85-feature input."""
@@ -139,8 +176,8 @@ class BatchGRU:
         data = _load_json(weights)
         if data.get("format") != "ipd-gru-policy-v1":
             raise ValueError(f"unsupported GRU policy format: {data.get('format')!r}")
-        if mode != MODE_ARGMAX:
-            raise ValueError("GPU batch inference only supports argmax mode")
+        if mode not in (MODE_ARGMAX, MODE_SAMPLE):
+            raise ValueError(f"unsupported batch policy mode: {mode!r}")
         self.device = torch.device(device)
         self.dtype = dtype
         self.mode = mode
@@ -205,6 +242,25 @@ class BatchGRU:
             action = torch.ones(b, dtype=torch.int8, device=logits.device)
         return action
 
+    def act_from_logits_sample(
+            self, logits: torch.Tensor, t: int,
+            no_defect: torch.Tensor, uniforms: torch.Tensor,
+            draw_idx: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Sample the GRU head with the v5 per-match uniform stream."""
+        b = logits.shape[0]
+        final = torch.full((b,), t >= 99, dtype=torch.bool,
+                           device=logits.device)
+        safe_c = no_defect & (~final)
+        hard_action = final.to(torch.int8)
+        need = ~(safe_c | final)
+        action, draw_idx = _sample_from_logits(
+            logits, self.temperature, uniforms, draw_idx, need, hard_action)
+        action = torch.where(safe_c,
+                             torch.zeros(b, dtype=torch.int8,
+                                         device=logits.device),
+                             action)
+        return action, draw_idx
+
 
 class BatchSelfPlayGRU:
     """Batched two-layer SelfPlay-GRU with the 21-feature observation."""
@@ -219,8 +275,8 @@ class BatchSelfPlayGRU:
         if data.get("format") != "ipd-selfplay-gru-v1":
             raise ValueError(
                 f"unsupported self-play format: {data.get('format')!r}")
-        if mode != MODE_ARGMAX:
-            raise ValueError("GPU batch inference only supports argmax mode")
+        if mode not in (MODE_ARGMAX, MODE_SAMPLE):
+            raise ValueError(f"unsupported batch policy mode: {mode!r}")
         self.device = torch.device(device)
         self.dtype = dtype
         self.mode = mode
@@ -273,5 +329,17 @@ class BatchSelfPlayGRU:
         # SelfPlayGRUPolicy has no hard safety/endgame rule.
         return (logits >= 0).to(torch.int8)
 
+    def act_from_logits_sample(
+            self, logits: torch.Tensor, t: int,
+            no_defect: torch.Tensor, uniforms: torch.Tensor,
+            draw_idx: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Sample the self-play head; it has no hard action rules."""
+        b = logits.shape[0]
+        need = torch.ones(b, dtype=torch.bool, device=logits.device)
+        hard_action = torch.zeros(b, dtype=torch.int8, device=logits.device)
+        return _sample_from_logits(
+            logits, 1.0, uniforms, draw_idx, need, hard_action)
 
-__all__ = ["BatchGRU", "BatchMLP", "BatchSelfPlayGRU", "MODE_ARGMAX"]
+
+__all__ = ["BatchGRU", "BatchMLP", "BatchSelfPlayGRU", "MODE_ARGMAX",
+           "MODE_SAMPLE"]

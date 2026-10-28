@@ -38,6 +38,31 @@ HarvestFactor(start, repairable, p_defect, rng)
 概率性的，且旧实现没有稳定基线，本次修复不改变任何确定性候选的结果；
 它让随机结果可复现，并使原生 bank 能逐位匹配 Python。
 
+## 2.1 追加修复：Reactive.F* 工厂
+
+2026-10-28 回归对比 34cb9b0 时发现，`ipd/core/opponents/plus.py` 的
+`_reactive(seed)` 在每次工厂调用时继续消耗共享的 `random.Random`：
+
+```python
+return lambda rr: Reactive(0, r.uniform(...), r.uniform(...), name, rr)
+```
+
+这会让 `Reactive.F0..F7` 的参数取决于工厂被调用了多少次，也就是取决于
+候选数量、顺序和 reps。表现为 158 矩阵中 8 个 `Reactive.F*` × 24 候选
+的 192 行无法复现，而其他 3600 行逐位一致。
+
+已改为在构造时只抽样一次：
+
+```python
+p_after_c = r.uniform(...)
+p_after_d = r.uniform(...)
+return lambda rr: Reactive(0, p_after_c, p_after_d, name, rr)
+```
+
+回归测试：`tests/test_core.py::OpponentFactoryTests` 与
+`tests/test_evaluation.py::test_reactive_opponent_is_candidate_order_independent`。
+34cb9b0 中这 8 类对手的旧结果不再作为可复现基线。
+
 ## 3. Fallback（保留原 Python 对象）
 
 | 类型 | 原因 |

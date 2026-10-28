@@ -27,7 +27,12 @@ def _memone(seed: int):
 
 def _reactive(seed: int):
     r = random.Random(seed)
-    return lambda rr: Reactive(0, r.uniform(0.4, 1.0), r.uniform(0.0, 0.6),
+    # Draw the parameters once.  Calling ``r.uniform`` inside the factory
+    # makes the opponent depend on how many times the factory was invoked,
+    # i.e. on candidate order and candidate count.
+    p_after_c = r.uniform(0.4, 1.0)
+    p_after_d = r.uniform(0.0, 0.6)
+    return lambda rr: Reactive(0, p_after_c, p_after_d,
                                f"Reactive.F{seed}", rr)
 
 

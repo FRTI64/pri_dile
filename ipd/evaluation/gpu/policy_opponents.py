@@ -120,7 +120,8 @@ class BatchOpponentField:
     def __init__(self, opponents: Sequence[Any], rows: Sequence[int],
                  *, device: torch.device, dtype: torch.dtype,
                  rounds: int = 100, profile: bool = False,
-                 fast_rules: bool | str = "auto") -> None:
+                 fast_rules: bool | str = "auto",
+                 policy_mode: str = "argmax") -> None:
         if len(opponents) != len(rows):
             raise ValueError("opponents and rows must have the same length")
         self.device = torch.device(device)
@@ -128,6 +129,7 @@ class BatchOpponentField:
         self.rounds = int(rounds)
         self.profile = bool(profile)
         self.fast_rules_mode = fast_rules
+        self.policy_mode = str(policy_mode)
         self.family_seconds: dict[str, float] = {}
         self._events: list[tuple[str, Any, Any]] = []
         self.n = len(rows)
@@ -144,8 +146,13 @@ class BatchOpponentField:
         for row, obj in zip(rows, opponents):
             kind = _policy_kind(obj)
             if kind is not None:
-                grouped.setdefault(_weights_key(obj, kind), []).append(
-                    (int(row), obj))
+                if self.policy_mode == "sample":
+                    # Protocol v5 keeps sample-mode policy opponents on CPU,
+                    # where their original Mersenne Twister stream is exact.
+                    self.cpu.append((int(row), obj, [], []))
+                else:
+                    grouped.setdefault(_weights_key(obj, kind), []).append(
+                        (int(row), obj))
                 continue
             if (self.fast_rules_mode is not False
                     and get_fast_spec(obj) is not None):

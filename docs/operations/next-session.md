@@ -90,6 +90,10 @@ legacy，不能与新表混用。
 
 按用户优先级选择：
 
+0. **Plan 6：Python 评估瓶颈**（2026-10-28 新增）
+   - 优先把 v5 sample 的 policy 对手搬上 GPU；
+   - 再做 worker/field-batch 调优与 Axelrod 加速；
+   - 见 `docs/research/plan6-python-bottleneck.md`。
 1. **比赛提交硬化（若近期提交）**
    - 在 v4 上重跑 RL-Repair 的 `dev_param` / `dev_family` /
      `dev_complex` / `dev_axelrod` / `dev_ood`；补跑

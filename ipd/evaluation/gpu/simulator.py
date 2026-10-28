@@ -54,14 +54,19 @@ def _simulate_chunk(policy: Any, opponents: Sequence[Any],
                     rows: Sequence[int], *, device: torch.device,
                     dtype: torch.dtype, rounds: int,
                     profile: bool = False,
-                    fast_rules: bool | str = "auto"
+                    fast_rules: bool | str = "auto",
+                    blue_mode: str = "argmax",
+                    blue_uniforms: Any = None,
+                    policy_opponent_mode: str = "argmax"
                     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor,
                                torch.Tensor, float, float, dict[str, float]]:
     n = len(rows)
-    blue = GpuBlueField(policy, list(range(n)), device, dtype, rounds)
+    blue = GpuBlueField(policy, list(range(n)), device, dtype, rounds,
+                        mode=blue_mode, uniforms=blue_uniforms)
     opp = BatchOpponentField(opponents, list(range(n)), device=device,
                              dtype=dtype, rounds=rounds, profile=profile,
-                             fast_rules=fast_rules)
+                             fast_rules=fast_rules,
+                             policy_mode=policy_opponent_mode)
     mine = torch.zeros(n, rounds, dtype=torch.int8, device=device)
     theirs = torch.zeros(n, rounds, dtype=torch.int8, device=device)
     score = torch.zeros(n, dtype=torch.long, device=device)
@@ -100,6 +105,9 @@ def evaluate_fields_gpu(
     profile: bool = False,
     keep_histories: bool = False,
     fast_rules: bool | str = "auto",
+    blue_mode: str = "argmax",
+    blue_uniforms: Any = None,
+    policy_opponent_mode: str = "argmax",
 ) -> list[FieldSimulation]:
     """Evaluate ``policy`` against every field with batched inference.
 
@@ -114,6 +122,11 @@ def evaluate_fields_gpu(
     total = sum(len(field) for field in fields)
     if total <= 0:
         return [FieldSimulation() for _ in fields]
+    if blue_mode == "sample":
+        if blue_uniforms is None:
+            raise ValueError("sample mode requires blue_uniforms")
+        if int(blue_uniforms.shape[0]) != total:
+            raise ValueError("blue_uniforms rows do not match field size")
 
     # Flatten metadata; row offsets are contiguous per field.
     all_opponents: list[Any] = []
@@ -133,10 +146,14 @@ def evaluate_fields_gpu(
     for start in range(0, total, max(1, int(max_batch))):
         stop = min(total, start + max(1, int(max_batch)))
         rows = list(range(start, stop))
+        chunk_uniforms = (blue_uniforms[start:stop]
+                          if blue_mode == "sample" else None)
         mine_c, theirs_c, s, os_, blue_s, opp_s, family_s = _simulate_chunk(
             policy, all_opponents[start:stop], rows, device=dev,
             dtype=dtype, rounds=rounds, profile=profile,
-            fast_rules=fast_rules)
+            fast_rules=fast_rules, blue_mode=blue_mode,
+            blue_uniforms=chunk_uniforms,
+            policy_opponent_mode=policy_opponent_mode)
         scores[start:stop] = s
         opp_scores[start:stop] = os_
         blue_total += blue_s
@@ -198,12 +215,17 @@ def evaluate_field_gpu(
     profile: bool = False,
     keep_histories: bool = False,
     fast_rules: bool | str = "auto",
+    blue_mode: str = "argmax",
+    blue_uniforms: Any = None,
+    policy_opponent_mode: str = "argmax",
 ) -> FieldSimulation:
     """Convenience wrapper for a single field."""
     return evaluate_fields_gpu(
         policy, [opponents], rounds=rounds, device=device, dtype=dtype,
         max_batch=max_batch, profile=profile,
-        keep_histories=keep_histories, fast_rules=fast_rules)[0]
+        keep_histories=keep_histories, fast_rules=fast_rules,
+        blue_mode=blue_mode, blue_uniforms=blue_uniforms,
+        policy_opponent_mode=policy_opponent_mode)[0]
 
 
 __all__ = ["FieldSimulation", "evaluate_field_gpu", "evaluate_fields_gpu"]

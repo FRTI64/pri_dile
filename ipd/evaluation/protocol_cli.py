@@ -24,8 +24,9 @@ from .protocol import (
     PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_FIELDS,
     TEST_POLICY_PATH, TEST_TIER, audit_protocol, build_protocol_field,
     build_protocol_red_field, catalog_sha256, field_reuse_safe,
-    guard_test_usage, record_usage, restore_field_rng, snapshot_field_rng,
-    test_consumption_allowed, verify_manifest, write_manifest,
+    guard_test_usage, protocol_match_seed, record_usage, restore_field_rng,
+    sample_uniforms, snapshot_field_rng, test_consumption_allowed,
+    verify_manifest, write_manifest,
 )
 from .scheduler import (
     MemorySampler, ProfileAccumulator, ProgressTracker, chunk_specs,
@@ -50,24 +51,30 @@ _LEARNED_OPPONENT_TYPES = frozenset({
 
 def _apply_opponent_mode(field: Sequence[Any], mode: str) -> None:
     """Switch learned policy opponents to the requested action mode."""
-    if mode != "argmax":
-        return
     for opponent in field:
         if type(opponent).__name__ in _LEARNED_OPPONENT_TYPES:
-            opponent.mode = "argmax"
+            opponent.mode = mode
 
 
-def _gpu_spec_supported(spec: CandidateSpec) -> bool:
-    """Whether a candidate can use the batched argmax path.
+def _gpu_spec_supported(spec: CandidateSpec,
+                        sample_mode: bool = False) -> bool:
+    """Whether a candidate can use the batched GPU path.
 
     PSRO meta-policies need a population inspection because their blue mixture
     may contain stochastic rule members; those stay on CPU to preserve the
-    Protocol v4 RNG stream.
+    Protocol v4 RNG stream.  The v5 sample path also keeps PSRO meta-policies
+    on CPU because member selection is itself a per-match RNG draw.
     """
     kind = str(spec.kind)
-    if kind in _PLAIN_GPU_KINDS or kind in _ADV_GPU_KINDS:
+    if kind in _PLAIN_GPU_KINDS:
         return True
-    if kind in _PSRO_META_KINDS:
+    if kind in _ADV_GPU_KINDS:
+        # The Adv wrapper can skip the base actor on punishment rounds.  The
+        # argmax path is action-only, but sample mode must also preserve the
+        # base RNG draw, so keep Adv candidates on CPU until the wrapper is
+        # vectorised with an exact draw mask.
+        return not sample_mode
+    if kind in _PSRO_META_KINDS and not sample_mode:
         try:
             from .gpu.blue import supports_gpu_policy
 
@@ -78,6 +85,7 @@ def _gpu_spec_supported(spec: CandidateSpec) -> bool:
 
 
 def _resolve_gpu(requested: str, candidate_mode: str,
+                 sample_rng: str = "v4",
                  *, quiet: bool = False) -> tuple[bool, str]:
     """Resolve ``--gpu auto|on|off`` and return ``(enabled, reason)``."""
     if requested == "off":
@@ -94,12 +102,14 @@ def _resolve_gpu(requested: str, candidate_mode: str,
             print("WARNING: --gpu on requested but CUDA is unavailable; "
                   "using the CPU path", flush=True)
         return False, "CUDA unavailable"
-    if candidate_mode != "argmax":
+    if candidate_mode != "argmax" and sample_rng != "per-match":
         if requested == "on" and not quiet:
-            print("WARNING: --gpu on only supports --mode argmax; "
-                  "sample mode stays on CPU (Protocol v4 RNG contract)",
-                  flush=True)
+            print("WARNING: --gpu on only supports --mode argmax or "
+                  "--sample-rng per-match; sample mode stays on CPU "
+                  "(Protocol v4 RNG contract)", flush=True)
         return False, "sample mode stays on CPU"
+    if candidate_mode == "sample" and sample_rng == "per-match":
+        return True, "CUDA available; Protocol v5 per-match sample RNG"
     return True, "CUDA available"
 
 
@@ -225,6 +235,8 @@ def _eval_field_task(task: dict[str, Any]) -> dict[str, Any]:
                 "eval_seconds": eval_seconds,
                 "candidate_build_seconds": candidate_build_seconds,
                 "family_seconds": family_seconds,
+                "mode": "cpu",
+                "sample_rng": "v4",
             }))
 
     return {
@@ -251,11 +263,14 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
     rounds = int(task.get("rounds", 100))
     reuse_mode = str(task.get("field_reuse", "auto"))
     gpu = dict(task.get("gpu") or {})
+    gpu_mode = str(gpu.get("mode", "argmax"))
+    sample_rng = str(gpu.get("sample_rng", "v4"))
+    opponent_mode = "sample" if gpu_mode == "sample" else "argmax"
 
     started = time.perf_counter()
     fields = [build_protocol_field(tier, seed, n) for seed in seeds]
     for field in fields:
-        _apply_opponent_mode(field, "argmax")
+        _apply_opponent_mode(field, opponent_mode)
     field_build_seconds = time.perf_counter() - started
     reuse = (reuse_mode != "off"
              and all(field_reuse_safe(field) for field in fields))
@@ -273,12 +288,30 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                 started = time.perf_counter()
                 fields = [build_protocol_field(tier, seed, n) for seed in seeds]
                 for field in fields:
-                    _apply_opponent_mode(field, "argmax")
+                    _apply_opponent_mode(field, opponent_mode)
                 field_build_seconds += time.perf_counter() - started
 
         started = time.perf_counter()
         policy = spec.build()
         candidate_build_seconds = time.perf_counter() - started
+
+        blue_uniforms = None
+        if gpu_mode == "sample":
+            if sample_rng != "per-match":
+                raise ValueError("GPU sample requires --sample-rng per-match")
+            import torch
+
+            base_seed = int(gpu.get("base_seed", 0))
+            uniform_rows: list[list[float]] = []
+            for field_seed, field in zip(seeds, fields):
+                for match_index in range(len(field)):
+                    match_seed = protocol_match_seed(
+                        base_seed, field_seed, spec.name, match_index)
+                    uniform_rows.append(
+                        sample_uniforms(match_seed, rounds))
+            blue_uniforms = torch.tensor(
+                uniform_rows,
+                dtype=_parse_torch_dtype(str(gpu.get("dtype", "float32"))))
 
         try:
             from .gpu.simulator import evaluate_fields_gpu
@@ -289,7 +322,10 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                 dtype=_parse_torch_dtype(str(gpu.get("dtype", "float32"))),
                 max_batch=int(gpu.get("max_batch", 32768)),
                 profile=bool(gpu.get("profile", False)),
-                fast_rules=gpu.get("fast_rules", "auto"))
+                fast_rules=gpu.get("fast_rules", "auto"),
+                blue_mode=gpu_mode,
+                blue_uniforms=blue_uniforms,
+                policy_opponent_mode=opponent_mode)
             for seed, simulation in zip(seeds, simulations):
                 stats = FieldStats(sum(simulation.scores), simulation.scores,
                                    simulation.names)
@@ -304,7 +340,8 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                         "opponent_seconds": simulation.opponent_seconds,
                         "device": str(gpu.get("device", "cuda")),
                         "dtype": str(gpu.get("dtype", "float32")),
-                        "mode": "argmax",
+                        "mode": gpu_mode,
+                        "sample_rng": sample_rng,
                     }))
         except Exception as exc:  # pragma: no cover - hardware/torch failure
             fallback = True
@@ -313,7 +350,7 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                       f"{exc}; rebuilding fields and using CPU", flush=True)
             fields = [build_protocol_field(tier, seed, n) for seed in seeds]
             for field in fields:
-                _apply_opponent_mode(field, "argmax")
+                _apply_opponent_mode(field, opponent_mode)
             snapshots = ([snapshot_field_rng(field) for field in fields]
                          if reuse else None)
             for seed, field in zip(seeds, fields):
@@ -329,7 +366,9 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                         "candidate_build_seconds": candidate_build_seconds,
                         "family_seconds": family_seconds,
                         "device": "cpu-fallback",
-                        "mode": "cpu-fallback",
+                        "mode": ("cpu-fallback-v4"
+                                 if gpu_mode == "sample" else "cpu-fallback"),
+                        "sample_rng": "v4",
                     }))
 
     return {
@@ -474,15 +513,22 @@ def _eval(argv: Sequence[str]) -> int:
                     help="reuse a field across a candidate chunk when RNG "
                          "state can be restored (default: auto)")
     ap.add_argument("--mode", choices=("sample", "argmax"), default="sample",
-                    help="candidate action mode; GPU batching only supports "
-                         "argmax, sample stays on CPU (default: sample)")
+                    help="candidate action mode; GPU batching supports argmax "
+                         "and, with --sample-rng per-match, sample "
+                         "(default: sample)")
+    ap.add_argument("--sample-rng", choices=("v4", "per-match"),
+                    default="v4",
+                    help="sample RNG contract: v4 keeps the historical "
+                         "sequential stream on CPU; per-match is the opt-in "
+                         "Protocol v5 contract that can run on GPU")
     ap.add_argument("--opponent-mode", choices=("sample", "argmax"),
                     default=None,
                     help="action mode for learned policy opponents; defaults "
-                         "to --mode (GPU tasks always use argmax)")
+                         "to --mode. In GPU sample v5, learned opponents stay "
+                         "on CPU with their original RNG stream")
     ap.add_argument("--gpu", choices=("auto", "on", "off"), default="auto",
                     help="batched GPU inference (default: auto; requires "
-                         "--mode argmax)")
+                         "--mode argmax or --sample-rng per-match)")
     ap.add_argument("--gpu-device", default="cuda")
     ap.add_argument("--gpu-dtype", choices=("float32", "float64"),
                     default="float32",
@@ -560,22 +606,31 @@ def _eval(argv: Sequence[str]) -> int:
     args.opponent_mode = (args.opponent_mode
                           or ("argmax" if args.mode == "argmax"
                               else "sample"))
-    gpu_enabled, gpu_reason = _resolve_gpu(args.gpu, args.mode)
+    gpu_enabled, gpu_reason = _resolve_gpu(args.gpu, args.mode,
+                                           args.sample_rng)
     aggregate = int(args.n) * int(args.gpu_field_batch)
     if gpu_enabled and args.gpu == "auto" and aggregate < args.gpu_min_batch:
         gpu_enabled = False
         gpu_reason = (f"aggregate batch {aggregate} < "
                       f"--gpu-min-batch {args.gpu_min_batch}")
+    if args.sample_rng == "per-match" and not gpu_enabled:
+        raise SystemExit(
+            "--sample-rng per-match is the GPU sample path; use --gpu on "
+            "with CUDA, or keep --sample-rng v4 for CPU sample")
+    if args.sample_rng == "per-match" and args.mode != "sample":
+        raise SystemExit("--sample-rng per-match requires --mode sample")
     specs = candidate_specs(args.candidates, default="all", mode=args.mode)
     if not specs:
         raise SystemExit("no candidates selected")
     names = [spec.name for spec in specs]
-    gpu_specs = ([spec for spec in specs if _gpu_spec_supported(spec)]
+    sample_mode = args.mode == "sample"
+    gpu_specs = ([spec for spec in specs
+                  if _gpu_spec_supported(spec, sample_mode=sample_mode)]
                  if gpu_enabled else [])
     cpu_specs = [spec for spec in specs if spec not in gpu_specs]
     if gpu_enabled and not gpu_specs:
         print("WARNING: --gpu resolved to GPU but no selected candidate "
-              "supports batched argmax inference; using CPU", flush=True)
+              "supports batched inference; using CPU", flush=True)
         gpu_enabled = False
         gpu_reason = "no supported candidates"
     if gpu_enabled and cpu_specs:
@@ -644,6 +699,9 @@ def _eval(argv: Sequence[str]) -> int:
         "max_batch": args.gpu_max_batch,
         "profile": bool(args.profile),
         "fast_rules": args.fast_rules if fast_rules else False,
+        "mode": args.mode,
+        "sample_rng": args.sample_rng,
+        "base_seed": args.seed,
     }
     for tier in tiers:
         for start in range(0, len(seeds), gpu_field_batch):
@@ -784,6 +842,10 @@ def _eval(argv: Sequence[str]) -> int:
     payload = {
         "schema": "ipd-protocol-eval-v1",
         "protocol": PROTOCOL_NAME,
+        "protocol_version": ("5" if (gpu_enabled
+                                     and args.mode == "sample"
+                                     and args.sample_rng == "per-match")
+                             else "4"),
         "catalog_sha256": catalog_sha256(),
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "seconds": round(wall_seconds, 2),
@@ -798,8 +860,12 @@ def _eval(argv: Sequence[str]) -> int:
         "candidate_chunk": args.candidate_chunk,
         "field_reuse": args.field_reuse,
         "mode": args.mode,
-        "opponent_mode": (args.opponent_mode if not gpu_enabled
-                          else "argmax (GPU tasks)"),
+        "sample_rng": args.sample_rng,
+        "gpu_sample": bool(gpu_enabled and args.mode == "sample"),
+        "opponent_mode": (
+            args.opponent_mode if not gpu_enabled
+            else ("sample (GPU v5 blue; policy opponents CPU)"
+                  if args.mode == "sample" else "argmax (GPU tasks)")),
         "gpu": {
             "enabled": bool(gpu_enabled),
             "requested": args.gpu,
@@ -811,6 +877,8 @@ def _eval(argv: Sequence[str]) -> int:
             "workers": (max(1, min(args.gpu_workers, len(gpu_tasks)))
                         if gpu_enabled and gpu_tasks else 0),
             "field_batch": gpu_field_batch if gpu_enabled else 1,
+            "mode": args.mode,
+            "sample_rng": args.sample_rng,
             "candidates": [spec.name for spec in gpu_specs],
             "cpu_candidates": [spec.name for spec in cpu_specs],
         },
@@ -861,7 +929,11 @@ def _eval(argv: Sequence[str]) -> int:
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                         encoding="utf-8")
 
-    print(f"\nProtocol v4 evaluation ({fields} fields, n={args.n}, "
+    label = ("Protocol v5 GPU sample"
+             if (gpu_enabled and args.mode == "sample"
+                 and args.sample_rng == "per-match")
+             else "Protocol v4 evaluation")
+    print(f"\n{label} ({fields} fields, n={args.n}, "
           f"workers={workers})")
     for name in names:
         cells = []

@@ -7,6 +7,12 @@
 
 ### Added
 
+- **Plan 5 GPU sample（opt-in）**：`protocol eval --sample-rng per-match`
+  使用 per-match RNG 契约，把学习型蓝方的 sample 推理批量上 GPU；
+  CPU/GPU 逐场 parity（`tests/test_gpu_parity.py`），默认 `v4` 不变。
+  结果标记 `sample_rng=per-match` / `gpu_sample=true` / `protocol_version=5`；
+  `Adv-*` 与 PSRO meta-policy 仍走 CPU。文档
+  `docs/research/plan5-gpu-sample.md`。
 - **Plan 4 训练 rollout GPU 化**：`ipd/training/selfplay/gpu_env.py`
   （GPU 历史/21 维特征/收益，Plan 3 C++ 规则 bank，Plan 2 batch policy，
   `TorchOpponent` 分组，复杂对手 CPU fallback）；`rollout.py` 新增
@@ -84,6 +90,10 @@
 
 ### Fixed
 
+- `Reactive.F0..F7` 工厂在每次调用时继续消耗共享 RNG，导致对手参数随
+  候选数量和顺序变化；现在改为构造时只抽样一次。回归测试：
+  `tests/test_core.py::OpponentFactoryTests`。这会使 34cb9b0 中这 8 类
+  对手的旧结果不可复现，属于修正而非回归。
 - 修正 `heldout_v3` 的过期状态、17/20 候选数量和 `--arch` 旧命令说明。
 - 修正 C++ `AdvRLParams` 示例为当前 aggressive 配置。
 - 修正文档间相对链接，移动后链接检查 0 broken。

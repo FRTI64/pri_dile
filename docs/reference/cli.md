@@ -47,6 +47,11 @@ python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_complexity4 --fields 30 --n 2048
+# GPU sample（opt-in Protocol v5，per-match RNG；不能与 v4 sample 表混用）
+python3 -m ipd protocol eval --candidates all --tiers test_v7 \
+  --fields 50 --n 2048 --workers 20 --gpu-workers 8 \
+  --mode sample --sample-rng per-match --gpu on --gpu-dtype float32 \
+  --seed 20261027 --no-consume
 python3 -m ipd protocol red --candidates all --tier dev_red --seeds 30
 python3 -m ipd protocol red --candidates <top3> --tier test_red \
   --seeds 30 --no-consume
@@ -56,9 +61,13 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 `dev_complex` / `dev_axelrod` / `dev_ood` / `dev_level0..4` /
 `dev_complexity0..4` / `test_v7`）、`--fields`、`--n`、
 `--rounds`、`--workers`（整数或 `auto`）、`--candidate-chunk`、
-`--field-reuse auto|on|off`、`--profile`、`--profile-out`、`--seed`、
+`--field-reuse auto|on|off`、`--mode sample|argmax`、
+`--sample-rng v4|per-match`、`--gpu on|auto|off`、`--gpu-workers`、
+`--gpu-field-batch`、`--profile`、`--profile-out`、`--seed`、
 `--baseline`、`--acknowledge-once`、`--force`、`--no-consume`、`--out`。
 默认 `n=2048`、dev 30 fields、test 50 fields、20 workers、6 candidates/field。
+`--sample-rng per-match` 是 opt-in Protocol v5 GPU sample；默认 `v4`
+保持历史 CPU sample 语义。详见 [plan5](../research/plan5-gpu-sample.md)。
 调度、RNG 契约和剖析说明见
 [protocol-v4.md 5.1](protocol-v4.md#51-调度rng-与剖析plan-1)。`test_v7` / `test_red` 由
 `configs/splits/protocol_v4/test_policy.json` 永久锁定

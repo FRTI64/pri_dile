@@ -79,6 +79,16 @@ class MatchTests(unittest.TestCase):
         self.assertEqual((cand, typ, family, n),
                          ("Final-tuned", "TFT", "nice", 1))
 
+    def test_reactive_opponent_is_candidate_order_independent(self):
+        two = candidate_specs(["final-tuned", "resp3-tuned"])
+        one = candidate_specs(["resp3-tuned"])
+        common = {"type": "Reactive.F0", "opponent_set": "all",
+                  "reps": 1, "rounds": 5, "seed": 7}
+        multi = type_task({**common, "candidates": [s.to_dict() for s in two]})
+        single = type_task({**common, "candidates": [s.to_dict() for s in one]})
+        multi_row = next(row for row in multi if row[0] == "Resp3-tuned")
+        self.assertEqual(multi_row[3], single[0][3])
+
     def test_matchup_protocol_selection(self):
         from ipd.evaluation.matchup import _selected_specs
         from ipd.evaluation.protocol import build_catalog

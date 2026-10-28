@@ -20,7 +20,8 @@ except ImportError:  # pragma: no cover - optional dependency
 
 from ipd.evaluation.common import evaluate_field_details, run_match
 from ipd.evaluation.protocol import (
-    build_protocol_field, restore_field_rng, snapshot_field_rng,
+    build_protocol_field, protocol_match_seed, restore_field_rng,
+    sample_uniforms, snapshot_field_rng,
 )
 from ipd.evaluation.protocol_cli import main as protocol_main
 from ipd.policies.registry import candidate_specs
@@ -108,6 +109,50 @@ class SimulatorParityTests(unittest.TestCase):
             self.assertEqual(batched[index].scores, single.scores)
 
 
+@unittest.skipUnless(_CUDA, "CUDA is not available")
+class SampleV5ParityTests(unittest.TestCase):
+    """CPU/GPU parity for the opt-in per-match sample RNG contract."""
+
+    def test_cpu_gpu_sample_parity(self) -> None:
+        names = ("rl-repair", "neural", "gru", "selfplay",
+                 "psro-br", "psro-scratch-br")
+        base_seed = 20261027
+        field_seed = 20261027
+        n = 8
+        rounds = 100
+        for name in names:
+            with self.subTest(candidate=name):
+                cpu_spec = candidate_specs([name], mode="sample")[0]
+                cpu_field = build_protocol_field("test_v7", field_seed, n)
+                gpu_field = build_protocol_field("test_v7", field_seed, n)
+                uniforms = []
+                cpu_rows = []
+                for index, opponent in enumerate(cpu_field):
+                    match_seed = protocol_match_seed(
+                        base_seed, field_seed, cpu_spec.name, index)
+                    uniforms.append(sample_uniforms(match_seed, rounds))
+                    params = dict(cpu_spec.params)
+                    params["seed"] = match_seed
+                    match_spec = type(cpu_spec)(
+                        kind=cpu_spec.kind, name=cpu_spec.name,
+                        params=params)
+                    cpu_rows.append(run_match(
+                        match_spec.build(), opponent, rounds=rounds))
+
+                uniform_tensor = torch.tensor(uniforms, dtype=torch.float64)
+                simulation = evaluate_field_gpu(
+                    cpu_spec.build(), gpu_field, rounds=rounds,
+                    device="cuda", dtype=torch.float64,
+                    blue_mode="sample", blue_uniforms=uniform_tensor,
+                    policy_opponent_mode="sample",
+                    keep_histories=True, fast_rules=False)
+                self.assertEqual([row.score for row in cpu_rows],
+                                 simulation.scores)
+                for index, row in enumerate(cpu_rows):
+                    self.assertEqual(row.mine, simulation.mine[index])
+                    self.assertEqual(row.theirs, simulation.theirs[index])
+
+
 class CandidateRoutingTests(unittest.TestCase):
     def test_support_detection(self) -> None:
         if torch is None:
@@ -118,6 +163,20 @@ class CandidateRoutingTests(unittest.TestCase):
         self.assertTrue(supports_gpu_policy(_spec("psro-scratch").build()))
         self.assertFalse(supports_gpu_policy(_spec("final-tuned").build()))
         self.assertFalse(supports_gpu_policy(_spec("psro").build()))
+
+    def test_sample_v5_routing(self) -> None:
+        from ipd.evaluation.protocol_cli import _gpu_spec_supported
+
+        self.assertTrue(_gpu_spec_supported(_spec("rl-repair"),
+                                            sample_mode=True))
+        self.assertTrue(_gpu_spec_supported(_spec("psro-scratch-br"),
+                                            sample_mode=True))
+        self.assertFalse(_gpu_spec_supported(_spec("adv-rl"),
+                                             sample_mode=True))
+        self.assertFalse(_gpu_spec_supported(_spec("psro"),
+                                             sample_mode=True))
+        self.assertFalse(_gpu_spec_supported(_spec("final-tuned"),
+                                             sample_mode=True))
 
 
 @unittest.skipUnless(_CUDA, "CUDA is not available")
@@ -162,6 +221,17 @@ class ProtocolCliGpuTests(unittest.TestCase):
             self.assertEqual(plain["results"][name]["test_v7"]["values"],
                              auto["results"][name]["test_v7"]["values"],
                              name)
+
+    def test_sample_v5_enables_gpu(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = self._run(
+                Path(tmp) / "v5.json", "--mode", "sample",
+                "--sample-rng", "per-match", "--gpu", "on",
+                "--gpu-dtype", "float64", fields=1, n=16)
+        self.assertTrue(payload["gpu"]["enabled"])
+        self.assertEqual(payload["sample_rng"], "per-match")
+        self.assertEqual(payload["gpu"]["sample_rng"], "per-match")
+        self.assertTrue(payload["gpu_sample"])
 
 
 if __name__ == "__main__":

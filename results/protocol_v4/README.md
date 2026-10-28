@@ -43,3 +43,11 @@
 - `min_norm` 是该候选每个 family / RL-PPO 同 family 的最小值；跨 family 原始分不可比，故用归一化。
 - 所有头部候选都在 `early_harvest` 崩到 121–139；RL-Repair 均值第一但 min_norm 只有 0.5523，不能只用均值选模。
 - test_v7 结果不参与排名或调参；选模仍应使用 `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood`。
+
+## GPU sample v5（2026-10-28）
+
+`protocol_v4_test_v7_all24_gpu_sample_v5.json` 是 opt-in
+`--sample-rng per-match` 的全量结果（22:45）。它与上表 v4 sample 的
+GPU 支持候选差异 <0.3 分；GPU argmax 差异 10–17 分。
+详见 `results/eval_gpu_20261028/README_v5.md` 与
+`docs/research/plan5-gpu-sample.md`。默认 v4 表不变。

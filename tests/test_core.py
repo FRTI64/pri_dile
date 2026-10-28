@@ -1,6 +1,7 @@
 """Core simulation, opponent banks and distributions."""
 from __future__ import annotations
 
+import random
 import unittest
 
 try:
@@ -11,6 +12,7 @@ except ImportError:  # direct execution
 from ipd.core import (
     TYPE_BANK, TYPE_BY_NAME, C, D, Grim, TFT, Machine, payoff, play_match,
 )
+from ipd.core.opponents.plus import PLUS
 from ipd.core.features import FEATURES, feature_vector
 from ipd.evaluation.distributions import (
     DISTS, FAMILY_MULT, build_dist_field, build_field, build_train_dist_field,
@@ -86,6 +88,20 @@ class DistributionTests(unittest.TestCase):
             field, scenario = build_field(kind, 5, 12)
             self.assertEqual(len(field), 12)
             self.assertIsInstance(scenario, str)
+
+
+class OpponentFactoryTests(unittest.TestCase):
+    def test_reactive_factory_parameters_are_order_independent(self):
+        specs = [spec for spec in PLUS
+                 if spec.name.startswith("Reactive.F")]
+        self.assertEqual(len(specs), 8)
+        for spec in specs:
+            with self.subTest(spec=spec.name):
+                first = spec.factory(random.Random(1))
+                second = spec.factory(random.Random(2))
+                self.assertEqual(
+                    (first.p_after_c, first.p_after_d),
+                    (second.p_after_c, second.p_after_d))
 
 
 if __name__ == "__main__":

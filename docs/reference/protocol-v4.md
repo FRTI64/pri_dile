@@ -235,6 +235,27 @@ python3 -m ipd protocol eval --candidates all --tiers dev_param \
 - `--workers auto` 解析出的实际值、CPU/RAM 预算和候选分块都会写入结果文件，
   便于审计“workers / 耗时 / RSS”结论。
 
+### 5.2 GPU sample（opt-in Protocol v5）
+
+Plan 2 的 GPU 路径只支持 argmax；argmax 是另一个确定性策略，会让 sample
+训练的学习型候选明显掉分。`--sample-rng per-match` 提供 opt-in 的 v5
+契约：每场用 `(base_seed, field_seed, candidate, match_index)` 派生独立
+RNG，CPU/GPU 使用同一组逐轮 uniform，因此可以逐动作 parity。
+
+```bash
+python3 -m ipd protocol eval --candidates all --tiers test_v7 \
+  --fields 50 --n 2048 --workers 20 --gpu-workers 8 \
+  --mode sample --sample-rng per-match --gpu on --gpu-dtype float32 \
+  --seed 20261027 --no-consume
+```
+
+- 默认 `--sample-rng v4` 不变；v5 必须显式开启，不能与 v4 sample 表混用。
+- 结果标记 `sample_rng=per-match`、`gpu_sample=true`、
+  `protocol_version=5`。
+- `Adv-*`、PSRO meta-policy 和规则/Axelrod 仍走 CPU；GPU 只批量学习型
+  蓝方。
+- 详见 [plan5-gpu-sample.md](../research/plan5-gpu-sample.md)。
+
 ## 6. 选模规则
 
 1. `dev_family` 过滤 family 崩塌；

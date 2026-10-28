@@ -307,7 +307,8 @@ python3 -m unittest discover -s tests -t . -v
 - 先覆盖训练 rollout 高频 family；评估侧的快速规则候选收益有限。
 - 如果 RuleBank 接入，保持 `BatchOpponentField` 的 CPU fallback 和名称/
   顺序；不要让规则批处理改变 `by_opponent` 聚合。
-- 不要为了扩大 GPU 范围修改 sample RNG 契约；那需要 Protocol v5。
+- 默认不要为了扩大 GPU 范围修改 v4 sample RNG 契约；opt-in 的
+  Protocol v5 GPU sample 见 [plan5-gpu-sample.md](plan5-gpu-sample.md)。
 
 ### 8.4 给 Plan 4（训练 rollout）
 
