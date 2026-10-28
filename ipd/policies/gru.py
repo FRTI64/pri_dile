@@ -26,6 +26,7 @@ from operator import mul
 from typing import Sequence
 
 from ipd.policies.neural import C, D, extract_features
+from .native import make_gru
 
 
 def _sigmoid(x: float) -> float:
@@ -85,6 +86,7 @@ class GRUPolicy:
 
         self.hidden_state: list[list[float]] = []
         self.reset()
+        self._native = make_gru(self.gru, self.head, self.hidden)
 
     @staticmethod
     def _affine(x: Sequence[float], w: Sequence[Sequence[float]],
@@ -93,6 +95,9 @@ class GRUPolicy:
 
     def reset(self) -> None:
         self.hidden_state = [[0.0] * self.hidden for _ in range(self.num_layers)]
+        native = getattr(self, "_native", None)
+        if native is not None:
+            native.reset()
 
     def observe(self, mine: Sequence[int], theirs: Sequence[int]) -> None:
         """Advance the GRU hidden state without choosing an action.
@@ -108,6 +113,11 @@ class GRUPolicy:
         if len(f) != self.n_features:
             raise ValueError("feature count mismatch")
         x = [(v - m) / s for v, m, s in zip(f, self.mean, self.std)]
+
+        if self._native is not None:
+            logit, hidden = self._native.step(x)
+            self.hidden_state = hidden
+            return logit
 
         for layer_idx, layer in enumerate(self.gru):
             gi = self._affine(x, layer["weight_ih"], layer["bias_ih"])

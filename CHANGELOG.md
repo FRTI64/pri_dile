@@ -11,10 +11,13 @@
   `BatchOpponentField` 中按权重分组，逐对象预抽 uniform 并批量上 GPU；
   CPU/GPU 与 Plan 5 v5 baseline **逐位一致**。Axelrod adapter 改为增量
   维护 `History`（O(t²)→O(t)，224 策略逐动作 parity，family 2.5–3.1×）。
-  新增 `--fast-rules-threshold` 与 `--gpu-workers auto`。`Adv-*` 与
-  PSRO meta 保持 CPU，避免改变 v5 分数。exact 模式下 `test_v7` v5
-  从 1365.63s 降到 **1057.82s**（未达原 900s 目标）；dev argmax 仅作
-  迁移期加速诊断，不进入长期 gate；303 tests 全绿。文档
+  新增严格同序 C++ CPU policy 前向（`ipd/policies/policy_ops.cpp`，
+  Neumaier `sum()`、同分支 sigmoid、禁用 FMA/重排），MLP/GRU/
+  SelfPlay 加速 4.6–18× 且逐位一致。新增 `--fast-rules-threshold` 与
+  `--gpu-workers auto`。`Adv-*` 与 PSRO meta 保持 CPU，避免改变 v5
+  分数。exact 模式下 `test_v7` v5 从 1365.63s 降到 **272.77s**
+  （5.01×，24/24 候选逐位一致）；dev argmax 仅作迁移期加速诊断，
+  不进入长期 gate；307 tests 全绿。文档
   `docs/research/plan6-python-bottleneck.md`。
 - **Plan 5 GPU sample（opt-in）**：`protocol eval --sample-rng per-match`
   使用 per-match RNG 契约，把学习型蓝方的 sample 推理批量上 GPU；

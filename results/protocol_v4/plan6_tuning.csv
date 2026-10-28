@@ -2,4 +2,4 @@ config,workers,gpu_workers,field_batch,wall_seconds,result
 v5_baseline,20,8,2,1365.63,protocol_v4_test_v7_all24_gpu_sample_v5.json
 policy_gpu_only,20,8,2,1310.57,protocol_v4_test_v7_all24_gpu_sample_v6.json
 plan6_exact,20,4,4,1057.82,plan6_exact_w20_gpu4_fb4.json
-plan6_exact_gpu3,20,3,4,2100.95,plan6_exact_w20_gpu3_fb4.json
+plan6_exact_native,20,4,4,272.77,plan6_exact_native_w20_gpu4_fb4.json

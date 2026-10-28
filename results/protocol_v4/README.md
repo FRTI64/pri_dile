@@ -62,12 +62,14 @@ Plan 6 的性能优化保持**分数不变**：24/24 候选与 Plan 5 v5 baselin
 |---|---:|
 | Plan 5 v5 baseline（8 GPU / 12 CPU，fb2） | 1365.63s |
 | 仅 policy 对手上 GPU（8/12，fb2） | 1310.57s |
-| 3 GPU / 17 CPU，fb4 | 2100.95s（GPU 瓶颈） |
-| Plan 6 exact（4 GPU / 16 CPU，fb4） | **1057.82s** |
+| Plan 6 exact，native 前（4 GPU / 16 CPU，fb4） | 1057.82s |
+| **Plan 6 exact + native（4 GPU / 16 CPU，fb4）** | **272.77s** |
 
 - `Adv-*`、PSRO meta、规则/Axelrod 仍走 CPU；policy 对手 GPU 化只影响
-  原本就在 GPU 的候选，且分数逐位一致。exact 模式下 wall 未达到原
-  900s 目标；621.94s 属于被回退的 `Adv-*` GPU 实验，不作为结果。
+  原本就在 GPU 的候选，且分数逐位一致。
+- 6.6 的严格同序 C++ policy 前向把 wall 进一步降到 272.77s（5.01×），
+  24/24 候选仍逐位一致；621.94s 属于被回退的 `Adv-*` 改 RNG 实验，
+  不作为结果。
 - dev 五层 argmax 是本轮迁移的一次性诊断（历史记录）：695.57s →
   **475.38s**，24 候选与 argmax baseline 逐位一致；不能与 sample 表
   混用，也不作为长期 gate

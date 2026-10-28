@@ -1,18 +1,25 @@
 # Plan 6：Python 评估瓶颈优化
 
-- **状态：** 实现完成（2026-10-28）；6.1–6.4 完成，6.5 未做（无日常需求）
+- **状态：** 实现完成（2026-10-28）；6.1–6.4 + 6.6 完成，6.5 未做
+  （无日常需求）
 - **核心约束：** **24/24 候选分数必须与 Plan 5 v5 baseline（CPU
   Python policy 对手）逐位一致**；任何改变 RNG 消费顺序的加速都回退。
 - **代码：**
   - `ipd/evaluation/gpu/policy_opponents.py`：sample policy 对手按
     `(type, weights)` 分组、逐对象 RNG uniform、批内 `draw_idx`；
   - `ipd/core/opponents/axelrod_bank.py`：Axelrod 历史增量维护；
+  - `ipd/policies/policy_ops.cpp` / `ipd/policies/native.py`：严格同序
+    CPU policy 前向（Neumaier `sum()`、同分支 sigmoid、禁用 FMA/重排）；
   - `ipd/evaluation/protocol_cli.py`：`--fast-rules-threshold`、
     `--gpu-workers auto` 与 GPU-only 调度。
 - **测试：** `tests/test_gpu_parity.py`（policy 对手 parity）、
-  `tests/test_fast_opponents.py`；全量 303 tests 绿
+  `tests/test_fast_opponents.py`、`tests/test_policy_native.py`；
+  全量 307 tests 绿
 - **结果：**
-  - `results/protocol_v4/plan6_exact_w20_gpu4_fb4.json`（test_v7 v5 最佳）
+  - `results/protocol_v4/plan6_exact_native_w20_gpu4_fb4.json`
+    （test_v7 v5 最佳，272.77s）
+  - `results/protocol_v4/plan6_exact_w20_gpu4_fb4.json`
+    （native 前的 exact 对照，1057.82s）
   - `results/protocol_v4/protocol_v4_test_v7_all24_gpu_sample_v6.json`
     （6.1 单独，1310.57s，逐位一致）
   - `results/protocol_v4/plan6_migration_diagnostic_dev_argmax_w8fb2.json`
@@ -73,17 +80,17 @@ per-match RNG，导致 `test_v7` 均分变化 `Adv-MLP +0.10`、`Adv-GRU
 |---|---|
 | CPU/GPU 逐场 `mine/theirs/score` parity | **通过**：n=8 覆盖 `rl-repair`、`neural`、`gru`、`selfplay`、`psro-br`、`psro-scratch-br`，float64 全一致 |
 | 全量 test_v7 v5 分数 | **通过**：24/24 候选与 Plan 5 v5 baseline 逐位一致 |
-| 全量 test_v7 v5 wall | `1057.82s`（4 GPU / 16 CPU、field-batch 4） |
-| 全量测试 | **通过**：303 tests |
+| 全量 test_v7 v5 wall | **272.77s**（4 GPU / 16 CPU、field-batch 4，含 6.6 native） |
+| 全量测试 | **通过**：307 tests |
 
 6.1 单独（8 GPU / 12 CPU、field-batch 2）把 wall 从 1365.63s 降到
 **1310.57s**，且 24/24 候选逐位一致；剩余时间几乎全部在 16 个 CPU
 候选上，因此必须配合 6.2 的 worker split 继续压缩 wall。
 
-在“分数逐位一致”约束下，最终 wall 为 **1057.82s**，未达到原 900s
-目标。之前记录过的 621.94s 来自被回退的 `Adv-*` GPU 实验（会改变
-分数），不作为本计划的交付结果。要继续逼近 900s，只能做不改变 RNG
-和浮点求和顺序的 CPU 推理优化，而不是换采样契约。
+在“分数逐位一致”约束下，只做 RNG 一致优化时 wall 为 **1057.82s**；
+加入 6.6 的严格同序 CPU policy 前向后降到 **272.77s**，24/24 候选
+仍然逐位一致。之前记录过的 621.94s 来自被回退的 `Adv-*` GPU 实验
+（会改变分数），不作为本计划的交付结果。
 
 ### 6.2 Worker / batch 调优（完成）
 
@@ -94,13 +101,12 @@ per-match RNG，导致 `test_v7` 均分变化 `Adv-MLP +0.10`、`Adv-GRU
 |---|---:|
 | 旧 v5 baseline（8 GPU / 12 CPU，fb2，Plan 5） | 1365.63s |
 | 6.1 单独（8 GPU / 12 CPU，fb2） | 1310.57s |
-| 3 GPU / 17 CPU，fb4 | 2100.95s（GPU 成为瓶颈） |
-| **Plan 6 exact（4 GPU / 16 CPU，fb4）** | **1057.82s** |
+| Plan 6 exact，native 前（4 GPU / 16 CPU，fb4） | 1057.82s |
+| **Plan 6 exact + native（4 GPU / 16 CPU，fb4）** | **272.77s** |
 
 - `Adv-*`、PSRO meta、Final/Triple/Bayes/Resp3/Harvest 仍在 CPU，
-  v5 的 CPU 候选池比 GPU 任务更重，因此把 worker 从 8 调到 4；
-  3 GPU / 17 CPU 反而退化到 2100.95s（GPU worker 不足、任务串行），
-  说明 exact 配置下 4 GPU 是当前最优；
+  native 前 v5 的 CPU 候选池比 GPU 任务更重，因此把 worker 从 8 调到 4；
+  native 后 4/4 仍是最快配置；
 - field-batch 4 只改变 GPU 任务的聚合粒度，不改变逐场 RNG；full
   50×2048 下 batch 仍低于 `--gpu-max-batch 32768`；
 - 默认改为 `--gpu-workers auto`：混合 sample 用 4、混合 argmax 用 8、
@@ -165,6 +171,38 @@ test_v7 与 0.90 等价（73% < 75%），不再单独跑全量。
 这些命令不是当前日常高频路径，6.1–6.4 已把主评估瓶颈移走，因此本次
 不接入 `evaluate_fields_gpu`，避免扩大改动面。
 
+### 6.6 严格同序 CPU 推理（exact-native，完成）
+
+`Adv-*` 回退后，CPU policy 前向重新成为最大单项：16 个 CPU 候选中
+`policy` family 约 8.1k worker-seconds（50%）。新增
+`ipd/policies/policy_ops.cpp` + `ipd/policies/native.py`：
+
+- 只替换 MLP / GRU / SelfPlay-GRU 的矩阵-向量、GRU cell、head 和
+  `tanh` / `sigmoid`；`extract_features` 与 RNG 完全不动；
+- CPython 3.12+ 的 `sum()` 对 float 使用 Neumaier 补偿求和，因此 C++
+  `dot` 必须复刻同一算法，而不是简单左到右累加；
+- `sigmoid` 复刻 Python 的 `x>=0` / `x<0` 分支和 ±40 clamp；
+- 编译参数：`-O3 -ffp-contract=off -fno-fast-math
+  -fno-tree-vectorize`，禁止 FMA、重结合和向量化；
+- 无 NumPy/编译器时自动回退 Python；`copy.deepcopy` 时 native
+  handle 置空，回退 Python，避免 ctypes 指针不可复制；
+- 测试：`tests/test_policy_native.py` 对 MLP logit、GRU hidden、SelfPlay
+  logit/value、`Adv-*` sample 动作和 RNG state 做逐位比较。
+
+微基准（100 轮 × 200 次）：
+
+| policy | Python | native | 加速 |
+|---|---:|---:|---:|
+| Neural | 2.96s | 0.65s | **4.6×** |
+| GRU | 5.20s | 0.94s | **5.6×** |
+| SelfPlay-GRU | 27.84s | 1.53s | **18.2×** |
+| Adv-MLP | 0.22s | 0.04s | **5.3×** |
+| Adv-GRU | 2.58s | 0.47s | **5.5×** |
+| Adv-RL | 0.47s | 0.10s | **4.8×** |
+
+全量 `test_v7` v5（4 GPU / 16 CPU，fb4）：`272.77s`，
+24/24 候选与 baseline **逐位一致**。
+
 ## 3. 非目标
 
 - 不为 GPU 速度改变 Protocol v4 sample RNG；v5 仍是 opt-in。
@@ -179,20 +217,21 @@ test_v7 与 0.90 等价（73% < 75%），不再单独跑全量。
 
 | 顺序 | 任务 | 结果 |
 |---:|---|---|
-| 1 | 6.1 GPU sample policy 对手 | 完成；parity；全量 `1057.82s`，分数逐位一致 |
+| 1 | 6.1 GPU sample policy 对手 | 完成；parity；分数逐位一致 |
 | 2 | 6.2 worker/batch 调优 | 完成；4 GPU / fb4 最优 |
 | 3 | 6.3 Axelrod 历史增量 | 完成；224 策略 parity，3–4× family |
 | 4 | 6.4 RuleBank 阈值复核 | 完成；保留 auto 0.90 |
 | 5 | 6.5 legacy GPU | 未做；仅在有日常需求时 |
+| 6 | 6.6 严格同序 CPU 推理 | 完成；全量 **272.77s**，24/24 逐位一致 |
 
 最终门槛：
 
 | Gate | 目标 | 结果 |
 |---|---|---|
 | test_v7 v5 分数 | 与 Plan 5 v5 **逐位一致** | **通过**：24/24 候选 |
-| test_v7 v5 wall | ≤900s（原目标） | **1057.82s（未达）**；exact 分数优先，未采用会改分的 `Adv-*` GPU 路径 |
+| test_v7 v5 wall | ≤900s（原目标） | **272.77s（通过，5.01×）** |
 | CPU/GPU parity | 逐场一致 | 通过 |
-| 全量测试 | 全绿 | 303 tests OK |
+| 全量测试 | 全绿 | 307 tests OK |
 | Axelrod 分数 | 与 v4 语义一致 | 逐动作 parity 通过 |
 
 > **一次性迁移诊断（不属于长期 gate）：** `dev` argmax 的

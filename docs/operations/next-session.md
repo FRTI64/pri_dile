@@ -93,6 +93,7 @@ legacy，不能与新表混用。
 0. **Plan 6：Python 评估瓶颈（已完成，2026-10-28）**
    - v5 sample policy 对手已上 GPU，24/24 候分数逐位一致；
    - Axelrod adapter 历史增量维护；`--fast-rules-threshold` 已加；
+   - 严格同序 C++ CPU policy 前向；test_v7 v5 exact 272.77s；
    - `Adv-*` / PSRO meta 保持 CPU；见
      `docs/research/plan6-python-bottleneck.md`。
 1. **比赛提交硬化（若近期提交）**

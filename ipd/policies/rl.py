@@ -35,6 +35,7 @@ from ipd.policies.neural import (
     _payoff,
     extract_features,
 )
+from .native import make_mlp
 
 
 def _sigmoid(x: float) -> float:
@@ -124,6 +125,7 @@ class RLPolicy:
         if (self.value_trunk
                 and len(self.value_trunk[0][0][0]) != self.n_features):
             raise ValueError("value trunk and feature extractor disagree")
+        self._native = make_mlp(list(self.trunk) + [self.policy_head])
 
     @staticmethod
     def _affine(x: Sequence[float], layer) -> list[float]:
@@ -136,10 +138,27 @@ class RLPolicy:
             x = [math.tanh(v) for v in self._affine(x, layer)]
         return x
 
+    def _logit(self, features: Sequence[float]) -> float:
+        if len(features) != self.n_features:
+            raise ValueError("feature count mismatch")
+        if self._native is not None:
+            return self._native.forward(features)
+        h = self._trunk_forward(self.trunk, features)
+        return self._affine(h, self.policy_head)[0]
+
     def logit_value(self, features: Sequence[float]) -> tuple[float, float]:
         """Return ``(policy logit, value)`` for a precomputed feature vector."""
         if len(features) != self.n_features:
             raise ValueError("feature count mismatch")
+        if self._native is not None:
+            logit = self._native.forward(features)
+            if self.value_head is None:
+                return logit, 0.0
+            hv = (self._trunk_forward(self.trunk, features)
+                  if self.value_trunk is None
+                  else self._trunk_forward(self.value_trunk, features))
+            value = self._affine(hv, self.value_head)[0]
+            return logit, value
         h = self._trunk_forward(self.trunk, features)
         logit = self._affine(h, self.policy_head)[0]
         if self.value_head is None:
@@ -150,7 +169,7 @@ class RLPolicy:
         return logit, value
 
     def predict_proba(self, mine: Sequence[int], theirs: Sequence[int]) -> float:
-        logit, _ = self.logit_value(extract_features(mine, theirs))
+        logit = self._logit(extract_features(mine, theirs))
         if self.mode == "argmax":
             return 1.0 if logit >= 0.0 else 0.0
         return _sigmoid(logit / max(1e-6, self.temperature))
@@ -184,7 +203,7 @@ class RLPolicy:
         return C, _log_sigmoid(-z), False
 
     def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
-        logit, _ = self.logit_value(extract_features(mine, theirs))
+        logit = self._logit(extract_features(mine, theirs))
         action, _, _ = self.select(t, theirs, logit)
         return action
 

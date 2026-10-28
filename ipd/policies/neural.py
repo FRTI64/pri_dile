@@ -32,6 +32,8 @@ import random
 from operator import mul
 from typing import Sequence
 
+from .native import make_mlp
+
 C = 0
 D = 1
 
@@ -333,18 +335,24 @@ class NeuralPolicy:
         expected = self.n_features
         if len(self.layers[0][0][0]) != expected:
             raise ValueError("weight file and feature extractor disagree")
+        self._native = make_mlp(self.layers)
 
     @staticmethod
     def _affine(x: list[float], layer: tuple[list[list[float]], list[float]]) -> list[float]:
         w, b = layer
         return [sum(map(mul, row, x)) + bias for row, bias in zip(w, b)]
 
-    def predict_proba(self, mine: Sequence[int], theirs: Sequence[int]) -> float:
-        x = extract_features(mine, theirs)
+    def _logit(self, features: Sequence[float]) -> float:
+        if self._native is not None:
+            return self._native.forward(features)
+        x = list(features)
         for i, layer in enumerate(self.layers[:-1]):
             x = self._affine(x, layer)
             x = [math.tanh(v) for v in x]
-        logit = self._affine(x, self.layers[-1])[0]
+        return self._affine(x, self.layers[-1])[0]
+
+    def predict_proba(self, mine: Sequence[int], theirs: Sequence[int]) -> float:
+        logit = self._logit(extract_features(mine, theirs))
         if self.mode == "argmax":
             return 1.0 if logit >= 0 else 0.0
         z = max(-40.0, min(40.0, logit / max(1e-6, self.temperature)))

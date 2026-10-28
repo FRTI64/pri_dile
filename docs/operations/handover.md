@@ -26,11 +26,12 @@
 > **2026-10-28 更新**
 >
 > - Protocol v5 GPU sample 已 opt-in（`--sample-rng per-match`）；
->   Plan 6 把 sample policy 对手搬到 GPU、Axelrod adapter 改为增量历史。
->   `Adv-*` / PSRO meta 保持 CPU，确保 **24/24 候选分数与 CPU
->   baseline 逐位一致**。dev argmax 只在本轮迁移中做过一次性加速诊断，
->   不进入长期 gate。
-> - 最近完整测试：**303 tests OK**。详见
+>   Plan 6 把 sample policy 对手搬到 GPU、Axelrod adapter 改为增量历史，
+>   并加入严格同序 C++ CPU policy 前向。`test_v7` v5 exact 降到
+>   **272.77s**；`Adv-*` / PSRO meta 保持 CPU，确保 **24/24 候选分数与
+>   CPU baseline 逐位一致**。dev argmax 只在本轮迁移中做过一次性加速
+>   诊断，不进入长期 gate。
+> - 最近完整测试：**307 tests OK**。详见
 >   `docs/research/plan6-python-bottleneck.md`。
 
 本文只保留当前结论和可执行信息。实验细节、逐 family 表和复现脚本在

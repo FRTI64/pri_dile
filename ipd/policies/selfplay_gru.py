@@ -22,6 +22,7 @@ from typing import Sequence
 from ipd.core.primitives import C, D
 
 from . import selfplay_gru_obs as obs
+from .native import make_selfplay_gru
 
 
 def _sigmoid(x: float) -> float:
@@ -96,9 +97,14 @@ class SelfPlayGRUPolicy:
             for layer in weights["critic"]
         ]
         self.h = [[0.0] * self.hidden for _ in range(self.layers)]
+        self._native = make_selfplay_gru(
+            self.gru, self.actor, self.critic, self.hidden)
 
     def reset(self) -> None:
         self.h = [[0.0] * self.hidden for _ in range(self.layers)]
+        native = getattr(self, "_native", None)
+        if native is not None:
+            native.reset()
 
     def _gru_layer(self, x: Sequence[float], h: Sequence[float],
                    layer) -> list[float]:
@@ -117,6 +123,10 @@ class SelfPlayGRUPolicy:
         if len(features) != self.n_features:
             raise ValueError("feature count mismatch")
         x: list[float] = [float(v) for v in features]
+        if self._native is not None:
+            logit, value, hidden = self._native.step(x)
+            self.h = hidden
+            return logit, value
         new_h = []
         for i, layer in enumerate(self.gru):
             x = self._gru_layer(x, self.h[i], layer)
