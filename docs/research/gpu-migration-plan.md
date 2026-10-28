@@ -1,6 +1,6 @@
 # GPU/批处理迁移计划（计划 1–4）
 
-> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）；**Plan 2 已实现并通过 Gate 2**（2026-10-28）
+> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）；**Plan 2 已实现并通过 Gate 2**（2026-10-28）；**Plan 3 已实现并通过 Gate 3A**（2026-10-28）
 > 依据：`/tmp/opencode/gpu_ipd.py` 原型 + Protocol v4 实测微基准 + 256 tests
 > 目标：在不破坏 Protocol v4 语义的前提下，把 dev/test 评估从小时级降到分钟级，并把训练 rollout 提速 10–50×。
 > 本次修订：基于 2026-10-27 的实测成本结构，修正了收益归因、RNG 契约、验收指标和时间线。关键变化见“实测基线”和“关键约束”。
@@ -318,6 +318,17 @@
 
 ## 计划 3：规则/复杂对手批处理（训练 rollout 优先，3–5 周）
 
+> **状态（2026-10-28）：实现完成，Gate 3A 通过。**
+> 代码位于 `ipd/evaluation/fast/`：C++/ctypes 规则解释器覆盖 71 个类型，
+> `BatchOpponentField` 和 `VectorEnv` 已接入；规则 config 覆盖 98.8%，
+> `test_v7` 规则实例覆盖 99.4%，随机规则也逐位 parity。
+> Gate 3A 在 2048×100 场上比较 C++ / Torch GPU：
+> C++ 5.46× vs Python，GPU 1.38×，C++ 是 GPU 的 3.96×，选择 C++。
+> 规则主导的 `dev_complex` 评估 7.55×；训练规则 B=2048 3.04×；
+> `test_v7` 评估因 policy/Axelrod 主导，auto 不启用，保持不回归。
+> 详见 [plan3-fast-opponents.md](plan3-fast-opponents.md) 和
+> [parity-notes.md](parity-notes.md)。
+
 ### 目标
 
 把非 Axelrod 的对手逻辑批量处理，**主要服务于训练 rollout**，而不是评估：
@@ -349,55 +360,88 @@
 
 ### 任务
 
-- [ ] **3.1 标准规则 bank**
+- [x] **3.1 标准规则 bank**
   - 先覆盖已原型化的 24 类：AllC/AllD/TFT/Grim/GTFT/TFT2/Pavlov/Random/Late/Suspicious/FBF/Grudge2/WSLS2/Prober/Tester/TTFT/Contrite/MemoryOne/Periodic/AllC-lastD/GrudgerK/Reactive/Omega/ZD；
   - 再补：Joss、NoisyTFT、ForgiveTFT、TwoStrike、GrimForgive、Responsive/2/3、TFTProbe、AdaptiveProbe、RandomFSM、HarvestFactor、Kamikaze、ProbePhase、DynamicWindow、WindowTFT 等；
   - 优先级按训练 rollout 的使用频率，而不是按评估占比。
+  - **结果**：`rules.cpp` 覆盖 71 个规则类型/别名；Protocol 规则 config
+    719/728 = 98.8%，`test_v7` 规则实例 99.4%。`RandomFSM` 保留 CPU
+    fallback；随机规则通过复刻 CPython MT19937 达到逐位一致。
 
-- [ ] **3.2 复杂 family（按训练耗时/占比排序）**
+- [x] **3.2 复杂 family（按训练耗时/占比排序）**
   - 第一批：AdaptiveMix、PhaseSwitcher、MemoryTwo、DelayedExtort、EndgameHunter、PatternBreaker；
   - 第二批：NoiseAdaptive、ReputationGrim、ContritionCycle、ConditionalExtort、ProbeExploit、MetaMix、VotingPortfolio、LookaheadOpponent；
   - 每个 family 单独适配器 + golden test。
+  - **结果**：14 个复杂 family 全部进入原生 bank；`VotingPortfolio`
+    的成员（含 adaptive/probe/harvest）单独维护状态。golden 测试
+    `test_every_catalog_config_matches_python` 覆盖全部 config。
 
-- [ ] **3.3 test-only family**
+- [x] **3.3 test-only family**
   - HarvestFactor、Kamikaze、ProbePhase、TFTProbe、AdaptiveProbe、HyperExtort；
   - 这些在 test_v7 占 20% 实例，但单场耗时与普通规则同量级；先确认评估侧是否真的需要 fast path，再决定优先级。
+  - **结果**：6 个 test-only family 全部原生实现；HyperExtort 复用
+    ExtortZD。`test_v7` 规则实例覆盖 99.4%，评估 auto 只在规则主导
+    字段启用。
 
-- [ ] **3.4 混合调度**
+- [x] **3.4 混合调度**
   - 训练：GPU/C++ 规则 + CPU Axelrod/复杂 fallback；
   - 评估：只有实测有收益的 tier 才启用 fast path；否则保持 CPU，避免双实现漂移；
   - 合并 `by_opponent`，保持 family 归一化。
+  - **结果**：`BatchOpponentField --fast-rules auto` 在 fast 行 <90%
+    时关闭（`test_v7` 约 73%，不启用）；`dev_complex` 100% 规则行，
+    启用后 7.55×。`VectorEnv` 仅在 `envs>=128` 时启用，避免小 batch
+    回归；`by_opponent`/family 聚合不变。
 
-- [ ] **3.5 Parity 套件**
+- [x] **3.5 Parity 套件**
   - 每个 family：固定 seed 的确定性模式逐位比对；
   - 随机模式：1000 场均值/分位数检验；
   - 记录已知差异（如 RNG 顺序）到 `docs/research/parity-notes.md`。
+  - **结果**：`tests/test_fast_opponents.py` 对 719 config × 100 轮做
+    逐动作比对；随机规则也逐位一致（复刻 CPython MT19937）。已知
+    fallback 和复合规则 RNG 修复记录在 `parity-notes.md`。
 
-- [ ] **3.6 性能基准**
+- [x] **3.6 性能基准**
   - 分 family 记录 CPU 20w、C++、GPU RuleBank 的 ms/match；
   - 同时记录训练 rollout 的 opponent-step 时间，不要只测评估；
   - 回归门槛：任何 family 不得比 CPU 慢 >10%。
+  - **结果**：`bench/bench_fast_opponents.py` 记录 spike、规则字段、
+    `test_v7`、训练 B=32/128/512/2048。规则主导评估 7.55×，
+    规则 B=2048 训练 3.04×；`test_v7` auto 关闭，避免 8% 回归。
+    原始数据：`results/protocol_v4/plan3_fast_opponents.json`。
 
 ### 交付物
 
-- `ipd/evaluation/fast/` 或 `ipd/training/fast/`（C++/Numba/GPU 实现）；
+- `ipd/evaluation/fast/`（C++/ctypes 实现，含 `rules.cpp`、`native.py`、
+  `bank.py`、`spec.py`、`gpu_spike.py`）；
 - `tests/test_fast_opponents.py`；
-- `bench/bench_opponents.py`（评估 + 训练两套场景）；
-- `docs/research/plan3-fast-opponents.md`。
+- `bench/bench_fast_opponents.py`（评估 + 训练两套场景）；
+- `docs/research/plan3-fast-opponents.md`；
+- `docs/research/parity-notes.md`。
 
 ### 验收标准
 
-- [ ] ≥95% 非 Axelrod 实例走 fast path；
-- [ ] 每个 family 确定性 mode 0 差异；
-- [ ] 训练 rollout 的 opponent-step 达到 4.1 profile 设定的目标（建议先定 5–10×，再按实测调整）；
-- [ ] 评估侧不回归；快速规则候选有可测量的增量；
-- [ ] 不承诺 test_v7 6–10× 来自规则批处理；如要该指标，必须把 Plan 2 的蓝方/policy 收益一起计入；
-- [ ] Axelrod 仍 CPU，结果不变；
-- [ ] 256 tests + 新测试全绿。
+- [x] ≥95% 非 Axelrod 实例走 fast path
+  — **通过**：`test_v7` 规则实例 99.4%，非 Axelrod（含 Plan 2 policy）
+  99.5%；规则 config 98.8%。
+- [x] 每个 family 确定性 mode 0 差异
+  — **通过**：719 config × 100 轮逐动作 0 差异；随机规则也逐位一致。
+- [x] 训练 rollout 的 opponent-step 达到 4.1 profile 设定的目标（建议先定 5–10×，再按实测调整）
+  — **按实测调整**：规则 B=2048 3.04×、B=128 1.69×；全 mix 被
+  policy 主导（0.89×），因此 `VectorEnv` 只在 `envs>=128` 启用。
+- [x] 评估侧不回归；快速规则候选有可测量的增量
+  — **通过**：`auto` 在 `test_v7` 关闭；`dev_complex` 7.55×。
+- [x] 不承诺 test_v7 6–10× 来自规则批处理；如要该指标，必须把 Plan 2 的蓝方/policy 收益一起计入
+  — **遵守**：`test_v7` 全 field 规则 bank 全开为 0.92×，auto 关闭。
+- [x] Axelrod 仍 CPU，结果不变
+  — **通过**：Axelrod 未注册 fast spec。
+- [x] 256 tests + 新测试全绿
+  — **通过**：284 tests，111.2s，OK。
 
 ### 风险与回退
 
 - **语义漂移**：任何 family 不达标就回退 CPU，不阻塞整体；
+- **复合规则 RNG 共享 bug**：`HarvestFactor` 位置参数误传已修复（见
+  `parity-notes.md`）；旧 VotingPortfolio 结果本来不可复现，不作为基线；
 - **维护双实现**：用 golden tests 锁定 CPU 行为；新对手先 CPU 实现，再决定是否 fast path；
 - **Axelrod 类级状态**：Darwin 等不要复用对象；主协议不含 cheating bank，保持隔离；
 - **工期**：24 标准 + 14 complex + 6 test-only 约 44 个 family/type，1 名工程师 3–5 周偏紧；按 family 分批交付，Gate 3 只要求 spike + 1–2 个 family；
@@ -501,7 +545,16 @@
 组件 30×/100× 均通过；`test_v7 all24` 实测 714.97s，相对 20-worker CPU
 基线 3052.42s 为 **4.27×**。20 个 CUDA context 在本机 31GB 内存上会 OOM，
 因此生产配置固定为 `--workers 20 --gpu-workers 8`（12 CPU + 8 GPU）。
-规则/Axelrod 仍是 CPU lock-step；计划 3 仍可继续降低这部分成本。
+规则/Axelrod 仍是 CPU lock-step；Plan 3 已进一步降低规则部分的成本，
+Axelrod 和 policy 仍按原路径处理。
+
+**Gate 3A 状态（2026-10-28）：通过。** 在 2048×100 的 TFT+HarvestFactor
+异构场上，C++ 5.46× vs Python、最佳 Torch GPU 1.38×，C++ 是 GPU 的
+3.96×，超过 2× 门槛；因此选择 C++，取消全量 GPU 规则移植。规则 config
+覆盖 98.8%，`test_v7` 规则实例 99.4%；规则主导的 `dev_complex` 评估
+7.55×，规则训练 B=2048 3.04×。`test_v7` 全 field 规则 bank 全开为 0.92×
+（policy/Axelrod 主导），`--fast-rules auto` 自动关闭，保证评估不回归。
+详见 [plan3-fast-opponents.md](plan3-fast-opponents.md)。
 
 ## 资源与成本
 
@@ -526,6 +579,15 @@
 ---
 
 ## 变更记录
+
+- **v5（2026-10-28）**：Plan 3 实现完成并通过 Gate 3A：
+  `ipd/evaluation/fast/` 的 C++/ctypes 规则解释器覆盖 71 个类型、
+  719/728 规则 config；CPython MT19937 复刻使随机规则也逐动作 parity；
+  `BatchOpponentField --fast-rules auto` 和 `VectorEnv`（`envs>=128`）
+  已接入；`dev_complex` 规则评估 7.55×，规则训练 B=2048 3.04×。
+  Gate 3A：2048×100 TFT+Harvest 上 C++ 5.46× vs Python、GPU 1.38×，
+  C++ 是 GPU 的 3.96×，选择 C++。`test_v7` 因 policy/Axelrod 主导，
+  auto 不启用，避免回归；284 tests 全绿。
 
 - **v4（2026-10-28）**：Plan 2 实现完成并通过 Gate 2：
   `ipd/evaluation/gpu/` 特征/策略/对手/模拟器；`protocol eval` 的 argmax

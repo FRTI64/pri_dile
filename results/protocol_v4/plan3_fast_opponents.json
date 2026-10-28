@@ -1,0 +1,142 @@
+{
+  "schema": "ipd-plan3-fast-opponents-v1",
+  "created": "2026-10-28T15:40:44",
+  "cxx": "g++",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5090 Laptop GPU"
+  },
+  "quick": false,
+  "rounds": 100,
+  "spike": {
+    "available": true,
+    "batch": 2048,
+    "rounds": 100,
+    "mix": "50% TFT + 50% HarvestFactor",
+    "cpu_python_seconds": 0.022993,
+    "native_setup_seconds": 0.04475,
+    "native_seconds": 0.004211,
+    "native_parity": true,
+    "gpu_seconds_cold": 0.224157,
+    "gpu_seconds": 0.016683,
+    "native_speedup_vs_python": 5.46,
+    "gpu_speedup_vs_python": 1.38,
+    "native_vs_gpu": 3.96,
+    "gate_3a": "C++"
+  },
+  "eval": {
+    "tier": "test_v7",
+    "n": 2048,
+    "rounds": 100,
+    "fast_rows": 1502,
+    "fallback_rows": 546,
+    "fast_fraction": 0.7334,
+    "cpu_python_seconds": 8.501222,
+    "native_seconds": 9.20106,
+    "speedup": 0.92,
+    "parity_fast_rows": true
+  },
+  "eval_rule": {
+    "tier": "dev_complex",
+    "n": 2048,
+    "rounds": 100,
+    "fast_rows": 2048,
+    "fallback_rows": 0,
+    "fast_fraction": 1.0,
+    "cpu_python_seconds": 0.08001,
+    "native_seconds": 0.010599,
+    "speedup": 7.55,
+    "parity_fast_rows": true
+  },
+  "training": [
+    {
+      "batch": 32,
+      "rounds": 100,
+      "fast_rows": 29,
+      "fallback_rows": 3,
+      "fast_fraction": 0.9062,
+      "cpu_python_seconds": 0.031478,
+      "native_seconds": 0.033583,
+      "speedup": 0.94,
+      "parity_fast_rows": true
+    },
+    {
+      "batch": 128,
+      "rounds": 100,
+      "fast_rows": 99,
+      "fallback_rows": 29,
+      "fast_fraction": 0.7734,
+      "cpu_python_seconds": 0.23039,
+      "native_seconds": 0.244258,
+      "speedup": 0.94,
+      "parity_fast_rows": true
+    },
+    {
+      "batch": 512,
+      "rounds": 100,
+      "fast_rows": 460,
+      "fallback_rows": 52,
+      "fast_fraction": 0.8984,
+      "cpu_python_seconds": 0.440358,
+      "native_seconds": 0.467273,
+      "speedup": 0.94,
+      "parity_fast_rows": true
+    },
+    {
+      "batch": 2048,
+      "rounds": 100,
+      "fast_rows": 1663,
+      "fallback_rows": 385,
+      "fast_fraction": 0.812,
+      "cpu_python_seconds": 2.460591,
+      "native_seconds": 2.753105,
+      "speedup": 0.89,
+      "parity_fast_rows": true
+    }
+  ],
+  "training_rules": [
+    {
+      "batch": 32,
+      "rounds": 100,
+      "fast_rows": 32,
+      "fallback_rows": 0,
+      "fast_fraction": 1.0,
+      "cpu_python_seconds": 0.000463,
+      "native_seconds": 0.000644,
+      "speedup": 0.72,
+      "parity_fast_rows": true
+    },
+    {
+      "batch": 128,
+      "rounds": 100,
+      "fast_rows": 128,
+      "fallback_rows": 0,
+      "fast_fraction": 1.0,
+      "cpu_python_seconds": 0.001557,
+      "native_seconds": 0.000922,
+      "speedup": 1.69,
+      "parity_fast_rows": true
+    },
+    {
+      "batch": 512,
+      "rounds": 100,
+      "fast_rows": 512,
+      "fallback_rows": 0,
+      "fast_fraction": 1.0,
+      "cpu_python_seconds": 0.006667,
+      "native_seconds": 0.002317,
+      "speedup": 2.88,
+      "parity_fast_rows": true
+    },
+    {
+      "batch": 2048,
+      "rounds": 100,
+      "fast_rows": 2048,
+      "fallback_rows": 0,
+      "fast_fraction": 1.0,
+      "cpu_python_seconds": 0.026951,
+      "native_seconds": 0.008876,
+      "speedup": 3.04,
+      "parity_fast_rows": true
+    }
+  ]
+}

@@ -72,6 +72,8 @@ class TrainConfig:
     device: str = "auto"
     envs: int = 32
     rounds: int = 100
+    fast_rules: bool = True
+    fast_rules_min_envs: int = 128
     total_episodes: int = 15000
     red_league_size: int = 8
     red_update_every: int = 3

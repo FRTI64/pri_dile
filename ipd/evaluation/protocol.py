@@ -451,7 +451,7 @@ class PhaseSwitcher(Strategy):
         self.second = str(second)
         self.chi = float(chi)
         self._ext = ExtortZD(self.chi, rng)
-        self._harvest = HarvestFactor(self.switch, False, 1.0, rng)
+        self._harvest = HarvestFactor(self.switch, False, 1.0, rng=rng)
         super().__init__(rng)
         self.name = f"Phase:{first}->{second}@{switch}"
 
@@ -491,7 +491,7 @@ class AdaptiveMix(Strategy):
         self.threshold = float(threshold)
         self.exploit = str(exploit)
         self._ext = ExtortZD(chi, rng)
-        self._harvest = HarvestFactor(25, False, 1.0, rng)
+        self._harvest = HarvestFactor(25, False, 1.0, rng=rng)
         super().__init__(rng)
         self.name = f"AdaptiveMix:{exploit}@{window}"
 
@@ -525,7 +525,7 @@ class ProbeExploit(Strategy):
         self.probe = int(probe)
         self.mode = str(mode)
         self._ext = ExtortZD(chi, rng)
-        self._harvest = HarvestFactor(20, False, 1.0, rng)
+        self._harvest = HarvestFactor(20, False, 1.0, rng=rng)
         super().__init__(rng)
         self.name = f"ProbeExploit:{mode}@{probe}"
 
@@ -611,7 +611,7 @@ class MetaMix(Strategy):
         self.modes = tuple(str(x) for x in modes)
         self.mode = rng.choice(self.modes) if rng is not None else "tft"
         self._ext = ExtortZD(3.0, rng)
-        self._harvest = HarvestFactor(25, True, 1.0, rng)
+        self._harvest = HarvestFactor(25, True, 1.0, rng=rng)
         super().__init__(rng)
         self.name = f"Meta:{self.mode}"
 
@@ -879,7 +879,7 @@ class VotingPortfolio(Strategy):
         if mode == "extort":
             return ExtortZD(3.0, self.rng)
         if mode == "harvest":
-            return HarvestFactor(30, True, 1.0, self.rng)
+            return HarvestFactor(30, True, 1.0, rng=self.rng)
         if mode == "adaptive":
             return Responsive3(rng=self.rng)
         if mode == "probe":
@@ -1467,7 +1467,19 @@ class OpponentConfig:
     def build(self, rng: random.Random) -> Strategy:
         if self.type_name not in _BUILDERS:
             raise KeyError(f"no builder for {self.type_name!r}")
-        return _BUILDERS[self.type_name](rng, **dict(self.params))
+        bot = _BUILDERS[self.type_name](rng, **dict(self.params))
+        # Metadata for the Plan 3 fast rule bank.  Unsupported types
+        # (Axelrod, learned policies, RandomFSM, ProbeBot) are ignored by
+        # attach_fast_spec and keep their original implementation.
+        try:
+            from .fast.spec import attach_fast_spec
+
+            attach_fast_spec(bot, self.type_name, family=self.family,
+                             name=f"{self.family}:{self.key}",
+                             **dict(self.params))
+        except Exception:
+            pass
+        return bot
 
     def signature(self) -> tuple[str, str]:
         return (self.type_name,

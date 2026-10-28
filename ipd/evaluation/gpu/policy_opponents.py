@@ -19,6 +19,8 @@ from typing import Any, Sequence
 
 import torch
 
+from ..fast.bank import RuleBank
+from ..fast.spec import get_fast_spec
 from .features import FeatureState21, FeatureState85
 from .policies import BatchGRU, BatchMLP, BatchSelfPlayGRU
 
@@ -107,13 +109,15 @@ class BatchOpponentField:
 
     def __init__(self, opponents: Sequence[Any], rows: Sequence[int],
                  *, device: torch.device, dtype: torch.dtype,
-                 rounds: int = 100, profile: bool = False) -> None:
+                 rounds: int = 100, profile: bool = False,
+                 fast_rules: bool | str = "auto") -> None:
         if len(opponents) != len(rows):
             raise ValueError("opponents and rows must have the same length")
         self.device = torch.device(device)
         self.dtype = dtype
         self.rounds = int(rounds)
         self.profile = bool(profile)
+        self.fast_rules_mode = fast_rules
         self.family_seconds: dict[str, float] = {}
         self._events: list[tuple[str, Any, Any]] = []
         self.n = len(rows)
@@ -121,14 +125,40 @@ class BatchOpponentField:
                       for obj in opponents]
         self.groups: list[_Group] = []
         self.cpu: list[tuple[int, Any, list[int], list[int]]] = []
+        self.rules: RuleBank | None = None
+        self.rule_rows: list[int] = []
+        self.rule_seconds = 0.0
+        self._current_t = 0
         grouped: dict[tuple, list[tuple[int, Any]]] = {}
+        rule_members: list[tuple[int, Any]] = []
         for row, obj in zip(rows, opponents):
             kind = _policy_kind(obj)
-            if kind is None:
-                self.cpu.append((int(row), obj, [], []))
+            if kind is not None:
+                grouped.setdefault(_weights_key(obj, kind), []).append(
+                    (int(row), obj))
                 continue
-            grouped.setdefault(_weights_key(obj, kind), []).append(
-                (int(row), obj))
+            if (self.fast_rules_mode is not False
+                    and get_fast_spec(obj) is not None):
+                rule_members.append((int(row), obj))
+                continue
+            self.cpu.append((int(row), obj, [], []))
+
+        if rule_members:
+            # ``auto`` declines a field where the fast rules are a small
+            # minority; the Python fallback would dominate and the bank's
+            # setup overhead would be a net regression (test_v7 is ~70% rules
+            # by row count but only ~4% by cost).
+            enable = self.fast_rules_mode is True or self.fast_rules_mode == "on"
+            if self.fast_rules_mode == "auto":
+                enable = len(rule_members) / max(1, self.n) >= 0.90
+            bank = RuleBank([obj for _, obj in rule_members],
+                            rounds=self.rounds, enable=enable)
+            if bank.enabled:
+                self.rules = bank
+                self.rule_rows = [row for row, _ in rule_members]
+            else:
+                for row, obj in rule_members:
+                    self.cpu.append((row, obj, [], []))
 
         for (kind, _identity, safe, temperature), members in grouped.items():
             group_rows = [row for row, _ in members]
@@ -155,9 +185,12 @@ class BatchOpponentField:
                 setter(self.rounds)
 
     def reset(self) -> None:
+        self._current_t = 0
         for group in self.groups:
             group.state.reset()
             group.policy.reset(len(group.rows))
+        if self.rules is not None:
+            self.rules.reset()
         for _, obj, own, blue in self.cpu:
             reset = getattr(obj, "reset", None)
             if callable(reset):
@@ -173,6 +206,7 @@ class BatchOpponentField:
         # tensor in the rule-heavy loop costs one synchronising kernel per
         # opponent per round.
         actions = [0] * self.n
+        self._current_t = int(t)
         for group in self.groups:
             if self.profile and self.device.type == "cuda":
                 start = torch.cuda.Event(enable_timing=True)
@@ -191,6 +225,15 @@ class BatchOpponentField:
             if self.profile and self.device.type == "cuda":
                 end.record()
                 self._events.append(("policy", start, end))
+
+        if self.rules is not None:
+            started = (time.perf_counter() if self.profile else 0.0)
+            blue = blue_actions.detach().cpu().tolist()
+            rule_actions = self.rules.act(t, blue)
+            if self.profile:
+                self.rule_seconds += time.perf_counter() - started
+            for row, value in zip(self.rule_rows, rule_actions):
+                actions[row] = int(value)
 
         if self.cpu:
             for row, obj, own, blue in self.cpu:
@@ -217,6 +260,8 @@ class BatchOpponentField:
                     self.family_seconds.get(family, 0.0)
                     + start.elapsed_time(end) / 1000.0)
             self._events.clear()
+        if self.rule_seconds:
+            self.family_seconds["rulebank"] = self.rule_seconds
         return dict(self.family_seconds)
 
     def observe(self, blue_actions: torch.Tensor,
@@ -224,6 +269,15 @@ class BatchOpponentField:
         for group in self.groups:
             group.state.append(opponent_actions[group.rows_t],
                                blue_actions[group.rows_t])
+        if self.rules is not None:
+            b = blue_actions.detach().cpu().tolist()
+            o = opponent_actions.detach().cpu().tolist()
+            # RuleBank rows are local (0..len(rule_rows)-1), while the field
+            # rows can have gaps for policies/Axelrod fallbacks.
+            self.rules.observe(
+                self._current_t,
+                [b[row] for row in self.rule_rows],
+                [o[row] for row in self.rule_rows])
         if self.cpu:
             b = blue_actions.detach().cpu().tolist()
             o = opponent_actions.detach().cpu().tolist()

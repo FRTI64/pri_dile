@@ -294,6 +294,11 @@ python3 -m unittest discover -s tests -t . -v
 
 ### 8.3 给 Plan 3（规则批处理）
 
+> **Plan 3 已完成（2026-10-28）：** C++/ctypes 规则 bank 覆盖 98.8%
+> 规则 config；规则主导评估 7.55×，规则训练 B=2048 3.04×；
+> `test_v7` 因 policy/Axelrod 主导，`--fast-rules auto` 保持 CPU。
+> 详见 [plan3-fast-opponents.md](plan3-fast-opponents.md)。
+
 - 当前 GPU 任务的剩余成本主要是规则/Axelrod 的 Python lock-step callback；
   5-field profile 中 `policy` 814s，`AxelrodMix + axelrod + axelrod_extra`
   约 161s，anchor 约 14s。

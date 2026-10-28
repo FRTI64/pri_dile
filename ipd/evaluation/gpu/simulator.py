@@ -53,13 +53,15 @@ def _payoff(mine: torch.Tensor, theirs: torch.Tensor) -> torch.Tensor:
 def _simulate_chunk(policy: Any, opponents: Sequence[Any],
                     rows: Sequence[int], *, device: torch.device,
                     dtype: torch.dtype, rounds: int,
-                    profile: bool = False
+                    profile: bool = False,
+                    fast_rules: bool | str = "auto"
                     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor,
                                torch.Tensor, float, float, dict[str, float]]:
     n = len(rows)
     blue = GpuBlueField(policy, list(range(n)), device, dtype, rounds)
     opp = BatchOpponentField(opponents, list(range(n)), device=device,
-                             dtype=dtype, rounds=rounds, profile=profile)
+                             dtype=dtype, rounds=rounds, profile=profile,
+                             fast_rules=fast_rules)
     mine = torch.zeros(n, rounds, dtype=torch.int8, device=device)
     theirs = torch.zeros(n, rounds, dtype=torch.int8, device=device)
     score = torch.zeros(n, dtype=torch.long, device=device)
@@ -97,6 +99,7 @@ def evaluate_fields_gpu(
     max_batch: int = 32768,
     profile: bool = False,
     keep_histories: bool = False,
+    fast_rules: bool | str = "auto",
 ) -> list[FieldSimulation]:
     """Evaluate ``policy`` against every field with batched inference.
 
@@ -132,7 +135,8 @@ def evaluate_fields_gpu(
         rows = list(range(start, stop))
         mine_c, theirs_c, s, os_, blue_s, opp_s, family_s = _simulate_chunk(
             policy, all_opponents[start:stop], rows, device=dev,
-            dtype=dtype, rounds=rounds, profile=profile)
+            dtype=dtype, rounds=rounds, profile=profile,
+            fast_rules=fast_rules)
         scores[start:stop] = s
         opp_scores[start:stop] = os_
         blue_total += blue_s
@@ -193,12 +197,13 @@ def evaluate_field_gpu(
     max_batch: int = 32768,
     profile: bool = False,
     keep_histories: bool = False,
+    fast_rules: bool | str = "auto",
 ) -> FieldSimulation:
     """Convenience wrapper for a single field."""
     return evaluate_fields_gpu(
         policy, [opponents], rounds=rounds, device=device, dtype=dtype,
         max_batch=max_batch, profile=profile,
-        keep_histories=keep_histories)[0]
+        keep_histories=keep_histories, fast_rules=fast_rules)[0]
 
 
 __all__ = ["FieldSimulation", "evaluate_field_gpu", "evaluate_fields_gpu"]

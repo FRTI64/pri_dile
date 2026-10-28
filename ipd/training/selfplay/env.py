@@ -13,6 +13,7 @@ from typing import Callable, Sequence
 import numpy as np
 
 from ipd.core.primitives import payoff
+from ipd.evaluation.fast.bank import RuleBank
 
 from .obs import features, features_batch
 
@@ -81,10 +82,15 @@ class VectorEnv:
     """
 
     def __init__(self, factories: Sequence[OpponentFactory],
-                 families: Sequence[str] | None = None):
+                 families: Sequence[str] | None = None,
+                 fast_rules: bool = True,
+                 fast_rules_min_envs: int = 128):
         self.envs = [IPDEnv() for _ in factories]
         self.factories = list(factories)
         self.families = list(families or ["unknown"] * len(factories))
+        self.fast_rules = bool(fast_rules)
+        self.fast_rules_min_envs = max(1, int(fast_rules_min_envs))
+        self.rules: RuleBank | None = None
         self.reset()
 
     def reset(self, factories: Sequence[OpponentFactory] | None = None,
@@ -98,6 +104,25 @@ class VectorEnv:
         for env, factory, family in zip(self.envs, self.factories,
                                         self.families):
             env.reset(factory, family=family)
+        if self.rules is not None:
+            self.rules.close()
+            self.rules = None
+        if (self.fast_rules and len(self.envs) >= self.fast_rules_min_envs):
+            # ctypes/Python per-round overhead exceeds the native work for
+            # tiny batches (B=32); keep the original path there.  Large
+            # rollout batches are the target of Plan 3/4.
+            bank = RuleBank([env.opponent for env in self.envs],
+                            rounds=ROUNDS, enable=True)
+            if bank.enabled:
+                self.rules = bank
+
+    @property
+    def fast_enabled(self) -> bool:
+        return self.rules is not None
+
+    @property
+    def fast_fraction(self) -> float:
+        return 0.0 if self.rules is None else self.rules.fast_fraction
 
     @property
     def n(self) -> int:
@@ -113,6 +138,25 @@ class VectorEnv:
         own = np.zeros(len(self.envs), dtype=np.float32)
         other = np.zeros(len(self.envs), dtype=np.float32)
         done = np.zeros(len(self.envs), dtype=np.bool_)
+        if self.rules is not None:
+            t = self.envs[0].t
+            if any(env.t != t for env in self.envs):
+                # Fall back to the row-wise path if the environments have
+                # somehow diverged (e.g. a caller stepped one manually).
+                self.rules = None
+            else:
+                replies = self.rules.step(t, actions)
+                for i, (env, action, reply) in enumerate(
+                        zip(self.envs, actions, replies)):
+                    a = payoff(action, reply)
+                    b = payoff(reply, action)
+                    env.mine.append(int(action))
+                    env.theirs.append(int(reply))
+                    env.t += 1
+                    own[i] = a
+                    other[i] = b
+                    done[i] = env.t >= ROUNDS
+                return own, other, done
         for i, (env, action) in enumerate(zip(self.envs, actions)):
             a, b, d = env.step(int(action))
             own[i] = a

@@ -288,7 +288,8 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                 device=str(gpu.get("device", "cuda")),
                 dtype=_parse_torch_dtype(str(gpu.get("dtype", "float32"))),
                 max_batch=int(gpu.get("max_batch", 32768)),
-                profile=bool(gpu.get("profile", False)))
+                profile=bool(gpu.get("profile", False)),
+                fast_rules=gpu.get("fast_rules", "auto"))
             for seed, simulation in zip(seeds, simulations):
                 stats = FieldStats(sum(simulation.scores), simulation.scores,
                                    simulation.names)
@@ -498,6 +499,10 @@ def _eval(argv: Sequence[str]) -> int:
     ap.add_argument("--gpu-workers", type=int, default=8,
                     help="concurrent worker processes allowed to use CUDA "
                          "when CPU and GPU tasks are mixed (default: 8)")
+    ap.add_argument("--fast-rules", choices=("auto", "on", "off"),
+                    default="auto",
+                    help="Plan 3 native rule bank for non-Axelrod rule "
+                         "opponents (auto = use when the C++ module builds)")
     ap.add_argument("--profile", action="store_true",
                     help="write per-family/per-candidate timings to "
                          "results/protocol_v4/profile_*.json")
@@ -576,6 +581,28 @@ def _eval(argv: Sequence[str]) -> int:
     if gpu_enabled and cpu_specs:
         print(f"GPU routing: {len(gpu_specs)} candidate(s) batched, "
               f"{len(cpu_specs)} candidate(s) on CPU", flush=True)
+
+    # Plan 3: native rule bank.  It is an orthogonal CPU-side fast path; it
+    # applies whenever the GPU simulator evaluates rule opponents.
+    fast_rules = False
+    fast_rules_reason = "disabled by --fast-rules off"
+    if args.fast_rules != "off":
+        try:
+            from .fast.native import available as fast_available
+
+            fast_rules = bool(fast_available())
+            fast_rules_reason = ("native C++ rules available"
+                                 if fast_rules else "C++ build unavailable")
+        except Exception as exc:  # pragma: no cover - toolchain failure
+            fast_rules_reason = f"C++ build unavailable: {exc}"
+        if args.fast_rules == "on" and not fast_rules:
+            print(f"WARNING: --fast-rules on but the native bank is "
+                  f"unavailable ({fast_rules_reason}); using Python rules",
+                  flush=True)
+    if fast_rules and gpu_enabled:
+        print("fast rules: native C++ bank available for rule opponents "
+              "(auto enables it only on rule-dominated fields)", flush=True)
+
     if args.baseline and args.baseline not in names:
         raise SystemExit(f"baseline {args.baseline!r} is not in the candidate list")
 
@@ -616,6 +643,7 @@ def _eval(argv: Sequence[str]) -> int:
         "dtype": args.gpu_dtype,
         "max_batch": args.gpu_max_batch,
         "profile": bool(args.profile),
+        "fast_rules": args.fast_rules if fast_rules else False,
     }
     for tier in tiers:
         for start in range(0, len(seeds), gpu_field_batch):
@@ -785,6 +813,12 @@ def _eval(argv: Sequence[str]) -> int:
             "field_batch": gpu_field_batch if gpu_enabled else 1,
             "candidates": [spec.name for spec in gpu_specs],
             "cpu_candidates": [spec.name for spec in cpu_specs],
+        },
+        "fast_rules": {
+            "available": bool(fast_rules),
+            "requested": args.fast_rules,
+            "reason": fast_rules_reason,
+            "auto_threshold": 0.90,
         },
         "field_tasks": total,
         "peak_rss_mb": rss_mb,

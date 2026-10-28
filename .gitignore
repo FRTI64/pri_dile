@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+.build/
 neural_demo
 ipd_demo
 demo

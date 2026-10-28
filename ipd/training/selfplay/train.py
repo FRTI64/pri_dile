@@ -104,7 +104,8 @@ def collect_blue(cfg: TrainConfig, model: GRUActorCritic, league: RedLeague,
         factories.append(_red_factory(league, cfg, device,
                                       rng.randrange(1 << 30), rng))
 
-    env = VectorEnv(factories, families)
+    env = VectorEnv(factories, families, fast_rules=cfg.fast_rules,
+                    fast_rules_min_envs=cfg.fast_rules_min_envs)
     model.eval()
     h = model.init_hidden(env.n, device)
     obs_rows: list[np.ndarray] = []
@@ -203,7 +204,9 @@ def collect_red(cfg: TrainConfig, model: GRUActorCritic, phase, blue_state,
     rows = _red_target_factories(cfg, phase, blue_state, rng, device, n_red)
     families = [row[1] for row in rows]
     targets = [row[2] for row in rows]
-    env = VectorEnv([row[0] for row in rows], families)
+    env = VectorEnv([row[0] for row in rows], families,
+                    fast_rules=cfg.fast_rules,
+                    fast_rules_min_envs=cfg.fast_rules_min_envs)
     model.eval()
     h = model.init_hidden(env.n, device)
     obs_rows: list[np.ndarray] = []
@@ -410,6 +413,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--iterations", type=int, default=None,
                     help="override total episodes = iterations * envs")
     ap.add_argument("--envs", type=int, default=None)
+    ap.add_argument("--fast-rules", dest="fast_rules", action="store_true",
+                    default=None,
+                    help="use the native Plan 3 rule bank for opponent steps")
+    ap.add_argument("--no-fast-rules", dest="fast_rules",
+                    action="store_false",
+                    help="keep all rule opponents on the Python path")
+    ap.add_argument("--fast-rules-min-envs", type=int, default=None,
+                    help="minimum batch size for the native rule bank "
+                         "(default: 128)")
     ap.add_argument("--out", default=None,
                     help="deployable JSON policy output")
     ap.add_argument("--checkpoint-out", default=None,
@@ -439,6 +451,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         overrides["seed"] = args.seed
     if args.envs is not None:
         overrides["envs"] = args.envs
+    if args.fast_rules is not None:
+        overrides["fast_rules"] = bool(args.fast_rules)
+    if args.fast_rules_min_envs is not None:
+        overrides["fast_rules_min_envs"] = int(args.fast_rules_min_envs)
     if args.iterations is not None:
         overrides["total_episodes"] = args.iterations * (args.envs or cfg.envs)
     elif args.episodes is not None:
