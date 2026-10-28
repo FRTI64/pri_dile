@@ -7,15 +7,18 @@ import json
 import os
 import statistics
 import sys
+import threading
 import time
 from collections import defaultdict
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import (
+    ProcessPoolExecutor, ThreadPoolExecutor, as_completed,
+)
 from pathlib import Path
 from typing import Any, Sequence
 
 from ..paths import result_path
 from ..policies.registry import CandidateSpec, candidate_specs
-from .common import evaluate_field_details, quantile, run_match
+from .common import FieldStats, evaluate_field_details, quantile, run_match
 from .protocol import (
     COMPLEXITY_TIERS, DEV_FIELDS, DEV_TIERS, LEVEL_TIERS,
     PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_FIELDS,
@@ -31,6 +34,81 @@ from .scheduler import (
 
 DEV_DEFAULT = "dev_param,dev_family,dev_complex,dev_axelrod,dev_ood"
 ALL_DEFAULT = DEV_DEFAULT
+
+_PLAIN_GPU_KINDS = frozenset({
+    "neural", "gru", "rl", "rl-hard60", "rl-repair", "selfplay",
+    "psro-br", "psro-scratch-br",
+})
+_ADV_GPU_KINDS = frozenset({"adv-mlp", "adv-gru", "adv-rl"})
+_PSRO_META_KINDS = frozenset({"psro", "psro-scratch"})
+
+
+_LEARNED_OPPONENT_TYPES = frozenset({
+    "NeuralPolicy", "RLPolicy", "GRUPolicy", "SelfPlayGRUPolicy",
+})
+
+
+def _apply_opponent_mode(field: Sequence[Any], mode: str) -> None:
+    """Switch learned policy opponents to the requested action mode."""
+    if mode != "argmax":
+        return
+    for opponent in field:
+        if type(opponent).__name__ in _LEARNED_OPPONENT_TYPES:
+            opponent.mode = "argmax"
+
+
+def _gpu_spec_supported(spec: CandidateSpec) -> bool:
+    """Whether a candidate can use the batched argmax path.
+
+    PSRO meta-policies need a population inspection because their blue mixture
+    may contain stochastic rule members; those stay on CPU to preserve the
+    Protocol v4 RNG stream.
+    """
+    kind = str(spec.kind)
+    if kind in _PLAIN_GPU_KINDS or kind in _ADV_GPU_KINDS:
+        return True
+    if kind in _PSRO_META_KINDS:
+        try:
+            from .gpu.blue import supports_gpu_policy
+
+            return supports_gpu_policy(spec.build())
+        except Exception:
+            return False
+    return False
+
+
+def _resolve_gpu(requested: str, candidate_mode: str,
+                 *, quiet: bool = False) -> tuple[bool, str]:
+    """Resolve ``--gpu auto|on|off`` and return ``(enabled, reason)``."""
+    if requested == "off":
+        return False, "disabled by --gpu off"
+    try:
+        import torch
+    except ImportError:
+        if requested == "on" and not quiet:
+            print("WARNING: --gpu on requested but torch is unavailable; "
+                  "using the CPU path", flush=True)
+        return False, "torch unavailable"
+    if not torch.cuda.is_available():
+        if requested == "on" and not quiet:
+            print("WARNING: --gpu on requested but CUDA is unavailable; "
+                  "using the CPU path", flush=True)
+        return False, "CUDA unavailable"
+    if candidate_mode != "argmax":
+        if requested == "on" and not quiet:
+            print("WARNING: --gpu on only supports --mode argmax; "
+                  "sample mode stays on CPU (Protocol v4 RNG contract)",
+                  flush=True)
+        return False, "sample mode stays on CPU"
+    return True, "CUDA available"
+
+
+def _parse_torch_dtype(name: str):
+    import torch
+
+    if name == "float64":
+        return torch.float64
+    return torch.float32
 
 
 def _parse_tiers(raw: str) -> list[str]:
@@ -113,9 +191,11 @@ def _eval_field_task(task: dict[str, Any]) -> dict[str, Any]:
     n = int(task["n"])
     rounds = int(task.get("rounds", 100))
     reuse_mode = str(task.get("field_reuse", "auto"))
+    opponent_mode = str(task.get("opponent_mode", "sample"))
 
     started = time.perf_counter()
     field = build_protocol_field(tier, seed, n)
+    _apply_opponent_mode(field, opponent_mode)
     field_build_seconds = time.perf_counter() - started
     reuse = reuse_mode != "off" and field_reuse_safe(field)
     snapshot = snapshot_field_rng(field) if reuse else None
@@ -128,6 +208,7 @@ def _eval_field_task(task: dict[str, Any]) -> dict[str, Any]:
             else:
                 started = time.perf_counter()
                 field = build_protocol_field(tier, seed, n)
+                _apply_opponent_mode(field, opponent_mode)
                 field_build_seconds += time.perf_counter() - started
 
         started = time.perf_counter()
@@ -154,6 +235,114 @@ def _eval_field_task(task: dict[str, Any]) -> dict[str, Any]:
         "results": results,
         "worker_pid": os.getpid(),
         "peak_rss_mb": _worker_peak_rss_mb(),
+    }
+
+
+def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
+    """Evaluate a candidate chunk on several fields with batched GPU rows.
+
+    The task returns one result row per ``(candidate, field)`` so the existing
+    Protocol v4 aggregation and result schema are unchanged.
+    """
+    specs = [CandidateSpec.from_dict(item) for item in task["specs"]]
+    tier = str(task["tier"])
+    seeds = [int(seed) for seed in task["seeds"]]
+    n = int(task["n"])
+    rounds = int(task.get("rounds", 100))
+    reuse_mode = str(task.get("field_reuse", "auto"))
+    gpu = dict(task.get("gpu") or {})
+
+    started = time.perf_counter()
+    fields = [build_protocol_field(tier, seed, n) for seed in seeds]
+    for field in fields:
+        _apply_opponent_mode(field, "argmax")
+    field_build_seconds = time.perf_counter() - started
+    reuse = (reuse_mode != "off"
+             and all(field_reuse_safe(field) for field in fields))
+    snapshots = ([snapshot_field_rng(field) for field in fields]
+                 if reuse else None)
+
+    results: list[dict[str, Any]] = []
+    fallback = False
+    for index, spec in enumerate(specs):
+        if index:
+            if snapshots is not None:
+                for field, snapshot in zip(fields, snapshots):
+                    restore_field_rng(field, snapshot)
+            else:
+                started = time.perf_counter()
+                fields = [build_protocol_field(tier, seed, n) for seed in seeds]
+                for field in fields:
+                    _apply_opponent_mode(field, "argmax")
+                field_build_seconds += time.perf_counter() - started
+
+        started = time.perf_counter()
+        policy = spec.build()
+        candidate_build_seconds = time.perf_counter() - started
+
+        try:
+            from .gpu.simulator import evaluate_fields_gpu
+
+            simulations = evaluate_fields_gpu(
+                policy, fields, rounds=rounds,
+                device=str(gpu.get("device", "cuda")),
+                dtype=_parse_torch_dtype(str(gpu.get("dtype", "float32"))),
+                max_batch=int(gpu.get("max_batch", 32768)),
+                profile=bool(gpu.get("profile", False)))
+            for seed, simulation in zip(seeds, simulations):
+                stats = FieldStats(sum(simulation.scores), simulation.scores,
+                                   simulation.names)
+                results.append(_field_result_rows(
+                    spec, tier, seed, stats, simulation.by_opponent, {
+                        "eval_seconds": simulation.seconds,
+                        "candidate_build_seconds": candidate_build_seconds,
+                        "family_seconds": simulation.family_seconds,
+                        "gpu_seconds": (simulation.blue_seconds
+                                        + simulation.opponent_seconds),
+                        "blue_seconds": simulation.blue_seconds,
+                        "opponent_seconds": simulation.opponent_seconds,
+                        "device": str(gpu.get("device", "cuda")),
+                        "dtype": str(gpu.get("dtype", "float32")),
+                        "mode": "argmax",
+                    }))
+        except Exception as exc:  # pragma: no cover - hardware/torch failure
+            fallback = True
+            if not gpu.get("quiet_fallback", False):
+                print(f"WARNING: GPU evaluation failed for {spec.name}: "
+                      f"{exc}; rebuilding fields and using CPU", flush=True)
+            fields = [build_protocol_field(tier, seed, n) for seed in seeds]
+            for field in fields:
+                _apply_opponent_mode(field, "argmax")
+            snapshots = ([snapshot_field_rng(field) for field in fields]
+                         if reuse else None)
+            for seed, field in zip(seeds, fields):
+                cpu_policy = spec.build()
+                family_seconds: dict[str, float] = {}
+                cpu_started = time.perf_counter()
+                stats, by_opponent = evaluate_field_details(
+                    cpu_policy, field, rounds, timings=family_seconds)
+                cpu_seconds = time.perf_counter() - cpu_started
+                results.append(_field_result_rows(
+                    spec, tier, seed, stats, by_opponent, {
+                        "eval_seconds": cpu_seconds,
+                        "candidate_build_seconds": candidate_build_seconds,
+                        "family_seconds": family_seconds,
+                        "device": "cpu-fallback",
+                        "mode": "cpu-fallback",
+                    }))
+
+    return {
+        "tier": tier,
+        "seed": seeds[0] if seeds else 0,
+        "seeds": seeds,
+        "field_build_seconds": field_build_seconds,
+        "field_reuse": bool(snapshots is not None and len(specs) > 1),
+        "results": results,
+        "worker_pid": os.getpid(),
+        "peak_rss_mb": _worker_peak_rss_mb(),
+        "gpu": {"enabled": not fallback, "fallback": fallback,
+                "device": str(gpu.get("device", "cuda")),
+                "dtype": str(gpu.get("dtype", "float32"))},
     }
 
 
@@ -283,6 +472,32 @@ def _eval(argv: Sequence[str]) -> int:
                     default="auto",
                     help="reuse a field across a candidate chunk when RNG "
                          "state can be restored (default: auto)")
+    ap.add_argument("--mode", choices=("sample", "argmax"), default="sample",
+                    help="candidate action mode; GPU batching only supports "
+                         "argmax, sample stays on CPU (default: sample)")
+    ap.add_argument("--opponent-mode", choices=("sample", "argmax"),
+                    default=None,
+                    help="action mode for learned policy opponents; defaults "
+                         "to --mode (GPU tasks always use argmax)")
+    ap.add_argument("--gpu", choices=("auto", "on", "off"), default="auto",
+                    help="batched GPU inference (default: auto; requires "
+                         "--mode argmax)")
+    ap.add_argument("--gpu-device", default="cuda")
+    ap.add_argument("--gpu-dtype", choices=("float32", "float64"),
+                    default="float32",
+                    help="GPU arithmetic precision; use float64 for parity "
+                         "checks (default: float32)")
+    ap.add_argument("--gpu-max-batch", type=int, default=32768,
+                    help="maximum rows per GPU chunk (default: 32768)")
+    ap.add_argument("--gpu-min-batch", type=int, default=2048,
+                    help="minimum aggregate batch for --gpu auto "
+                         "(default: 2048)")
+    ap.add_argument("--gpu-field-batch", type=int, default=4,
+                    help="fields simulated together for cross-field policy "
+                         "aggregation (default: 4)")
+    ap.add_argument("--gpu-workers", type=int, default=8,
+                    help="concurrent worker processes allowed to use CUDA "
+                         "when CPU and GPU tasks are mixed (default: 8)")
     ap.add_argument("--profile", action="store_true",
                     help="write per-family/per-candidate timings to "
                          "results/protocol_v4/profile_*.json")
@@ -323,16 +538,44 @@ def _eval(argv: Sequence[str]) -> int:
         raise SystemExit("--fields must be positive")
     if args.candidate_chunk <= 0:
         raise SystemExit("--candidate-chunk must be positive")
+    if args.gpu_max_batch <= 0:
+        raise SystemExit("--gpu-max-batch must be positive")
+    if args.gpu_min_batch <= 0:
+        raise SystemExit("--gpu-min-batch must be positive")
+    if args.gpu_field_batch <= 0:
+        raise SystemExit("--gpu-field-batch must be positive")
+    if args.gpu_workers <= 0:
+        raise SystemExit("--gpu-workers must be positive")
     try:
         budget = worker_budget(args.workers)
     except ValueError as exc:
         raise SystemExit(str(exc))
     workers = int(budget["resolved"])
 
-    specs = candidate_specs(args.candidates, default="all")
+    args.opponent_mode = (args.opponent_mode
+                          or ("argmax" if args.mode == "argmax"
+                              else "sample"))
+    gpu_enabled, gpu_reason = _resolve_gpu(args.gpu, args.mode)
+    aggregate = int(args.n) * int(args.gpu_field_batch)
+    if gpu_enabled and args.gpu == "auto" and aggregate < args.gpu_min_batch:
+        gpu_enabled = False
+        gpu_reason = (f"aggregate batch {aggregate} < "
+                      f"--gpu-min-batch {args.gpu_min_batch}")
+    specs = candidate_specs(args.candidates, default="all", mode=args.mode)
     if not specs:
         raise SystemExit("no candidates selected")
     names = [spec.name for spec in specs]
+    gpu_specs = ([spec for spec in specs if _gpu_spec_supported(spec)]
+                 if gpu_enabled else [])
+    cpu_specs = [spec for spec in specs if spec not in gpu_specs]
+    if gpu_enabled and not gpu_specs:
+        print("WARNING: --gpu resolved to GPU but no selected candidate "
+              "supports batched argmax inference; using CPU", flush=True)
+        gpu_enabled = False
+        gpu_reason = "no supported candidates"
+    if gpu_enabled and cpu_specs:
+        print(f"GPU routing: {len(gpu_specs)} candidate(s) batched, "
+              f"{len(cpu_specs)} candidate(s) on CPU", flush=True)
     if args.baseline and args.baseline not in names:
         raise SystemExit(f"baseline {args.baseline!r} is not in the candidate list")
 
@@ -354,15 +597,53 @@ def _eval(argv: Sequence[str]) -> int:
                 raise SystemExit(str(exc))
 
     seeds = [args.seed + i * 7919 for i in range(fields)]
-    chunks = chunk_specs(specs, args.candidate_chunk)
-    tasks = [
-        {"specs": [spec.to_dict() for spec in chunk], "tier": tier,
-         "seed": seed, "n": args.n, "rounds": args.rounds,
-         "field_reuse": args.field_reuse}
-        for tier in tiers
-        for seed in seeds
-        for chunk in chunks
-    ]
+    cpu_tasks: list[dict[str, Any]] = []
+    gpu_tasks: list[dict[str, Any]] = []
+    cpu_chunks = chunk_specs(cpu_specs, args.candidate_chunk)
+    for tier in tiers:
+        for seed in seeds:
+            for chunk in cpu_chunks:
+                cpu_tasks.append({
+                    "specs": [spec.to_dict() for spec in chunk], "tier": tier,
+                    "seed": seed, "n": args.n, "rounds": args.rounds,
+                    "field_reuse": args.field_reuse,
+                    "opponent_mode": args.opponent_mode,
+                })
+    gpu_chunks = chunk_specs(gpu_specs, args.candidate_chunk)
+    gpu_field_batch = int(args.gpu_field_batch) if gpu_enabled else 1
+    gpu_config = {
+        "device": args.gpu_device,
+        "dtype": args.gpu_dtype,
+        "max_batch": args.gpu_max_batch,
+        "profile": bool(args.profile),
+    }
+    for tier in tiers:
+        for start in range(0, len(seeds), gpu_field_batch):
+            seed_group = seeds[start:start + gpu_field_batch]
+            for chunk in gpu_chunks:
+                gpu_tasks.append({
+                    "specs": [spec.to_dict() for spec in chunk], "tier": tier,
+                    "seeds": seed_group, "seed": seed_group[0],
+                    "n": args.n, "rounds": args.rounds,
+                    "field_reuse": args.field_reuse, "gpu": gpu_config,
+                    "gpu_batch": True,
+                })
+    # Spread GPU tasks through the queue so the GPU and the CPU rule-heavy
+    # tasks overlap instead of leaving the GPU idle until the CPU queue drains.
+    tasks: list[dict[str, Any]] = []
+    if gpu_tasks and cpu_tasks:
+        stride = len(cpu_tasks) / len(gpu_tasks)
+        next_gpu = 0.0
+        gpu_index = 0
+        for index, task in enumerate(cpu_tasks):
+            tasks.append(task)
+            if gpu_index < len(gpu_tasks) and index + 1 >= next_gpu:
+                tasks.append(gpu_tasks[gpu_index])
+                gpu_index += 1
+                next_gpu += stride
+        tasks.extend(gpu_tasks[gpu_index:])
+    else:
+        tasks = cpu_tasks + gpu_tasks
 
     started = time.time()
     rows: dict[tuple[str, str], list[dict[str, Any]]] = {
@@ -379,22 +660,59 @@ def _eval(argv: Sequence[str]) -> int:
     ram_text = "unknown" if ram is None else f"{ram:.1f}GB"
     print(f"workers {workers} (requested={budget['requested']}, "
           f"cpu={budget['cpu_count']}, ram_available={ram_text}, "
-          f"chunks={len(chunks)}x{args.candidate_chunk}, "
-          f"field_reuse={args.field_reuse})", flush=True)
+          f"chunks={len(cpu_chunks)}+{len(gpu_chunks)}x"
+          f"{args.candidate_chunk}, field_reuse={args.field_reuse})",
+          flush=True)
+    print(f"mode={args.mode} gpu={args.gpu} enabled={gpu_enabled} "
+          f"({gpu_reason}); gpu candidates={len(gpu_specs)}, "
+          f"cpu candidates={len(cpu_specs)}", flush=True)
     worker_rss: dict[int, float] = {}
+    lock = threading.Lock()
+    completed = 0
     sampler = MemorySampler()
     sampler.start()
-    with ProcessPoolExecutor(max_workers=workers) as ex:
-        futures = [ex.submit(_eval_field_task, task) for task in tasks]
-        for done, future in enumerate(as_completed(futures), 1):
-            result = future.result()
+
+    def handle(result: dict[str, Any]) -> None:
+        nonlocal completed
+        with lock:
+            completed += 1
             for row in result["results"]:
                 rows[(row["candidate"], row["tier"])].append(row)
             profile.add(result)
             pid = int(result.get("worker_pid", 0))
             worker_rss[pid] = max(worker_rss.get(pid, 0.0),
                                   float(result.get("peak_rss_mb", 0.0)))
-            tracker.update(result, force=done == total)
+            tracker.update(result, force=completed == total)
+
+    def run_pool(task_list: Sequence[dict[str, Any]], count: int,
+                 function: Any) -> None:
+        if not task_list:
+            return
+        count = max(1, min(int(count), len(task_list)))
+        with ProcessPoolExecutor(max_workers=count) as pool:
+            futures = [pool.submit(function, item) for item in task_list]
+            for future in as_completed(futures):
+                handle(future.result())
+
+    if gpu_enabled and cpu_tasks and gpu_tasks:
+        gpu_workers = max(1, min(args.gpu_workers, len(gpu_tasks)))
+        cpu_workers = max(1, workers - gpu_workers)
+        print(f"split pools: cpu={cpu_workers} gpu={gpu_workers} "
+              f"(CUDA concurrency limited to {gpu_workers})", flush=True)
+        with ThreadPoolExecutor(max_workers=2) as both:
+            runs = [
+                both.submit(run_pool, cpu_tasks, cpu_workers,
+                            _eval_field_task),
+                both.submit(run_pool, gpu_tasks, gpu_workers,
+                            _eval_field_batch_task),
+            ]
+            for run in runs:
+                run.result()
+    elif gpu_tasks and not cpu_tasks:
+        run_pool(gpu_tasks, min(args.gpu_workers, len(gpu_tasks)),
+                 _eval_field_batch_task)
+    else:
+        run_pool(cpu_tasks or tasks, workers, _eval_field_task)
     wall_seconds = time.time() - started
     memory = sampler.stop()
     worker_rss_total = sum(worker_rss.values())
@@ -451,6 +769,23 @@ def _eval(argv: Sequence[str]) -> int:
         "worker_budget": budget,
         "candidate_chunk": args.candidate_chunk,
         "field_reuse": args.field_reuse,
+        "mode": args.mode,
+        "opponent_mode": (args.opponent_mode if not gpu_enabled
+                          else "argmax (GPU tasks)"),
+        "gpu": {
+            "enabled": bool(gpu_enabled),
+            "requested": args.gpu,
+            "reason": gpu_reason,
+            "device": args.gpu_device if gpu_enabled else None,
+            "dtype": args.gpu_dtype if gpu_enabled else None,
+            "max_batch": args.gpu_max_batch if gpu_enabled else None,
+            "min_batch": args.gpu_min_batch,
+            "workers": (max(1, min(args.gpu_workers, len(gpu_tasks)))
+                        if gpu_enabled and gpu_tasks else 0),
+            "field_batch": gpu_field_batch if gpu_enabled else 1,
+            "candidates": [spec.name for spec in gpu_specs],
+            "cpu_candidates": [spec.name for spec in cpu_specs],
+        },
         "field_tasks": total,
         "peak_rss_mb": rss_mb,
         "peak_pss_mb": memory["peak_pss_mb"],

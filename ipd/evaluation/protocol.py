@@ -1319,32 +1319,40 @@ def _b_policy_rl(rng: random.Random, weights: str,
                  mode: str = "sample") -> Strategy:
     from ipd.policies.rl import RLPolicy
 
-    return RLPolicy(_policy_path(weights), seed=rng.randrange(1 << 30),
-                    mode=mode)
+    path = _policy_path(weights)
+    policy = RLPolicy(path, seed=rng.randrange(1 << 30), mode=mode)
+    policy._gpu_weights_path = path
+    return policy
 
 
 def _b_policy_neural(rng: random.Random, weights: str,
                      mode: str = "sample") -> Strategy:
     from ipd.policies.neural import NeuralPolicy
 
-    return NeuralPolicy(_policy_path(weights), seed=rng.randrange(1 << 30),
-                        mode=mode)
+    path = _policy_path(weights)
+    policy = NeuralPolicy(path, seed=rng.randrange(1 << 30), mode=mode)
+    policy._gpu_weights_path = path
+    return policy
 
 
 def _b_policy_gru(rng: random.Random, weights: str,
                   mode: str = "sample") -> Strategy:
     from ipd.policies.gru import GRUPolicy
 
-    return GRUPolicy(_policy_path(weights), seed=rng.randrange(1 << 30),
-                     mode=mode)
+    path = _policy_path(weights)
+    policy = GRUPolicy(path, seed=rng.randrange(1 << 30), mode=mode)
+    policy._gpu_weights_path = path
+    return policy
 
 
 def _b_policy_selfplay(rng: random.Random, weights: str,
                        mode: str = "sample") -> Strategy:
     from ipd.policies.selfplay_gru import SelfPlayGRUPolicy
 
-    return SelfPlayGRUPolicy(_policy_path(weights),
-                             seed=rng.randrange(1 << 30), mode=mode)
+    path = _policy_path(weights)
+    policy = SelfPlayGRUPolicy(path, seed=rng.randrange(1 << 30), mode=mode)
+    policy._gpu_weights_path = path
+    return policy
 
 
 _BUILDERS: dict[str, Callable[..., Strategy]] = {

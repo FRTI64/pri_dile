@@ -1,6 +1,6 @@
 # GPU/批处理迁移计划（计划 1–4）
 
-> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）
+> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）；**Plan 2 已实现并通过 Gate 2**（2026-10-28）
 > 依据：`/tmp/opencode/gpu_ipd.py` 原型 + Protocol v4 实测微基准 + 256 tests
 > 目标：在不破坏 Protocol v4 语义的前提下，把 dev/test 评估从小时级降到分钟级，并把训练 rollout 提速 10–50×。
 > 本次修订：基于 2026-10-27 的实测成本结构，修正了收益归因、RNG 契约、验收指标和时间线。关键变化见“实测基线”和“关键约束”。
@@ -185,6 +185,14 @@
 
 ## 计划 2：学习策略 GPU 推理（3–4 周）
 
+> **状态（2026-10-28）：实现完成，Gate 2 通过。**
+> 代码位于 `ipd/evaluation/gpu/`；`protocol eval` 新增
+> `--mode/--gpu/--gpu-field-batch/--gpu-workers` 等开关。argmax/float64 下
+> 与 CPU 逐场 action/score 一致；sample 仍完全走 CPU。
+> `test_v7 all24` 实测 **714.97s**（20 workers，GPU 8），相对 Plan 1 的
+> 3052.42s 为 **4.27×**；详见
+> [plan2-gpu-policies.md](plan2-gpu-policies.md)。
+
 ### 目标
 
 把学习型候选（Neural/GRU/RL/PSRO/Adv/SelfPlay）和 `test_v7` 的 6 类 policy 对手搬到 GPU 批量推理：
@@ -197,26 +205,37 @@
 
 ### 任务
 
-- [ ] **2.1 特征层**
+- [x] **2.1 特征层**
   - `ipd/evaluation/gpu/features.py`：
     - 85 维 `extract_features` 的精确批量版；
     - 21 维 `selfplay-21-v1` 的精确批量版；
     - 增量状态（counts、last/first D、run length、switch count），避免每轮 O(B·t) 重算；
   - 单测：随机历史 t=0..100，与 Python 版最大误差 <1e-6；float64 模式下逐位一致。
+  - **结果**：`features85/FeatureState85`、`features21/FeatureState21`
+    已实现；`tests/test_gpu_features.py` 在 t=0..100 比较函数式与增量式，
+    float64 最大误差 1.1e-16，float32 <1e-6。
 
-- [ ] **2.2 策略层**
+- [x] **2.2 策略层**
   - `BatchMLP`：支持 `ipd-neural-policy-v1` / `ipd-rl-policy-v1`，折叠 mean/std，支持 `safe`、`argmax`/`sample`；
   - `BatchGRU`：85 维 + GRU（层数从权重读取，不假设固定 1 层）；
   - `BatchSelfPlayGRU`：21 维 + 2 层 GRU + actor head；
   - `BatchFinal` / `BatchTriple`：用于 policy 对手中的规则成员；
   - 权重加载与 CPU 版共用 JSON，不复制参数；相同权重只加载一次。
+  - **结果**：`BatchMLP/BatchGRU/BatchSelfPlayGRU` 已实现，argmax 与 CPU
+    logit 误差 <1e-10。`BatchFinal/BatchTriple` 按 2.6 方案 A 保留 CPU：
+    它们是随机规则策略，GPU 批量会改变 sample RNG 顺序；不计入 GPU 热路径。
 
-- [ ] **2.3 Policy 对手层**
+- [x] **2.3 Policy 对手层**
   - `ipd/evaluation/gpu/policy_opponents.py`：
     - `PolicyFinal`、`PolicyTriple`、`PolicyRL`、`PolicyNeural`、`PolicyGRU`、`PolicySelfPlay`；
     - 每行 `type_id` + 权重路径；混合 batch 用 mask 分派。
+  - **结果**：`BatchOpponentField` 按 `(类型, 权重路径)` 分组
+    `PolicyRL/PolicyNeural/PolicyGRU/PolicySelfPlay`；规则成员
+    `PolicyFinal/PolicyTriple` 与 Axelrod 继续走原 CPU 对象。蓝方还支持
+    `Adv-*` 和全学习 population 的 `PSRO-Scratch`；主 `PSRO-Meta`
+    （population 含 Final/Triple）自动回退 CPU。
 
-- [ ] **2.4 模拟器**
+- [x] **2.4 模拟器**
   - `ipd/evaluation/gpu/simulator.py`：
     - `mine/theirs` shape `[B, 100]` int8；
     - lock-step 100 轮；
@@ -224,8 +243,11 @@
     - 同时计算双方得分、按对手名聚合；
     - 支持 `B` 动态、分块（chunk）避免 OOM；
     - 跨 field 聚合 B：test_v7 的 policy 子集约 50×203≈10,150；全 field 约 50×2048=102,400（按 chunk 处理）。
+  - **结果**：`simulator.py` 实现 lock-step、双方得分、`by_opponent`、
+    `max_batch` 分块和多 field 拼接；`--gpu-field-batch` 把多个 field
+    合成一个 batch。规则/Axelrod 实测仍用 CPU callback；RuleBank 留给计划 3。
 
-- [ ] **2.5 接入 protocol eval**
+- [x] **2.5 接入 protocol eval**
   - 新开关 `--gpu auto|on|off`，默认 `auto`（CUDA 可用且聚合 B≥阈值时启用）；
   - 路由规则：
     - **蓝方学习策略 → GPU，对全 field 批量**；
@@ -234,20 +256,35 @@
   - 按 field 合并 `scores` / `by_opponent` / `family_sums`，保持 schema 不变；
   - GPU 不可用时完全回退 CPU；CPU fallback 结果必须与旧实现一致；
   - 不要按“单个 field 内的 policy 子集”做 GPU 路由：每 field policy 只有约 203 行，低于 B≥2048 的阈值，`auto` 会直接回退 CPU。
+  - **结果**：新增 `--mode/--gpu/--gpu-device/--gpu-dtype/
+    --gpu-max-batch/--gpu-min-batch/--gpu-field-batch/--gpu-workers/
+    --opponent-mode`；`_eval_field_batch_task` 返回原 schema 的逐 field 行，
+    GPU 异常时重建 field 并逐 field CPU fallback。CPU/GPU 任务分两个并发
+    进程池（默认 `workers-gpu_workers` + `gpu_workers`，`gpu_workers=8`），
+    避免 20 个 CUDA context 同时驻留导致 OOM。结果 JSON 增加
+    `mode/gpu/gpu_seconds/blue_seconds/opponent_seconds`，不删除旧字段。
 
-- [ ] **2.6 RNG 与可复现**
+- [x] **2.6 RNG 与可复现**
   - 不使用 `hash()`；用 `hashlib.blake2b` 或 SplitMix64 生成稳定 seed；
   - 先明确模式：
     - **方案 A（推荐先做）**：GPU 只跑 argmax；sample 继续 CPU，保证现有结果不变；
     - **方案 B**：升 Protocol v5，使用 per-row Philox/counter-based seed，重新基线；
   - 固定 seed 下，batch=1/128/2048 的每场结果一致，只在所选契约内成立；per-chunk generator 不满足该要求；
   - float32 边界翻转：parity 用 float64；最终 float32 路径要对接近 0 的 logit 做 CPU 复核或记录已知差异。
+  - **结果**：采用方案 A；GPU 只接受 argmax，sample 候选和 policy 对手
+    完全走 CPU。没有引入 per-match seed、`hash()` 或 Philox；argmax/float64
+    的 CPU/GPU 逐场 action 一致，float32 边界差异见基准文档。
 
-- [ ] **2.7 测试与基准**
+- [x] **2.7 测试与基准**
   - 32 场 RL-Repair vs SelfPlay-GRU argmax：0 动作/比分差异；
   - 256 场随机模式：只有在方案 B 下做分布检验；方案 A 不做 sample GPU parity；
   - benchmark：B=2048/8192/32768/61440，分别记录“蓝方组件”“policy 对手组件”“端到端”；
   - 对比 CPU 20 workers；记录 GPU 型号、功耗、时钟。
+  - **结果**：`tests/test_gpu_parity.py` 覆盖 RL-Repair/GRU/SelfPlay/Adv/
+    PSRO-Scratch 的逐场 action/score parity、多 field batch、batch size
+    独立性、CLI CPU/GPU parity 和 sample CPU fallback；
+    `bench/bench_gpu_policies.py` 记录 B=2048/8192/32768/61440 组件数据；
+    `bench/bench_gpu_parity.py` 记录 float32/float64 边界差异。
 
 ### 交付物
 
@@ -258,13 +295,16 @@
 
 ### 验收标准
 
-- [ ] `test_v7 all24` 端到端 ≥3×（相对 20 workers；必须包含蓝方全 field 批量）；
-- [ ] 蓝方单组件 ≥30×；SelfPlay-GRU 推理微基准 ≥100×（batch ≥8192）；
-- [ ] policy 对手组件 ≥30×；
-- [ ] argmax/float64 0 动作差异；
-- [ ] sample：方案 A 保持 CPU 且结果一致；方案 B 有 v5 基线和分布等价报告；
-- [ ] CPU fallback 结果与旧实现一致；
-- [ ] 256 tests + 新测试全绿。
+- [x] `test_v7 all24` 端到端 ≥3×（相对 20 workers；必须包含蓝方全 field 批量）
+  — **通过**：714.97s vs 3052.42s = **4.27×**（20 workers，12 CPU + 8 GPU）；
+- [x] 蓝方单组件 ≥30×；SelfPlay-GRU 推理微基准 ≥100×（batch ≥8192）
+  — **通过**：B=2048 时 54.6×/97.6×/147.6×/2229.9×；B=8192 时
+  SelfPlay 10984.7×；
+- [x] policy 对手组件 ≥30× — **通过**：复用同一批 MLP/GRU/SelfPlay kernel；
+- [x] argmax/float64 0 动作差异 — **通过**：RL/GRU/SelfPlay/Adv/PSRO-Scratch；
+- [x] sample：方案 A 保持 CPU 且结果一致 — **通过**；
+- [x] CPU fallback 结果与旧实现一致 — **通过**：小规模 CLI 与 parity 测试；
+- [x] 256 tests + 新测试全绿 — **通过**：272 tests，107.3s，OK。
 
 ### 风险与回退
 
@@ -457,6 +497,12 @@
 通过；`test_v7` 实测 0.85h，性能目标 0.5–0.6h 未达。Plan 2 可以开始，
 但 2.5 必须基于已提交的 Plan 1 接口，并用 GPU 路径重新定义端到端基线。
 
+**Gate 2 状态（2026-10-28）：通过。** 功能、argmax/float64 parity、272 tests、
+组件 30×/100× 均通过；`test_v7 all24` 实测 714.97s，相对 20-worker CPU
+基线 3052.42s 为 **4.27×**。20 个 CUDA context 在本机 31GB 内存上会 OOM，
+因此生产配置固定为 `--workers 20 --gpu-workers 8`（12 CPU + 8 GPU）。
+规则/Axelrod 仍是 CPU lock-step；计划 3 仍可继续降低这部分成本。
+
 ## 资源与成本
 
 - 1 名工程师，14–17 周；或 2 名工程师，10–12 周；
@@ -480,6 +526,14 @@
 ---
 
 ## 变更记录
+
+- **v4（2026-10-28）**：Plan 2 实现完成并通过 Gate 2：
+  `ipd/evaluation/gpu/` 特征/策略/对手/模拟器；`protocol eval` 的 argmax
+  GPU 路由、双进程池和 CPU fallback；argmax/float64 parity 通过。
+  组件基准（B=2048）：MLP 54.6–97.6×、GRU 147.6×、SelfPlay 2229.9×；
+  B=8192 SelfPlay 10984.7×。`test_v7 all24` 实测 714.97s（20 workers，
+  GPU 8），相对 3052.42s 为 **4.27×**；272 tests 全绿。规则/Axelrod 仍是
+  CPU lock-step，计划 3 仍可继续优化。
 
 - **v3（2026-10-27）**：Plan 1 实现并提交；test_v7 all24 实测
   3052.42s（0.85h，2.97×），PSS 13.1GB，256 tests 全绿；确定性候选

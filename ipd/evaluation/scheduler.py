@@ -245,8 +245,11 @@ class ProgressTracker:
                  interval: float = 5.0,
                  stream: TextIO | None = None):
         self.total_tasks = len(tasks)
-        self.total_fields = len({(task["tier"], int(task["seed"]))
-                                 for task in tasks})
+        self.total_fields = len({
+            (str(task["tier"]), int(seed))
+            for task in tasks
+            for seed in (task.get("seeds") or (task["seed"],))
+        })
         self.interval = max(0.0, float(interval))
         self.stream = stream if stream is not None else sys.stdout
         self.started = time.monotonic()
@@ -254,15 +257,17 @@ class ProgressTracker:
         self.done = 0
         self.fields_done = 0
         self._pending: Counter[tuple[str, int]] = Counter(
-            (str(task["tier"]), int(task["seed"])) for task in tasks)
+            (str(task["tier"]), int(seed)) for task in tasks
+            for seed in (task.get("seeds") or (task["seed"],)))
 
     def update(self, task_result: Mapping[str, Any], *,
                force: bool = False) -> bool:
         self.done += 1
-        key = (str(task_result["tier"]), int(task_result["seed"]))
-        self._pending[key] -= 1
-        if self._pending[key] <= 0:
-            self.fields_done += 1
+        for seed in (task_result.get("seeds") or (task_result["seed"],)):
+            key = (str(task_result["tier"]), int(seed))
+            self._pending[key] -= 1
+            if self._pending[key] <= 0:
+                self.fields_done += 1
         now = time.monotonic()
         if not force and now - self.last_print < self.interval:
             return False
@@ -313,12 +318,14 @@ class ProfileAccumulator:
             return
         field_seconds = float(task_result.get("field_build_seconds", 0.0))
         self.field_build_seconds += field_seconds
-        self.field_tasks += 1
+        seeds = [int(seed) for seed in
+                 (task_result.get("seeds") or (task_result["seed"],))]
+        self.field_tasks += len(seeds)
         if task_result.get("field_reuse"):
             self.reused_tasks += 1
         share = field_seconds / len(results)
         tier = str(task_result["tier"])
-        self._tier_seeds[tier].add(int(task_result["seed"]))
+        self._tier_seeds[tier].update(seeds)
         tier_row = self.by_tier.setdefault(tier, {
             "fields": 0,
             "candidate_fields": 0,

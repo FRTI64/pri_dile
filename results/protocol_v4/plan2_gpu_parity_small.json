@@ -1,0 +1,62 @@
+{
+  "schema": "ipd-plan2-gpu-parity-v1",
+  "created": "2026-10-28T00:25:11",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "seed": 20261027,
+  "rows": [
+    {
+      "candidate": "RL-Repair",
+      "fields": 1,
+      "n": 64,
+      "rounds": 100,
+      "cpu_seconds": 0.723894,
+      "gpu_float64_seconds": 4.318736,
+      "gpu_float32_seconds": 2.507045,
+      "float64_vs_cpu_score_diffs": 0,
+      "float32_blue_action_diffs": 0,
+      "float32_opponent_action_diffs": 0,
+      "float32_score_diffs": 0
+    },
+    {
+      "candidate": "GRU",
+      "fields": 1,
+      "n": 64,
+      "rounds": 100,
+      "cpu_seconds": 1.948896,
+      "gpu_float64_seconds": 2.2264,
+      "gpu_float32_seconds": 2.1603,
+      "float64_vs_cpu_score_diffs": 0,
+      "float32_blue_action_diffs": 0,
+      "float32_opponent_action_diffs": 0,
+      "float32_score_diffs": 0
+    },
+    {
+      "candidate": "SelfPlay-GRU",
+      "fields": 1,
+      "n": 64,
+      "rounds": 100,
+      "cpu_seconds": 10.349823,
+      "gpu_float64_seconds": 2.334286,
+      "gpu_float32_seconds": 1.828319,
+      "float64_vs_cpu_score_diffs": 0,
+      "float32_blue_action_diffs": 0,
+      "float32_opponent_action_diffs": 0,
+      "float32_score_diffs": 0
+    },
+    {
+      "candidate": "Adv-MLP",
+      "fields": 1,
+      "n": 64,
+      "rounds": 100,
+      "cpu_seconds": 0.571587,
+      "gpu_float64_seconds": 2.36959,
+      "gpu_float32_seconds": 2.294344,
+      "float64_vs_cpu_score_diffs": 0,
+      "float32_blue_action_diffs": 0,
+      "float32_opponent_action_diffs": 0,
+      "float32_score_diffs": 0
+    }
+  ]
+}
