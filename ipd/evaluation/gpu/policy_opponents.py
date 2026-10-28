@@ -6,13 +6,19 @@ batched actor per learned ``(type, weights)`` group and keeps the remaining
 rows on their original CPU objects.  Routing is by row, so the field order and
 the score accounting stay unchanged.
 
-Only argmax inference is batched.  ``PolicyFinal`` / ``PolicyTriple`` and every
-other stochastic rule remain on the CPU path: their Protocol v4 semantics are
-defined by a sequential Mersenne Twister stream, which a GPU batch cannot
-reproduce without a protocol version bump.
+Argmax inference is batched for every learned policy.  Under the opt-in
+Protocol v5 sample contract, learned policies are batched too: each row's
+uniform stream is drawn from that opponent's own ``random.Random`` state before
+the match, and the kernel advances a per-row draw pointer only on rounds where
+a hard rule does not decide the action.  This reproduces the lazy CPU draws
+exactly.  ``PolicyFinal`` / ``PolicyTriple`` and every other stochastic rule
+remain on the CPU path: their Protocol v4 semantics are defined by a sequential
+Mersenne Twister stream, which a GPU batch cannot reproduce without a protocol
+version bump.
 """
 from __future__ import annotations
 
+import random
 import time
 from dataclasses import dataclass
 from typing import Any, Sequence
@@ -33,11 +39,36 @@ class _Group:
     state: Any
     safe: bool = True
     temperature: float = 1.0
+    uniforms: torch.Tensor | None = None
 
     def __post_init__(self) -> None:
         self.rows_t = torch.tensor(self.rows, dtype=torch.long,
                                    device=self.state.device)
         self.policy.reset(len(self.rows))
+        self.draw_idx = torch.zeros(len(self.rows), dtype=torch.long,
+                                    device=self.state.device)
+
+
+def _policy_rng(obj: Any) -> random.Random | None:
+    """Return the per-opponent stream used by sample-mode policy inference."""
+    rng = getattr(unwrap_policy(obj), "rng", None)
+    return rng if isinstance(rng, random.Random) else None
+
+
+def _sample_uniforms(obj: Any, rounds: int, device: torch.device,
+                     dtype: torch.dtype) -> torch.Tensor | None:
+    """Pre-draw one match worth of uniforms from an opponent's own RNG."""
+    rng = _policy_rng(obj)
+    if rng is None:
+        return None
+    values = [rng.random() for _ in range(int(rounds))]
+    return torch.tensor(values, dtype=dtype, device=device)
+
+
+def _reset_opponent(obj: Any) -> None:
+    reset = getattr(obj, "reset", None)
+    if callable(reset):
+        reset()
 
 
 def unwrap_policy(obj: Any) -> Any:
@@ -121,6 +152,7 @@ class BatchOpponentField:
                  *, device: torch.device, dtype: torch.dtype,
                  rounds: int = 100, profile: bool = False,
                  fast_rules: bool | str = "auto",
+                 fast_rules_threshold: float = 0.90,
                  policy_mode: str = "argmax") -> None:
         if len(opponents) != len(rows):
             raise ValueError("opponents and rows must have the same length")
@@ -129,6 +161,7 @@ class BatchOpponentField:
         self.rounds = int(rounds)
         self.profile = bool(profile)
         self.fast_rules_mode = fast_rules
+        self.fast_rules_threshold = float(fast_rules_threshold)
         self.policy_mode = str(policy_mode)
         self.family_seconds: dict[str, float] = {}
         self._events: list[tuple[str, Any, Any]] = []
@@ -146,9 +179,10 @@ class BatchOpponentField:
         for row, obj in zip(rows, opponents):
             kind = _policy_kind(obj)
             if kind is not None:
-                if self.policy_mode == "sample":
-                    # Protocol v5 keeps sample-mode policy opponents on CPU,
-                    # where their original Mersenne Twister stream is exact.
+                if (self.policy_mode == "sample"
+                        and _policy_rng(obj) is None):
+                    # No captured stream means we cannot reproduce the CPU
+                    # draws; keep this row on the exact Python path.
                     self.cpu.append((int(row), obj, [], []))
                 else:
                     grouped.setdefault(_weights_key(obj, kind), []).append(
@@ -167,7 +201,8 @@ class BatchOpponentField:
             # by row count but only ~4% by cost).
             enable = self.fast_rules_mode is True or self.fast_rules_mode == "on"
             if self.fast_rules_mode == "auto":
-                enable = len(rule_members) / max(1, self.n) >= 0.90
+                enable = (len(rule_members) / max(1, self.n)
+                          >= self.fast_rules_threshold)
             bank = RuleBank([obj for _, obj in rule_members],
                             rounds=self.rounds, enable=enable)
             if bank.enabled:
@@ -187,16 +222,29 @@ class BatchOpponentField:
                     template, "observation_version", "selfplay-21-v1")
             state = state_cls(len(group_rows), device=self.device,
                               dtype=dtype, rounds=self.rounds, **kwargs)
+            uniforms = None
+            if self.policy_mode == "sample":
+                # Match ``run_match``: reset the opponent once, then capture
+                # the stream it would consume lazily during this match.
+                rows_uniforms = []
+                for _, obj in members:
+                    _reset_opponent(obj)
+                    row_uniforms = _sample_uniforms(
+                        obj, self.rounds, self.device, dtype)
+                    if row_uniforms is None:  # pragma: no cover - checked above
+                        raise TypeError(
+                            "sample-mode policy opponent has no RNG stream")
+                    rows_uniforms.append(row_uniforms)
+                uniforms = torch.stack(rows_uniforms)
             group = _Group(
                 rows=group_rows, kind=kind,
                 policy=build_batch_policy(template, self.device, dtype),
-                state=state, safe=safe, temperature=temperature)
+                state=state, safe=safe, temperature=temperature,
+                uniforms=uniforms)
             self.groups.append(group)
 
         for _, obj, _, _ in self.cpu:
-            reset = getattr(obj, "reset", None)
-            if callable(reset):
-                reset()
+            _reset_opponent(obj)
             setter = getattr(obj, "set_rounds", None)
             if callable(setter):
                 setter(self.rounds)
@@ -206,6 +254,7 @@ class BatchOpponentField:
         for group in self.groups:
             group.state.reset()
             group.policy.reset(len(group.rows))
+            group.draw_idx.zero_()
         if self.rules is not None:
             self.rules.reset()
         for _, obj, own, blue in self.cpu:
@@ -235,7 +284,11 @@ class BatchOpponentField:
             else:
                 logits = group.policy.logits(features)
             no_defect = ~group.state.any_defect("theirs")
-            action = group.policy.act_from_logits(logits, t, no_defect)
+            if group.uniforms is not None:
+                action, group.draw_idx = group.policy.act_from_logits_sample(
+                    logits, t, no_defect, group.uniforms, group.draw_idx)
+            else:
+                action = group.policy.act_from_logits(logits, t, no_defect)
             for row, value in zip(group.rows,
                                   action.detach().cpu().tolist()):
                 actions[row] = int(value)

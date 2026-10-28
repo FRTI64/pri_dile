@@ -9,9 +9,10 @@ Supported candidates:
   policies (``psro-scratch``); the mixed rule/learned PSRO meta-policy stays on
   the CPU path
 
-Everything else (Final/Triple/rule candidates) is CPU-only.  The adapter is
-``argmax`` only, matching the Protocol v4 Plan 2 decision: sample-mode RNG
-semantics are intentionally untouched.
+Everything else (Final/Triple/rule candidates) is CPU-only.  The adapter
+supports ``argmax`` and the opt-in v5 per-match ``sample`` contract.  For the
+Adv wrappers, base RNG draws are suppressed only on rounds where the wrapper
+overrides the action, reproducing the CPU stream exactly.
 """
 from __future__ import annotations
 
@@ -86,7 +87,8 @@ class _PlainActor:
         self.policy = build_batch_policy(policy, device, dtype)
         self.policy.reset(len(self.rows))
 
-    def act(self, t: int) -> torch.Tensor:
+    def act(self, t: int, need_mask: torch.Tensor | None = None
+            ) -> torch.Tensor:
         features = self.state.features()
         if self.kind in ("gru", "selfplay"):
             logits = self.policy.step(features)
@@ -98,7 +100,8 @@ class _PlainActor:
         if self.uniforms is None:
             raise ValueError("sample mode requires per-match uniforms")
         action, self.draw_idx = self.policy.act_from_logits_sample(
-            logits, t, no_defect, self.uniforms, self.draw_idx)
+            logits, t, no_defect, self.uniforms, self.draw_idx,
+            need_mask=need_mask)
         return action
 
     def observe(self, mine: torch.Tensor, theirs: torch.Tensor) -> None:
@@ -130,7 +133,6 @@ class _AdvActor:
         self.rounds = int(rounds)
 
     def act(self, t: int) -> torch.Tensor:
-        base_action = self.base.act(t)
         state = self.base.state
         theirs = state.theirs
         b = len(self.rows)
@@ -168,6 +170,12 @@ class _AdvActor:
         repair_exit = (punish & self.repair & (t < 99) & (t >= 2)
                        & (theirs[:, t - 1] == 0)
                        & (theirs[:, t - 2] == 0))
+
+        # The CPU wrapper calls the base actor only when it does not override
+        # the action.  Suppress the base RNG draw on overridden rows, while
+        # still stepping the base state so GRU recurrence stays exact.
+        override = final | (punish & (~repair_exit)) | start
+        base_action = self.base.act(t, need_mask=~override)
 
         action = base_action
         action = torch.where(punish & (~repair_exit),
@@ -263,7 +271,10 @@ def supports_gpu_sample_policy(policy: Any) -> bool:
     policy = unwrap_policy(policy)
     if _policy_kind(policy) is not None:
         return True
-    # Adv wrappers and PSRO meta-policies keep their exact CPU sample stream.
+    if type(policy).__name__ in ("AdvMLPPolicy", "AdvGRUPolicy",
+                                 "AdvRLPolicy"):
+        return _policy_kind(getattr(policy, "base", None)) is not None
+    # PSRO meta-policies select a member per match and keep their CPU stream.
     return False
 
 

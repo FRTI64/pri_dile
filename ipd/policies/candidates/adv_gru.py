@@ -10,6 +10,7 @@ import os
 
 from ...core.simulator import C, D
 from ...paths import config_path, weights_path
+from ..adversarial import _ExploitTracker
 from ..gru import GRUPolicy
 
 KIND = "adv-gru"
@@ -29,7 +30,7 @@ def _resolve_base_path(base_weights: str, config_file: str) -> str:
     return base_weights
 
 
-class AdvGRUPolicy:
+class AdvGRUPolicy(_ExploitTracker):
     """Base GRU policy + constrained late/non-responsive exploitation."""
 
     name = DISPLAY
@@ -54,6 +55,7 @@ class AdvGRUPolicy:
         self.base.reset()
         self.punish = False
         self.first_d: int | None = None
+        self._reset_exploit()
 
     def _observe(self, mine: list[int], theirs: list[int]) -> None:
         observe = getattr(self.base, "observe", None)
@@ -78,8 +80,7 @@ class AdvGRUPolicy:
             self._observe(mine, theirs)
             return D
 
-        if self.first_d is None and D in theirs:
-            self.first_d = len(theirs) - 1
+        self._update_exploit(mine, theirs)
 
         if (self.late_day is not None and self.first_d is not None
                 and self.first_d >= self.late_day
@@ -88,14 +89,7 @@ class AdvGRUPolicy:
             return self._start_punishment(mine, theirs)
 
         if self.gap is not None:
-            n_c = n_d = d_c = d_d = 0
-            for i in range(1, len(theirs)):
-                if mine[i - 1] == C:
-                    n_c += 1
-                    d_c += theirs[i] == D
-                else:
-                    n_d += 1
-                    d_d += theirs[i] == D
+            n_c, n_d, d_c, d_d = self._gap_counts()
             if n_c >= self.min_c and n_d >= self.min_d:
                 p_c = d_c / n_c
                 p_d = d_d / n_d

@@ -23,6 +23,15 @@
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
 > - 最近提交：`git log -1`（Protocol v4 Axelrod/scale）。
 
+> **2026-10-28 更新**
+>
+> - Protocol v5 GPU sample 已 opt-in（`--sample-rng per-match`）；
+>   Plan 6 把 sample policy 对手和 `Adv-*` 也搬到 GPU，Axelrod adapter
+>   改为增量历史。`test_v7` v5 wall **621.94s**（4 GPU / 16 CPU，
+>   field-batch 4），dev argmax **475.38s**，分数逐位/低于 0.3 分变化。
+> - 最近完整测试：**302 tests OK**。详见
+>   `docs/research/plan6-python-bottleneck.md`。
+
 本文只保留当前结论和可执行信息。实验细节、逐 family 表和复现脚本在
 `results/*/README.md` 与 `docs/**/*.md`；文档导航见 `docs/README.md`。
 

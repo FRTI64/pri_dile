@@ -115,6 +115,7 @@ class SampleV5ParityTests(unittest.TestCase):
 
     def test_cpu_gpu_sample_parity(self) -> None:
         names = ("rl-repair", "neural", "gru", "selfplay",
+                 "adv-mlp", "adv-gru", "adv-rl",
                  "psro-br", "psro-scratch-br")
         base_seed = 20261027
         field_seed = 20261027
@@ -152,6 +153,25 @@ class SampleV5ParityTests(unittest.TestCase):
                     self.assertEqual(row.mine, simulation.mine[index])
                     self.assertEqual(row.theirs, simulation.theirs[index])
 
+    def test_sample_policy_opponents_are_batched(self) -> None:
+        from ipd.evaluation.gpu.policy_opponents import BatchOpponentField
+
+        field = build_protocol_field("test_v7", 20261027, 64)
+        for opponent in field:
+            if type(opponent).__name__ in _LEARNED:
+                opponent.mode = "sample"
+        adapter = BatchOpponentField(
+            field, list(range(len(field))), device=torch.device("cpu"),
+            dtype=torch.float64, rounds=100, policy_mode="sample",
+            fast_rules=False)
+        self.assertTrue(adapter.groups)
+        self.assertFalse(any(type(obj).__name__ in _LEARNED
+                             for _, obj, _, _ in adapter.cpu))
+        for group in adapter.groups:
+            self.assertIsNotNone(group.uniforms)
+            self.assertEqual(tuple(group.uniforms.shape),
+                             (len(group.rows), 100))
+
 
 class CandidateRoutingTests(unittest.TestCase):
     def test_support_detection(self) -> None:
@@ -171,8 +191,10 @@ class CandidateRoutingTests(unittest.TestCase):
                                             sample_mode=True))
         self.assertTrue(_gpu_spec_supported(_spec("psro-scratch-br"),
                                             sample_mode=True))
-        self.assertFalse(_gpu_spec_supported(_spec("adv-rl"),
-                                             sample_mode=True))
+        self.assertTrue(_gpu_spec_supported(_spec("adv-rl"),
+                                            sample_mode=True))
+        self.assertTrue(_gpu_spec_supported(_spec("adv-gru"),
+                                            sample_mode=True))
         self.assertFalse(_gpu_spec_supported(_spec("psro"),
                                              sample_mode=True))
         self.assertFalse(_gpu_spec_supported(_spec("final-tuned"),

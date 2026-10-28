@@ -69,11 +69,10 @@ def _gpu_spec_supported(spec: CandidateSpec,
     if kind in _PLAIN_GPU_KINDS:
         return True
     if kind in _ADV_GPU_KINDS:
-        # The Adv wrapper can skip the base actor on punishment rounds.  The
-        # argmax path is action-only, but sample mode must also preserve the
-        # base RNG draw, so keep Adv candidates on CPU until the wrapper is
-        # vectorised with an exact draw mask.
-        return not sample_mode
+        # The vectorised wrapper suppresses the base RNG draw exactly on the
+        # rounds where the CPU wrapper overrides the action, so both argmax
+        # and v5 sample are exact.
+        return True
     if kind in _PSRO_META_KINDS and not sample_mode:
         try:
             from .gpu.blue import supports_gpu_policy
@@ -323,6 +322,8 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
                 max_batch=int(gpu.get("max_batch", 32768)),
                 profile=bool(gpu.get("profile", False)),
                 fast_rules=gpu.get("fast_rules", "auto"),
+                fast_rules_threshold=float(
+                    gpu.get("fast_rules_threshold", 0.90)),
                 blue_mode=gpu_mode,
                 blue_uniforms=blue_uniforms,
                 policy_opponent_mode=opponent_mode)
@@ -542,13 +543,18 @@ def _eval(argv: Sequence[str]) -> int:
     ap.add_argument("--gpu-field-batch", type=int, default=4,
                     help="fields simulated together for cross-field policy "
                          "aggregation (default: 4)")
-    ap.add_argument("--gpu-workers", type=int, default=8,
-                    help="concurrent worker processes allowed to use CUDA "
-                         "when CPU and GPU tasks are mixed (default: 8)")
+    ap.add_argument("--gpu-workers", default="auto",
+                    help="concurrent worker processes allowed to use CUDA, "
+                         "or 'auto' (default): 4 for mixed sample runs, 8 "
+                         "for mixed argmax runs, and the full worker budget "
+                         "for GPU-only runs")
     ap.add_argument("--fast-rules", choices=("auto", "on", "off"),
                     default="auto",
                     help="Plan 3 native rule bank for non-Axelrod rule "
                          "opponents (auto = use when the C++ module builds)")
+    ap.add_argument("--fast-rules-threshold", type=float, default=0.90,
+                    help="minimum rule-row share for --fast-rules auto "
+                         "on the GPU path (default: 0.90)")
     ap.add_argument("--profile", action="store_true",
                     help="write per-family/per-candidate timings to "
                          "results/protocol_v4/profile_*.json")
@@ -595,8 +601,16 @@ def _eval(argv: Sequence[str]) -> int:
         raise SystemExit("--gpu-min-batch must be positive")
     if args.gpu_field_batch <= 0:
         raise SystemExit("--gpu-field-batch must be positive")
-    if args.gpu_workers <= 0:
-        raise SystemExit("--gpu-workers must be positive")
+    if args.gpu_workers != "auto":
+        try:
+            args.gpu_workers = int(args.gpu_workers)
+        except ValueError as exc:
+            raise SystemExit(
+                "--gpu-workers must be 'auto' or a positive integer") from exc
+        if args.gpu_workers <= 0:
+            raise SystemExit("--gpu-workers must be positive")
+    if not 0.0 <= args.fast_rules_threshold <= 1.0:
+        raise SystemExit("--fast-rules-threshold must be between 0 and 1")
     try:
         budget = worker_budget(args.workers)
     except ValueError as exc:
@@ -699,6 +713,7 @@ def _eval(argv: Sequence[str]) -> int:
         "max_batch": args.gpu_max_batch,
         "profile": bool(args.profile),
         "fast_rules": args.fast_rules if fast_rules else False,
+        "fast_rules_threshold": args.fast_rules_threshold,
         "mode": args.mode,
         "sample_rng": args.sample_rng,
         "base_seed": args.seed,
@@ -738,6 +753,19 @@ def _eval(argv: Sequence[str]) -> int:
     total = len(tasks)
     # Do not start more processes than there are tasks.
     workers = max(1, min(workers, total))
+    if not gpu_enabled or not gpu_tasks:
+        resolved_gpu_workers = 0
+    elif not cpu_tasks:
+        budget = workers if args.gpu_workers == "auto" else int(
+            args.gpu_workers)
+        resolved_gpu_workers = min(budget, len(gpu_tasks))
+    elif args.gpu_workers == "auto":
+        # Sample mode leaves heavier Python candidates on the CPU, so shift
+        # workers to that pool; argmax/dev keeps the historical 8/12 split.
+        resolved_gpu_workers = min(
+            len(gpu_tasks), 4 if args.mode == "sample" else 8)
+    else:
+        resolved_gpu_workers = min(int(args.gpu_workers), len(gpu_tasks))
     profile = ProfileAccumulator(
         workers=workers, workers_requested=str(budget["requested"]),
         candidate_chunk=args.candidate_chunk, field_reuse=args.field_reuse)
@@ -781,7 +809,7 @@ def _eval(argv: Sequence[str]) -> int:
                 handle(future.result())
 
     if gpu_enabled and cpu_tasks and gpu_tasks:
-        gpu_workers = max(1, min(args.gpu_workers, len(gpu_tasks)))
+        gpu_workers = max(1, resolved_gpu_workers)
         cpu_workers = max(1, workers - gpu_workers)
         print(f"split pools: cpu={cpu_workers} gpu={gpu_workers} "
               f"(CUDA concurrency limited to {gpu_workers})", flush=True)
@@ -795,7 +823,8 @@ def _eval(argv: Sequence[str]) -> int:
             for run in runs:
                 run.result()
     elif gpu_tasks and not cpu_tasks:
-        run_pool(gpu_tasks, min(args.gpu_workers, len(gpu_tasks)),
+        # No CPU pool to protect; use the whole worker budget.
+        run_pool(gpu_tasks, resolved_gpu_workers,
                  _eval_field_batch_task)
     else:
         run_pool(cpu_tasks or tasks, workers, _eval_field_task)
@@ -864,7 +893,7 @@ def _eval(argv: Sequence[str]) -> int:
         "gpu_sample": bool(gpu_enabled and args.mode == "sample"),
         "opponent_mode": (
             args.opponent_mode if not gpu_enabled
-            else ("sample (GPU v5 blue; policy opponents CPU)"
+            else ("sample (GPU v5 blue + policy opponents)"
                   if args.mode == "sample" else "argmax (GPU tasks)")),
         "gpu": {
             "enabled": bool(gpu_enabled),
@@ -874,8 +903,7 @@ def _eval(argv: Sequence[str]) -> int:
             "dtype": args.gpu_dtype if gpu_enabled else None,
             "max_batch": args.gpu_max_batch if gpu_enabled else None,
             "min_batch": args.gpu_min_batch,
-            "workers": (max(1, min(args.gpu_workers, len(gpu_tasks)))
-                        if gpu_enabled and gpu_tasks else 0),
+            "workers": resolved_gpu_workers,
             "field_batch": gpu_field_batch if gpu_enabled else 1,
             "mode": args.mode,
             "sample_rng": args.sample_rng,
@@ -886,7 +914,7 @@ def _eval(argv: Sequence[str]) -> int:
             "available": bool(fast_rules),
             "requested": args.fast_rules,
             "reason": fast_rules_reason,
-            "auto_threshold": 0.90,
+            "auto_threshold": args.fast_rules_threshold,
         },
         "field_tasks": total,
         "peak_rss_mb": rss_mb,

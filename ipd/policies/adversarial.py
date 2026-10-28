@@ -40,7 +40,44 @@ import os
 from ipd.policies.neural import C, D
 
 
-class AdversarialPolicy:
+class _ExploitTracker:
+    """O(1)-per-round bookkeeping for the two exploitation rules.
+
+    The wrapper used to rescan the complete history every round to recompute
+    the conditional defection counts and the first-defection position.  The
+    tracker keeps the same values incrementally; skipped rounds (punishment,
+    final round) are caught up lazily the next time the gap rule is evaluated,
+    so the trigger decisions are unchanged.
+    """
+
+    def _reset_exploit(self) -> None:
+        self._gap_upto = 1
+        self._gap_n_c = 0
+        self._gap_n_d = 0
+        self._gap_d_c = 0
+        self._gap_d_d = 0
+
+    def _update_exploit(self, mine: list[int], theirs: list[int]) -> None:
+        if self.first_d is None and theirs and theirs[-1] == D:
+            self.first_d = len(theirs) - 1
+        upto = self._gap_upto
+        limit = len(theirs)
+        while upto < limit:
+            if mine[upto - 1] == C:
+                self._gap_n_c += 1
+                self._gap_d_c += theirs[upto] == D
+            else:
+                self._gap_n_d += 1
+                self._gap_d_d += theirs[upto] == D
+            upto += 1
+        self._gap_upto = upto
+
+    def _gap_counts(self) -> tuple[int, int, int, int]:
+        return (self._gap_n_c, self._gap_n_d,
+                self._gap_d_c, self._gap_d_d)
+
+
+class AdversarialPolicy(_ExploitTracker):
     """Base neural policy + constrained late/non-responsive exploitation."""
 
     name = "Adversarial"
@@ -121,6 +158,7 @@ class AdversarialPolicy:
         self.base.reset()
         self.punish = False
         self.first_d: int | None = None
+        self._reset_exploit()
 
     def _observe(self, mine: list[int], theirs: list[int]) -> None:
         observe = getattr(self.base, "observe", None)
@@ -147,8 +185,7 @@ class AdversarialPolicy:
             self._observe(mine, theirs)
             return D
 
-        if self.first_d is None and D in theirs:
-            self.first_d = len(theirs) - 1
+        self._update_exploit(mine, theirs)
 
         # Rule 1: late first defection followed by a second defection.
         if (self.late_day is not None and self.first_d is not None
@@ -159,14 +196,7 @@ class AdversarialPolicy:
 
         # Rule 2: enough evidence that the opponent does not respond to us.
         if self.gap is not None:
-            n_c = n_d = d_c = d_d = 0
-            for i in range(1, len(theirs)):
-                if mine[i - 1] == C:
-                    n_c += 1
-                    d_c += theirs[i] == D
-                else:
-                    n_d += 1
-                    d_d += theirs[i] == D
+            n_c, n_d, d_c, d_d = self._gap_counts()
             if n_c >= self.min_c and n_d >= self.min_d:
                 p_c = d_c / n_c
                 p_d = d_d / n_d

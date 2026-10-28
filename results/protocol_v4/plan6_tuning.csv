@@ -1,0 +1,7 @@
+config,workers,gpu_workers,field_batch,wall_seconds,result
+v5_baseline,20,8,2,1365.63,protocol_v4_test_v7_all24_gpu_sample_v5.json
+policy_gpu_only,20,8,2,1310.57,protocol_v4_test_v7_all24_gpu_sample_v6.json
+plan6_adv_gpu,20,4,2,657.18,plan6_tune_w20_gpu4_fb2_adv.json
+plan6_best,20,4,4,621.94,plan6_tune_w20_gpu4_fb4.json
+plan6_gpu6,20,6,2,719.79,plan6_tune_w20_gpu6_fb2.json
+plan6_gpu8,20,8,2,807.27,plan6_tune_w20_gpu8_fb2.json

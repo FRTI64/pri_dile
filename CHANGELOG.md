@@ -7,12 +7,21 @@
 
 ### Added
 
+- **Plan 6 Python 瓶颈优化**：v5 sample 的学习型 policy 对手在
+  `BatchOpponentField` 中按权重分组，逐对象预抽 uniform 并批量上 GPU；
+  `Adv-*` 通过 base RNG 抑制 mask 也接入 v5 GPU sample。Axelrod adapter
+  改为增量维护 `History`（O(t²)→O(t)，224 策略逐动作 parity，family
+  2.5–3.1×）。新增 `--fast-rules-threshold` 与 `--gpu-workers auto`。
+  全量 `test_v7` v5 从 1365.63s 降到 **621.94s**（4 GPU / 16 CPU，
+  field-batch 4）；dev argmax 从 695.57s 降到 **475.38s**；
+  21/24 候选逐位不变，`Adv-*` 均分变化 <0.25，dev 24 候选逐位一致；
+  302 tests 全绿。文档 `docs/research/plan6-python-bottleneck.md`。
 - **Plan 5 GPU sample（opt-in）**：`protocol eval --sample-rng per-match`
   使用 per-match RNG 契约，把学习型蓝方的 sample 推理批量上 GPU；
   CPU/GPU 逐场 parity（`tests/test_gpu_parity.py`），默认 `v4` 不变。
   结果标记 `sample_rng=per-match` / `gpu_sample=true` / `protocol_version=5`；
-  `Adv-*` 与 PSRO meta-policy 仍走 CPU。文档
-  `docs/research/plan5-gpu-sample.md`。
+  当时 `Adv-*` 与 PSRO meta-policy 仍走 CPU（Plan 6 已把 `Adv-*`
+  接入 v5 GPU sample）。文档 `docs/research/plan5-gpu-sample.md`。
 - **Plan 4 训练 rollout GPU 化**：`ipd/training/selfplay/gpu_env.py`
   （GPU 历史/21 维特征/收益，Plan 3 C++ 规则 bank，Plan 2 batch policy，
   `TorchOpponent` 分组，复杂对手 CPU fallback）；`rollout.py` 新增

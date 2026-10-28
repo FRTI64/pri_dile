@@ -55,6 +55,7 @@ def _simulate_chunk(policy: Any, opponents: Sequence[Any],
                     dtype: torch.dtype, rounds: int,
                     profile: bool = False,
                     fast_rules: bool | str = "auto",
+                    fast_rules_threshold: float = 0.90,
                     blue_mode: str = "argmax",
                     blue_uniforms: Any = None,
                     policy_opponent_mode: str = "argmax"
@@ -66,6 +67,7 @@ def _simulate_chunk(policy: Any, opponents: Sequence[Any],
     opp = BatchOpponentField(opponents, list(range(n)), device=device,
                              dtype=dtype, rounds=rounds, profile=profile,
                              fast_rules=fast_rules,
+                             fast_rules_threshold=fast_rules_threshold,
                              policy_mode=policy_opponent_mode)
     mine = torch.zeros(n, rounds, dtype=torch.int8, device=device)
     theirs = torch.zeros(n, rounds, dtype=torch.int8, device=device)
@@ -105,6 +107,7 @@ def evaluate_fields_gpu(
     profile: bool = False,
     keep_histories: bool = False,
     fast_rules: bool | str = "auto",
+    fast_rules_threshold: float = 0.90,
     blue_mode: str = "argmax",
     blue_uniforms: Any = None,
     policy_opponent_mode: str = "argmax",
@@ -151,7 +154,9 @@ def evaluate_fields_gpu(
         mine_c, theirs_c, s, os_, blue_s, opp_s, family_s = _simulate_chunk(
             policy, all_opponents[start:stop], rows, device=dev,
             dtype=dtype, rounds=rounds, profile=profile,
-            fast_rules=fast_rules, blue_mode=blue_mode,
+            fast_rules=fast_rules,
+            fast_rules_threshold=fast_rules_threshold,
+            blue_mode=blue_mode,
             blue_uniforms=chunk_uniforms,
             policy_opponent_mode=policy_opponent_mode)
         scores[start:stop] = s
@@ -215,6 +220,7 @@ def evaluate_field_gpu(
     profile: bool = False,
     keep_histories: bool = False,
     fast_rules: bool | str = "auto",
+    fast_rules_threshold: float = 0.90,
     blue_mode: str = "argmax",
     blue_uniforms: Any = None,
     policy_opponent_mode: str = "argmax",
@@ -224,6 +230,7 @@ def evaluate_field_gpu(
         policy, [opponents], rounds=rounds, device=device, dtype=dtype,
         max_batch=max_batch, profile=profile,
         keep_histories=keep_histories, fast_rules=fast_rules,
+        fast_rules_threshold=fast_rules_threshold,
         blue_mode=blue_mode, blue_uniforms=blue_uniforms,
         policy_opponent_mode=policy_opponent_mode)[0]
 

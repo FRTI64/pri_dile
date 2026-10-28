@@ -78,6 +78,10 @@ class _HistoryProxy:
             "noise": 0,
         }
 
+    def record(self, play: Any, coplay: Any) -> None:
+        """Append one completed round instead of rebuilding the history."""
+        self._history.append(play, coplay)
+
     @property
     def history(self):
         return self._history
@@ -141,17 +145,18 @@ class AxelrodOpponent(Strategy):
             # Append the previous round now that the opponent's reply is known.
             # MetaPlayer overrides update_history to propagate its team's
             # proposed actions as well.
-            self._player.update_history(
-                _to_action(axl, mine[-1]), _to_action(axl, theirs[-1]))
+            mine_prev = _to_action(axl, mine[-1])
+            theirs_prev = _to_action(axl, theirs[-1])
+            self._player.update_history(mine_prev, theirs_prev)
+            # The proxy mirrors ``theirs`` as plays and ``mine`` as coplays.
+            # Appending is equivalent to the old full reconstruction but is
+            # O(1) per round instead of O(t).
+            self._opponent.record(theirs_prev, mine_prev)
         history_len = len(self._player.history)
         if t != history_len:
             raise RuntimeError(
                 f"{self.name}: match history out of sync at turn {t} "
                 f"(expected {history_len}); call reset() before each match")
-        self._opponent._history = axl.History(
-            plays=[_to_action(axl, x) for x in theirs],
-            coplays=[_to_action(axl, x) for x in mine],
-        )
         self._opponent.match_attributes = self._player.match_attributes
         return _to_int(axl, self._player.strategy(self._opponent))
 

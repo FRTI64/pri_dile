@@ -51,3 +51,23 @@
 GPU 支持候选差异 <0.3 分；GPU argmax 差异 10–17 分。
 详见 `results/eval_gpu_20261028/README_v5.md` 与
 `docs/research/plan5-gpu-sample.md`。默认 v4 表不变。
+
+## Plan 6：v5 sample 调度与 Python 瓶颈（2026-10-28）
+
+`plan6_tune_w20_gpu4_fb4.json` 是当前 v5 sample 最快配置：
+
+| 配置 | wall |
+|---|---:|
+| Plan 5 v5 baseline（8 GPU / 12 CPU，fb2） | 1365.63s |
+| 仅 policy 对手上 GPU（8/12，fb2） | 1310.57s |
+| **Plan 6：4 GPU / 16 CPU，fb4（含 `Adv-*`）** | **621.94s** |
+| 6 GPU / 14 CPU，fb2 | 719.79s |
+| 8 GPU / 12 CPU，fb2 | 807.27s |
+
+- 21/24 候选与 v5 baseline 逐位一致；`Adv-MLP/GRU/RL` 因切换到 v5
+  per-match 契约变化 +0.10/+0.23/+0.25。
+- `Adv-*` 的逐场 CPU/GPU parity 由 `tests/test_gpu_parity.py` 覆盖。
+- dev 五层 argmax 从 695.57s 降到 **475.38s**，24 候选逐位一致
+  （`plan6_dev_all24_gpu_argmax_axelrod_fast_w8fb2.json`）。
+- 明细与复现见 `docs/research/plan6-python-bottleneck.md`；
+  wall 汇总见 `plan6_tuning.csv`。

@@ -236,13 +236,23 @@ class GpuAdapterTests(unittest.TestCase):
             rounds=100, fast_rules="auto")
         if NATIVE:
             self.assertIsNotNone(adapter.rules)
-        # A synthetic mixed field (one fast rule, one irregular rule) is below
-        # the 90% auto threshold.
-        mixed = [TFT(random.Random(1)), RandomFSM(random.Random(2), k=3)]
+        # A synthetic mixed field (two fast rules, one irregular rule) is below
+        # the 90% auto threshold but above a 0.60 threshold.
+        fast = build_protocol_field("dev_complex", 5, 2)
+        mixed = list(fast) + [RandomFSM(random.Random(2), k=3)]
+        rows = list(range(len(mixed)))
         adapter2 = BatchOpponentField(
-            mixed, [0, 1], device=torch.device("cpu"),
+            mixed, rows, device=torch.device("cpu"),
             dtype=torch.float32, rounds=100, fast_rules="auto")
         self.assertIsNone(adapter2.rules)
+        adapter3 = BatchOpponentField(
+            mixed, rows, device=torch.device("cpu"),
+            dtype=torch.float32, rounds=100, fast_rules="auto",
+            fast_rules_threshold=0.60)
+        if NATIVE:
+            self.assertIsNotNone(adapter3.rules)
+        else:
+            self.assertIsNone(adapter3.rules)
 
 
 if __name__ == "__main__":

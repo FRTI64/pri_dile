@@ -244,7 +244,8 @@ RNG，CPU/GPU 使用同一组逐轮 uniform，因此可以逐动作 parity。
 
 ```bash
 python3 -m ipd protocol eval --candidates all --tiers test_v7 \
-  --fields 50 --n 2048 --workers 20 --gpu-workers 8 \
+  --fields 50 --n 2048 --workers 20 --gpu-workers 4 \
+  --gpu-field-batch 4 \
   --mode sample --sample-rng per-match --gpu on --gpu-dtype float32 \
   --seed 20261027 --no-consume
 ```
@@ -252,9 +253,12 @@ python3 -m ipd protocol eval --candidates all --tiers test_v7 \
 - 默认 `--sample-rng v4` 不变；v5 必须显式开启，不能与 v4 sample 表混用。
 - 结果标记 `sample_rng=per-match`、`gpu_sample=true`、
   `protocol_version=5`。
-- `Adv-*`、PSRO meta-policy 和规则/Axelrod 仍走 CPU；GPU 只批量学习型
-  蓝方。
-- 详见 [plan5-gpu-sample.md](../research/plan5-gpu-sample.md)。
+- Plan 6 把 `Adv-*` 也接入 v5 GPU sample：包装层覆盖动作的轮次不消耗
+  base RNG，逐场 CPU/GPU parity；因此 `Adv-*` 的 v5 结果改用 per-match
+  契约，不再沿用 v4 顺序流（`test_v7` 均分变化 <0.25）。
+- PSRO meta-policy、`Final` / `Triple` 和规则/Axelrod 仍走 CPU。
+- 详见 [plan5-gpu-sample.md](../research/plan5-gpu-sample.md) 与
+  [plan6-python-bottleneck.md](../research/plan6-python-bottleneck.md)。
 
 ## 6. 选模规则
 
