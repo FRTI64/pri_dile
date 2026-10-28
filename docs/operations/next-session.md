@@ -23,12 +23,15 @@
 
 ## 当前状态
 
-- 最近提交：`git log -1`（Protocol v4 Axelrod/scale；baseline 未运行）。
-- 最近完整测试：**240 tests OK**；`python3 -m ipd list-policies` 为
-  **24 个注册候选**。
+- 最近提交：`git log -1`（RL-Pattern 评估与候选注册）。
+- 最近完整测试：**308 tests OK**；`python3 -m ipd list-policies` 为
+  **25 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-- **RL-Repair（`rl-repair`）是当前最佳候选**，但未 promotion：
+- **RL-Pattern（`rl-pattern`）是 v4 dev 第一（top 3）**，但未
+  promotion：`weights/rl_policy_weights_pattern.json`，sha256
+  `5c50db0ed1c560e2d05cbc52a4006dc0b3e7fa55cf102f0ba932c1b7433619ae`。
+- **前最佳 / fallback：RL-Repair（`rl-repair`）**，未 promotion：
   `weights/rl_policy_weights_repair.json`，sha256
   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
@@ -46,9 +49,15 @@
   dev_red / Red-v5/v6 red_win 0.0；未 promotion。详见
   `docs/research/psro-scratch.md`。
 
-### 头部候选（legacy v3 baseline，299 人 / 20 / 40 fields）
+### 头部候选（Protocol v4 dev top 3；30×2048 sample）
 
-下表不是 v4 排名；v4 baseline 尚未运行。
+| 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 prov. |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| **RL-Pattern** | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | **548.45** | **583.07** | **447.64** | 582.22 | **519.46** | 485.43 |
+| RL-Repair | `rl-repair` | `weights/rl_policy_weights_repair.json` | 547.96 | 582.76 | 434.28 | **582.46** | 515.19 | **486.31** |
+| RL-PPO | `rl` | `weights/rl_policy_weights.json` | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 477.26 |
+
+下表是 legacy v3 baseline（299 人 / 20 / 40 fields），只作历史对照：
 
 | 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_ood | test_v6 |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -97,9 +106,11 @@ legacy，不能与新表混用。
    - `Adv-*` / PSRO meta 保持 CPU；见
      `docs/research/plan6-python-bottleneck.md`。
 1. **比赛提交硬化（若近期提交）**
-   - 在 v4 上重跑 RL-Repair 的 `dev_param` / `dev_family` /
+   - 在 v4 上复现 RL-Pattern / RL-Repair 的 `dev_param` / `dev_family` /
      `dev_complex` / `dev_axelrod` / `dev_ood`；补跑
      `dev_level0..4` / `dev_complexity0..4` 分级诊断；
+   - RL-Pattern 的 test_v7 provisional 低 0.88，必须先做独立 seed
+     复现和 red 检查；
    - `test_v7` 只做 provisional 诊断，不能当作独立 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
@@ -150,7 +161,7 @@ legacy，不能与新表混用。
 cd /home/frti64/pri_dile
 git status                    # 文档重组提交后应为 clean
 python3 -m ipd test           # 全量测试
-python3 -m ipd list-policies  # 20 candidates
+python3 -m ipd list-policies  # 25 candidates
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates core --tiers dev_param \
   --fields 1 --n 32 --workers 4
@@ -165,10 +176,10 @@ python3 -m ipd protocol eval --candidates core --tiers dev_param \
 # tests
 python3 -m unittest discover -s tests -t . -v
 
-# 当前最佳候选
-python3 -m ipd self-test --candidates rl-repair
-python3 -m ipd benchmark --candidates rl-repair --fields 20 --workers 20
-python3 -m ipd blind --candidates rl-repair --fields 20 --workers 10
+# 当前 v4 dev 第一 / 前最佳
+python3 -m ipd self-test --candidates rl-pattern,rl-repair
+python3 -m ipd benchmark --candidates rl-pattern,rl-repair --fields 20 --workers 20
+python3 -m ipd blind --candidates rl-pattern,rl-repair --fields 20 --workers 10
 
 # E0 / E1c 冻结评估
 python3 -m ipd league --config configs/eval/e0_league.json --workers 20 \

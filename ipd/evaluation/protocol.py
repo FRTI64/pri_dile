@@ -2461,6 +2461,12 @@ TRAIN_PROFILES: dict[str, tuple[str, ...] | None] = {
     "train_hard": ("noisy", "random", "extort", "temporal", "wild",
                    "adaptive", "anchor"),
     "train_complex": tuple(COMPLEX_FAMILIES) + ("anchor",),
+    # Targeted hard-mining profiles for families where the current policy has
+    # a large gap.  They contain only training-tier entries, so dev/test
+    # parameters stay held out.
+    "train_pattern_breaker": ("pattern_breaker",),
+    "train_weak_complex": ("pattern_breaker", "adaptive_mix",
+                           "probe_exploit", "conditional_extort", "lookahead"),
     "train_policy": ("policy",),
     "train_axelrod": ("axelrod", "axelrod_mix"),
 }

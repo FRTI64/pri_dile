@@ -169,6 +169,8 @@ python3 -m ipd train rl --train-dists train_v4 \
 | `train_easy` | nice / forgiving / punitive / defect / late + anchors |
 | `train_hard` | noisy / random / extort / temporal / wild / adaptive + anchors |
 | `train_complex` | complex families + anchors |
+| `train_pattern_breaker` | 仅 `pattern_breaker` 的 `train_complex` 参数点（定向 hard mining） |
+| `train_weak_complex` | `pattern_breaker` / `adaptive_mix` / `probe_exploit` / `conditional_extort` / `lookahead` |
 | `train_policy` | policy opponents only |
 | `train_axelrod` | Axelrod 策略 + 组合 |
 | `train_level0..4` | 按思考等级筛选 |
@@ -281,7 +283,8 @@ python3 -m ipd protocol eval --candidates all --tiers test_v7 \
 - 224 个 Axelrod 策略里包含 evolved/meta 等较慢策略；完整 test_v7 会比 v3
   慢，正式 final 前建议用 `--fields 1 --n 256 --no-consume` 做 pipeline
   烟测。
-- v4 的 2048/30/50 规模尚未跑新 baseline；`results/protocol_v3/` 的
+- v4 的 top 3 dev 已运行（RL-PPO / RL-Repair / RL-Pattern）；全候选
+  baseline 尚未运行；`results/protocol_v3/` 的
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
   只在定向分析时使用。

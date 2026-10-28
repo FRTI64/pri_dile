@@ -37,8 +37,8 @@ DEV_DEFAULT = "dev_param,dev_family,dev_complex,dev_axelrod,dev_ood"
 ALL_DEFAULT = DEV_DEFAULT
 
 _PLAIN_GPU_KINDS = frozenset({
-    "neural", "gru", "rl", "rl-hard60", "rl-repair", "selfplay",
-    "psro-br", "psro-scratch-br",
+    "neural", "gru", "rl", "rl-hard60", "rl-repair", "rl-pattern",
+    "selfplay", "psro-br", "psro-scratch-br",
 })
 _ADV_GPU_KINDS = frozenset({"adv-mlp", "adv-gru", "adv-rl"})
 _PSRO_META_KINDS = frozenset({"psro", "psro-scratch"})
@@ -756,9 +756,9 @@ def _eval(argv: Sequence[str]) -> int:
     if not gpu_enabled or not gpu_tasks:
         resolved_gpu_workers = 0
     elif not cpu_tasks:
-        budget = workers if args.gpu_workers == "auto" else int(
+        gpu_budget = workers if args.gpu_workers == "auto" else int(
             args.gpu_workers)
-        resolved_gpu_workers = min(budget, len(gpu_tasks))
+        resolved_gpu_workers = min(gpu_budget, len(gpu_tasks))
     elif args.gpu_workers == "auto":
         # Sample mode leaves heavier Python candidates on the CPU, so shift
         # workers to that pool; argmax/dev keeps the historical 8/12 split.

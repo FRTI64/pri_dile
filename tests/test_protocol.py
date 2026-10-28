@@ -139,6 +139,20 @@ class ProtocolFieldTests(unittest.TestCase):
             field2 = build_training_field(profile, 12345, 50)
             self.assertEqual([b.name for b in field], [b.name for b in field2])
 
+    def test_weak_complex_profile_uses_train_tier_only(self) -> None:
+        field = build_training_field("train_weak_complex", 12345, 400)
+        families = {bot.name.split(":", 1)[0] for bot in field}
+        self.assertEqual(families,
+                         {"pattern_breaker", "adaptive_mix",
+                          "probe_exploit", "conditional_extort", "lookahead"})
+        tiers = {(entry.family, entry.key): entry.tier
+                 for entry in build_catalog()}
+        for bot in field:
+            family, key = bot.name.split(":", 1)
+            self.assertIn(tiers[(family, key)],
+                          ("train_complex", "train_policy"),
+                          (family, key))
+
     def test_protocol_validation_distributions(self) -> None:
         for dist in ("dev_param", "dev_family", "dev_complex",
                      "dev_axelrod", "dev_ood"):

@@ -6,8 +6,10 @@
   [../reference/protocol-v4.md](../reference/protocol-v4.md)。旧 heldout / v2
   流程仅作历史记录。
 - **Repo:** `/home/frti64/pri_dile`
-- **Current best candidate:** `RL-Repair` / `rl-repair`（E1c；未 promotion）
-- **Fallbacks:** `RL-PPO`（主权重，`rl`）、`RL-PPO-Hard60`（A60，`rl-hard60`）
+- **Current best candidate (Protocol v4 dev top 3):** `RL-Pattern` /
+  `rl-pattern`（定向 pattern_breaker fine-tune；未 promotion）
+- **Proven fallback:** `RL-Repair` / `rl-repair`（E1c；未 promotion）；
+  `RL-PPO`（主权重，`rl`）、`RL-PPO-Hard60`（A60，`rl-hard60`）
 - **E0 harness:** `python3 -m ipd league` / `docs/research/e0-league.md`
 - **目标:** 在未知对手分布、一次固定提交的比赛中，最大化期望总分，同时控制 worst-case / 被针对性剥削的风险。
 

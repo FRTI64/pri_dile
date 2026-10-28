@@ -7,6 +7,21 @@
 
 ### Added
 
+- **RL-Pattern（`rl-pattern`）**：从 RL-Repair + entropy v4 fine-tune
+  出发，混入 `train_v4` 与新的 `train_pattern_breaker` profile，
+  修复 Protocol v4 `pattern_breaker` 漏洞。全量 dev（30×2048，sample）：
+  dev_param **548.45**（RL-Repair 547.96）、dev_complex **447.64**
+  （434.28）、dev_ood **519.46**（515.19）、dev_axelrod 582.22
+  （582.46）、dev_family 583.07（582.76）；`pattern_breaker`
+  236.8 → 420.3。`test_v7` provisional 485.43 vs RL-Repair 486.31
+  （未消费、`selection_eligible=false`）。注册为实验候选，**未
+  promotion**，主权重不变。权重
+  `weights/rl_policy_weights_pattern.json`，实验报告
+  `docs/research/rl-pattern.md`、`results/rl_v4_20261028/`。
+- **定向训练 profile**：`train_pattern_breaker`（仅 pattern_breaker
+  train_complex 参数）和 `train_weak_complex`（pattern_breaker /
+  adaptive_mix / probe_exploit / conditional_extort / lookahead）；
+  `tests/test_protocol.py` 增加 train-tier 泄漏检查。
 - **Plan 6 Python 瓶颈优化**：v5 sample 的学习型 policy 对手在
   `BatchOpponentField` 中按权重分组，逐对象预抽 uniform 并批量上 GPU；
   CPU/GPU 与 Plan 5 v5 baseline **逐位一致**。Axelrod adapter 改为增量
@@ -93,8 +108,11 @@
 
 ### Changed
 
-- 注册候选从 20 增至 24（`psro` / `psro-br` / `psro-scratch` /
-  `psro-scratch-br`）；完整测试 240 OK。
+- 注册候选从 20 增至 25（新增 `rl-pattern`；此前 24 含 4 个 PSRO）；
+  完整测试 **308 OK**。
+- Protocol v4 top 3（RL-PPO / RL-Repair / RL-Pattern）的 dev 已运行；
+  RL-Pattern 在 4/5 tier 上超过 RL-Repair，但 test_v7 provisional
+  仍低 0.88，暂不 promotion。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为
@@ -102,6 +120,10 @@
 
 ### Fixed
 
+- `protocol eval` 在“全部候选都走 GPU、没有 CPU task”且显式设置
+  `--gpu-workers` 时，局部变量 `budget` 覆盖 worker 预算字典，导致
+  `TypeError: 'int' object is not subscriptable`；现在改用独立的
+  `gpu_budget`。
 - `Reactive.F0..F7` 工厂在每次调用时继续消耗共享 RNG，导致对手参数随
   候选数量和顺序变化；现在改为构造时只抽样一次。回归测试：
   `tests/test_core.py::OpponentFactoryTests`。这会使 34cb9b0 中这 8 类

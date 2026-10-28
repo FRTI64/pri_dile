@@ -1,10 +1,12 @@
 # 完整强化学习策略（PPO）
 
-> **状态（2026-10-27）**：本文记录 85 维 PPO 的方法和截至 2026-10-26 的
-> 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）和 RL-Repair（E1c），
-> **当前最佳候选是 RL-Repair**；下方 5.1/5.2 的 10-field 盲测表只代表
-> 当时的基线。当前候选比较（20 fields / E0 冻结协议）见
-> [README.md](../../README.md) 和 `results/e0_league_20261026/`。
+> **状态（2026-10-29）**：本文记录 85 维 PPO 的方法和截至 2026-10-26 的
+> 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）、RL-Repair（E1c）和
+> RL-Pattern（v4 定向 fine-tune）；**Protocol v4 dev 第一（top 3）是
+> RL-Pattern，但未 promotion**；RL-Repair 仍是 proven fallback。下方
+> 5.1/5.2 的 10-field 盲测表只代表当时的基线。当前候选比较见
+> [README.md](../../README.md)、`results/rl_v4_20261028/` 和
+> `docs/research/rl-pattern.md`。
 
 本文记录 `ipd/training/rl.py` 的完整 RL 训练流程。它不是行为克隆，也不是
 DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过 PPO 更新。
@@ -15,7 +17,8 @@ DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过
 
 | 候选 | 注册名 | 权重 | official 20 | blind 20 | heldout v2 | 备注 |
 |---|---|---|---:|---:|---:|---|
-| **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | **554.72** | **564.68** | **503.17** | 最佳候选；未 promotion |
+| **RL-Pattern** | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | - | - | - | **v4 dev 第一（top 3）；未 promotion** |
+| **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | **554.72** | **564.68** | **503.17** | 前最佳 / fallback |
 | RL-PPO-Hard60 | `rl-hard60` | `weights/rl_policy_weights_hard60.json` | 554.27 | 563.87 | 500.07 | A60 / fallback |
 | RL-PPO | `rl` | `weights/rl_policy_weights.json` | 553.22 | 562.80 | 494.97 | 当前主权重 |
 
@@ -24,6 +27,16 @@ RL-Repair 554.76 / 564.61。下方 5.1/5.2 表是 10-field 盲测的早期基线
 不能与上表 20-field 数字混排。详见
 `results/hard2_20261026/README.md`、`results/robust_20261026/README.md`
 和 `docs/research/e1-robust-finetune.md`。
+
+### RL-Pattern（2026-10-29）
+
+在 RL-Repair 上先做 20 iter entropy v4 fine-tune，再用
+`train_v4` + `train_pattern_breaker` 8 iter 定向训练，离线选 iter6。
+Protocol v4 dev：dev_param 548.45、dev_complex 447.64、dev_ood 519.46，
+`pattern_breaker` 236.8 → 420.3；test_v7 provisional 485.43。
+新 profile `train_pattern_breaker` / `train_weak_complex` 只含 train-tier
+参数。完整配方、消融和回退见 `docs/research/rl-pattern.md`；**未
+promotion**，主权重不变。
 
 ## 1. 为什么需要完整 RL
 
