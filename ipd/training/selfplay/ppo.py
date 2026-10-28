@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.distributions import Bernoulli
 
 from .models import GRUActorCritic, clone_state, load_state
-from .rollout import Rollout, iter_batches, normalize_advantages
+from .rollout import Rollout, normalize_advantages
 
 
 @dataclass
@@ -90,7 +90,7 @@ class PPOAgent:
         stop = False
         for _ in range(epochs):
             epoch_kl: list[float] = []
-            for idx in iter_batches(n, batch, rng):
+            for idx in rollout.batches(batch, rng):
                 x = obs[idx]
                 logits, values, _ = self.model.forward_sequence(x)
                 dist = Bernoulli(logits=logits)

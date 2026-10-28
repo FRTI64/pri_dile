@@ -34,6 +34,7 @@ from typing import Any, Sequence
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 from torch.distributions import Bernoulli
 
 from ipd.core.primitives import C, D
@@ -41,6 +42,7 @@ from ipd.training.neural import describe_device, resolve_device
 
 from .config import TrainConfig, load_config, smoke_config
 from .env import VectorEnv
+from .gpu_env import GPUEnv
 from .evaluate import (
     calibration_report, evaluate_model, fast_validation, final_test,
     heldout_red_tasks, passes_thresholds, save_json, selection_score,
@@ -56,7 +58,7 @@ from .opponents import (
 )
 from .ppo import PPOAgent, UpdateStats
 from .red_pool import RedConstraint, RedLeague, calibration_scores
-from .rollout import Rollout, concat_rollouts
+from .rollout import Rollout, TensorRollout, concat_rollouts
 
 
 # ---------------------------------------------------------------------------
@@ -79,9 +81,132 @@ def _red_factory(league: RedLeague, cfg: TrainConfig, device, seed: int,
                                  name=f"red-{snap.iteration}")
 
 
+def _make_env(cfg: TrainConfig, factories, families, device, *,
+              use_gpu: bool, gpu_env: bool, iteration: int):
+    """Build the CPU reference env or the Plan 4 GPU env."""
+    if not gpu_env:
+        return VectorEnv(factories, families, fast_rules=cfg.fast_rules,
+                         fast_rules_min_envs=cfg.fast_rules_min_envs)
+    if not use_gpu:
+        # An explicit --device cpu request must keep the reference path.
+        return VectorEnv(factories, families, fast_rules=cfg.fast_rules,
+                         fast_rules_min_envs=cfg.fast_rules_min_envs)
+    return GPUEnv(factories, families, device=device,
+                  rounds=cfg.rounds,
+                  fast_rules=cfg.fast_rules,
+                  fast_rules_min_envs=cfg.fast_rules_min_envs,
+                  mode="sample",
+                  seed=cfg.seed + 1009 * iteration)
+
+
+def _rollout_cpu(cfg: TrainConfig, model: GRUActorCritic, env: VectorEnv,
+                 device) -> tuple[Rollout, np.ndarray, np.ndarray, float]:
+    """Reference rollout collection (unchanged Plan 1-3 behaviour)."""
+    model.eval()
+    h = model.init_hidden(env.n, device)
+    obs_rows: list[np.ndarray] = []
+    action_rows: list[np.ndarray] = []
+    logp_rows: list[np.ndarray] = []
+    value_rows: list[np.ndarray] = []
+    own_rows: list[np.ndarray] = []
+    other_rows: list[np.ndarray] = []
+    hidden_rows: list[np.ndarray] = []
+    d_rate = 0.0
+    with torch.no_grad():
+        for _t in range(cfg.rounds):
+            obs = env.observations()
+            x = torch.as_tensor(obs, dtype=torch.float32, device=device)
+            logits, values, h_next = model.step(x, h)
+            dist = Bernoulli(logits=logits)
+            actions = dist.sample()
+            logp = dist.log_prob(actions)
+            hidden_rows.append(h.detach().cpu().permute(1, 0, 2).numpy())
+            own, other, _done = env.step(actions.cpu().tolist())
+            obs_rows.append(obs)
+            action_rows.append(actions.cpu().numpy())
+            logp_rows.append(logp.cpu().numpy())
+            value_rows.append(values.cpu().numpy())
+            own_rows.append(own)
+            other_rows.append(other)
+            d_rate += float(actions.float().mean())
+            h = h_next
+
+    rollout = Rollout(
+        obs=np.stack(obs_rows, axis=1),
+        actions=np.stack(action_rows, axis=1),
+        logprobs=np.stack(logp_rows, axis=1),
+        values=np.stack(value_rows, axis=1),
+        rewards=np.stack(own_rows, axis=1) * cfg.ppo.reward_scale,
+        hidden=np.stack(hidden_rows, axis=1),
+        opponent_rewards=np.stack(other_rows, axis=1),
+        families=env.families,
+    )
+    return (rollout, np.stack(own_rows, axis=1),
+            np.stack(other_rows, axis=1), d_rate / max(1, cfg.rounds))
+
+
+def _rollout_gpu(cfg: TrainConfig, model: GRUActorCritic, env: GPUEnv,
+                 device) -> tuple[TensorRollout, np.ndarray, np.ndarray, float]:
+    """GPU-resident rollout; one host transfer at the end of the episode."""
+    model.eval()
+    h = model.init_hidden(env.n, device)
+    obs_rows: list[torch.Tensor] = []
+    action_rows: list[torch.Tensor] = []
+    logp_rows: list[torch.Tensor] = []
+    value_rows: list[torch.Tensor] = []
+    own_rows: list[torch.Tensor] = []
+    other_rows: list[torch.Tensor] = []
+    hidden_rows: list[torch.Tensor] = []
+    d_rate = torch.zeros((), device=device)
+    with torch.no_grad():
+        for _t in range(cfg.rounds):
+            obs = env.observations_tensor()
+            logits, values, h_next = model.step(obs, h)
+            actions = torch.bernoulli(torch.sigmoid(logits)).to(torch.int8)
+            logp = F.logsigmoid(torch.where(actions == 1, logits, -logits))
+            hidden_rows.append(h.permute(1, 0, 2))
+            own, other, _done = env.step_tensor(actions)
+            obs_rows.append(obs)
+            action_rows.append(actions)
+            logp_rows.append(logp)
+            value_rows.append(values)
+            own_rows.append(own)
+            other_rows.append(other)
+            d_rate += actions.float().mean()
+            h = h_next
+
+    if torch.device(device).type == "cuda":
+        # Make the measured rollout honest: the next GAE/update would sync
+        # here anyway, and benchmarks must not report enqueue time as
+        # completed work.
+        torch.cuda.synchronize()
+    own = torch.stack(own_rows, dim=1)
+    other = torch.stack(other_rows, dim=1)
+    rollout = TensorRollout(
+        obs=torch.stack(obs_rows, dim=1),
+        actions=torch.stack(action_rows, dim=1).to(torch.float32),
+        logprobs=torch.stack(logp_rows, dim=1),
+        values=torch.stack(value_rows, dim=1),
+        rewards=own * cfg.ppo.reward_scale,
+        hidden=torch.stack(hidden_rows, dim=1),
+        opponent_rewards=other,
+        families=env.families,
+    )
+    return (rollout, own.detach().cpu().numpy(),
+            other.detach().cpu().numpy(), float(d_rate) / max(1, cfg.rounds))
+
+
+def _rollout(cfg: TrainConfig, model: GRUActorCritic, env, device
+             ) -> tuple[Rollout | TensorRollout, np.ndarray, np.ndarray, float]:
+    if isinstance(env, GPUEnv):
+        return _rollout_gpu(cfg, model, env, device)
+    return _rollout_cpu(cfg, model, env, device)
+
+
 def collect_blue(cfg: TrainConfig, model: GRUActorCritic, league: RedLeague,
-                 phase, rng: random.Random, device, iteration: int
-                 ) -> tuple[Rollout, dict[str, Any]]:
+                 phase, rng: random.Random, device, iteration: int,
+                 gpu_env: bool = False
+                 ) -> tuple[Rollout | TensorRollout, dict[str, Any]]:
     n_red_learner = 0
     if phase.red_fraction[1] > 0:
         n_red_learner = int(round(cfg.envs * rng.uniform(*phase.red_fraction)))
@@ -104,53 +229,22 @@ def collect_blue(cfg: TrainConfig, model: GRUActorCritic, league: RedLeague,
         factories.append(_red_factory(league, cfg, device,
                                       rng.randrange(1 << 30), rng))
 
-    env = VectorEnv(factories, families, fast_rules=cfg.fast_rules,
-                    fast_rules_min_envs=cfg.fast_rules_min_envs)
-    model.eval()
-    h = model.init_hidden(env.n, device)
-    obs_rows: list[np.ndarray] = []
-    action_rows: list[np.ndarray] = []
-    logp_rows: list[np.ndarray] = []
-    value_rows: list[np.ndarray] = []
-    reward_rows: list[np.ndarray] = []
-    hidden_rows: list[np.ndarray] = []
-    d_rate = 0.0
-    with torch.no_grad():
-        for t in range(cfg.rounds):
-            obs = env.observations()
-            x = torch.as_tensor(obs, dtype=torch.float32, device=device)
-            logits, values, h_next = model.step(x, h)
-            dist = Bernoulli(logits=logits)
-            actions = dist.sample()
-            logp = dist.log_prob(actions)
-            hidden_rows.append(h.detach().cpu().permute(1, 0, 2).numpy())
-            own, other, _done = env.step(actions.cpu().tolist())
-            obs_rows.append(obs)
-            action_rows.append(actions.cpu().numpy())
-            logp_rows.append(logp.cpu().numpy())
-            value_rows.append(values.cpu().numpy())
-            reward_rows.append(own)
-            d_rate += float(actions.float().mean())
-            h = h_next
-
-    rollout = Rollout(
-        obs=np.stack(obs_rows, axis=1),
-        actions=np.stack(action_rows, axis=1),
-        logprobs=np.stack(logp_rows, axis=1),
-        values=np.stack(value_rows, axis=1),
-        rewards=np.stack(reward_rows, axis=1) * cfg.ppo.reward_scale,
-        hidden=np.stack(hidden_rows, axis=1),
-        opponent_rewards=None,
-        families=families,
-    )
+    env = _make_env(cfg, factories, families, device,
+                    use_gpu=torch.device(device).type == "cuda",
+                    gpu_env=gpu_env, iteration=iteration)
+    rollout, _own, _other, d_rate = _rollout(cfg, model, env, device)
+    rollout.opponent_rewards = None
     stats = {
         "n_red": n_red_opp,
         "n_red_learner": n_red_learner,
         "n_blue": n_blue,
-        "d_rate": d_rate / max(1, cfg.rounds),
+        "d_rate": d_rate,
         "scores": env.scores,
         "family_counts": {f: families.count(f) for f in set(families)},
+        "gpu_env": isinstance(env, GPUEnv),
     }
+    if isinstance(env, GPUEnv):
+        env.close()
     return rollout, stats
 
 
@@ -199,45 +293,16 @@ def _strong_bot_factory(kind: str, seed: int):
 
 
 def collect_red(cfg: TrainConfig, model: GRUActorCritic, phase, blue_state,
-                rng: random.Random, device, n_red: int
-                ) -> tuple[Rollout, dict[str, Any]]:
+                rng: random.Random, device, n_red: int,
+                gpu_env: bool = False, iteration: int = 0
+                ) -> tuple[Rollout | TensorRollout, dict[str, Any]]:
     rows = _red_target_factories(cfg, phase, blue_state, rng, device, n_red)
     families = [row[1] for row in rows]
     targets = [row[2] for row in rows]
-    env = VectorEnv([row[0] for row in rows], families,
-                    fast_rules=cfg.fast_rules,
-                    fast_rules_min_envs=cfg.fast_rules_min_envs)
-    model.eval()
-    h = model.init_hidden(env.n, device)
-    obs_rows: list[np.ndarray] = []
-    action_rows: list[np.ndarray] = []
-    logp_rows: list[np.ndarray] = []
-    value_rows: list[np.ndarray] = []
-    own_rows: list[np.ndarray] = []
-    target_rows: list[np.ndarray] = []
-    hidden_rows: list[np.ndarray] = []
-    d_rate = 0.0
-    with torch.no_grad():
-        for t in range(cfg.rounds):
-            obs = env.observations()
-            x = torch.as_tensor(obs, dtype=torch.float32, device=device)
-            logits, values, h_next = model.step(x, h)
-            dist = Bernoulli(logits=logits)
-            actions = dist.sample()
-            logp = dist.log_prob(actions)
-            hidden_rows.append(h.detach().cpu().permute(1, 0, 2).numpy())
-            own, other, _done = env.step(actions.cpu().tolist())
-            obs_rows.append(obs)
-            action_rows.append(actions.cpu().numpy())
-            logp_rows.append(logp.cpu().numpy())
-            value_rows.append(values.cpu().numpy())
-            own_rows.append(own)
-            target_rows.append(other)
-            d_rate += float(actions.float().mean())
-            h = h_next
-
-    own = np.stack(own_rows, axis=1)
-    other = np.stack(target_rows, axis=1)
+    env = _make_env(cfg, [row[0] for row in rows], families, device,
+                    use_gpu=torch.device(device).type == "cuda",
+                    gpu_env=gpu_env, iteration=iteration + 1)
+    rollout, own, other, d_rate = _rollout(cfg, model, env, device)
     constraint = RedConstraint(phase.alpha, phase.lam)
     reward_rows = np.zeros_like(own)
     violations = []
@@ -253,28 +318,30 @@ def collect_red(cfg: TrainConfig, model: GRUActorCritic, phase, blue_state,
         violations.append(info.get("violation", 0.0))
         penalties.append(info.get("penalty", 0.0))
 
-    rollout = Rollout(
-        obs=np.stack(obs_rows, axis=1),
-        actions=np.stack(action_rows, axis=1),
-        logprobs=np.stack(logp_rows, axis=1),
-        values=np.stack(value_rows, axis=1),
-        rewards=reward_rows * cfg.ppo.reward_scale,
-        hidden=np.stack(hidden_rows, axis=1),
-        opponent_rewards=other,
-        families=families,
-    )
+    if isinstance(rollout, TensorRollout):
+        rollout.rewards = torch.as_tensor(
+            reward_rows * cfg.ppo.reward_scale, dtype=torch.float32,
+            device=rollout.device)
+        rollout.opponent_rewards = torch.as_tensor(
+            other, dtype=torch.float32, device=rollout.device)
+    else:
+        rollout.rewards = reward_rows * cfg.ppo.reward_scale
+        rollout.opponent_rewards = other
     stats = {
         "n_red": env.n,
-        "d_rate": d_rate / max(1, cfg.rounds),
+        "d_rate": d_rate,
         "scores": env.scores,
-        "target_scores": [e.opponent_score for e in env.envs],
-        "red_scores": [e.own_score for e in env.envs],
+        "target_scores": [int(x) for x in other.sum(axis=1).tolist()],
+        "red_scores": [int(x) for x in own.sum(axis=1).tolist()],
         "violation_rate": (sum(1 for x in violations if x > 0)
                            / max(1, len(violations))),
         "mean_violation": statistics.fmean(violations) if violations else 0.0,
         "mean_penalty": statistics.fmean(penalties) if penalties else 0.0,
         "target_kinds": {k: targets.count(k) for k in set(targets)},
+        "gpu_env": isinstance(env, GPUEnv),
     }
+    if isinstance(env, GPUEnv):
+        env.close()
     return rollout, stats
 
 
@@ -422,6 +489,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--fast-rules-min-envs", type=int, default=None,
                     help="minimum batch size for the native rule bank "
                          "(default: 128)")
+    ap.add_argument("--gpu-env", choices=("auto", "on", "off"), default=None,
+                    help="Plan 4 GPU-resident rollout environment "
+                         "(auto: on when CUDA and envs >= min batch)")
+    ap.add_argument("--gpu-env-min-batch", type=int, default=None,
+                    help="minimum envs for --gpu-env auto (default: 128)")
     ap.add_argument("--out", default=None,
                     help="deployable JSON policy output")
     ap.add_argument("--checkpoint-out", default=None,
@@ -455,6 +527,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         overrides["fast_rules"] = bool(args.fast_rules)
     if args.fast_rules_min_envs is not None:
         overrides["fast_rules_min_envs"] = int(args.fast_rules_min_envs)
+    if args.gpu_env is not None:
+        overrides["gpu_env"] = args.gpu_env
+    if args.gpu_env_min_batch is not None:
+        overrides["gpu_env_min_batch"] = int(args.gpu_env_min_batch)
     if args.iterations is not None:
         overrides["total_episodes"] = args.iterations * (args.envs or cfg.envs)
     elif args.episodes is not None:
@@ -481,7 +557,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             "  pip install -r requirements-train.txt")
 
     device = resolve_device(cfg.device)
+    use_gpu_env = (device.type == "cuda"
+                   and (cfg.gpu_env == "on"
+                        or (cfg.gpu_env == "auto"
+                            and cfg.envs >= cfg.gpu_env_min_batch)))
     print(f"device: {describe_device(device)}", flush=True)
+    print(f"gpu_env={'on' if use_gpu_env else 'off'} "
+          f"(requested {cfg.gpu_env}, min_batch {cfg.gpu_env_min_batch})",
+          flush=True)
     print(f"episodes={cfg.total_episodes} envs={cfg.envs} "
           f"iterations={cfg.iterations} phases="
           + ",".join(f"{p.name}:{p.until_episodes}" for p in cfg.phases),
@@ -614,27 +697,39 @@ def main(argv: Sequence[str] | None = None) -> int:
                     schedule.get(phase.name, cfg.ppo.entropy_coef))
 
             # Blue rollout and update.
+            iteration_started = time.perf_counter()
             blue_rollout, blue_stats = collect_blue(
-                cfg, blue_model, league, phase, rng, device, iteration)
+                cfg, blue_model, league, phase, rng, device, iteration,
+                gpu_env=use_gpu_env)
+            blue_collect_s = time.perf_counter() - iteration_started
             blue_rollout.compute_gae(cfg.ppo.gamma, cfg.ppo.lam)
+            blue_update_started = time.perf_counter()
             if args.freeze_blue:
                 blue_update = UpdateStats(n_steps=blue_rollout.n_steps)
             else:
                 blue_update = blue_agent.update(blue_rollout, rng=np_rng)
+            blue_update_s = time.perf_counter() - blue_update_started
 
             red_stats: dict[str, Any] = {}
             red_update = None
             red_gate_info: dict[str, Any] | None = None
+            red_collect_s = 0.0
+            red_update_s = 0.0
             if phase.red_fraction[1] > 0 and red_initialized:
                 blue_state = snapshot(blue_model)
+                red_started = time.perf_counter()
                 red_rollout, red_stats = collect_red(
                     cfg, red_model, phase, blue_state, rng, device,
-                    blue_stats["n_red_learner"])
+                    blue_stats["n_red_learner"], gpu_env=use_gpu_env,
+                    iteration=iteration)
+                red_collect_s = time.perf_counter() - red_started
                 red_parts.append(red_rollout)
                 if iteration % max(1, cfg.red_update_every) == 0:
                     combined = concat_rollouts(red_parts)
                     combined.compute_gae(cfg.ppo.gamma, cfg.ppo.lam)
+                    red_update_started = time.perf_counter()
                     red_update = red_agent.update(combined, rng=np_rng)
+                    red_update_s = time.perf_counter() - red_update_started
                     red_parts = []
                     if iteration % max(1, cfg.red_snapshot_every) == 0:
                         red_gate_info = _red_gate(
@@ -656,6 +751,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "episodes_seen": episodes_seen,
                 "phase": phase.name,
                 "lr": lr,
+                "timing": {
+                    "blue_collect_s": round(blue_collect_s, 4),
+                    "blue_update_s": round(blue_update_s, 4),
+                    "red_collect_s": round(red_collect_s, 4),
+                    "red_update_s": round(red_update_s, 4),
+                },
                 "blue": blue_update.to_dict(),
                 "blue_rollout": {
                     "reward_mean": float(

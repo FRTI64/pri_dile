@@ -52,7 +52,8 @@ def unwrap_policy(obj: Any) -> Any:
     return obj
 
 
-def _policy_kind(obj: Any) -> str | None:
+def policy_kind(obj: Any) -> str | None:
+    """Public kind lookup shared by the evaluator and the training env."""
     obj = unwrap_policy(obj)
     name = type(obj).__name__
     if name in ("NeuralPolicy", "RLPolicy"):
@@ -64,12 +65,8 @@ def _policy_kind(obj: Any) -> str | None:
     return None
 
 
-def _family_name(obj: Any) -> str:
-    name = str(getattr(obj, "name", type(obj).__name__))
-    return name.split(":", 1)[0]
-
-
-def _weights_key(obj: Any, kind: str) -> tuple:
+def policy_weights_key(obj: Any, kind: str) -> tuple:
+    """Public identity key used to group identical learned policies."""
     obj = unwrap_policy(obj)
     path = getattr(obj, "_gpu_weights_path", None)
     weights = getattr(obj, "weights", None)
@@ -82,6 +79,19 @@ def _weights_key(obj: Any, kind: str) -> tuple:
     safe = bool(getattr(obj, "safe", True))
     temperature = float(getattr(obj, "temperature", 1.0))
     return (kind, identity, safe, temperature)
+
+
+def _policy_kind(obj: Any) -> str | None:
+    return policy_kind(obj)
+
+
+def _family_name(obj: Any) -> str:
+    name = str(getattr(obj, "name", type(obj).__name__))
+    return name.split(":", 1)[0]
+
+
+def _weights_key(obj: Any, kind: str) -> tuple:
+    return policy_weights_key(obj, kind)
 
 
 def build_batch_policy(obj: Any, device: torch.device,
@@ -286,4 +296,5 @@ class BatchOpponentField:
                 blue.append(int(b[row]))
 
 
-__all__ = ["BatchOpponentField", "build_batch_policy"]
+__all__ = ["BatchOpponentField", "build_batch_policy", "policy_kind",
+           "policy_weights_key", "unwrap_policy"]

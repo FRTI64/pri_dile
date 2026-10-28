@@ -165,6 +165,9 @@ class TorchOpponent(TorchPolicy):
                  seed: int = 20261026, name: str = "red-snapshot"):
         model = make_model(config, value_bias=0.0, device="cpu")
         load_state(model, state)
+        # Keep the source dict so a GPU batch can group opponents that share
+        # one frozen snapshot without inspecting every tensor.
+        self.state_ref = state
         super().__init__(model, device=device, mode=mode, seed=seed,
                          name=name)
 

@@ -1,0 +1,520 @@
+{
+  "schema": "ipd-plan4-training-v1",
+  "created": "2026-10-28T16:34:35",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+    "memory_mb": 24463.0,
+    "power_w": 18.77,
+    "power_limit_w": null,
+    "clocks_sm_mhz": 502.0
+  },
+  "torch": "2.11.0+cu128",
+  "quick": false,
+  "profile": {
+    "rows": [
+      {
+        "batch": 32,
+        "samples": 3200,
+        "cpu": {
+          "env_build": 0.0012,
+          "rollout": 0.1275,
+          "components": {
+            "observe": 0.0193,
+            "forward": 0.0306,
+            "sample": 0.0245,
+            "env_step": 0.0415,
+            "store": 0.0108
+          },
+          "component_share": {
+            "observe": 15.11,
+            "forward": 23.99,
+            "sample": 19.19,
+            "env_step": 32.54,
+            "store": 8.44
+          },
+          "opponent_share": 32.54,
+          "feature_share": 15.11,
+          "gae": 0.0002,
+          "update": 0.0269,
+          "samples_per_s_rollout": 25099.6,
+          "samples_per_s_total": 20706.8
+        },
+        "gpu": {
+          "env_build": 0.0026,
+          "rollout": 0.2382,
+          "components": {
+            "observe": 0.0453,
+            "forward": 0.0274,
+            "sample": 0.0079,
+            "env_step": 0.1567,
+            "store": 0.0
+          },
+          "component_share": {
+            "observe": 19.03,
+            "forward": 11.5,
+            "sample": 3.32,
+            "env_step": 65.78,
+            "store": 0.02
+          },
+          "opponent_share": 65.78,
+          "feature_share": 19.03,
+          "gae": 0.0039,
+          "update": 0.0245,
+          "samples_per_s_rollout": 13433.7,
+          "samples_per_s_total": 12004.1,
+          "vram_allocated_gib": 0.062,
+          "vram_reserved_gib": 0.094
+        },
+        "rollout_speedup": 0.54,
+        "update_speedup": 1.1
+      },
+      {
+        "batch": 128,
+        "samples": 12800,
+        "cpu": {
+          "env_build": 0.0085,
+          "rollout": 0.3482,
+          "components": {
+            "observe": 0.075,
+            "forward": 0.0369,
+            "sample": 0.0257,
+            "env_step": 0.1939,
+            "store": 0.0148
+          },
+          "component_share": {
+            "observe": 21.55,
+            "forward": 10.61,
+            "sample": 7.39,
+            "env_step": 55.69,
+            "store": 4.25
+          },
+          "opponent_share": 55.69,
+          "feature_share": 21.55,
+          "gae": 0.0003,
+          "update": 0.0994,
+          "samples_per_s_rollout": 36764.8,
+          "samples_per_s_total": 28581.3
+        },
+        "gpu": {
+          "env_build": 0.0107,
+          "rollout": 0.2877,
+          "components": {
+            "observe": 0.0467,
+            "forward": 0.0291,
+            "sample": 0.0082,
+            "env_step": 0.2027,
+            "store": 0.0
+          },
+          "component_share": {
+            "observe": 16.23,
+            "forward": 10.13,
+            "sample": 2.84,
+            "env_step": 70.46,
+            "store": 0.01
+          },
+          "opponent_share": 70.46,
+          "feature_share": 16.23,
+          "gae": 0.0037,
+          "update": 0.0961,
+          "samples_per_s_rollout": 44490.1,
+          "samples_per_s_total": 33033.2,
+          "vram_allocated_gib": 0.145,
+          "vram_reserved_gib": 0.201
+        },
+        "rollout_speedup": 1.21,
+        "update_speedup": 1.03
+      },
+      {
+        "batch": 512,
+        "samples": 51200,
+        "cpu": {
+          "env_build": 0.0355,
+          "rollout": 1.1231,
+          "components": {
+            "observe": 0.305,
+            "forward": 0.0585,
+            "sample": 0.0355,
+            "env_step": 0.6945,
+            "store": 0.0247
+          },
+          "component_share": {
+            "observe": 27.15,
+            "forward": 5.21,
+            "sample": 3.16,
+            "env_step": 61.84,
+            "store": 2.2
+          },
+          "opponent_share": 61.84,
+          "feature_share": 27.15,
+          "gae": 0.0006,
+          "update": 0.3924,
+          "samples_per_s_rollout": 45588.6,
+          "samples_per_s_total": 33772.8
+        },
+        "gpu": {
+          "env_build": 0.0367,
+          "rollout": 0.4265,
+          "components": {
+            "observe": 0.0475,
+            "forward": 0.0321,
+            "sample": 0.0088,
+            "env_step": 0.337,
+            "store": 0.0
+          },
+          "component_share": {
+            "observe": 11.14,
+            "forward": 7.53,
+            "sample": 2.06,
+            "env_step": 79.02,
+            "store": 0.01
+          },
+          "opponent_share": 79.02,
+          "feature_share": 11.14,
+          "gae": 0.0041,
+          "update": 0.3741,
+          "samples_per_s_rollout": 120059.1,
+          "samples_per_s_total": 63633.4,
+          "vram_allocated_gib": 0.481,
+          "vram_reserved_gib": 0.688
+        },
+        "rollout_speedup": 2.63,
+        "update_speedup": 1.05
+      },
+      {
+        "batch": 2048,
+        "samples": 204800,
+        "cpu": {
+          "env_build": 0.1393,
+          "rollout": 4.3664,
+          "components": {
+            "observe": 1.2244,
+            "forward": 0.0938,
+            "sample": 0.0706,
+            "env_step": 2.8955,
+            "store": 0.0453
+          },
+          "component_share": {
+            "observe": 28.04,
+            "forward": 2.15,
+            "sample": 1.62,
+            "env_step": 66.31,
+            "store": 1.04
+          },
+          "opponent_share": 66.31,
+          "feature_share": 28.04,
+          "gae": 0.0019,
+          "update": 1.611,
+          "samples_per_s_rollout": 46903.7,
+          "samples_per_s_total": 34251.5
+        },
+        "gpu": {
+          "env_build": 0.16,
+          "rollout": 0.8919,
+          "components": {
+            "observe": 0.048,
+            "forward": 0.0387,
+            "sample": 0.0095,
+            "env_step": 0.7946,
+            "store": 0.0001
+          },
+          "component_share": {
+            "observe": 5.38,
+            "forward": 4.34,
+            "sample": 1.07,
+            "env_step": 89.09,
+            "store": 0.01
+          },
+          "opponent_share": 89.09,
+          "feature_share": 5.38,
+          "gae": 0.004,
+          "update": 1.5404,
+          "samples_per_s_rollout": 229626.8,
+          "samples_per_s_total": 84064.7,
+          "vram_allocated_gib": 1.82,
+          "vram_reserved_gib": 2.516
+        },
+        "rollout_speedup": 4.9,
+        "update_speedup": 1.05
+      }
+    ],
+    "gate": {
+      "gate_4_1": "env/opponent step is not the bottleneck at envs=32",
+      "decision": "Do not rewrite the B=32 CPU env in isolation.  The learner forward/sampling and PPO update dominate; use the GPU rollout storage path for the same-B gain and target GPUEnv at large B.",
+      "production_batch": 32,
+      "production_opponent_share": 32.54,
+      "production_feature_share": 15.11,
+      "large_batch": 2048,
+      "large_opponent_share": 66.31,
+      "large_feature_share": 28.04,
+      "large_rollout_speedup": 4.9
+    },
+    "wall_s": 26.88
+  },
+  "same_b": {
+    "cpu": {
+      "code": 0,
+      "wall_s": 5.585,
+      "elapsed_s": 3.798,
+      "scores": [
+        423.0938,
+        354.2812,
+        383.1875,
+        344.7188,
+        346.0312,
+        379.7812,
+        416.875,
+        375.3438,
+        429.1562,
+        455.1562
+      ],
+      "rewards": [
+        4.230937,
+        3.542812,
+        3.831875,
+        3.447187,
+        3.460312,
+        3.797812,
+        4.16875,
+        3.753437,
+        4.291562,
+        4.551562
+      ],
+      "policy_loss": [
+        -0.000216,
+        1.9e-05,
+        -0.00158,
+        0.000235,
+        7.4e-05,
+        0.000218,
+        -0.000701,
+        -5.2e-05,
+        -0.000215,
+        0.000238
+      ],
+      "collect_s": [
+        0.8939,
+        0.1309,
+        0.134,
+        0.2064,
+        0.1971,
+        0.1402,
+        0.1059,
+        0.1623,
+        0.1951,
+        0.1243
+      ],
+      "update_s": [
+        1.019,
+        0.0512,
+        0.0491,
+        0.049,
+        0.0482,
+        0.0474,
+        0.0529,
+        0.0588,
+        0.0489,
+        0.0508
+      ]
+    },
+    "gpu": {
+      "code": 0,
+      "wall_s": 6.093,
+      "elapsed_s": 4.437,
+      "scores": [
+        417.5625,
+        355.375,
+        383.4062,
+        351.0938,
+        342.0625,
+        381.875,
+        416.6562,
+        375.0938,
+        427.5938,
+        454.0625
+      ],
+      "rewards": [
+        4.175625,
+        3.55375,
+        3.834062,
+        3.510937,
+        3.420624,
+        3.81875,
+        4.166562,
+        3.750937,
+        4.275937,
+        4.540625
+      ],
+      "policy_loss": [
+        -0.000234,
+        1.8e-05,
+        -0.001571,
+        0.000286,
+        0.000128,
+        0.000149,
+        -0.000699,
+        1.1e-05,
+        -0.000261,
+        0.000203
+      ],
+      "collect_s": [
+        0.9307,
+        0.2412,
+        0.2421,
+        0.2534,
+        0.2577,
+        0.2403,
+        0.1667,
+        0.2419,
+        0.2483,
+        0.232
+      ],
+      "update_s": [
+        0.8741,
+        0.053,
+        0.0466,
+        0.047,
+        0.055,
+        0.0475,
+        0.0465,
+        0.0523,
+        0.0474,
+        0.0458
+      ]
+    },
+    "comparison": {
+      "iterations": 10,
+      "envs": 32,
+      "max_score_diff": 6.375,
+      "mean_score_diff": 2.2406,
+      "max_reward_diff": 0.06375,
+      "mean_reward_diff": 0.022406,
+      "tolerances": {
+        "max_score_diff": 25.0,
+        "mean_score_diff": 10.0,
+        "max_reward_diff": 0.1,
+        "mean_reward_diff": 0.05
+      },
+      "passed": true,
+      "median_collect_cpu_s": 0.1402,
+      "median_collect_gpu_s": 0.2419,
+      "rollout_speedup": 0.58,
+      "median_update_cpu_s": 0.0491,
+      "median_update_gpu_s": 0.0474,
+      "wall_speedup": 0.92,
+      "train_speedup": 0.86
+    },
+    "meta": {
+      "schema": "ipd-plan4-same-b-v1",
+      "command": "python -m ipd train selfplay --device cuda --envs 32 --iterations 10 --gpu-env off|on",
+      "note": "GPU sampling changes the RNG stream; this is a curve equivalence check, not bitwise parity."
+    }
+  },
+  "large_b": {
+    "rows": [
+      {
+        "label": "full_mix",
+        "batch": 512,
+        "samples": 51200,
+        "cpu_rollout_s": 1.128,
+        "gpu_build_s": 0.0324,
+        "gpu_rollout_s": 0.4203,
+        "speedup": 2.68,
+        "gpu_vram_allocated_gib": 0.077,
+        "cpu_samples_per_s": 45390.6,
+        "gpu_samples_per_s": 121819.6
+      },
+      {
+        "label": "rules",
+        "batch": 512,
+        "samples": 51200,
+        "cpu_rollout_s": 0.4463,
+        "gpu_build_s": 0.0144,
+        "gpu_rollout_s": 0.163,
+        "speedup": 2.74,
+        "gpu_vram_allocated_gib": 0.077,
+        "cpu_samples_per_s": 114726.2,
+        "gpu_samples_per_s": 314133.0
+      },
+      {
+        "label": "full_mix",
+        "batch": 2048,
+        "samples": 204800,
+        "cpu_rollout_s": 4.5184,
+        "gpu_build_s": 0.2045,
+        "gpu_rollout_s": 1.0145,
+        "speedup": 4.45,
+        "gpu_vram_allocated_gib": 0.254,
+        "cpu_samples_per_s": 45325.4,
+        "gpu_samples_per_s": 201880.3
+      },
+      {
+        "label": "rules",
+        "batch": 2048,
+        "samples": 204800,
+        "cpu_rollout_s": 1.607,
+        "gpu_build_s": 0.0554,
+        "gpu_rollout_s": 0.1772,
+        "speedup": 9.07,
+        "gpu_vram_allocated_gib": 0.254,
+        "cpu_samples_per_s": 127441.9,
+        "gpu_samples_per_s": 1155581.4
+      },
+      {
+        "label": "full_mix",
+        "batch": 4096,
+        "samples": 409600,
+        "cpu_rollout_s": 8.9353,
+        "gpu_build_s": 0.3698,
+        "gpu_rollout_s": 1.831,
+        "speedup": 4.88,
+        "gpu_vram_allocated_gib": 0.491,
+        "cpu_samples_per_s": 45840.6,
+        "gpu_samples_per_s": 223699.3
+      },
+      {
+        "label": "rules",
+        "batch": 4096,
+        "samples": 409600,
+        "cpu_rollout_s": 3.171,
+        "gpu_build_s": 0.1114,
+        "gpu_rollout_s": 0.2118,
+        "speedup": 14.97,
+        "gpu_vram_allocated_gib": 0.491,
+        "cpu_samples_per_s": 129171.3,
+        "gpu_samples_per_s": 1933761.6
+      }
+    ],
+    "gate": {
+      "full_mix_best": {
+        "label": "full_mix",
+        "batch": 4096,
+        "samples": 409600,
+        "cpu_rollout_s": 8.9353,
+        "gpu_build_s": 0.3698,
+        "gpu_rollout_s": 1.831,
+        "speedup": 4.88,
+        "gpu_vram_allocated_gib": 0.491,
+        "cpu_samples_per_s": 45840.6,
+        "gpu_samples_per_s": 223699.3
+      },
+      "rules_best": {
+        "label": "rules",
+        "batch": 4096,
+        "samples": 409600,
+        "cpu_rollout_s": 3.171,
+        "gpu_build_s": 0.1114,
+        "gpu_rollout_s": 0.2118,
+        "speedup": 14.97,
+        "gpu_vram_allocated_gib": 0.491,
+        "cpu_samples_per_s": 129171.3,
+        "gpu_samples_per_s": 1933761.6
+      },
+      "supported_subset_10x": true,
+      "full_mix_10x": false,
+      "large_b_10x_passed": true,
+      "note": "The Plan 4 target applies to the supported rules/self-play set.  Final/Triple/Axelrod stay on the CPU fallback by design, which caps the full training mix; both numbers are reported.",
+      "best_vram_gib": 0.491,
+      "vram_under_20_gib": true
+    }
+  }
+}

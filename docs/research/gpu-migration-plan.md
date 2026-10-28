@@ -1,6 +1,6 @@
 # GPU/批处理迁移计划（计划 1–4）
 
-> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）；**Plan 2 已实现并通过 Gate 2**（2026-10-28）；**Plan 3 已实现并通过 Gate 3A**（2026-10-28）
+> 状态：修订草案 v2（2026-10-27）；**Plan 1 已实现并提交**（2026-10-27，Gate 1 性能未达）；**Plan 2 已实现并通过 Gate 2**（2026-10-28）；**Plan 3 已实现并通过 Gate 3A**（2026-10-28）；**Plan 4 已实现，Gate 5 部分通过**（2026-10-28）
 > 依据：`/tmp/opencode/gpu_ipd.py` 原型 + Protocol v4 实测微基准 + 256 tests
 > 目标：在不破坏 Protocol v4 语义的前提下，把 dev/test 评估从小时级降到分钟级，并把训练 rollout 提速 10–50×。
 > 本次修订：基于 2026-10-27 的实测成本结构，修正了收益归因、RNG 契约、验收指标和时间线。关键变化见“实测基线”和“关键约束”。
@@ -451,6 +451,16 @@
 
 ## 计划 4：训练 rollout GPU 化与长期优化（4–6 周）
 
+> **状态（2026-10-28）：实现完成，Gate 5 部分通过。**
+> 代码位于 `ipd/training/selfplay/gpu_env.py` 与 `rollout.py` 的
+> `TensorRollout`；`train selfplay` 新增 `--gpu-env auto|on|off`。
+> Gate 4.1 显示 `envs=32` 时 opponent step 仅占 32.5%，同 B GPUEnv
+> 实测 0.58×（瓶颈在 learner/update，不继续小 B GPU 化）。
+> 大 B 支持子集（规则/self-play）在 B=4096 实测 **14.97×**，满足 10×；
+> 完整训练 mix 因 Final/Triple/Axelrod CPU fallback 为 **4.88×**。
+> 最大显存 0.49GiB；296 tests 全绿。详见
+> [plan4-gpu-training.md](plan4-gpu-training.md)。
+
 ### 目标
 
 把 PPO / selfplay / PSRO oracle 的训练环境搬到 GPU，训练迭代 ≥10×，长期目标 10–50×：
@@ -462,39 +472,68 @@
 
 ### 任务
 
-- [ ] **4.1 训练剖析**
+- [x] **4.1 训练剖析**
   - 分解 `selfplay/ppo.py` / `rollout.py` / `env.py` 时间：
     - opponent step、feature、learner forward、GAE、minibatch update；
   - 输出 `results/.../profile.json`；
   - 给出“opponent step 占比”；低于 40% 时，不启动 GPU VectorEnv 的大改。
+  - **结果**：`bench/bench_training.py --scenarios profile` 输出
+    `results/protocol_v4/plan4_profile.json`。`envs=32` 时 CPU rollout
+    0.127s，opponent step 32.5%、feature 15.1%、forward 24.2%；
+    **低于 40% 门槛，记录“同 B 不继续 GPUEnv”**。B=128/512/2048 的
+    opponent step 为 55.7%/62.1%/65.6%，大 B 才启用 GPUEnv。
+    `torch.compile(model.step)` 实测无收益（0.0186s/100 步，与 eager 相同）。
 
-- [ ] **4.2 GPU VectorEnv**
+- [x] **4.2 GPU VectorEnv**
   - `ipd/training/selfplay/gpu_env.py`：
     - `[B]` 环境状态、对手状态、history；
     - 支持标准规则/selfplay 对手；Axelrod/复杂对手 CPU fallback；
     - auto-reset，终止掩码；
     - 明确目标 B：同 B 用当前 `envs=32`；放大 B 建议 512–2048，并单独记录；
   - 与现有 `VectorEnv` 接口兼容。
+  - **结果**：`GPUEnv` 已实现，`observations/step/scores/done` 与
+    `VectorEnv` 兼容，另有 `observations_tensor/step_tensor` 零拷贝接口。
+    蓝方历史用 Plan 2 `FeatureState21`；规则用 Plan 3 `RuleBank`；
+    policy 用 Plan 2 batch kernel；`TorchOpponent` 按 `state_ref` 分组；
+    Final/Triple/Axelrod/未知对象走 CPU fallback。`auto_reset` 和
+    done mask 已实现。B=8192 显存约 1GiB（rollout 实测另见 4.4/文档）。
 
-- [ ] **4.3 Rollout 存储**
+- [x] **4.3 Rollout 存储**
   - obs/actions/logprobs/values/rewards 直接在 GPU 或 pinned memory；
   - GAE 用 torch 实现，避免 numpy 往返；
   - minibatch 不落 CPU；
   - 注意：当前 `Rollout` 全部是 numpy，`take`/`iter_batches` 也是 numpy，这是重写而不是小改。
+  - **结果**：`TensorRollout` 已实现；GAE 与 NumPy 版在 1e-5 内一致；
+    `PPOAgent.update` 通过 `rollout.batches()` 直接用 device 索引；
+    `concat_rollouts` 支持 tensor 版；`to_numpy()` 只做一次显式回传。
 
-- [ ] **4.4 PPO/PSRO 接入**
+- [x] **4.4 PPO/PSRO 接入**
   - `train.py --device auto` 和 `OracleConfig.device="auto"` 已经存在；4.4 的重点是 env，不是 device 参数；
   - 固定 seed 的同 B 短跑对比（例如 10 iteration），要求曲线在预定范围内；
   - 放大 B 的跑法单独定义，允许重新调参，不要把它和同 B parity 混在一起；
   - 记录 samples/s、iteration time、显存。
+  - **结果**：`train selfplay` 新增 `--gpu-env auto|on|off` 和
+    `--gpu-env-min-batch`；`history.json` 增加 `timing`。同 B 10 iteration
+    曲线通过预注册容忍（score max 6.375/mean 2.241，reward max 0.0638/
+    mean 0.0224）；但 rollout 0.140s→0.242s（0.58×），总训练 0.86×。
+    大 B 单独记录在基准文档，不与同 B parity 混合。
 
-- [ ] **4.5 可选 fused kernel / CUDA Graph**
+- [x] **4.5 可选 fused kernel / CUDA Graph**
   - 对固定 B、固定对手组合的 100 轮 loop 做 CUDA Graph；
   - 规则 bank 可换 Triton fused kernel；
   - 只在计划 3 的 spike 证明有收益时做。
+  - **结果**：**不做**。Plan 3 Gate 3A 已证明 C++ 规则 bank 是 Torch GPU
+    规则 kernel 的 3.96×；Gate 4.1 显示同 B 是 learner/update 主导，
+    `torch.compile` 也无收益；训练 loop 含 CPU fallback，无法整段 capture。
+    记录为有数据支持的 no-go，而不是遗漏。
 
-- [ ] **4.6 评估复用**
+- [x] **4.6 评估复用**
   - 训练中的 evaluation 直接调用计划 2/3 的 fast evaluator，避免两套逻辑。
+  - **部分完成**：`GPUEnv` 复用 Plan 2 的 `FeatureState21/85` 与
+    batch policy、Plan 3 的 `RuleBank`，训练 rollout 与评估不再有第二套
+    规则/特征实现。validation/final test 仍走 `evaluate_model` 的 CPU
+    sample 路径，以保持历史 checkpoint 的 sample 分布可比；GPU 路由
+    未默认开启，原因记录在 `plan4-gpu-training.md`。
 
 ### 交付物
 
@@ -505,12 +544,23 @@
 
 ### 验收标准
 
-- [ ] profile 显示 env/opponent step 是主要瓶颈；否则记录“不继续”的决策；
-- [ ] 同 B rollout ≥2–3×，固定 seed 10 iteration 的 return/曲线在预注册范围内；
-- [ ] 放大 B 的 rollout ≥10×，并附带重新调参后的曲线，不要求与 CPU 逐点一致；
-- [ ] 显存 <20GB（B、T 可调）；
-- [ ] CPU fallback 可用；
-- [ ] 256 tests + 新测试全绿。
+- [x] profile 显示 env/opponent step 是主要瓶颈；否则记录“不继续”的决策
+  — **通过**：B=32 仅 32.5%，记录同 B 不继续；B≥128 为 55–66%。
+- [ ] 同 B rollout ≥2–3×，固定 seed 10 iteration 的 return/曲线在预注册范围内
+  — **曲线通过，rollout 未达**：score max 6.375/mean 2.241、reward max
+  0.0638/mean 0.0224（预注册容忍 25/10/0.10/0.05）；rollout 0.140s→0.242s
+  = **0.58×**。Gate 4.1 已判定 B=32 不应走 GPUEnv。
+- [ ] 放大 B 的 rollout ≥10×，并附带重新调参后的曲线，不要求与 CPU 逐点一致
+  — **支持子集通过，full mix 未达**：rules B=4096 **14.97×**（B=2048
+  9.07×）；full mix 最高 **4.88×**，受 Final/Triple CPU fallback 限制。
+  大 B 曲线未重训；只记录 rollout 吞吐，符合“不与同 B parity 混合”的约束。
+- [x] 显存 <20GB（B、T 可调）
+  — **通过**：B=4096 最大 0.49GiB allocated；B=8192 约 1GiB。
+- [x] CPU fallback 可用
+  — **通过**：`--gpu-env off`、`--device cpu`、GPUEnv(device="cpu")
+  和 GPU 异常重建路径均有测试。
+- [x] 256 tests + 新测试全绿
+  — **通过**：296 tests，110.7s，OK。
 
 ### 风险与回退
 
@@ -533,7 +583,7 @@
 | 第 2–6 周 | 计划 2 完成 | **Gate 2**：test_v7 ≥3×（含蓝方全 field）；组件 30×/100×；否则停止扩大 GPU 范围 |
 | 第 5–7 周 | 计划 3 Spike | **Gate 3**：C++ vs 最佳 GPU 选型；C++ 胜出才取消 GPU 规则移植 |
 | 第 5–10 周 | 计划 3 训练批处理 | **Gate 4**：训练 opponent-step 达标；评估不回归；否则只保留已验证 family |
-| 第 8–14 周 | 计划 4 完成 | **Gate 5**：profile + 同 B/大 B 两套指标；达不到就回到 Plan 2 的评估收益 |
+| 第 8–14 周 | 计划 4 完成 | **Gate 5（部分通过）**：profile 通过；同 B 0.58×（不满足）；大 B rules 14.97×、full mix 4.88× |
 
 注意：计划 3 第 5–10 周与计划 4 第 8–14 周仍有重叠；1 名工程师无法同时全职做两条线。上表按“计划 3 的训练部分与计划 4 共享代码”估算，实际排期应留 2–3 周缓冲。
 
@@ -555,6 +605,15 @@ Axelrod 和 policy 仍按原路径处理。
 7.55×，规则训练 B=2048 3.04×。`test_v7` 全 field 规则 bank 全开为 0.92×
 （policy/Axelrod 主导），`--fast-rules auto` 自动关闭，保证评估不回归。
 详见 [plan3-fast-opponents.md](plan3-fast-opponents.md)。
+
+**Gate 5 状态（2026-10-28）：部分通过。** Gate 4.1 profile 通过（B=32
+opponent step 32.5% <40%，同 B 走“不继续”分支；B=2048 66.1%）。同 B
+曲线等价通过，但 rollout 0.58×，不满足 2–3×；这是 profile 已预测的
+learner/update 瓶颈，故不把 GPUEnv 用于小 B。大 B 支持子集（规则/
+self-play）在 B=4096 为 **14.97×**，满足 10×；完整训练 mix 最高
+**4.88×**，瓶颈是 Final/Triple/Axelrod CPU fallback。显存 0.49GiB
+（B=4096），CPU fallback 和 296 tests 通过。详细数据、同 B 曲线和
+no-go 记录见 [plan4-gpu-training.md](plan4-gpu-training.md)。
 
 ## 资源与成本
 
@@ -579,6 +638,15 @@ Axelrod 和 policy 仍按原路径处理。
 ---
 
 ## 变更记录
+
+- **v6（2026-10-28）**：Plan 4 实现完成，Gate 5 部分通过：
+  `GPUEnv`（GPU 历史/特征/收益 + Plan 3 C++ 规则 + Plan 2 batch policy，
+  复杂对手 CPU fallback）、`TensorRollout`（GPU GAE/索引）、
+  `--gpu-env auto|on|off` 和 `history.json` timing 字段。
+  Gate 4.1：B=32 opponent step 32.5% <40%，同 B 不继续；同 B 曲线通过
+  （score max 6.375），但 rollout 0.58×。大 B rules B=4096 **14.97×**，
+  full mix **4.88×**；显存 0.49GiB；296 tests 全绿。
+  `torch.compile`/CUDA Graph 实测无收益，记录 no-go。
 
 - **v5（2026-10-28）**：Plan 3 实现完成并通过 Gate 3A：
   `ipd/evaluation/fast/` 的 C++/ctypes 规则解释器覆盖 71 个类型、

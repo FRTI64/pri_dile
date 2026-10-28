@@ -7,6 +7,15 @@
 
 ### Added
 
+- **Plan 4 训练 rollout GPU 化**：`ipd/training/selfplay/gpu_env.py`
+  （GPU 历史/21 维特征/收益，Plan 3 C++ 规则 bank，Plan 2 batch policy，
+  `TorchOpponent` 分组，复杂对手 CPU fallback）；`rollout.py` 新增
+  `TensorRollout`（GPU GAE/device 索引）；`train selfplay` 新增
+  `--gpu-env auto|on|off` / `--gpu-env-min-batch`；`history.json` 增加
+  timing；`bench/bench_training.py`、`tests/test_gpu_env.py` 与
+  `docs/research/plan4-gpu-training.md`。Gate 5 部分通过：同 B 曲线通过
+  但 rollout 0.58×；大 B rules 14.97×（B=4096）、full mix 4.88×；
+  显存 0.49GiB；296 tests 全绿。
 - **Plan 1 CPU 评估管线**：`protocol eval` 支持 `--workers auto`、
   `--candidate-chunk`（默认 6）、`--field-reuse auto|on|off` 和
   `--profile`；新增 `ipd/evaluation/scheduler.py`（worker/RAM 预算、进度

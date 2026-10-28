@@ -74,6 +74,8 @@ class TrainConfig:
     rounds: int = 100
     fast_rules: bool = True
     fast_rules_min_envs: int = 128
+    gpu_env: str = "auto"
+    gpu_env_min_batch: int = 128
     total_episodes: int = 15000
     red_league_size: int = 8
     red_update_every: int = 3
