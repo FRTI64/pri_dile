@@ -9,13 +9,13 @@
 
 - **Plan 6 Python 瓶颈优化**：v5 sample 的学习型 policy 对手在
   `BatchOpponentField` 中按权重分组，逐对象预抽 uniform 并批量上 GPU；
-  `Adv-*` 通过 base RNG 抑制 mask 也接入 v5 GPU sample。Axelrod adapter
-  改为增量维护 `History`（O(t²)→O(t)，224 策略逐动作 parity，family
-  2.5–3.1×）。新增 `--fast-rules-threshold` 与 `--gpu-workers auto`。
-  全量 `test_v7` v5 从 1365.63s 降到 **621.94s**（4 GPU / 16 CPU，
-  field-batch 4）；dev argmax 从 695.57s 降到 **475.38s**；
-  21/24 候选逐位不变，`Adv-*` 均分变化 <0.25，dev 24 候选逐位一致；
-  302 tests 全绿。文档 `docs/research/plan6-python-bottleneck.md`。
+  CPU/GPU 与 Plan 5 v5 baseline **逐位一致**。Axelrod adapter 改为增量
+  维护 `History`（O(t²)→O(t)，224 策略逐动作 parity，family 2.5–3.1×）。
+  新增 `--fast-rules-threshold` 与 `--gpu-workers auto`。`Adv-*` 与
+  PSRO meta 保持 CPU，避免改变 v5 分数。exact 模式下 `test_v7` v5
+  从 1365.63s 降到 **1057.82s**（未达原 900s 目标）；dev argmax 仅作
+  迁移期加速诊断，不进入长期 gate；303 tests 全绿。文档
+  `docs/research/plan6-python-bottleneck.md`。
 - **Plan 5 GPU sample（opt-in）**：`protocol eval --sample-rng per-match`
   使用 per-match RNG 契约，把学习型蓝方的 sample 推理批量上 GPU；
   CPU/GPU 逐场 parity（`tests/test_gpu_parity.py`），默认 `v4` 不变。

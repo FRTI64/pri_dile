@@ -22,7 +22,7 @@
 | Plan 3 | [plan3-fast-opponents.md](plan3-fast-opponents.md) | **Gate 3A C++**；规则实例 99.4% 覆盖；规则评估 7.55×、B=2048 训练 3.04×；小 batch/全 mix 回退 |
 | Plan 4 | [plan4-gpu-training.md](plan4-gpu-training.md) | 实现完成；Gate 5 部分通过：rules B=4096 14.97×，full mix 4.88×；同 B 不启用 GPUEnv |
 | Plan 5 | [plan5-gpu-sample.md](plan5-gpu-sample.md) | **opt-in**；`--sample-rng per-match`，GPU sample + CPU parity；默认 v4 不变 |
-| Plan 6 | [plan6-python-bottleneck.md](plan6-python-bottleneck.md) | **实现完成**；policy/Adv GPU sample、Axelrod 历史增量、4 GPU/fb4 621.94s |
+| Plan 6 | [plan6-python-bottleneck.md](plan6-python-bottleneck.md) | **实现完成**；policy 对手 GPU sample、Axelrod 历史增量；24/24 分数逐位一致 |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |

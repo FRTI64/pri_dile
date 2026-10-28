@@ -153,6 +153,42 @@ class CandidateEquivalenceTests(unittest.TestCase):
                 self.assertEqual(actual, expected, f"{name} vs {opp_kind}")
 
 
+class ExploitTrackerTests(unittest.TestCase):
+    def test_incremental_counts_match_full_rescan(self):
+        from ipd.core.simulator import C, D
+        from ipd.policies.adversarial import _ExploitTracker
+
+        class Tracker(_ExploitTracker):
+            def __init__(self):
+                self.first_d = None
+                self._reset_exploit()
+
+        tracker = Tracker()
+        rng = random.Random(11)
+        mine: list[int] = []
+        theirs: list[int] = []
+        for _ in range(100):
+            # Emulate rounds where the wrapper returns before the gap rule
+            # (punishment / final); the next call must catch up exactly.
+            if rng.random() >= 0.3:
+                tracker._update_exploit(mine, theirs)
+                expected_first = next(
+                    (i for i, value in enumerate(theirs) if value == D), None)
+                self.assertEqual(tracker.first_d, expected_first)
+                n_c = n_d = d_c = d_d = 0
+                for i in range(1, len(theirs)):
+                    if mine[i - 1] == C:
+                        n_c += 1
+                        d_c += int(theirs[i] == D)
+                    else:
+                        n_d += 1
+                        d_d += int(theirs[i] == D)
+                self.assertEqual(tracker._gap_counts(),
+                                 (n_c, n_d, d_c, d_d))
+            mine.append(rng.randrange(2))
+            theirs.append(rng.randrange(2))
+
+
 class CandidateParameterTests(unittest.TestCase):
     def test_embedded_tuned_values_match_tuned_configs(self):
         tuned = load_tuned_configs()

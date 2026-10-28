@@ -69,10 +69,10 @@ def _gpu_spec_supported(spec: CandidateSpec,
     if kind in _PLAIN_GPU_KINDS:
         return True
     if kind in _ADV_GPU_KINDS:
-        # The vectorised wrapper suppresses the base RNG draw exactly on the
-        # rounds where the CPU wrapper overrides the action, so both argmax
-        # and v5 sample are exact.
-        return True
+        # The Adv wrapper can skip the base actor on punishment rounds.  v5
+        # sample keeps it on CPU so its sequential v4 RNG stream, and every
+        # candidate score, stays bit-identical to the pure-Python baseline.
+        return not sample_mode
     if kind in _PSRO_META_KINDS and not sample_mode:
         try:
             from .gpu.blue import supports_gpu_policy
@@ -893,7 +893,7 @@ def _eval(argv: Sequence[str]) -> int:
         "gpu_sample": bool(gpu_enabled and args.mode == "sample"),
         "opponent_mode": (
             args.opponent_mode if not gpu_enabled
-            else ("sample (GPU v5 blue + policy opponents)"
+            else ("sample (GPU v5 blue + policy opponents; Adv/PSRO CPU)"
                   if args.mode == "sample" else "argmax (GPU tasks)")),
         "gpu": {
             "enabled": bool(gpu_enabled),

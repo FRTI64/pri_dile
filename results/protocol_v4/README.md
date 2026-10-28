@@ -54,20 +54,22 @@ GPU 支持候选差异 <0.3 分；GPU argmax 差异 10–17 分。
 
 ## Plan 6：v5 sample 调度与 Python 瓶颈（2026-10-28）
 
-`plan6_tune_w20_gpu4_fb4.json` 是当前 v5 sample 最快配置：
+Plan 6 的性能优化保持**分数不变**：24/24 候选与 Plan 5 v5 baseline
+逐位一致。`Adv-*` 尝试过 GPU sample，但因会切换到 v5 per-match RNG、
+改变分数（+0.10/+0.23/+0.25）而回退到 CPU。
 
 | 配置 | wall |
 |---|---:|
 | Plan 5 v5 baseline（8 GPU / 12 CPU，fb2） | 1365.63s |
 | 仅 policy 对手上 GPU（8/12，fb2） | 1310.57s |
-| **Plan 6：4 GPU / 16 CPU，fb4（含 `Adv-*`）** | **621.94s** |
-| 6 GPU / 14 CPU，fb2 | 719.79s |
-| 8 GPU / 12 CPU，fb2 | 807.27s |
+| 3 GPU / 17 CPU，fb4 | 2100.95s（GPU 瓶颈） |
+| Plan 6 exact（4 GPU / 16 CPU，fb4） | **1057.82s** |
 
-- 21/24 候选与 v5 baseline 逐位一致；`Adv-MLP/GRU/RL` 因切换到 v5
-  per-match 契约变化 +0.10/+0.23/+0.25。
-- `Adv-*` 的逐场 CPU/GPU parity 由 `tests/test_gpu_parity.py` 覆盖。
-- dev 五层 argmax 从 695.57s 降到 **475.38s**，24 候选逐位一致
-  （`plan6_dev_all24_gpu_argmax_axelrod_fast_w8fb2.json`）。
-- 明细与复现见 `docs/research/plan6-python-bottleneck.md`；
-  wall 汇总见 `plan6_tuning.csv`。
+- `Adv-*`、PSRO meta、规则/Axelrod 仍走 CPU；policy 对手 GPU 化只影响
+  原本就在 GPU 的候选，且分数逐位一致。exact 模式下 wall 未达到原
+  900s 目标；621.94s 属于被回退的 `Adv-*` GPU 实验，不作为结果。
+- dev 五层 argmax 是本轮迁移的一次性诊断（历史记录）：695.57s →
+  **475.38s**，24 候选与 argmax baseline 逐位一致；不能与 sample 表
+  混用，也不作为长期 gate
+  （`plan6_migration_diagnostic_dev_argmax_w8fb2.json`）。
+- 明细与复现见 `docs/research/plan6-python-bottleneck.md`。

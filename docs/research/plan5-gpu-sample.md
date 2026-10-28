@@ -109,6 +109,7 @@ GPU v5 支持候选与 v4 sample 的差异：
 - 规则/Axelrod 仍是 CPU；GPU 只加速学习型蓝方。
 - 测试集仍永久锁定；`test_v7` v5 结果也只是 provisional。
 - 需要 CUDA；无 CUDA 时 `--sample-rng per-match` 会报错，而不是静默回退。
-- Plan 6 已把 sample policy 对手和 `Adv-*` 也接入 v5 GPU；
-  本文的“policy 对手/Adv 仍走 CPU”是 Plan 5 当时的状态。见
+- Plan 6 已把 sample policy 对手接入 v5 GPU；本文的“policy 对手仍走
+  CPU”是 Plan 5 当时的状态。`Adv-*` / PSRO meta 仍留在 CPU，以保持
+  顺序 RNG 和分数一致。见
   [plan6-python-bottleneck.md](plan6-python-bottleneck.md)。

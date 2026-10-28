@@ -91,9 +91,10 @@ legacy，不能与新表混用。
 按用户优先级选择：
 
 0. **Plan 6：Python 评估瓶颈（已完成，2026-10-28）**
-   - v5 sample policy 对手和 `Adv-*` 已上 GPU；test_v7 621.94s；
+   - v5 sample policy 对手已上 GPU，24/24 候分数逐位一致；
    - Axelrod adapter 历史增量维护；`--fast-rules-threshold` 已加；
-   - 见 `docs/research/plan6-python-bottleneck.md`。
+   - `Adv-*` / PSRO meta 保持 CPU；见
+     `docs/research/plan6-python-bottleneck.md`。
 1. **比赛提交硬化（若近期提交）**
    - 在 v4 上重跑 RL-Repair 的 `dev_param` / `dev_family` /
      `dev_complex` / `dev_axelrod` / `dev_ood`；补跑

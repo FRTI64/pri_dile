@@ -71,8 +71,8 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 `--sample-rng per-match` 是 opt-in Protocol v5 GPU sample；默认 `v4`
 保持历史 CPU sample 语义。`--gpu-workers auto`（默认）在混合 sample
 用 4、混合 argmax 用 8、GPU-only 用完整 worker budget。v5 的 GPU 蓝方
-覆盖普通学习策略和 `Adv-*` 包装；`Final` / `Triple` / PSRO meta 仍在
-CPU。详见
+覆盖普通学习策略；`Adv-*`、`Final` / `Triple` / PSRO meta 仍在 CPU，
+以保证分数逐位一致。详见
 [plan5](../research/plan5-gpu-sample.md) 与
 [plan6](../research/plan6-python-bottleneck.md)。
 调度、RNG 契约和剖析说明见

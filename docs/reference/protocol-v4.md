@@ -253,10 +253,10 @@ python3 -m ipd protocol eval --candidates all --tiers test_v7 \
 - 默认 `--sample-rng v4` 不变；v5 必须显式开启，不能与 v4 sample 表混用。
 - 结果标记 `sample_rng=per-match`、`gpu_sample=true`、
   `protocol_version=5`。
-- Plan 6 把 `Adv-*` 也接入 v5 GPU sample：包装层覆盖动作的轮次不消耗
-  base RNG，逐场 CPU/GPU parity；因此 `Adv-*` 的 v5 结果改用 per-match
-  契约，不再沿用 v4 顺序流（`test_v7` 均分变化 <0.25）。
-- PSRO meta-policy、`Final` / `Triple` 和规则/Axelrod 仍走 CPU。
+- Plan 6 把 sample policy 对手也接入 GPU，但只加速原本就在 GPU 的候选；
+  24/24 候选分数与 Plan 5 v5 baseline 逐位一致。
+- `Adv-*`、PSRO meta-policy、`Final` / `Triple` 和规则/Axelrod 仍走
+  CPU，避免改变它们的顺序 RNG 和分数。
 - 详见 [plan5-gpu-sample.md](../research/plan5-gpu-sample.md) 与
   [plan6-python-bottleneck.md](../research/plan6-python-bottleneck.md)。
 

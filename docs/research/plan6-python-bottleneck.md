@@ -1,21 +1,21 @@
 # Plan 6：Python 评估瓶颈优化
 
 - **状态：** 实现完成（2026-10-28）；6.1–6.4 完成，6.5 未做（无日常需求）
+- **核心约束：** **24/24 候选分数必须与 Plan 5 v5 baseline（CPU
+  Python policy 对手）逐位一致**；任何改变 RNG 消费顺序的加速都回退。
 - **代码：**
   - `ipd/evaluation/gpu/policy_opponents.py`：sample policy 对手按
     `(type, weights)` 分组、逐对象 RNG uniform、批内 `draw_idx`；
-  - `ipd/evaluation/gpu/blue.py` / `policies.py`：`Adv-*` sample 的
-    base RNG 抑制 mask；
   - `ipd/core/opponents/axelrod_bank.py`：Axelrod 历史增量维护；
-  - `ipd/evaluation/protocol_cli.py`：`--fast-rules-threshold`、worker split
-    与 GPU-only 调度。
-- **测试：** `tests/test_gpu_parity.py`（policy 对手 + `Adv-*` sample
-  parity）、`tests/test_fast_opponents.py`；全量 302 tests 绿
+  - `ipd/evaluation/protocol_cli.py`：`--fast-rules-threshold`、
+    `--gpu-workers auto` 与 GPU-only 调度。
+- **测试：** `tests/test_gpu_parity.py`（policy 对手 parity）、
+  `tests/test_fast_opponents.py`；全量 303 tests 绿
 - **结果：**
-  - `results/protocol_v4/plan6_tune_w20_gpu4_fb4.json`（test_v7 v5 最佳）
+  - `results/protocol_v4/plan6_exact_w20_gpu4_fb4.json`（test_v7 v5 最佳）
   - `results/protocol_v4/protocol_v4_test_v7_all24_gpu_sample_v6.json`
-    （6.1 单独，1310.57s）
-  - `results/protocol_v4/plan6_dev_all24_gpu_argmax_axelrod_fast_w8fb2.json`
+    （6.1 单独，1310.57s，逐位一致）
+  - `results/protocol_v4/plan6_migration_diagnostic_dev_argmax_w8fb2.json`
   - `results/protocol_v4/profile_plan6_*.json`
 - **前置：** Plan 5 v5 sample；`docs/research/plan5-gpu-sample.md`
 
@@ -61,46 +61,51 @@
    每个对象的 RNG，group 不跨 candidate 泄漏状态；
 5. `PolicyFinal` / `PolicyTriple` 保持 CPU。
 
-在 6.1 基础上额外完成 `Adv-*` 的 v5 GPU sample：包装层在
-punish / late / gap / final 轮覆盖动作时，通过 `need_mask` 抑制 base 的
-RNG 抽取，但 GRU 仍推进 hidden state；CPU/GPU 逐动作一致。`Adv-*` 因此
-从 v4 顺序流切换到 v5 per-match 契约，需要单独 v5 基线。
+`Adv-*` 的 GPU sample 实验已实现并做过 parity（用 per-match 契约时
+CPU/GPU 逐动作一致），但它会把 `Adv-*` 从原来的 v4 顺序 RNG 换成 v5
+per-match RNG，导致 `test_v7` 均分变化 `Adv-MLP +0.10`、`Adv-GRU
++0.23`、`Adv-RL +0.25`。**因为本计划的核心约束是分数逐位一致，这个
+实验已回退；`Adv-*` 继续在 CPU 上使用原始顺序流。** PSRO meta 同理。
 
 验收：
 
 | 项 | 结果 |
 |---|---|
-| CPU/GPU 逐场 `mine/theirs/score` parity | **通过**：n=8 覆盖 `rl-repair`、`neural`、`gru`、`selfplay`、`adv-mlp`、`adv-gru`、`adv-rl`、`psro-br`、`psro-scratch-br`，float64 全一致 |
-| 全量 test_v7 v5 wall | **通过**：4 GPU / 16 CPU、field-batch 4 = **621.94s**（1365.63s → 2.20×） |
-| 候选 mean 与 v5 差 <0.3 | **通过**：21/24 候选逐位不变；`Adv-MLP` +0.10、`Adv-GRU` +0.23、`Adv-RL` +0.25 |
-| 全量测试 | **通过**：302 tests |
+| CPU/GPU 逐场 `mine/theirs/score` parity | **通过**：n=8 覆盖 `rl-repair`、`neural`、`gru`、`selfplay`、`psro-br`、`psro-scratch-br`，float64 全一致 |
+| 全量 test_v7 v5 分数 | **通过**：24/24 候选与 Plan 5 v5 baseline 逐位一致 |
+| 全量 test_v7 v5 wall | `1057.82s`（4 GPU / 16 CPU、field-batch 4） |
+| 全量测试 | **通过**：303 tests |
 
-6.1 单独（未启用 `Adv-*` GPU、8 GPU / 12 CPU、field-batch 2）把 wall
-从 1365.63s 降到 **1310.57s**；剩余时间几乎全部在 16 个 CPU 候选上，
-因此必须配合 6.2 的 worker split 才能达到 900s。最终 4/4 配置同时包含
-6.1（policy 对手 + `Adv-*`）、6.2 和 6.3。
+6.1 单独（8 GPU / 12 CPU、field-batch 2）把 wall 从 1365.63s 降到
+**1310.57s**，且 24/24 候选逐位一致；剩余时间几乎全部在 16 个 CPU
+候选上，因此必须配合 6.2 的 worker split 继续压缩 wall。
+
+在“分数逐位一致”约束下，最终 wall 为 **1057.82s**，未达到原 900s
+目标。之前记录过的 621.94s 来自被回退的 `Adv-*` GPU 实验（会改变
+分数），不作为本计划的交付结果。要继续逼近 900s，只能做不改变 RNG
+和浮点求和顺序的 CPU 推理优化，而不是换采样契约。
 
 ### 6.2 Worker / batch 调优（完成）
 
-全量 test_v7 v5、20 workers、`--candidate-chunk 4`、field 复用：
+全量 test_v7 v5、20 workers、`--candidate-chunk 4`、field 复用；
+所有配置的 candidate mean 逐位一致，调优只改 wall：
 
 | 配置 | wall |
 |---|---:|
-| 8 GPU / 12 CPU，field-batch 2 | 807.27s |
-| 6 GPU / 14 CPU，field-batch 2 | 719.79s |
-| 4 GPU / 16 CPU，field-batch 2 | 657.18s |
-| **4 GPU / 16 CPU，field-batch 4** | **621.94s** |
-| 旧 v5 baseline（8/12，fb2，Plan 5） | 1365.63s |
+| 旧 v5 baseline（8 GPU / 12 CPU，fb2，Plan 5） | 1365.63s |
+| 6.1 单独（8 GPU / 12 CPU，fb2） | 1310.57s |
+| 3 GPU / 17 CPU，fb4 | 2100.95s（GPU 成为瓶颈） |
+| **Plan 6 exact（4 GPU / 16 CPU，fb4）** | **1057.82s** |
 
-- 4 GPU workers 最优：v5 的剩余 CPU 候选（PSRO-Scratch、Final/Triple/
-  Bayes/Resp3/Harvest、PSRO-Meta）比 GPU 任务更重；
-- field-batch 4 在 full 50×2048 比 2 更快（621.94s vs 657.18s），与
-  Plan 6 小基准（n=256）相反；batch 仍低于 `--gpu-max-batch 32768`；
-- 四个配置的 candidate mean 完全相同（per-match RNG + field 复用），
-  调优只改 wall，不改分数；
+- `Adv-*`、PSRO meta、Final/Triple/Bayes/Resp3/Harvest 仍在 CPU，
+  v5 的 CPU 候选池比 GPU 任务更重，因此把 worker 从 8 调到 4；
+  3 GPU / 17 CPU 反而退化到 2100.95s（GPU worker 不足、任务串行），
+  说明 exact 配置下 4 GPU 是当前最优；
+- field-batch 4 只改变 GPU 任务的聚合粒度，不改变逐场 RNG；full
+  50×2048 下 batch 仍低于 `--gpu-max-batch 32768`；
 - 默认改为 `--gpu-workers auto`：混合 sample 用 4、混合 argmax 用 8、
   GPU-only 用完整 worker budget；`--gpu-field-batch` 默认已是 4。
-  因此 v5 test_v7 不传参即为最优的 4 GPU / fb4；复现命令仍显式写出。
+  因此 v5 test_v7 不传参即为 4 GPU / fb4；复现命令仍显式写出。
 
 ### 6.3 Axelrod 加速（完成）
 
@@ -114,11 +119,18 @@ RNG 抽取，但 GRU 仍推进 hidden state；CPU/GPU 逐动作一致。`Adv-*` 
 - **dev family seconds：** `axelrod` 2656→869（3.06×）、
   `axelrod_extra` 2457→1022（2.40×）、`AxelrodMix` 2240→822（2.73×）；
   Axelrod 总 family 时间 7353→2713s；
-- **dev 五层 30 fields：** 用 baseline 相同的 8 GPU / 12 CPU、
-  field-batch 2 重跑：**475.38s**（baseline 695.57s → 1.46×，目标
-  ≤500s）；24 候选全部层级 mean 与 baseline **逐位一致**；
+- **dev 五层 30 fields（仅性能诊断）：** 用 baseline 相同的 8 GPU /
+  12 CPU、field-batch 2 重跑：**475.38s**（baseline 695.57s → 1.46×）；
+  24 候选全部层级 mean 与**同一 argmax 模式的 baseline 逐位一致**；
 - `RuleBank` family 时间基本不变（455.5→468.3s），说明收益来自
   Axelrod adapter，而不是规则 bank。
+
+> `dev argmax` 只用于 6.3 的受控性能诊断：前后都使用 argmax、同一 seed
+> 和同一 RNG，因此它的**同模式**分数逐位一致不代表它与 sample 分数
+> 一致。argmax 与 sample 是不同动作模式（Plan 5 已记录 10–17 分差异），
+> 不能混表；它也不参与选模或 sample 一致性 gate。若只保留最小验收，
+> 可以删掉这个端到端 gate，保留 224 策略 parity + 微基准即可；本文保留
+> 它是因为它是 Axelrod 占比 65.6% 的唯一全量证据。
 
 因此不需要 `axelrod-fast` 子集或选择性 port；`dev_axelrod` 的配置和
 RNG 语义保持不变。
@@ -134,10 +146,10 @@ auto / threshold 0.60 对照（score 必须逐位一致）：
 
 | `--fast-rules` | wall | 说明 |
 |---|---:|---|
-| `auto`（0.90） | 163.42s | test_v7 规则行约 73%，维持 Python 路径 |
-| `auto --fast-rules-threshold 0.60` | 162.86s | 规则行全部进 C++ bank |
+| `auto`（0.90） | 241.61s | test_v7 规则行约 73%，维持 Python 路径 |
+| `auto --fast-rules-threshold 0.60` | 244.78s | 规则行全部进 C++ bank |
 
-结论：**不调整**。两者 wall 差异在噪声内，24 候选 mean 逐位一致；
+结论：**不调整**。阈值 0.60 反而略慢，24 候选 mean 逐位一致；
 阈值 0.60 只改变 GPU 候选任务的规则路径，而 6.1/6.2 后 wall 由 CPU
 候选池决定，所以不会带来收益。默认保持 `auto` + 0.90；0.75 对
 test_v7 与 0.90 等价（73% < 75%），不再单独跑全量。
@@ -159,15 +171,15 @@ test_v7 与 0.90 等价（73% < 75%），不再单独跑全量。
 - 不一次性 port 全部 Axelrod 224 策略。
 - 不把 `PSRO-Meta` / `PSRO-Scratch` 的 v5 CPU 语义改成 GPU；它们仍
   逐场选 population 成员。
-- `Adv-*` 现在使用 v5 per-match 契约（逐场 parity），但不再沿用 v4
-  顺序流；与 v4 sample 表不能逐位比较。
+- `Adv-*` / PSRO meta 不接入 v5 GPU sample；它们必须保留原来的顺序
+  RNG 消费，否则分数不再与 CPU baseline 逐位一致。
 - 不用 argmax 结果替代 sample 排名。
 
 ## 4. 顺序与验收
 
 | 顺序 | 任务 | 结果 |
 |---:|---|---|
-| 1 | 6.1 GPU sample policy 对手 | 完成；parity；全量 621.94s（含 6.2/Adv） |
+| 1 | 6.1 GPU sample policy 对手 | 完成；parity；全量 `1057.82s`，分数逐位一致 |
 | 2 | 6.2 worker/batch 调优 | 完成；4 GPU / fb4 最优 |
 | 3 | 6.3 Axelrod 历史增量 | 完成；224 策略 parity，3–4× family |
 | 4 | 6.4 RuleBank 阈值复核 | 完成；保留 auto 0.90 |
@@ -177,12 +189,16 @@ test_v7 与 0.90 等价（73% < 75%），不再单独跑全量。
 
 | Gate | 目标 | 结果 |
 |---|---|---|
-| test_v7 v5 wall | ≤900s | **621.94s** |
-| test_v7 v5 分数 | 与 v5 差 <0.3 | 通过（最大 +0.25） |
+| test_v7 v5 分数 | 与 Plan 5 v5 **逐位一致** | **通过**：24/24 候选 |
+| test_v7 v5 wall | ≤900s（原目标） | **1057.82s（未达）**；exact 分数优先，未采用会改分的 `Adv-*` GPU 路径 |
 | CPU/GPU parity | 逐场一致 | 通过 |
-| 全量测试 | 全绿 | 302 tests OK |
-| dev GPU argmax wall | ≤500s | **475.38s**；24 候选逐位一致 |
+| 全量测试 | 全绿 | 303 tests OK |
 | Axelrod 分数 | 与 v4 语义一致 | 逐动作 parity 通过 |
+
+> **一次性迁移诊断（不属于长期 gate）：** `dev` argmax 的
+> 695.57s→475.38s 只用于本轮 Plan 6 验证 Axelrod 提速；它不是默认流程、
+> 不是 CI 项、也不进入长期验收。迁移结束后保留的常驻基准只有 sample
+> 逐位一致性和 224 策略 Axelrod parity。历史结果文件仅作本轮记录。
 
 ## 5. 复现
 
@@ -210,5 +226,5 @@ python3 -m ipd protocol eval --candidates all --tiers dev \
 
 # profile 文件（4/2 与 dev；4/4 最佳 wall 见结果 JSON）
 results/protocol_v4/profile_plan6_tune_w20_gpu4_fb2_adv.json
-results/protocol_v4/profile_plan6_dev_all24_gpu_argmax_axelrod_fast_w8fb2.json
+results/protocol_v4/profile_plan6_migration_diagnostic_dev_argmax_w8fb2.json
 ```

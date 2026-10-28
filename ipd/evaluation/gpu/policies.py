@@ -147,9 +147,7 @@ class BatchMLP:
     def act_from_logits_sample(
             self, logits: torch.Tensor, t: int,
             no_defect: torch.Tensor, uniforms: torch.Tensor,
-            draw_idx: torch.Tensor,
-            need_mask: torch.Tensor | None = None
-            ) -> tuple[torch.Tensor, torch.Tensor]:
+            draw_idx: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Sample the MLP head with the v5 per-match uniform stream."""
         b = logits.shape[0]
         final = torch.full((b,), t >= 99, dtype=torch.bool,
@@ -157,8 +155,6 @@ class BatchMLP:
         safe_c = (self.safe & no_defect & (~final))
         hard_action = final.to(torch.int8)
         need = ~(safe_c | final)
-        if need_mask is not None:
-            need = need & need_mask
         action, draw_idx = _sample_from_logits(
             logits, self.temperature, uniforms, draw_idx, need, hard_action)
         action = torch.where(safe_c,
@@ -249,9 +245,7 @@ class BatchGRU:
     def act_from_logits_sample(
             self, logits: torch.Tensor, t: int,
             no_defect: torch.Tensor, uniforms: torch.Tensor,
-            draw_idx: torch.Tensor,
-            need_mask: torch.Tensor | None = None
-            ) -> tuple[torch.Tensor, torch.Tensor]:
+            draw_idx: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Sample the GRU head with the v5 per-match uniform stream."""
         b = logits.shape[0]
         final = torch.full((b,), t >= 99, dtype=torch.bool,
@@ -259,8 +253,6 @@ class BatchGRU:
         safe_c = no_defect & (~final)
         hard_action = final.to(torch.int8)
         need = ~(safe_c | final)
-        if need_mask is not None:
-            need = need & need_mask
         action, draw_idx = _sample_from_logits(
             logits, self.temperature, uniforms, draw_idx, need, hard_action)
         action = torch.where(safe_c,
@@ -340,14 +332,10 @@ class BatchSelfPlayGRU:
     def act_from_logits_sample(
             self, logits: torch.Tensor, t: int,
             no_defect: torch.Tensor, uniforms: torch.Tensor,
-            draw_idx: torch.Tensor,
-            need_mask: torch.Tensor | None = None
-            ) -> tuple[torch.Tensor, torch.Tensor]:
+            draw_idx: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Sample the self-play head; it has no hard action rules."""
         b = logits.shape[0]
         need = torch.ones(b, dtype=torch.bool, device=logits.device)
-        if need_mask is not None:
-            need = need & need_mask
         hard_action = torch.zeros(b, dtype=torch.int8, device=logits.device)
         return _sample_from_logits(
             logits, 1.0, uniforms, draw_idx, need, hard_action)
