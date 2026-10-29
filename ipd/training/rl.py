@@ -65,7 +65,10 @@ from ipd.core.simulator import C, D, payoff
 from ipd.evaluation.distributions import (
     DISTS, PROTOCOL_VAL_DISTS, TRAIN_DISTS, build_train_dist_field,
 )
-from ipd.policies.neural import FEATURE_VERSION, extract_features
+from ipd.policies.neural import (
+    FEATURE_COUNT_V2, FEATURE_VERSION, FEATURE_VERSION_V2,
+    extract_features, extract_features_v2,
+)
 from ipd.training.neural import describe_device, resolve_device
 from ipd.training.risk import (
     competitive_reward, cvar_episode_weights, dirichlet_weights,
@@ -73,6 +76,7 @@ from ipd.training.risk import (
 )
 
 N_FEATURES = len(extract_features([], []))
+_ACTIVE_FEATURES = "v1"
 REWARD_SCALE = 0.01  # payoff / 100; keeps value targets near 5.5
 
 # ---------------------------------------------------------------------------
@@ -110,6 +114,9 @@ def rollout_task(task: dict[str, Any]):
     center_rewards = bool(task.get("center_rewards", False))
     center_advantages = bool(task.get("center_advantages", True))
     opponent_penalty = float(task.get("opponent_penalty", 0.0))
+    feature_version = str(task.get("feature_version", "v1"))
+    feature_fn = (extract_features_v2 if feature_version == "v2"
+                  else extract_features)
 
     opponent_pool = task.get("opponent_pool")
     opponent_weights = task.get("opponent_weights")
@@ -162,7 +169,7 @@ def rollout_task(task: dict[str, Any]):
         score = 0
 
         for t in range(100):
-            f = extract_features(mine, theirs)
+            f = feature_fn(mine, theirs)
             logit, value = policy.logit_value(f)
             action, logprob, forced = policy.select(t, theirs, logit)
             reply = opp.act(t, theirs, mine)
@@ -543,7 +550,8 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
                      opponent_weights: Sequence[str] | None = None,
                      opponent_penalty: float = 0.0,
                      opponent_fraction: float = 1.0,
-                     opponent_pool: Sequence[dict[str, Any]] | None = None
+                     opponent_pool: Sequence[dict[str, Any]] | None = None,
+                     feature_version: str = "v1",
                      ) -> dict[str, Any]:
     rng = random.Random(seed)
     tasks: list[dict[str, Any]] = []
@@ -563,6 +571,7 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
             "center_rewards": center_rewards,
             "center_advantages": center_advantages,
             "opponent_penalty": opponent_penalty,
+            "feature_version": feature_version,
         }
         if red:
             if opponent_pool:
@@ -613,7 +622,8 @@ def collect_rollouts(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
 def validate(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
              dists: tuple[str, ...], fields_per_dist: int, n: int,
              seeds: dict[str, list[int]], safe: bool, mode: str,
-             policy_seed: int = 20261024) -> dict[str, Any]:
+             policy_seed: int = 20261024,
+             feature_version: str = "v1") -> dict[str, Any]:
     tasks = []
     for dist in dists:
         for seed in seeds[dist]:
@@ -626,6 +636,7 @@ def validate(pool: ProcessPoolExecutor, checkpoint: dict[str, Any],
                 "collect": False,
                 "mode": mode,
                 "policy_seed": policy_seed,
+                "feature_version": feature_version,
             })
     results = list(pool.map(rollout_task, tasks, chunksize=1))
     by_dist: dict[str, list[float]] = {d: [] for d in dists}
@@ -693,6 +704,8 @@ def main(argv=None) -> None:
     ap.add_argument("--iterations", type=int, default=150)
     ap.add_argument("--epochs", type=int, default=4)
     ap.add_argument("--batch-size", type=int, default=8192)
+    ap.add_argument("--features", choices=("v1", "v2"), default="v1",
+                    help="input feature contract; v2 uses 97 features")
     ap.add_argument("--hidden", type=int, nargs="+", default=[64, 32])
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--clip", type=float, default=0.2)
@@ -771,6 +784,15 @@ def main(argv=None) -> None:
             "  python3 -m venv .venv && . .venv/bin/activate\n"
             "  pip install -r requirements-train.txt"
         )
+
+    global N_FEATURES, FEATURE_VERSION, _ACTIVE_FEATURES
+    _ACTIVE_FEATURES = str(args.features)
+    if _ACTIVE_FEATURES == "v2":
+        N_FEATURES = FEATURE_COUNT_V2
+        FEATURE_VERSION = FEATURE_VERSION_V2
+    else:
+        N_FEATURES = len(extract_features([], []))
+        FEATURE_VERSION = "ipd-neural-features-v1"
 
     val_dists = tuple(x.strip() for x in args.dists.split(",") if x.strip())
     unknown = [d for d in val_dists if d not in DISTS + PROTOCOL_VAL_DISTS]
@@ -930,7 +952,8 @@ def main(argv=None) -> None:
         # Baseline validation of the initial policy.
         ckpt = export_checkpoint(model, mean, std, temperature, safe, meta_base)
         initial_val = validate(pool, ckpt, val_dists, args.val_fields_per_dist,
-                               args.val_n, val_seeds, safe, "sample")
+                               args.val_n, val_seeds, safe, "sample",
+                               feature_version=args.features)
         print(f"initial val avg={initial_val['avg']:.2f} "
               f"worst={initial_val['worst']:.2f} "
               + " ".join(f"{d}={v:.2f}" for d, v in initial_val["by_dist"].items()),
@@ -957,7 +980,8 @@ def main(argv=None) -> None:
                 opponent_weights=opponent_weights,
                 opponent_penalty=args.opponent_penalty,
                 opponent_fraction=args.opponent_fraction,
-                opponent_pool=opponent_pool)
+                opponent_pool=opponent_pool,
+                feature_version=args.features)
             rollout_time = time.time() - rollout_start
 
             train_start = time.time()
@@ -1004,7 +1028,8 @@ def main(argv=None) -> None:
                 ckpt = export_checkpoint(model, mean, std, temperature, safe,
                                          meta_base)
                 val = validate(pool, ckpt, val_dists, args.val_fields_per_dist,
-                               args.val_n, val_seeds, safe, "sample")
+                               args.val_n, val_seeds, safe, "sample",
+                               feature_version=args.features)
                 row["val"] = val
                 if args.save_all_checkpoints:
                     os.makedirs(args.save_all_checkpoints, exist_ok=True)

@@ -52,7 +52,11 @@ public:
 
     std::vector<double> features(const std::vector<int>& mine,
                                  const std::vector<int>& theirs) const {
+#ifdef IPD_FEATURES_V2
+        return ipd::extract_features_v2(mine, theirs);
+#else
         return ipd::extract_features(mine, theirs);
+#endif
     }
 
     double p_defect(const std::vector<int>& mine,

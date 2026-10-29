@@ -14,7 +14,7 @@
 > - **前最佳 / fallback：RL-Wide（`rl-wide`）、RL-Pattern
 >   （`rl-pattern`）与 RL-Repair（`rl-repair`）**：RL-Repair 仍是
 >   test_v7 provisional 第一；均未 promotion。
-> - 最近完整测试：**312 tests OK**（本轮全量运行）。
+> - 最近完整测试：**320 tests OK**（本轮全量运行）。
 >   `python3 -m ipd list-policies`：**27 个注册候选**。
 > - **PSRO 已引入**：`ipd/training/psro.py`（blue-vs-red maximin +
 >   PPO best-response oracle）；`psro`（meta-policy）和 `psro-br`
@@ -450,6 +450,23 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   dev_complexity4 401.27；低难度 tier 有 0.1–0.8 的小幅回退。
 - 判定：注册 `rl-wide160`，**不 promotion**；主权重不变。报告
   `docs/research/rl-wide160.md`、`results/rl_v4_20261032/`。
+
+### 输入特征 v2（2026-10-29；No-Go）
+
+- 新增 `ipd-neural-features-v2`（85→97）：对手/自己
+  period-2/3/4/5、opp/self mirror、opp exploit/forgive。
+- Python `extract_features_v2`、GPU `features97` /
+  `FeatureState97`、C++ `extract_features_v2` 三端 parity（1e-12）；
+  `train expand --features v2` 和 `train rl --features v2` 已接入；
+  C++ 导出写 `IPD_FEATURES_V2` 宏。
+- RL-Wide160 上 8 iter：v2 iter2 dev_param 547.90、dev_complex
+  456.43、dev_ood 521.62、test 485.27；iter4 dev_complex 458.72
+  但 dev_param 547.59、test 485.25。相对 RL-Wide160 的
+  548.26 / 454.31 / 521.37 / 485.62，complex 略升、主排序和 test
+  回退。
+- 判定：**No-Go，不注册候选**；保留 v2 契约供后续 extortion /
+  payoff-differential 特征实验。报告 `docs/research/feature-v2.md`、
+  `results/rl_v4_20261035/`。
 
 ### Protocol v3 baseline（legacy）
 

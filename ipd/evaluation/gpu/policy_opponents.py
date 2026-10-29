@@ -27,7 +27,9 @@ import torch
 
 from ..fast.bank import RuleBank
 from ..fast.spec import get_fast_spec
-from .features import FeatureState21, FeatureState85
+from .features import (
+    FEATURES97, FeatureState21, FeatureState85, FeatureState97,
+)
 from .policies import BatchGRU, BatchMLP, BatchSelfPlayGRU
 
 
@@ -215,7 +217,12 @@ class BatchOpponentField:
         for (kind, _identity, safe, temperature), members in grouped.items():
             group_rows = [row for row, _ in members]
             template = members[0][1]
-            state_cls = FeatureState21 if kind == "selfplay" else FeatureState85
+            if kind == "selfplay":
+                state_cls = FeatureState21
+            elif getattr(template, "n_features", 85) == FEATURES97:
+                state_cls = FeatureState97
+            else:
+                state_cls = FeatureState85
             kwargs = {}
             if kind == "selfplay":
                 kwargs["version"] = getattr(

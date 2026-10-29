@@ -285,7 +285,62 @@ def extract_features(mine: Sequence[int], theirs: Sequence[int]) -> list[float]:
     return f
 
 
+FEATURE_VERSION_V2 = "ipd-neural-features-v2"
+_V2_PERIODS = (2, 3, 4, 5)
+_V2_WINDOW = 8
+_V2_TAIL = 10
+
+
+def _period_rate(seq: Sequence[int], period: int, window: int = _V2_WINDOW) -> float:
+    """Fraction of the last ``window`` moves matching ``period`` steps back."""
+    recent = list(seq[-window:]) if window > 0 else list(seq)
+    n = len(recent)
+    if n <= period:
+        return 0.0
+    matches = sum(1 for i in range(period, n)
+                  if recent[i] == recent[i - period])
+    return matches / (n - period)
+
+
+def _v2_tail_rates(mine: Sequence[int], theirs: Sequence[int],
+                   window: int = _V2_TAIL) -> tuple[float, float, float, float]:
+    """Mirror / exploit / forgive rates over the last ``window`` rounds."""
+    start = max(1, len(theirs) - window)
+    n = len(theirs) - start
+    if n <= 0:
+        return 0.0, 0.0, 0.0, 0.0
+    opp_mirror = self_mirror = exploit = forgive = 0
+    for i in range(start, len(theirs)):
+        opp_mirror += int(theirs[i] == mine[i - 1])
+        self_mirror += int(mine[i] == theirs[i - 1])
+        exploit += int(mine[i] == C and theirs[i] == D)
+        forgive += int(mine[i] == D and theirs[i] == C)
+    return (opp_mirror / n, self_mirror / n,
+            exploit / n, forgive / n)
+
+
+def extract_features_v2(mine: Sequence[int],
+                        theirs: Sequence[int]) -> list[float]:
+    """85 v1 features plus 12 periodicity / response features.
+
+    The extra block is intentionally small and bounded to [0, 1]:
+    opponent period-2/3/4/5, self period-2/3/4/5, then opponent mirror,
+    self mirror, opponent exploit, and opponent forgive rates over the last
+    10 rounds.  ``extract_features`` remains the v1 contract for old weights.
+    """
+    f = list(extract_features(mine, theirs))
+    f += [_period_rate(theirs, p) for p in _V2_PERIODS]
+    f += [_period_rate(mine, p) for p in _V2_PERIODS]
+    f += list(_v2_tail_rates(mine, theirs))
+    return f
+
+
 FEATURE_NAMES: tuple[str, ...] = tuple(f"f{i}" for i in range(len(extract_features([], []))))
+FEATURE_NAMES_V2: tuple[str, ...] = FEATURE_NAMES + tuple(
+    [f"opp_period{p}" for p in _V2_PERIODS]
+    + [f"self_period{p}" for p in _V2_PERIODS]
+    + ["opp_mirror", "self_mirror", "opp_exploit", "opp_forgive"])
+FEATURE_COUNT_V2 = len(FEATURE_NAMES_V2)
 
 
 class NeuralPolicy:
@@ -314,6 +369,11 @@ class NeuralPolicy:
         self.safe = bool(weights.get("safe", True)) if safe is None else bool(safe)
 
         self.n_features = int(weights["n_features"])
+        self.feature_version = str(weights.get("feature_version",
+                                              FEATURE_VERSION))
+        self._extract = (extract_features_v2
+                         if self.feature_version == FEATURE_VERSION_V2
+                         else extract_features)
         self.temperature = float(weights.get("temperature", 1.0))
         self.activation = weights.get("activation", "tanh")
         if self.activation != "tanh":
@@ -352,7 +412,7 @@ class NeuralPolicy:
         return self._affine(x, self.layers[-1])[0]
 
     def predict_proba(self, mine: Sequence[int], theirs: Sequence[int]) -> float:
-        logit = self._logit(extract_features(mine, theirs))
+        logit = self._logit(self._extract(mine, theirs))
         if self.mode == "argmax":
             return 1.0 if logit >= 0 else 0.0
         z = max(-40.0, min(40.0, logit / max(1e-6, self.temperature)))

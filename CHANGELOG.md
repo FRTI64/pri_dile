@@ -7,6 +7,14 @@
 
 ### Added
 
+- **输入特征 v2（85→97）**：新增 12 个周期/响应特征和版本化
+  `feature_version` 契约；Python `extract_features_v2`、GPU
+  `features97` / `FeatureState97`、C++ `extract_features_v2` 三端
+  parity；`train expand --features v2` 可把旧 85 维 checkpoint 扩到
+  97 维；`train rl --features v2` 可训练。RL-Wide160 上 8 iter
+  fine-tune 只带来 dev_complex +2～4，dev_param / test_v7 回退；
+  **No-Go，不注册候选**。报告 `docs/research/feature-v2.md`、
+  `results/rl_v4_20261035/`。
 - **RL-Wide160（`rl-wide160`）**：从 RL-Wide 128/128 只扩第一层到
   160/128，再做 2 iter balance PPO（PB 1/11）。全量 dev（30×2048，
   sample）：dev_param 548.26、dev_family 583.08、dev_complex
@@ -143,7 +151,7 @@
 ### Changed
 
 - 注册候选从 20 增至 27（新增 `rl-pattern` / `rl-wide` /
-  `rl-wide160`；此前 24 含 4 个 PSRO）；完整测试 **312 OK**。
+  `rl-wide160`；此前 24 含 4 个 PSRO）；完整测试 **320 OK**。
 - Protocol v4 top 5（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
   RL-Wide160）的 dev 已运行；RL-Wide160 综合最均衡，但 test_v7
   provisional 仍低 0.69，暂不 promotion。
@@ -154,6 +162,8 @@
 
 ### Fixed
 
+- C++ 导出器把 `0.0` 写成 `0f`，在部分 g++ 上不是合法字面量；现在
+  统一输出 `0.0f`。
 - `protocol eval` 在“全部候选都走 GPU、没有 CPU task”且显式设置
   `--gpu-workers` 时，局部变量 `budget` 覆盖 worker 预算字典，导致
   `TypeError: 'int' object is not subscriptable`；现在改用独立的

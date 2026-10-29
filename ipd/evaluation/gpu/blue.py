@@ -22,7 +22,9 @@ from typing import Any, Sequence
 
 import torch
 
-from .features import FeatureState21, FeatureState85
+from .features import (
+    FEATURES97, FeatureState21, FeatureState85, FeatureState97,
+)
 from .policies import BatchGRU, BatchMLP, BatchSelfPlayGRU
 from .policy_opponents import _policy_kind, build_batch_policy, unwrap_policy
 
@@ -79,7 +81,12 @@ class _PlainActor:
                          if uniforms is not None else None)
         self.draw_idx = torch.zeros(len(self.rows), dtype=torch.long,
                                     device=device)
-        state_cls = FeatureState21 if kind == "selfplay" else FeatureState85
+        if kind == "selfplay":
+            state_cls = FeatureState21
+        elif getattr(policy, "n_features", 85) == FEATURES97:
+            state_cls = FeatureState97
+        else:
+            state_cls = FeatureState85
         kwargs = {}
         if kind == "selfplay":
             kwargs["version"] = getattr(

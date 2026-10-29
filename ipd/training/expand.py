@@ -35,6 +35,8 @@ import random
 from collections import Counter
 from typing import Any, Sequence
 
+from ipd.policies.neural import FEATURE_COUNT_V2, FEATURE_VERSION_V2
+
 
 def _mapping(old_size: int, new_size: int) -> list[int]:
     """Map each new unit to an old unit, distributing duplicates evenly."""
@@ -109,6 +111,56 @@ def _expand_head(head: dict[str, Any], mapping: list[int]) -> dict[str, Any]:
     }
 
 
+def _pad_input_layer(layer: dict[str, Any], extra: int,
+                     noise: float, rng: random.Random) -> dict[str, Any]:
+    """Append ``extra`` input columns with small symmetry-breaking weights."""
+    if extra <= 0:
+        return copy.deepcopy(layer)
+    w = [[float(x) for x in row] for row in layer["w"]]
+    b = [float(x) for x in layer["b"]]
+    for row in w:
+        scale = noise * (math.sqrt(sum(x * x for x in row) / max(1, len(row)))
+                         + 1e-6)
+        row.extend(rng.gauss(0.0, scale) for _ in range(extra))
+    return {"w": w, "b": b}
+
+
+def expand_input_features(data: dict[str, Any], target: int | None = None,
+                          seed: int = 20261029, noise: float = 0.01
+                          ) -> dict[str, Any]:
+    """Pad the first layer for a longer feature vector (v2 by default)."""
+    target = int(FEATURE_COUNT_V2 if target is None else target)
+    old = int(data["n_features"])
+    extra = target - old
+    if extra < 0:
+        raise ValueError("input feature expansion cannot shrink the vector")
+    if extra == 0:
+        return copy.deepcopy(data)
+    rng = random.Random(int(seed))
+    out = copy.deepcopy(data)
+    if data.get("format") == "ipd-rl-policy-v1":
+        out["trunk"][0] = _pad_input_layer(
+            data["trunk"][0], extra, noise, rng)
+        if data.get("value_trunk"):
+            out["value_trunk"][0] = _pad_input_layer(
+                data["value_trunk"][0], extra, noise, rng)
+    elif data.get("format") == "ipd-neural-policy-v1":
+        out["layers"][0] = _pad_input_layer(
+            data["layers"][0], extra, noise, rng)
+    else:
+        raise ValueError(
+            f"unsupported checkpoint format: {data.get('format')!r}")
+    out["n_features"] = target
+    out["feature_version"] = FEATURE_VERSION_V2
+    out["feature_mean"] = list(data["feature_mean"]) + [0.0] * extra
+    out["feature_std"] = list(data["feature_std"]) + [1.0] * extra
+    meta = dict(out.get("meta", {}))
+    meta["expanded_from_features"] = old
+    meta["expanded_to_features"] = target
+    out["meta"] = meta
+    return out
+
+
 def expand_actor_critic(data: dict[str, Any], hidden: Sequence[int],
                         seed: int = 20261029, noise: float = 0.01
                         ) -> dict[str, Any]:
@@ -161,7 +213,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Expand an MLP checkpoint to wider hidden layers.")
     ap.add_argument("--input", required=True)
-    ap.add_argument("--hidden", type=int, nargs="+", required=True)
+    ap.add_argument("--hidden", type=int, nargs="+", default=None,
+                    help="new hidden widths; omit to keep the current sizes")
+    ap.add_argument("--features", choices=("v1", "v2"), default="v1",
+                    help="v2 pads the 85-feature input to 97 features")
     ap.add_argument("--out", required=True,
                     help="expanded actor-critic or deployable JSON")
     ap.add_argument("--weights-out", default=None,
@@ -172,9 +227,16 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     with open(args.input, encoding="utf-8") as fh:
         data = json.load(fh)
-    if data.get("format") == "ipd-rl-policy-v1":
+    fmt = data.get("format")
+    if args.features == "v2":
+        data = expand_input_features(
+            data, seed=args.seed, noise=args.noise)
+
+    if fmt == "ipd-rl-policy-v1":
+        hidden = (args.hidden if args.hidden is not None
+                  else [len(layer["w"]) for layer in data["trunk"]])
         expanded = expand_actor_critic(
-            data, args.hidden, seed=args.seed, noise=args.noise)
+            data, hidden, seed=args.seed, noise=args.noise)
         if args.weights_out:
             from ipd.policies.rl import RLPolicy
             import tempfile
@@ -192,14 +254,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                 os.unlink(path)
             with open(args.weights_out, "w", encoding="utf-8") as fh:
                 json.dump(weights, fh, ensure_ascii=False, indent=2)
-    elif data.get("format") == "ipd-neural-policy-v1":
+    elif fmt == "ipd-neural-policy-v1":
+        hidden = (args.hidden if args.hidden is not None
+                  else [len(layer["w"]) for layer in data["layers"][:-1]])
         expanded = expand_deployable(
-            data, args.hidden, seed=args.seed, noise=args.noise)
+            data, hidden, seed=args.seed, noise=args.noise)
         if args.weights_out:
             with open(args.weights_out, "w", encoding="utf-8") as fh:
                 json.dump(expanded, fh, ensure_ascii=False, indent=2)
     else:
-        raise SystemExit(f"unsupported checkpoint format: {data.get('format')!r}")
+        raise SystemExit(f"unsupported checkpoint format: {fmt!r}")
     with open(args.out, "w", encoding="utf-8") as fh:
         json.dump(expanded, fh, ensure_ascii=False, indent=2)
     print(f"wrote {args.out}")

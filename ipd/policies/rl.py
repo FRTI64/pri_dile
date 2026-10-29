@@ -32,8 +32,10 @@ from ipd.policies.neural import (
     C,
     D,
     FEATURE_VERSION,
+    FEATURE_VERSION_V2,
     _payoff,
     extract_features,
+    extract_features_v2,
 )
 from .native import make_mlp
 
@@ -77,6 +79,11 @@ class RLPolicy:
             self.name = name
 
         self.n_features = int(weights["n_features"])
+        self.feature_version = str(weights.get("feature_version",
+                                              FEATURE_VERSION))
+        self._extract = (extract_features_v2
+                         if self.feature_version == FEATURE_VERSION_V2
+                         else extract_features)
         self.temperature = float(weights.get("temperature", 1.0))
         self.activation = weights.get("activation", "tanh")
         if self.activation != "tanh":
@@ -169,13 +176,13 @@ class RLPolicy:
         return logit, value
 
     def predict_proba(self, mine: Sequence[int], theirs: Sequence[int]) -> float:
-        logit = self._logit(extract_features(mine, theirs))
+        logit = self._logit(self._extract(mine, theirs))
         if self.mode == "argmax":
             return 1.0 if logit >= 0.0 else 0.0
         return _sigmoid(logit / max(1e-6, self.temperature))
 
     def predict_value(self, mine: Sequence[int], theirs: Sequence[int]) -> float:
-        _, value = self.logit_value(extract_features(mine, theirs))
+        _, value = self.logit_value(self._extract(mine, theirs))
         return value
 
     def select(self, t: int, theirs: Sequence[int], logit: float
@@ -203,7 +210,7 @@ class RLPolicy:
         return C, _log_sigmoid(-z), False
 
     def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
-        logit = self._logit(extract_features(mine, theirs))
+        logit = self._logit(self._extract(mine, theirs))
         action, _, _ = self.select(t, theirs, logit)
         return action
 
@@ -238,7 +245,7 @@ class RLPolicy:
         meta["trained_with"] = "ppo"
         return {
             "format": "ipd-neural-policy-v1",
-            "feature_version": FEATURE_VERSION,
+            "feature_version": self.feature_version,
             "n_features": self.n_features,
             "activation": "tanh",
             "layers": layers,

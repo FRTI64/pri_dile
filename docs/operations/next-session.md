@@ -24,7 +24,7 @@
 ## 当前状态
 
 - 最近提交：`git log -1`（RL-Wide 128/128 与 net2wider 工具）。
-- 最近完整测试：**312 tests OK**；`python3 -m ipd list-policies` 为
+- 最近完整测试：**320 tests OK**；`python3 -m ipd list-policies` 为
   **27 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。

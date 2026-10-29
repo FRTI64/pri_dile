@@ -2,12 +2,18 @@
 from __future__ import annotations
 
 import copy
+import json
 import random
+import tempfile
 import unittest
+from pathlib import Path
 
-from ipd.policies.neural import NeuralPolicy
+from ipd.policies.neural import (
+    FEATURE_COUNT_V2, FEATURE_VERSION_V2, NeuralPolicy,
+)
+from ipd.tools.export_cpp import export_mlp, fmt
 from ipd.training.expand import (
-    expand_actor_critic, expand_deployable, _mapping,
+    expand_actor_critic, expand_deployable, expand_input_features, _mapping,
 )
 
 N_FEATURES = 85
@@ -95,12 +101,50 @@ class ExpandTests(unittest.TestCase):
         self.assertEqual(len(out["value_head"]["w"][0]), 64)
         self.assertEqual(out["meta"]["expanded_to_hidden"], [128, 64])
 
+    def test_input_feature_expansion_pads_first_layer(self) -> None:
+        src = _actor_critic()
+        out = expand_input_features(copy.deepcopy(src), seed=5)
+        self.assertEqual(out["n_features"], FEATURE_COUNT_V2)
+        self.assertEqual(out["feature_version"], FEATURE_VERSION_V2)
+        self.assertEqual(len(out["trunk"][0]["w"][0]), FEATURE_COUNT_V2)
+        self.assertEqual(len(out["value_trunk"][0]["w"][0]),
+                         FEATURE_COUNT_V2)
+        self.assertEqual(out["trunk"][0]["w"][0][:85],
+                         src["trunk"][0]["w"][0])
+        self.assertEqual(len(out["feature_mean"]), FEATURE_COUNT_V2)
+
+    def test_deployable_v2_policy_uses_v2_features(self) -> None:
+        out = expand_input_features(copy.deepcopy(_deployable()), seed=6)
+        policy = NeuralPolicy(copy.deepcopy(out))
+        self.assertEqual(policy.n_features, FEATURE_COUNT_V2)
+        self.assertEqual(policy.feature_version, FEATURE_VERSION_V2)
+        self.assertIn(policy.act(0, [], []), (0, 1))
+
     def test_deployable_expansion_is_deterministic(self) -> None:
         a = expand_deployable(copy.deepcopy(_deployable()), [128, 64],
                               seed=11)
         b = expand_deployable(copy.deepcopy(_deployable()), [128, 64],
                               seed=11)
         self.assertEqual(a, b)
+
+
+class ExportCppTests(unittest.TestCase):
+    def test_float_literal_always_has_decimal_point(self) -> None:
+        self.assertEqual(fmt(0.0), "0.0f")
+        self.assertEqual(fmt(1.0), "1.0f")
+        self.assertEqual(fmt(0.5), "0.5f")
+        self.assertIn("e", fmt(1e-9).lower())
+
+    def test_v2_export_sets_feature_macro(self) -> None:
+        data = expand_input_features(copy.deepcopy(_deployable()), seed=8)
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "weights.json"
+            out = Path(tmp) / "weights.hpp"
+            src.write_text(json.dumps(data), encoding="utf-8")
+            export_mlp(str(src), str(out))
+            text = out.read_text(encoding="utf-8")
+        self.assertIn("#define IPD_FEATURES_V2 1", text)
+        self.assertIn("constexpr int N_FEATURES = 97;", text)
 
 
 if __name__ == "__main__":

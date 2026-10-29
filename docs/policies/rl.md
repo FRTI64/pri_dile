@@ -32,6 +32,13 @@ RL-Repair 554.76 / 564.61。下方 5.1/5.2 表是 10-field 盲测的早期基线
 `results/hard2_20261026/README.md`、`results/robust_20261026/README.md`
 和 `docs/research/e1-robust-finetune.md`。
 
+### 输入特征 v2（2026-10-29，No-Go）
+
+新增 `ipd-neural-features-v2`（85→97）和 `--features v2` 训练入口；
+Python / GPU / C++ 三端 parity 通过。RL-Wide160 上 fine-tune 只带来
+dev_complex +2～4，dev_param / test_v7 回退，未注册候选。详见
+`docs/research/feature-v2.md`。
+
 ### RL-Wide160（2026-10-31）
 
 从 RL-Wide 128/128 只扩第一层到 160/128，再做 2 iter balance

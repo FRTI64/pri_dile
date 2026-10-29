@@ -156,6 +156,21 @@ python3 -m ipd train expand \
 [../research/rl-wide160.md](../research/rl-wide160.md) 与
 [../research/rl-wide.md](../research/rl-wide.md)。
 
+输入特征 v2（85→97）也已接入：
+
+```bash
+python3 -m ipd train expand \
+  --input weights/rl_policy_checkpoint_wide160.json \
+  --features v2 \
+  --out /tmp/wide160_v2_ac.json
+
+python3 -m ipd train rl --features v2 --hidden 160 128 \
+  --init-weights /tmp/wide160_v2_ac.json ...
+```
+
+v2 在 RL-Wide160 上是 No-Go（dev_complex +2～4，但 dev_param/test
+回退），见 [../research/feature-v2.md](../research/feature-v2.md)。
+
 ## 4. PSRO
 
 完整 PSRO 使用独立的 blue population 和 red exploiter population：

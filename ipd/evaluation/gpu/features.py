@@ -29,7 +29,11 @@ import torch
 C, D = 0, 1
 
 FEATURES85 = 85
+FEATURES97 = 97
 FEATURES21 = 21
+_V2_PERIODS = (2, 3, 4, 5)
+_V2_WINDOW = 8
+_V2_TAIL = 10
 ROUNDS = 100
 _LOG101 = math.log(101.0)
 
@@ -343,6 +347,62 @@ def features85(mine: torch.Tensor, theirs: torch.Tensor,
     return out
 
 
+def _period_rate_tensor(seq: torch.Tensor, t: int, period: int,
+                        window: int, dtype: torch.dtype) -> torch.Tensor:
+    b = seq.shape[0]
+    if t <= period:
+        return torch.zeros(b, device=seq.device, dtype=dtype)
+    start = max(0, t - window)
+    tail = seq[:, start:t]
+    length = tail.shape[1]
+    if length <= period:
+        return torch.zeros(b, device=seq.device, dtype=dtype)
+    return (tail[:, period:] == tail[:, :-period]).to(dtype).mean(1)
+
+
+def _v2_tail_tensor(mine: torch.Tensor, theirs: torch.Tensor, t: int,
+                    dtype: torch.dtype) -> torch.Tensor:
+    """Mirror / exploit / forgive rates over the last 10 rounds."""
+    b = mine.shape[0]
+    zero = torch.zeros(b, device=mine.device, dtype=dtype)
+    start = max(1, t - _V2_TAIL)
+    n = t - start
+    if n <= 0:
+        return torch.stack([zero, zero, zero, zero], dim=1)
+    prev_m = mine[:, start - 1:t - 1]
+    cur_t = theirs[:, start:t]
+    prev_t = theirs[:, start - 1:t - 1]
+    cur_m = mine[:, start:t]
+    return torch.stack([
+        (cur_t == prev_m).to(dtype).mean(1),
+        (cur_m == prev_t).to(dtype).mean(1),
+        ((cur_m == C) & (cur_t == D)).to(dtype).mean(1),
+        ((cur_m == D) & (cur_t == C)).to(dtype).mean(1),
+    ], dim=1)
+
+
+def features97(mine: torch.Tensor, theirs: torch.Tensor,
+               t: int | None = None,
+               dtype: torch.dtype = torch.float64) -> torch.Tensor:
+    """85 v1 features plus 12 periodicity / response features."""
+    if t is None:
+        t = mine.shape[1]
+    t = int(t)
+    base = features85(mine, theirs, t, dtype)
+    tail = [
+        _period_rate_tensor(theirs, t, p, _V2_WINDOW, dtype)
+        for p in _V2_PERIODS
+    ] + [
+        _period_rate_tensor(mine, t, p, _V2_WINDOW, dtype)
+        for p in _V2_PERIODS
+    ]
+    out = torch.cat([base] + [item.reshape(-1, 1) for item in tail]
+                    + [_v2_tail_tensor(mine, theirs, t, dtype)], dim=1)
+    if out.shape[1] != FEATURES97:  # pragma: no cover
+        raise AssertionError(f"features97 produced {out.shape[1]} columns")
+    return out
+
+
 class FeatureState85:
     """Incremental 85-feature state for lock-step batch simulation.
 
@@ -620,6 +680,52 @@ class FeatureState85:
         return out
 
 
+class FeatureState97:
+    """Incremental 97-feature state (v1 state + 12 v2 features)."""
+
+    n_features = FEATURES97
+
+    def __init__(self, batch: int, device: torch.device | str = "cpu",
+                 dtype: torch.dtype = torch.float64, rounds: int = ROUNDS):
+        self.state = FeatureState85(batch, device=device, dtype=dtype,
+                                    rounds=rounds)
+        self.device = self.state.device
+        self.dtype = self.state.dtype
+        self.rounds = self.state.rounds
+        self.batch = self.state.batch
+
+    def reset(self, batch: int | None = None) -> None:
+        self.state.reset(batch)
+        self.batch = self.state.batch
+
+    def append(self, mine: torch.Tensor, theirs: torch.Tensor) -> None:
+        self.state.append(mine, theirs)
+
+    def any_defect(self, side: str = "theirs") -> torch.Tensor:
+        return self.state.any_defect(side)
+
+    def features(self) -> torch.Tensor:
+        t = self.state.t
+        base = self.state.features()
+        tail = [
+            _period_rate_tensor(self.state.theirs, t, p, _V2_WINDOW,
+                                self.dtype)
+            for p in _V2_PERIODS
+        ] + [
+            _period_rate_tensor(self.state.mine, t, p, _V2_WINDOW,
+                                self.dtype)
+            for p in _V2_PERIODS
+        ]
+        out = torch.cat([base] + [item.reshape(-1, 1) for item in tail]
+                        + [_v2_tail_tensor(self.state.mine,
+                                           self.state.theirs, t,
+                                           self.dtype)], dim=1)
+        if out.shape[1] != FEATURES97:  # pragma: no cover
+            raise AssertionError(
+                f"FeatureState97 produced {out.shape[1]} columns")
+        return out
+
+
 def features21(mine: torch.Tensor, theirs: torch.Tensor,
                t: int | None = None, version: str = "selfplay-21-v1",
                dtype: torch.dtype = torch.float64) -> torch.Tensor:
@@ -786,6 +892,7 @@ class FeatureState21:
 
 
 __all__ = [
-    "C", "D", "FEATURES21", "FEATURES85",
-    "FeatureState21", "FeatureState85", "features21", "features85",
+    "C", "D", "FEATURES21", "FEATURES85", "FEATURES97",
+    "FeatureState21", "FeatureState85", "FeatureState97",
+    "features21", "features85", "features97",
 ]

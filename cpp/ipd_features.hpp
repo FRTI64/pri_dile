@@ -1,10 +1,11 @@
-// Shared 85-dimensional history features for the C++ neural policies.
+// Shared 85/97-dimensional history features for the C++ neural policies.
 //
-// This mirrors neural_policy.extract_features exactly.  Keep the two files in
-// sync if the Python feature extractor changes.
+// This mirrors neural_policy.extract_features / extract_features_v2 exactly.
+// Keep the two files in sync if the Python feature extractor changes.
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <stdexcept>
 #include <vector>
@@ -14,6 +15,7 @@ namespace ipd {
 constexpr int C = 0;
 constexpr int D = 1;
 constexpr int FEATURE_COUNT = 85;
+constexpr int FEATURE_COUNT_V2 = 97;
 
 inline int count(const std::vector<int>& seq, int value);
 inline bool contains(const std::vector<int>& seq, int value);
@@ -296,6 +298,56 @@ inline std::vector<double> extract_features(const std::vector<int>& mine,
 
     if (static_cast<int>(f.size()) != FEATURE_COUNT) {
         throw std::runtime_error("feature count mismatch");
+    }
+    return f;
+}
+
+inline double period_rate(const std::vector<int>& seq, int period,
+                          int window = 8) {
+    const int n = static_cast<int>(seq.size());
+    const int start = std::max(0, n - window);
+    const int length = n - start;
+    if (length <= period) return 0.0;
+    int matches = 0;
+    for (int i = start + period; i < n; ++i) {
+        matches += (seq[i] == seq[i - period]);
+    }
+    return matches / static_cast<double>(length - period);
+}
+
+inline std::array<double, 4> v2_tail_rates(
+        const std::vector<int>& mine, const std::vector<int>& theirs,
+        int window = 10) {
+    const int t = static_cast<int>(theirs.size());
+    const int start = std::max(1, t - window);
+    const int n = t - start;
+    if (n <= 0) return {0.0, 0.0, 0.0, 0.0};
+    int opp_mirror = 0, self_mirror = 0, exploit = 0, forgive = 0;
+    for (int i = start; i < t; ++i) {
+        opp_mirror += (theirs[i] == mine[i - 1]);
+        self_mirror += (mine[i] == theirs[i - 1]);
+        exploit += (mine[i] == C && theirs[i] == D);
+        forgive += (mine[i] == D && theirs[i] == C);
+    }
+    return {opp_mirror / static_cast<double>(n),
+            self_mirror / static_cast<double>(n),
+            exploit / static_cast<double>(n),
+            forgive / static_cast<double>(n)};
+}
+
+inline std::vector<double> extract_features_v2(
+        const std::vector<int>& mine, const std::vector<int>& theirs) {
+    std::vector<double> f = extract_features(mine, theirs);
+    for (int period : {2, 3, 4, 5}) {
+        f.push_back(period_rate(theirs, period));
+    }
+    for (int period : {2, 3, 4, 5}) {
+        f.push_back(period_rate(mine, period));
+    }
+    const std::array<double, 4> tail = v2_tail_rates(mine, theirs);
+    for (double value : tail) f.push_back(value);
+    if (static_cast<int>(f.size()) != FEATURE_COUNT_V2) {
+        throw std::runtime_error("v2 feature count mismatch");
     }
     return f;
 }
