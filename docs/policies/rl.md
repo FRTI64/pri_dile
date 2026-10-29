@@ -1,11 +1,12 @@
 # 完整强化学习策略（PPO）
 
 > **状态（2026-10-29）**：本文记录 85 维 PPO 的方法和截至 2026-10-26 的
-> 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）、RL-Repair（E1c）和
-> RL-Pattern（v4 定向 fine-tune）；**Protocol v4 dev 第一（top 3）是
-> RL-Pattern，但未 promotion**；RL-Repair 仍是 proven fallback。下方
-> 5.1/5.2 的 10-field 盲测表只代表当时的基线。当前候选比较见
-> [README.md](../../README.md)、`results/rl_v4_20261028/` 和
+> 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）、RL-Repair（E1c）、
+> RL-Pattern（v4 定向 fine-tune）和 RL-Wide（128/128 net2wider）；
+> **Protocol v4 dev 综合最均衡（top 4）是 RL-Wide，但未 promotion**；
+> RL-Repair 仍是 proven fallback。下方 5.1/5.2 的 10-field 盲测表只代表
+> 当时的基线。当前候选比较见 [README.md](../../README.md)、
+> `results/rl_v4_20261029/`、`docs/research/rl-wide.md` 和
 > `docs/research/rl-pattern.md`。
 
 本文记录 `ipd/training/rl.py` 的完整 RL 训练流程。它不是行为克隆，也不是
@@ -17,7 +18,8 @@ DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过
 
 | 候选 | 注册名 | 权重 | official 20 | blind 20 | heldout v2 | 备注 |
 |---|---|---|---:|---:|---:|---|
-| **RL-Pattern** | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | - | - | - | **v4 dev 第一（top 3）；未 promotion** |
+| **RL-Wide** | `rl-wide` | `weights/rl_policy_weights_wide.json` | - | - | - | **128/128；v4 dev 综合最均衡；未 promotion** |
+| **RL-Pattern** | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | - | - | - | 64/32；v4 dev 前列；未 promotion |
 | **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | **554.72** | **564.68** | **503.17** | 前最佳 / fallback |
 | RL-PPO-Hard60 | `rl-hard60` | `weights/rl_policy_weights_hard60.json` | 554.27 | 563.87 | 500.07 | A60 / fallback |
 | RL-PPO | `rl` | `weights/rl_policy_weights.json` | 553.22 | 562.80 | 494.97 | 当前主权重 |
@@ -27,6 +29,16 @@ RL-Repair 554.76 / 564.61。下方 5.1/5.2 表是 10-field 盲测的早期基线
 不能与上表 20-field 数字混排。详见
 `results/hard2_20261026/README.md`、`results/robust_20261026/README.md`
 和 `docs/research/e1-robust-finetune.md`。
+
+### RL-Wide（2026-10-29）
+
+用 `ipd/training/expand.py` 的 net2wider 把 RL-Pattern 从 64/32 扩到
+128/128，再做 128/64 gentle → 128/128 gentle → 128/128 balance
+（PB 1/11）的小步 fine-tune。Protocol v4 dev：dev_param 548.24、
+dev_complex 452.79、dev_ood 520.71；complex min_norm **0.973**；
+test_v7 provisional 485.50。最终 checkpoint 为
+`wide_balance_ckpts/iter_004.json`。完整配方、宽度消融见
+`docs/research/rl-wide.md`；**未 promotion**。
 
 ### RL-Pattern（2026-10-29）
 

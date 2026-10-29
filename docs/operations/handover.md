@@ -4,16 +4,17 @@
 >
 > - 主权重未替换：`weights/rl_policy_weights.json`，sha256
 >   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-> - **RL-Pattern（`rl-pattern`）是 Protocol v4 dev 第一（top 3 对比）**，
->   但只注册、不 promotion：`weights/rl_policy_weights_pattern.json`，
->   sha256 `5c50db0ed1c560e2d05cbc52a4006dc0b3e7fa55cf102f0ba932c1b7433619ae`。
->   dev_param 548.45 / dev_complex 447.64 / dev_ood 519.46；
->   test_v7 provisional 485.43，仍低于 RL-Repair 486.31。
-> - **前最佳 / fallback：RL-Repair（`rl-repair`）**，只注册、不 promotion：
->   `weights/rl_policy_weights_repair.json`，sha256
->   `a759a7b6e7eb5773aaf0884f9d6c6ca22587f82e1f4fc4c0cc16e983e3c1bd2b`。
-> - 最近完整测试：**308 tests OK**（本轮全量运行）。
->   `python3 -m ipd list-policies`：**25 个注册候选**。
+> - **RL-Wide（`rl-wide`）是 Protocol v4 dev 综合最均衡（top 4 对比）**，
+>   但只注册、不 promotion：`weights/rl_policy_weights_wide.json`，
+>   sha256 `176787bdb6048d7a5cb0e5adcda9afef12fb77ed1d676b4f2c6ce67b1669d00b`。
+>   128/128；dev_param 548.24 / dev_complex 452.79 / dev_ood 520.71；
+>   complex min_norm 0.973；test_v7 provisional 485.50，仍低于
+>   RL-Repair 486.31。
+> - **前最佳 / fallback：RL-Pattern（`rl-pattern`）与 RL-Repair
+>   （`rl-repair`）**：RL-Pattern 64/32、dev_param 548.45；RL-Repair
+>   仍是 test_v7 provisional 第一。两者均未 promotion。
+> - 最近完整测试：**312 tests OK**（本轮全量运行）。
+>   `python3 -m ipd list-policies`：**26 个注册候选**。
 > - **PSRO 已引入**：`ipd/training/psro.py`（blue-vs-red maximin +
 >   PPO best-response oracle）；`psro`（meta-policy）和 `psro-br`
 >   （最后一轮 best response）为实验候选，**未 promotion**。
@@ -23,11 +24,11 @@
 > - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
-> - **v4 top 3 dev 已运行**；全候选 baseline 尚未运行；v3 的
+> - **v4 top 4 dev 已运行**；全候选 baseline 尚未运行；v3 的
 >   RL-Repair 484.32 / A60 476.54 / Adv-RL 471.44 只作 legacy。
 >   test 消费已永久锁定（provisional only）。
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
-> - 最近提交：`git log -1`（RL-Pattern 评估与候选注册）。
+> - 最近提交：`git log -1`（RL-Wide 128/128 与 net2wider 工具）。
 
 > **2026-10-28 更新**
 >
@@ -107,7 +108,8 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 
 | 场景 | 建议 | 依据 |
 |---|---|---|
-| 现在提交，允许新候选 | **RL-Pattern** | v4 dev 4/5 tier 第一；test_v7 provisional 485.43 仅比 RL-Repair 低 0.88 |
+| 现在提交，允许新候选 | **RL-Wide** | v4 dev_complex 452.79、complex min_norm 0.973；dev_param 548.24；test 485.50 |
+| 需要 64/32 部署 / 更小模型 | **RL-Pattern** | dev_param 548.45；test 485.43 |
 | 保守提交，保留 proven fallback | **RL-Repair** | v4 dev_param 547.96；test_v7 provisional 486.31 第一 |
 | 保守提交，不替换主权重 | **RL-PPO（从零 + hard）** | 当前主权重；v3 legacy dev 524.37 |
 | 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | v3 legacy test 476.54；min_norm 0.9989 |
@@ -119,12 +121,12 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 从零 anti-exploitation | **PSRO-Scratch**（`psro-scratch`） | 仅实验；dev 480.43，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Pattern（或 RL-Repair），
-再确认 C++ 导出、第 1/100 天行为、权重 checksum。RL-Pattern 的 test_v7
-provisional 仍低 0.88，必须用独立 dev 复现和外部比赛结果补足证据；test
-消费已在 policy 层永久关闭，provisional test 不能当作独立 final。得到确认
-后才把 `weights/rl_policy_weights.json` 替换为 RL-Pattern 或 RL-Repair。
-当前文档不假设已经替换。
+`dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Wide（或 RL-Pattern /
+RL-Repair），再确认 C++ 导出、第 1/100 天行为、权重 checksum。RL-Wide
+的 test_v7 provisional 仍低 0.81，必须用独立 dev 复现和外部比赛结果补足
+证据；test 消费已在 policy 层永久关闭，provisional test 不能当作独立
+final。得到确认后才把 `weights/rl_policy_weights.json` 替换为 RL-Wide 或
+RL-Repair。当前文档不假设已经替换。
 
 ---
 
@@ -153,17 +155,20 @@ provisional 仍低 0.88，必须用独立 dev 复现和外部比赛结果补足�
 `test_v7` / `test_red` **永久锁定**：所有运行都是 provisional，不写 usage
 ledger，不能用于排名或 final。
 
-v4 **top 3 dev 已运行**（30 fields × 2048，sample，v5 GPU）；全候选
+v4 **top 4 dev 已运行**（30 fields × 2048，sample，v5 GPU）；全候选
 baseline 尚未运行。test_v7 为 provisional，不参与选模：
 
 | 候选 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 provisional |
 |---|---:|---:|---:|---:|---:|---:|
-| **RL-Pattern** | **548.45** | **583.07** | **447.64** | 582.22 | **519.46** | 485.43 |
-| RL-Repair | 547.96 | 582.76 | 434.28 | **582.46** | 515.19 | **486.31** |
+| **RL-Wide** | 548.24 | **583.08** | **452.79** | **582.30** | **520.71** | 485.50 |
+| RL-Pattern | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 485.43 |
+| RL-Repair | 547.96 | 582.76 | 434.28 | 582.46 | 515.19 | **486.31** |
 | RL-PPO | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 477.26 |
 
-- RL-Pattern 相对 RL-Repair：4/5 dev tier 提升，dev_complex +13.36、
-  dev_ood +4.27、dev_axelrod -0.24；test_v7 低 0.88。
+- RL-Wide 相对 RL-Pattern：dev_param -0.21、dev_complex +5.15、
+  dev_ood +1.25；complex min_norm 0.845 → 0.973；test_v7 +0.07。
+- RL-Wide 相对 RL-Repair：dev_complex +18.51、dev_ood +5.52、
+  test_v7 -0.81。
 - 下面是 legacy v3 baseline（20/40 fields × 299），仅用于历史对照；
   不能与上表混用：
 
@@ -248,8 +253,10 @@ family 最小归一化分数，raw `min_family` 不可跨 family 比较。`E4 re
 | `weights/rl_policy_checkpoint_hard60.json` | A60 checkpoint |
 | `weights/rl_policy_weights_repair.json` | E1c RL-Repair 部署权重 |
 | `weights/rl_policy_checkpoint_repair.json` | E1c checkpoint |
-| `weights/rl_policy_weights_pattern.json` | RL-Pattern 部署权重（iter6 导出） |
+| `weights/rl_policy_weights_pattern.json` | RL-Pattern 64/32 部署权重（iter6 导出） |
 | `weights/rl_policy_checkpoint_pattern.json` | RL-Pattern actor-critic checkpoint |
+| `weights/rl_policy_weights_wide.json` | RL-Wide 128/128 部署权重（balance iter4 导出） |
+| `weights/rl_policy_checkpoint_wide.json` | RL-Wide actor-critic checkpoint |
 | `weights/rl_policy_weights_bc.json` | BC 初始化 + hard（Adv-RL base） |
 | `weights/rl_policy_weights_scratch_base.json` | 纯从零 base |
 | `weights/rl_policy_weights_stage1.json` | run3（wide + KL） |
@@ -367,7 +374,7 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 224 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
   opponent；每个 entry 带 `thinking_level` / `complexity` 0–4；
 - 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
-- **top 3 dev 已运行**（2026-10-29）；全候选 baseline 尚未运行；
+- **top 4 dev 已运行**（2026-10-29）；全候选 baseline 尚未运行；
   test 消费永久锁定；
 - Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；
 - 文档：`docs/reference/protocol-v4.md`，ADR 0007 / 0008。
@@ -390,6 +397,25 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   `docs/research/rl-pattern.md`、`results/rl_v4_20261028/`。
 - 附带修复：`protocol eval` 在全部候选走 GPU 且无 CPU task 时
   `budget` 变量覆盖导致 `TypeError`；已改用 `gpu_budget`。
+
+### RL-Wide（2026-10-29；实验候选，未 promotion）
+
+- 架构：64/32 → net2wider 128/64 → 128/128；扩展工具
+  `ipd/training/expand.py`（`python -m ipd train expand`），带 4 个测试。
+- 训练：128/64 gentle（legacy + `train_v4`，8 iter）→ expand 128/128 →
+  128/128 gentle（8 iter）→ 128/128 balance（4 iter，PB 权重 1/11，
+  lr 3e-5，KL 0.1）；最终取 `wide_balance_ckpts/iter_004.json`。
+- dev（30×2048，sample）：dev_param **548.24**、dev_family **583.08**、
+  dev_complex **452.79**、dev_axelrod **582.30**、dev_ood **520.71**；
+  相对 RL-Pattern：dev_param -0.21、complex +5.15、ood +1.25。
+- `min_norm`：dev_param 0.9968、complex **0.9726**、ood **0.9596**、
+  axelrod 1.0072、family 1.0；RL-Pattern 为 0.9970 / 0.8448 / 0.8424。
+- test_v7 provisional（50×2048）：485.50 vs RL-Repair 486.31
+  （-0.81）、RL-Pattern 485.43（+0.07）。
+- 代价：`extort` / `temporal` / `probe_exploit` 小幅回退；test-only
+  `hyper_extort` / `axelrod_extra` 仍未恢复。
+- 判定：注册 `rl-wide`，**不 promotion**；主权重不变。报告
+  `docs/research/rl-wide.md`、`results/rl_v4_20261029/`。
 
 ### Protocol v3 baseline（legacy）
 
@@ -669,6 +695,14 @@ python3 -m ipd train rl --device cuda --iterations 8 \
   --checkpoint-out results/rl_v4_20261028/pb_v4_ac.json \
   --history-out results/rl_v4_20261028/pb_v4_history.json
 
+# RL-Wide（完整命令见 docs/research/rl-wide.md）
+# 1) expand 64/32 -> 128/64；2) 128/64 gentle 8 iter；
+# 3) expand -> 128/128；4) 128/128 gentle 8 iter；
+# 5) 128/128 balance 4 iter（PB 1/11）；最终取 iter_004
+python3 -m ipd train expand \
+  --input weights/rl_policy_checkpoint_pattern.json --hidden 128 64 \
+  --out results/rl_v4_20261029/wide_ac.json
+
 # PSRO（完整 blue-vs-red + 2 轮 PPO oracle；实验）
 python3 -m ipd train psro --config configs/psro/psro_20261027.json \
   --workers 20
@@ -773,11 +807,13 @@ mine/theirs = 到此日之前的动作
     dev_red / Red-v5/v6 上 red_win 0.0，但 dev_param 只有 480.43、
     min_norm 0.5501；它不能替代 RL-Repair，也不能只用 red 结果证明
     promotion。Scratch-Base（528.99）是更保守的 from-scratch 选择。
-16. **RL-Pattern 仍有过拟合迹象**：它在 v4 dev 上修好了
-    `pattern_breaker`，但 test_v7 provisional 比 RL-Repair 低 0.88，
-    test-only 的 `hyper_extort` / `axelrod_extra` 有回退。不要把
-    dev 第一当成 promotion 证据；先用独立 seed 复现，并检查 red /
-    外部比赛。
+16. **RL-Pattern / RL-Wide 仍有过拟合迹象**：RL-Pattern 的 test_v7
+    provisional 比 RL-Repair 低 0.88；RL-Wide 低 0.81，test-only 的
+    `hyper_extort` / `axelrod_extra` 仍有回退。不要把 dev 第一当成
+    promotion 证据；先用独立 seed 复现，并检查 red / 外部比赛。
+17. **RL-Wide 是 128/128，部署文件更大**：权重约 890KB，C++ 导出
+    已通过，但比 64/32 的约 249KB 更大；如果比赛有文件大小限制，
+    优先用 RL-Pattern 或 RL-Repair。
 
 ---
 
@@ -786,7 +822,7 @@ mine/theirs = 到此日之前的动作
 - [ ] 确认比赛接口：`act` / `move` 签名、历史格式、是否允许 `reset()`。
 - [ ] 确认是否允许每天运行三个子策略（Triple）。
 - [ ] 确认是否允许提交权重文件；单文件限制下决定是否内嵌。
-- [ ] 确定提交版本：RL-Pattern / RL-Repair / A60 / RL-PPO / Adv-RL / SelfPlay / 规则。
+- [ ] 确定提交版本：RL-Wide / RL-Pattern / RL-Repair / A60 / RL-PPO / Adv-RL / SelfPlay / 规则。
 - [ ] 若提交 RL-Repair，先做独立 seed 复现，再决定是否替换主权重。
 - [ ] 运行 `python3 -m ipd test` 和
       `python3 -m ipd self-test --candidates all`。

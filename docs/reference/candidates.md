@@ -11,8 +11,9 @@ python3 -m ipd list-policies
 ## 1. 当前候选
 
 > 新候选比较使用 Protocol v4（977 configs + Axelrod，2048/30/50）。
-> top 3（RL-PPO / RL-Repair / RL-Pattern）的 v4 dev 已运行；全候选
-> v4 baseline 尚未运行。未特别注明时，状态仍参考 legacy v3 baseline。
+> top 4（RL-PPO / RL-Repair / RL-Pattern / RL-Wide）的 v4 dev 已运行；
+> 全候选 v4 baseline 尚未运行。未特别注明时，状态仍参考 legacy v3
+> baseline。
 
 | 注册名 | 显示名 | 类型 | 权重 / 配置 | 状态 |
 |---|---|---|---|---|
@@ -32,7 +33,8 @@ python3 -m ipd list-policies
 | `rl` | RL-PPO | RL | `weights/rl_policy_weights.json` | **当前主权重** |
 | `rl-hard60` | RL-PPO-Hard60 | RL | `weights/rl_policy_weights_hard60.json` | A60；v3 test 第二（legacy） |
 | `rl-repair` | RL-Repair | RL | `weights/rl_policy_weights_repair.json` | v3 test 第一（legacy）；**v4 dev 次席；未 promotion** |
-| `rl-pattern` | RL-Pattern | RL | `weights/rl_policy_weights_pattern.json` | **v4 dev 第一（top 3）；test_v7 provisional -0.88；未 promotion** |
+| `rl-pattern` | RL-Pattern | RL | `weights/rl_policy_weights_pattern.json` | v4 dev 前列；pattern_breaker 修复版；未 promotion |
+| `rl-wide` | RL-Wide | RL 128/128 | `weights/rl_policy_weights_wide.json` | **v4 dev 综合最均衡（top 4）；complex min_norm 0.973；未 promotion** |
 | `adv-mlp` | Adv-MLP | MLP + 规则 | base 权重 + `configs/adversarial_policy_config*.json` | 只有 Python |
 | `adv-gru` | Adv-GRU | GRU + 规则 | base 权重 + `configs/adversarial_gru_policy_config*.json` | 只有 Python |
 | `adv-rl` | Adv-RL | RL + 规则 | `rl_policy_weights_bc.json` + `configs/adversarial_rl_policy_config*.json` | v3 dev 高；test 第三；red 弱（legacy） |
@@ -50,8 +52,8 @@ python3 -m ipd list-policies
 | `base` / `legacy` | Final/Resp3/Bayes（base+tuned）+ `hybrid` |
 | `classic` | `base` + `harvest45`, `harvest-tuned`, `gap-start` |
 | `suite` | `base` + `harvest45`, `triple-majority` |
-| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
-| `all` | 全部 25 个注册候选 |
+| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
+| `all` | 全部 26 个注册候选 |
 
 ## 3. 常用别名
 
@@ -63,6 +65,7 @@ python3 -m ipd list-policies
 | `rl-hard`, `hard60`, `rl-ppo-hard60` | `rl-hard60` |
 | `repair`, `rl-robust-repair` | `rl-repair` |
 | `pattern`, `rl-pb` | `rl-pattern` |
+| `wide-rl`, `rl-128` | `rl-wide` |
 | `adv`, `adversarial`, `advmlp` | `adv-mlp` |
 | `advgru` / `advrl` | `adv-gru` / `adv-rl` |
 | `self-play`, `selfplay-gru`, `sp` | `selfplay` |

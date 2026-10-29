@@ -27,8 +27,8 @@ from .policies import BatchGRU, BatchMLP, BatchSelfPlayGRU
 from .policy_opponents import _policy_kind, build_batch_policy, unwrap_policy
 
 _PLAIN_KINDS = frozenset({"neural", "gru", "rl", "rl-hard60", "rl-repair",
-                          "rl-pattern", "psro-br", "psro-scratch-br",
-                          "selfplay"})
+                          "rl-pattern", "rl-wide", "psro-br",
+                          "psro-scratch-br", "selfplay"})
 _ADV_KINDS = frozenset({"adv-mlp", "adv-gru", "adv-rl"})
 
 

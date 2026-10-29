@@ -27,6 +27,7 @@ MODULES = {
     "rl-hard60": "rl_hard60",
     "rl-repair": "rl_repair",
     "rl-pattern": "rl_pattern",
+    "rl-wide": "rl_wide",
     "psro": "psro",
     "psro-br": "psro_br",
     "psro-scratch": "psro_scratch",

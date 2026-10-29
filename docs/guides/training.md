@@ -122,6 +122,9 @@ python3 -m ipd train rl --device auto --iterations 40 \
 - `train_v4`：标准 + complex + policy + Axelrod 的完整混合；
 - `train_easy` / `train_hard`：课程分段；
 - `train_complex`：complex families；
+- `train_pattern_breaker`：只含 `pattern_breaker` 的 `train_complex` 参数点；
+- `train_weak_complex`：`pattern_breaker` / `adaptive_mix` /
+  `probe_exploit` / `conditional_extort` / `lookahead`；
 - `train_policy`：policy opponents only；
 - `train_axelrod`：Axelrod 策略 + 组合。
 
@@ -135,6 +138,21 @@ python3 -m ipd train rl --device auto --iterations 40 \
 
 PPO 的 MDP、网络、损失、验证指标见 [../policies/rl.md](../policies/rl.md)；
 E1 的 Gate 和结果见 [../research/e1-robust-finetune.md](../research/e1-robust-finetune.md)。
+
+### 3.5 宽度扩展（net2wider）
+
+`train expand` 把已有 MLP 的隐藏层加宽，避免从零重训：
+
+```bash
+python3 -m ipd train expand \
+  --input weights/rl_policy_checkpoint_pattern.json \
+  --hidden 128 64 \
+  --out /tmp/wide_ac.json \
+  --weights-out /tmp/wide_weights.json
+```
+
+扩展后再用 `--hidden 128 64` / `--hidden 128 128` 继续 PPO。详细配方、
+消融和结果见 [../research/rl-wide.md](../research/rl-wide.md)。
 
 ## 4. PSRO
 

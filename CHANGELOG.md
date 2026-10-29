@@ -7,6 +7,20 @@
 
 ### Added
 
+- **RL-Wide（`rl-wide`）**：用新增的 `python -m ipd train expand`
+  （net2wider）把 RL-Pattern 的 64/32 trunk 扩到 128/64、128/128，
+  再做 128/64 gentle → 128/128 gentle → 128/128 balance（PB 1/11）
+  的小步 PPO fine-tune。全量 dev（30×2048，sample）：dev_param 548.24、
+  dev_family 583.08、dev_complex **452.79**、dev_axelrod 582.30、
+  dev_ood **520.71**；complex min_norm **0.973**、ood min_norm
+  **0.960**（RL-Pattern 0.845/0.842）。`test_v7` provisional 485.50
+  vs RL-Repair 486.31（未消费、`selection_eligible=false`）。注册为
+  实验候选，**未 promotion**；权重
+  `weights/rl_policy_weights_wide.json`，报告
+  `docs/research/rl-wide.md`、`results/rl_v4_20261029/`。
+- **`train expand`**：`ipd/training/expand.py`，支持
+  `ipd-rl-policy-v1` / `ipd-neural-policy-v1` 的 net2wider 扩展；
+  `tests/test_expand.py` 覆盖形状、函数近似与确定性。
 - **RL-Pattern（`rl-pattern`）**：从 RL-Repair + entropy v4 fine-tune
   出发，混入 `train_v4` 与新的 `train_pattern_breaker` profile，
   修复 Protocol v4 `pattern_breaker` 漏洞。全量 dev（30×2048，sample）：
@@ -108,11 +122,11 @@
 
 ### Changed
 
-- 注册候选从 20 增至 25（新增 `rl-pattern`；此前 24 含 4 个 PSRO）；
-  完整测试 **308 OK**。
-- Protocol v4 top 3（RL-PPO / RL-Repair / RL-Pattern）的 dev 已运行；
-  RL-Pattern 在 4/5 tier 上超过 RL-Repair，但 test_v7 provisional
-  仍低 0.88，暂不 promotion。
+- 注册候选从 20 增至 26（新增 `rl-pattern` / `rl-wide`；此前 24 含
+  4 个 PSRO）；完整测试 **312 OK**。
+- Protocol v4 top 4（RL-PPO / RL-Repair / RL-Pattern / RL-Wide）的 dev
+  已运行；RL-Wide 综合最均衡，但 test_v7 provisional 仍低 0.81，
+  暂不 promotion。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为

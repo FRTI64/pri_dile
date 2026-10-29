@@ -9,18 +9,18 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > **当前状态（2026-10-29）**
 >
 > - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
-> - **Protocol v4 dev 第一（top 3 对比）**：`rl-pattern`（RL-Pattern），
->   dev_param 548.45 / dev_complex 447.64 / dev_ood 519.46；但
->   **未 promotion**，`test_v7` provisional 485.43 仍略低于 RL-Repair
->   486.31；
-> - 前最佳候选 / fallback：`rl-repair`（RL-Repair）；A60 仍为
->   `rl-hard60`；
+> - **Protocol v4 dev 综合最均衡（top 4 对比）**：`rl-wide`（RL-Wide，
+>   128/128），dev_param 548.24 / dev_complex 452.79 / dev_ood 520.71，
+>   complex min_norm 0.973；但 **未 promotion**，`test_v7` provisional
+>   485.50 仍略低于 RL-Repair 486.31；
+> - 前最佳候选 / fallback：`rl-pattern`（RL-Pattern）、`rl-repair`
+>   （RL-Repair）；A60 仍为 `rl-hard60`；
 > - **Protocol v4**：977 configs；14 个 complex 风格 + 224 个 Axelrod 策略 +
 >   15 个 AxelrodMix；
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
-> - v4 全候选 baseline **尚未运行**；top 3 的 dev 已运行，v3 的
+> - v4 全候选 baseline **尚未运行**；top 4 的 dev 已运行，v3 的
 >   299/20/40 结果只作 legacy；
-> - **308 tests OK**（本轮全量运行）；注册候选 25 个；
+> - **312 tests OK**（本轮全量运行）；注册候选 26 个；
 > - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
 >   meta-policy 在 held-out Red-v5/v6 上 red-minus-blue -21.4%，但
 >   dev_param 527.71 vs RL-Repair 543.35；`psro-br` 未进入 maximin support；
@@ -87,14 +87,16 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 
 | 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | 状态 |
 |---|---|---:|---:|---:|---:|---:|---|
-| **RL-Pattern** | `rl-pattern` | **548.45** | **583.07** | **447.64** | 582.22 | **519.46** | v4 dev 第一；未 promotion |
-| RL-Repair | `rl-repair` | 547.96 | 582.76 | 434.28 | **582.46** | 515.19 | 前最佳 / fallback |
+| **RL-Wide** | `rl-wide` | 548.24 | **583.08** | **452.79** | **582.30** | **520.71** | v4 dev 综合最均衡；未 promotion |
+| RL-Pattern | `rl-pattern` | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 前最佳 / 64/32 |
+| RL-Repair | `rl-repair` | 547.96 | 582.76 | 434.28 | **582.46** | 515.19 | proven fallback |
 | RL-PPO | `rl` | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 当前主权重；baseline |
 
-- `test_v7` 永久 locked；top 3 provisional：RL-Repair **486.31**、
-  RL-Pattern 485.43、RL-PPO 477.26（`--no-consume`，不参与选模）。
-- RL-Pattern 在 `pattern_breaker` 上 236.8 → 420.3，代价是
-  `extort` / `axelrod` 小幅回退。
+- `test_v7` 永久 locked；top 4 provisional：RL-Repair **486.31**、
+  RL-Wide 485.50、RL-Pattern 485.43、RL-PPO 477.26
+  （`--no-consume`，不参与选模）。
+- RL-Wide 把 64/32 扩到 128/128，`pattern_breaker` 420.3 → 483.8，
+  complex `min_norm` 0.845 → 0.973；代价是 dev_param -0.21。
 - 全候选 v4 baseline 尚未运行；完整报告见
   [docs/research/rl-pattern.md](docs/research/rl-pattern.md) 和
   [results/rl_v4_20261028/](results/rl_v4_20261028/)。
@@ -138,7 +140,8 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | 阶段 | 结论 |
 |---|---|
 | Protocol v4 split | **启用**；977 configs + 新风格/Axelrod/complex/policy；test 消费永久锁定 |
-| Protocol v4 baseline | **top 3 dev 已运行**；全候选 baseline 未运行；v3 baseline 仅作 legacy |
+| Protocol v4 baseline | **top 4 dev 已运行**；全候选 baseline 未运行；v3 baseline 仅作 legacy |
+| **RL-Wide** | **128/128；dev_complex 452.79、complex min_norm 0.973**；test provisional -0.81；未 promotion |
 | **RL-Pattern** | **v4 dev 4/5 tier 超 RL-Repair**（pattern_breaker 236.8→420.3）；test provisional -0.88；未 promotion |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

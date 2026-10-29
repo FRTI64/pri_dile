@@ -283,8 +283,8 @@ python3 -m ipd protocol eval --candidates all --tiers test_v7 \
 - 224 个 Axelrod 策略里包含 evolved/meta 等较慢策略；完整 test_v7 会比 v3
   慢，正式 final 前建议用 `--fields 1 --n 256 --no-consume` 做 pipeline
   烟测。
-- v4 的 top 3 dev 已运行（RL-PPO / RL-Repair / RL-Pattern）；全候选
-  baseline 尚未运行；`results/protocol_v3/` 的
+- v4 的 top 4 dev 已运行（RL-PPO / RL-Repair / RL-Pattern / RL-Wide）；
+  全候选 baseline 尚未运行；`results/protocol_v3/` 的
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
   只在定向分析时使用。

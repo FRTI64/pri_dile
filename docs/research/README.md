@@ -24,6 +24,7 @@
 | Plan 5 | [plan5-gpu-sample.md](plan5-gpu-sample.md) | **opt-in**；`--sample-rng per-match`，GPU sample + CPU parity；默认 v4 不变 |
 | Plan 6 | [plan6-python-bottleneck.md](plan6-python-bottleneck.md) | **实现完成**；policy 对手 GPU sample、Axelrod 增量、严格同序 native CPU 推理；24/24 逐位一致，272.77s |
 | RL-Pattern | [rl-pattern.md](rl-pattern.md) | **实验候选**；`train_v4` + `train_pattern_breaker`；v4 dev 4/5 tier 超 RL-Repair，test_v7 provisional -0.88；未 promotion |
+| RL-Wide | [rl-wide.md](rl-wide.md) | **实验候选**；net2wider 64/32→128/128；dev_param 548.24、dev_complex 452.79、complex min_norm 0.973；test_v7 provisional 485.50；未 promotion |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |
