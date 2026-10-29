@@ -7,6 +7,16 @@
 
 ### Added
 
+- **RL-Wide160 全量对手扫描**：158 类 bank（16 reps）、977 个 Protocol
+  config（8 reps）、224 个 Axelrod fast（8 reps），并与 RL-Repair /
+  RL-Pattern / RL-Wide / Triple-majority 对照。主要薄弱点：
+  extortion/ZD（`hyper_extort` 176、`extort` 402、ZDExtort2/3/4）、
+  periodic/Kamikaze（`frequent_kamikaze` 169）、Gap/FSM
+  （`Gap0.55` 192 vs best ref 538）、PatternBreaker 尾部、
+  noisy/Joss（`Joss p=.52` 276）。Axelrod 完整 243 的 long-run
+  Meta 超时，使用 224 fast。报告
+  `docs/research/weak-opponents-20261036.md`、
+  `results/full_test_20261036/`。
 - **输入特征 v2（85→97）**：新增 12 个周期/响应特征和版本化
   `feature_version` 契约；Python `extract_features_v2`、GPU
   `features97` / `FeatureState97`、C++ `extract_features_v2` 三端

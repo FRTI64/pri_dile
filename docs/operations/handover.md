@@ -468,6 +468,26 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   payoff-differential 特征实验。报告 `docs/research/feature-v2.md`、
   `results/rl_v4_20261035/`。
 
+### RL-Wide160 全量对手扫描（2026-10-29；诊断）
+
+- 覆盖 158 类 bank（16 reps）、977 Protocol configs（8 reps）、224
+  Axelrod fast（8 reps），参考候选 RL-Repair / RL-Pattern / RL-Wide /
+  Triple-majority。
+- 总体：158 bank 547.35；protocol 507.66；Axelrod fast 575.39。
+- 薄弱点优先级：
+  1. extortion/ZD：`hyper_extort` 176、`extort` 402；
+     ZDExtort2/3/4 diff -100～-364；
+  2. periodic/Kamikaze：`frequent_kamikaze` 169、temporal Kamikaze
+     198–208；
+  3. Gap/FSM：`Gap0.55` 192 vs best ref 538、`FSM.F5` 569 vs 933；
+  4. PatternBreaker 尾部：test threshold=.6 window=6 288；
+  5. noisy/Joss：`Joss p=.52` 276；
+  6. late defector 347：安全规则的结构性限制。
+- 完整 243 Axelrod 的 19 个 long-run Meta 超时，使用 224 fast。
+- 报告 `docs/research/weak-opponents-20261036.md`、
+  `results/full_test_20261036/`；下一步优先做 extortion-aware 与
+  periodic/Kamikaze 训练 profile。
+
 ### Protocol v3 baseline（legacy）
 
 - 532 configs；20 candidates dev；test_v6：

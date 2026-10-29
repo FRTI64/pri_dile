@@ -121,15 +121,22 @@ legacy，不能与新表混用。
    - `test_v7` 只做 provisional 诊断，不能当作独立 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
-2. **E3 multi-teacher distillation + gating（研究首选）**
+2. **按全量扫描结果做定向训练（研究首选）**
+   - 新增 `train_extort_hard`（ExtortZD chi 1.5–7、ConditionalExtort、
+     DelayedExtort、ProbeExploit extort）；
+   - 新增 `train_periodic`（Kamikaze / Periodic / DynamicWindow）；
+   - 加入 Gap0.45/0.55/0.64、FSM.F1/F5、ProbeBot、Harvest21 到
+     hard mining；
+   - 参考 `docs/research/weak-opponents-20261036.md`。
+3. **E3 multi-teacher distillation + gating（研究备选）**
    - 教师：RL-Repair / A60 / Adv-RL / SelfPlay / 规则策略；
    - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune；
    - 报告 per-family、min_norm、CVaR、held-out red，而不只看官方均值。
-3. **P3 / PSRO anti-exploitation（仅在有新 held-out red 时）**
+4. **P3 / PSRO anti-exploitation（仅在有新 held-out red 时）**
    - 之前的 red pool / PSRO-lite / 完整 PSRO 都未过 Gate D；不要复读相同实验。
    - 若继续 PSRO，只做更强 blue oracle（更多迭代/规则初始化）或加入 red
      oracle（double oracle）；不要重复当前 2 轮配置。
-4. **E9 容量/特征 ablation（可选，低优先级）**
+5. **E9 容量/特征 ablation（可选，低优先级）**
    - 85→128→64 vs 85→64→32，同 init/seed/data；
    - 或一次只加一组新特征（response gap / phase / first-D timing）；
    - 预期收益小；先看 heldout_v2 +3 或 min_norm +0.02。
