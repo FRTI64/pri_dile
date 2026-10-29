@@ -7,6 +7,14 @@
 
 ### Added
 
+- **PSRO v4（`psro-v4` / `psro-v4-br`）**：更强 blue oracle
+  （3 轮 × 30 iter、40% red、`bc_kl=0.02`，blue 加入 RL-Switch /
+  RL-Wide160 / RL-Pattern）。第 1 轮 BR_01 进入 maximin support
+  （权重 1.0），exploitability 290.00 → **0.00**；`psro-v4-br`
+  在 dev_red / held-out Red-v5/v6 上 **red_win 0.0**，但 dev_param
+  486.93 vs RL-Repair 546.47（-59.5）、min_norm 0.56。**No-Go
+  for promotion**；anti-exploitation specialist。报告
+  `docs/research/psro.md`、`results/psro_v4_20261029/`。
 - **Periodic-hard 训练分布**：`ipd/evaluation/periodic.py` 采样
   Kamikaze period 4–12、7 种短周期 Periodic、DynamicWindow 和
   RandomFSM，并保留 TFT/Grim/AllC/AllD anchors；注册为

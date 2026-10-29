@@ -23,9 +23,9 @@
 
 ## 当前状态
 
-- 最近提交：`git log -1`（RL-Switch 窄 meta 与全量验证）。
-- 最近完整测试：**327 tests OK**；`python3 -m ipd list-policies` 为
-  **29 个注册候选**。
+- 最近提交：`git log -1`（PSRO v4 更强 oracle 与 anti-exploitation specialist）。
+- 最近完整测试：**329 tests OK**；`python3 -m ipd list-policies` 为
+  **31 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Switch（`rl-switch`）是 v4 dev/test 最佳（top 6）**，但未
@@ -45,6 +45,10 @@
 - **PSRO 已引入：** `psro`（meta-policy）/ `psro-br` 为实验候选；
   PSRO-Meta 在 held-out Red-v5/v6 上 red diff -21.4%，但 dev_param
   527.71 vs 543.35，未 promotion。详见 `docs/research/psro.md`。
+- **PSRO v4：** `psro-v4` / `psro-v4-br`；3 轮 × 30 iter、40% red、
+  低 KL；BR_01 入 support，exploitability 0；dev_param 486.93、
+  min_norm 0.56，但 dev_red / Red-v5/v6 red_win 0.0；未 promotion。
+  详见 `docs/research/psro.md` §8。
 - **从零 PSRO：** `psro-scratch` / `psro-scratch-br`；blue 只有
   random/scratch base/BR，已有模型只做 red；dev 480.43，但
   dev_red / Red-v5/v6 red_win 0.0；未 promotion。详见
@@ -96,6 +100,11 @@ legacy，不能与新表混用。
   red_win 0.0；Scratch-Base 528.99 但 red_win 1.0。下一步不要重复
   同一 fine-tune；应做约束/多目标 oracle（official family floor +
   red objective）或在新 held-out red 上复核。
+- **PSRO v4：No-Go for promotion；learned BR 首次入 support。**
+  BR_01 权重 1.0，exploitability 290.00 → 0.00；`psro-v4-br`
+  dev_param 486.93（-59.5 vs RL-Repair）、min_norm 0.56，但
+  dev_red / Red-v5/v6 red_win 0.0。下一步同样应做约束/多目标 oracle
+  或 red oracle；不要重复同一 3 轮 blue-only 配置。
 - **P2 C1/C2/C3：offline No-Go。** 包括 belief planner、binary gate、
   excitation/counterfactual、three-way MoE、repeated calibration / EV probe。
   不要继续扫 C3 threshold 或 planner horizon。
@@ -137,9 +146,12 @@ legacy，不能与新表混用。
    - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune；
    - 报告 per-family、min_norm、CVaR、held-out red，而不只看官方均值。
 4. **P3 / PSRO anti-exploitation（仅在有新 held-out red 时）**
-   - 之前的 red pool / PSRO-lite / 完整 PSRO 都未过 Gate D；不要复读相同实验。
-   - 若继续 PSRO，只做更强 blue oracle（更多迭代/规则初始化）或加入 red
-     oracle（double oracle）；不要重复当前 2 轮配置。
+   - 之前的 red pool / PSRO-lite / 完整 PSRO / PSRO v4 都未过 Gate D；
+     不要复读相同实验。
+   - v4 已证明更强 blue oracle 能让 learned BR 入 support 并做到
+     red_win 0.0，但 official 仍掉约 59.5；下一步应做约束/多目标
+     oracle（official family floor + red objective）或 red oracle
+     （double oracle），不要重复当前 3 轮 blue-only 配置。
 5. **E9 容量/特征 ablation（可选，低优先级）**
    - 85→128→64 vs 85→64→32，同 init/seed/data；
    - 或一次只加一组新特征（response gap / phase / first-D timing）；

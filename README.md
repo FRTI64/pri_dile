@@ -20,16 +20,23 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 全候选 baseline **尚未运行**；top 5 的 dev 已运行，v3 的
 >   299/20/40 结果只作 legacy；
-> - **327 tests OK**（本轮全量运行）；注册候选 29 个；
+> - **329 tests OK**（本轮全量运行）；注册候选 31 个；
 > - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
 >   meta-policy 在 held-out Red-v5/v6 上 red-minus-blue -21.4%，但
 >   dev_param 527.71 vs RL-Repair 543.35；`psro-br` 未进入 maximin support；
 >   两者均为实验候选，**未 promotion**；
+> - **PSRO v4 已训练**：`psro-v4` / `psro-v4-br`；3 轮 × 30 iter、
+>   40% red、低 KL；BR_01 进入 maximin support（权重 1.0），
+>   exploitability 290.00 → **0.00**；`psro-v4-br` 在 dev_red /
+>   Red-v5/v6 上 **red_win 0.0**，但 dev_param 486.93 vs RL-Repair
+>   546.47（-59.5）、min_norm 0.56；**anti-exploitation specialist，
+>   未 promotion**；
 > - **从零 PSRO 已加入**：`psro-scratch` / `psro-scratch-br`；blue 只含
 >   random init + 从零 scratch base + 从零 BR，现有模型/规则只做 red；
 >   **dev_param 480.43、min_norm 0.55**，但 dev_red / held-out Red-v5/v6
 >   **red_win 0.0**（首次翻转 red 结果）；**未 promotion**；
-> - anti-exploitation **未解决**：Red-v5 / Red-v6 仍 100% 击败 top 3。
+> - anti-exploitation **仍未解决**：Red-v5 / Red-v6 对 top 3 仍 100%；
+>   `psro-v4-br` 是当前最强的 specialist，但不能替代主权重。
 >
 > 完整结论、权重、风险和 promotion 条件见
 > **[docs/operations/handover.md](docs/operations/handover.md)**。
@@ -66,6 +73,10 @@ python3 -m ipd protocol eval --candidates all \
 
 # PSRO（reference population；实验）
 python3 -m ipd train psro --config configs/psro/psro_20261027.json \
+  --workers 20
+
+# PSRO v4（当前头部 blue + 更强 oracle；实验）
+python3 -m ipd train psro --config configs/psro/psro_v4_20261029.json \
   --workers 20
 
 # 从零 PSRO（blue 只有 random/scratch/BR；现有模型只做 red）
@@ -159,6 +170,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | P3 red pool | red pool Go；league-lite / expansion Gate D **FAIL** |
 | **PSRO** | **实现 + 实验候选**；reference meta-policy red diff -21.4%，dev -15.6；oracle 未进 support；未 promotion |
 | **PSRO from scratch** | blue=random/scratch/BR，现有模型只做 red；dev 480.43 / min_norm 0.55，但 dev_red + Red-v5/v6 **red_win 0.0**；未 promotion |
+| **PSRO v4** | 3 轮 × 30 iter 更强 oracle；BR_01 入 support，exploitability 0；dev_param 486.93 / min_norm 0.56，dev_red + Red-v5/v6 **red_win 0.0**；未 promotion |
 | P2 C1 / C2 / C3 | 全部 offline No-Go |
 | SelfPlay 改进 | No-Go；保留 21 维部署备选 |
 | Axelrod | **已接入 Protocol v4**：224 策略 + 15 组合；可选依赖 |

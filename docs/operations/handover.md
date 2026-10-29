@@ -12,8 +12,8 @@
 > - **前最佳 / fallback：RL-Wide160（`rl-wide160`）、RL-Wide
 >   （`rl-wide`）、RL-Pattern（`rl-pattern`）与 RL-Repair
 >   （`rl-repair`）**；均未 promotion。
-> - 最近完整测试：**327 tests OK**（本轮全量运行）。
->   `python3 -m ipd list-policies`：**29 个注册候选**。
+> - 最近完整测试：**329 tests OK**（本轮全量运行）。
+>   `python3 -m ipd list-policies`：**31 个注册候选**。
 > - `rl-gate` 是学习型上层 gate 实验：阈值 0.9 基本退化为
 >   RL-Wide160（test 485.84），阈值 0.5 会过度切换；**No-Go**，
 >   仅保留为实验候选。
@@ -23,6 +23,12 @@
 > - **从零 PSRO 已加入**：`psro-scratch` / `psro-scratch-br`；blue 只有
 >   random/scratch base/从零 BR，现有模型只做 red；dev 480.43，但
 >   dev_red / held-out Red-v5/v6 **red_win 0.0**；**未 promotion**。
+> - **PSRO v4 已训练**：`psro-v4` / `psro-v4-br`；3 轮 × 30 iter、
+>   40% red、低 KL；BR_01 进入 blue maximin support（权重 1.0），
+>   exploitability 290.00 → **0.00**；`psro-v4-br` 在 dev_red /
+>   Red-v5/v6 上 **red_win 0.0**，但 dev_param 486.93 vs RL-Repair
+>   546.47（-59.5）、min_norm 0.56；**anti-exploitation specialist，
+>   未 promotion**。
 > - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
@@ -30,7 +36,7 @@
 >   RL-Repair 484.32 / A60 476.54 / Adv-RL 471.44 只作 legacy。
 >   test 消费已永久锁定（provisional only）。
 > - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
-> - 最近提交：`git log -1`（RL-Switch 窄 meta 与全量验证）。
+> - 最近提交：`git log -1`（PSRO v4 更强 oracle 与 anti-exploitation specialist）。
 
 > **2026-10-28 更新**
 >
@@ -124,6 +130,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | v3 legacy dev 523.39 / 517.07 |
 | anti-exploitation 研究 | **PSRO-Meta**（`psro`） | 仅实验；dev 527.71，held-out red diff -21.4%；未 promotion |
 | 从零 anti-exploitation | **PSRO-Scratch**（`psro-scratch`） | 仅实验；dev 480.43，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
+| 最强 anti-exploitation specialist | **PSRO-V4-BR**（`psro-v4-br`） | 仅实验；dev_param 486.93，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
 `dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch，再完成 C++ 双权重
@@ -651,6 +658,25 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   （528.99，red_win 1.0）是更保守的从零模型。
 - 细节：`docs/research/psro-scratch.md`、`results/psro_scratch_20261027/`。
 
+### PSRO v4 — stronger oracle（实验；No-Go for promotion）
+
+- 配置：`configs/psro/psro_v4_20261029.json`；结果
+  `results/psro_v4_20261029/`；3 轮 × 30 iter、40% red、低 KL
+  （`bc_kl=0.02`），blue 加入 RL-Switch / RL-Wide160 / RL-Pattern。
+- 初始 exploitability **290.00**；第 1 轮 BR_01 对 Red-v1/v3/v4
+  score difference **+33.1 / -265.9 / -203.8**，直接进入 blue
+  maximin support（权重 1.0），exploitability **0.00**；BR_02/03
+  未进入 support。
+- 部署 support 内 BR_01（不是最后一轮 BR_03）：`psro-v4-br`。
+- 诊断：dev_param（10×1024）**486.93 vs RL-Repair 546.47**，
+  min_norm 0.5599，worst family `noisy` 260.0；dev_complex（3×512）
+  436.43 vs 434.28；dev_ood 477.72 vs 515.19；dev_axelrod 498.11
+  vs 582.46；dev_red 与 held-out Red-v5/v6 **red_win 0.0**
+  （Red-v5/v6 blue 530.55 vs RL-Repair 348.35）。
+- **No-Go for promotion**：official 掉约 59.5，仍是 anti-exploitation
+  specialist；register `psro-v4` / `psro-v4-br` 为实验候选。
+- 细节：`docs/research/psro.md` §8、`results/psro_v4_20261029/`。
+
 ### P2 C1 / C2 / C3（offline No-Go）
 
 - **C1 belief planner：** fair-RNG 后激进版 validation -12.11 /
@@ -844,6 +870,11 @@ python3 -m ipd train psro --config configs/psro/psro_20261027.json \
   --workers 20
 bash results/psro_20261027/run_eval.sh
 
+# PSRO v4（3 轮 × 30 iter、40% red、低 KL；实验）
+python3 -m ipd train psro --config configs/psro/psro_v4_20261029.json \
+  --workers 20
+bash results/psro_v4_20261029/run_eval.sh
+
 # heldout_v3 已一次性使用；以下只用于复现历史结论
 python3 -m ipd league --config configs/eval/e1c_final_league.json \
   --workers 20 --out results/robust_20261026/e1c_final_v3.json \
@@ -943,14 +974,18 @@ mine/theirs = 到此日之前的动作
     dev_red / Red-v5/v6 上 red_win 0.0，但 dev_param 只有 480.43、
     min_norm 0.5501；它不能替代 RL-Repair，也不能只用 red 结果证明
     promotion。Scratch-Base（528.99）是更保守的 from-scratch 选择。
-16. **RL-Pattern / RL-Wide / RL-Wide160 仍有过拟合迹象**：test_v7
+16. **PSRO v4 仍是 specialist**：`psro-v4-br` 在 dev_red / Red-v5/v6
+    上 red_win 0.0、exploitability 0.00，但 dev_param 486.93
+    （-59.5 vs RL-Repair）、min_norm 0.5599；不能替代主权重，也不能
+    用 in-population exploitability 单独证明 anti-exploitation 解决。
+17. **RL-Pattern / RL-Wide / RL-Wide160 仍有过拟合迹象**：test_v7
     provisional 分别比 RL-Repair 低 0.88 / 0.81 / 0.69，test-only 的
     `hyper_extort` / `axelrod_extra` 仍有回退。不要把 dev 第一当成
     promotion 证据；先用独立 seed 复现，并检查 red / 外部比赛。
-17. **RL-Wide / RL-Wide160 部署文件更大**：128/128 权重约 890KB，
+18. **RL-Wide / RL-Wide160 部署文件更大**：128/128 权重约 890KB，
     160/128 约 1.1MB，C++ 导出已通过，但比 64/32 的约 249KB 更大；
     如果比赛有文件大小限制，优先用 RL-Pattern 或 RL-Repair。
-18. **RL-Switch 只有 Python 版**：它组合两份权重和早期开关逻辑；
+19. **RL-Switch 只有 Python 版**：它组合两份权重和早期开关逻辑；
     C++ 需要同时嵌入 160/128 与 64/32 两个 MLP，并复刻开关条件。
     未完成移植前不能作为 C++ 提交；test 增益也不能替代 red 证据。
 19. **RL-Gate 不是提交候选**：学习型 gate 阈值 0.5 过度切换、

@@ -193,6 +193,10 @@ v2 在 RL-Wide160 上是 No-Go（dev_complex +2～4，但 dev_param/test
 python3 -m ipd train psro --config configs/psro/psro_20261027.json \
   --workers 20
 
+# 更强 oracle（当前头部 blue；3 轮 × 30 iter、40% red、低 KL）
+python3 -m ipd train psro --config configs/psro/psro_v4_20261029.json \
+  --workers 20
+
 # 只评估初始元博弈，不训练 oracle
 python3 -m ipd train psro --config configs/psro/psro_20261027.json \
   --dry-run --out /tmp/psro_dry
