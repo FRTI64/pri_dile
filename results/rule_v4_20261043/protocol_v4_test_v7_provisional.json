@@ -1,0 +1,648 @@
+{
+  "schema": "ipd-protocol-eval-v1",
+  "protocol": "protocol_v4",
+  "protocol_version": "4",
+  "catalog_sha256": "beb594ab4a2840675a37079fe5f7b2ce8eac1f98de46aae3c090a5e4fad5fe47",
+  "created": "2026-10-29T18:51:25",
+  "seconds": 66.63,
+  "tiers": [
+    "test_v7"
+  ],
+  "fields": 50,
+  "n": 2048,
+  "rounds": 100,
+  "seed": 20261027,
+  "baseline": "Triple-majority",
+  "workers": 20,
+  "worker_budget": {
+    "requested": "20",
+    "resolved": 20,
+    "cpu_count": 24,
+    "cpu_limit": 22,
+    "ram_available_gb": 24.01,
+    "ram_limit": 22,
+    "max_workers": 20,
+    "ram_per_worker_gb": 1.0,
+    "parent_reserve_gb": 2.0
+  },
+  "candidate_chunk": 6,
+  "field_reuse": "auto",
+  "mode": "sample",
+  "sample_rng": "v4",
+  "gpu_sample": false,
+  "opponent_mode": "sample",
+  "gpu": {
+    "enabled": false,
+    "requested": "auto",
+    "reason": "sample mode stays on CPU",
+    "device": null,
+    "dtype": null,
+    "max_batch": null,
+    "min_batch": 2048,
+    "workers": 0,
+    "field_batch": 1,
+    "mode": "sample",
+    "sample_rng": "v4",
+    "candidates": [],
+    "cpu_candidates": [
+      "Triple-majority",
+      "Triple-v4"
+    ]
+  },
+  "fast_rules": {
+    "available": true,
+    "requested": "auto",
+    "reason": "native C++ rules available",
+    "auto_threshold": 0.9
+  },
+  "field_tasks": 50,
+  "peak_rss_mb": 19244.46,
+  "peak_pss_mb": 13402.27,
+  "peak_anon_mb": 13127.33,
+  "memory": {
+    "samples": 62,
+    "processes_peak": 23,
+    "peak_rss_mb": 19631.14,
+    "peak_pss_mb": 13402.27,
+    "peak_anon_mb": 13127.33
+  },
+  "workers_rss_mb": 19244.46,
+  "workers_peak_rss_mb": {
+    "202651": 958.08,
+    "202654": 950.64,
+    "202655": 977.41,
+    "202656": 969.07,
+    "202657": 966.4,
+    "202658": 974.18,
+    "202659": 970.39,
+    "202660": 970.59,
+    "202661": 942.48,
+    "202662": 969.89,
+    "202663": 954.3,
+    "202664": 949.35,
+    "202665": 966.0,
+    "202666": 966.16,
+    "202667": 947.04,
+    "202668": 966.7,
+    "202669": 966.39,
+    "202670": 974.39,
+    "202671": 941.27,
+    "202672": 963.73
+  },
+  "profile": {
+    "schema": "ipd-protocol-profile-v1",
+    "workers": 20,
+    "workers_requested": "20",
+    "candidate_chunk": 6,
+    "field_reuse": "auto",
+    "field_tasks": 50,
+    "field_tasks_reused": 50,
+    "field_build_seconds": 153.489182,
+    "wall_seconds": 66.63032,
+    "peak_rss_mb": 19244.46,
+    "by_candidate": {
+      "Triple-majority": {
+        "fields": 50,
+        "eval_seconds": 483.949736,
+        "candidate_build_seconds": 0.02344,
+        "field_build_seconds_shared": 76.744591,
+        "family_seconds": {
+          "AxelrodMix": 23.212673,
+          "adaptive": 8.457892,
+          "adaptive_mix": 8.888732,
+          "adaptive_probe": 22.289589,
+          "anchor": 33.530004,
+          "axelrod": 18.776365,
+          "axelrod_extra": 20.911192,
+          "conditional_extort": 8.178575,
+          "contrition_cycle": 0.764709,
+          "defect": 15.869845,
+          "delayed_extort": 5.942945,
+          "early_harvest": 22.972539,
+          "early_probe": 24.356761,
+          "endgame_hunter": 6.305739,
+          "extort": 12.12577,
+          "forgiving": 2.23414,
+          "frequent_kamikaze": 23.826388,
+          "hyper_extort": 24.690185,
+          "late": 17.008879,
+          "lookahead": 6.739469,
+          "memory_two": 0.801369,
+          "meta_mix": 5.166101,
+          "nice": 2.32735,
+          "noise_adaptive": 0.920333,
+          "noisy": 20.2334,
+          "pattern_breaker": 7.448895,
+          "phase_switch": 6.950308,
+          "policy": 46.713654,
+          "portfolio": 3.14633,
+          "probe_exploit": 7.349115,
+          "probe_harvest": 22.683816,
+          "punitive": 2.298289,
+          "random": 15.878656,
+          "reputation_grim": 0.873174,
+          "temporal": 18.329074,
+          "wild": 15.495342
+        }
+      },
+      "Triple-v4": {
+        "fields": 50,
+        "eval_seconds": 499.824485,
+        "candidate_build_seconds": 0.026818,
+        "field_build_seconds_shared": 76.744591,
+        "family_seconds": {
+          "AxelrodMix": 23.924867,
+          "adaptive": 9.102441,
+          "adaptive_mix": 8.816636,
+          "adaptive_probe": 22.95107,
+          "anchor": 35.517131,
+          "axelrod": 19.974525,
+          "axelrod_extra": 21.971148,
+          "conditional_extort": 8.099906,
+          "contrition_cycle": 1.006408,
+          "defect": 16.273457,
+          "delayed_extort": 6.025748,
+          "early_harvest": 23.275457,
+          "early_probe": 25.076916,
+          "endgame_hunter": 6.375838,
+          "extort": 12.394397,
+          "forgiving": 2.877011,
+          "frequent_kamikaze": 23.804972,
+          "hyper_extort": 24.938574,
+          "late": 17.171959,
+          "lookahead": 6.850027,
+          "memory_two": 1.029909,
+          "meta_mix": 5.332994,
+          "nice": 3.023258,
+          "noise_adaptive": 1.175685,
+          "noisy": 20.48665,
+          "pattern_breaker": 7.460039,
+          "phase_switch": 7.117683,
+          "policy": 48.838409,
+          "portfolio": 3.35155,
+          "probe_exploit": 7.332669,
+          "probe_harvest": 22.986898,
+          "punitive": 2.947484,
+          "random": 16.294292,
+          "reputation_grim": 1.112089,
+          "temporal": 18.976164,
+          "wild": 15.688613
+        }
+      }
+    },
+    "by_tier": {
+      "test_v7": {
+        "fields": 50,
+        "candidate_fields": 100,
+        "tasks": 50,
+        "eval_seconds": 983.774221,
+        "candidate_build_seconds": 0.050258,
+        "field_build_seconds": 153.489182,
+        "peak_rss_mb": 977.41
+      }
+    },
+    "by_family": {
+      "AxelrodMix": {
+        "seconds": 47.137539,
+        "matches": 9324,
+        "seconds_per_match": 0.005056
+      },
+      "adaptive": {
+        "seconds": 17.560333,
+        "matches": 6040,
+        "seconds_per_match": 0.002907
+      },
+      "adaptive_mix": {
+        "seconds": 17.705368,
+        "matches": 2452,
+        "seconds_per_match": 0.007221
+      },
+      "adaptive_probe": {
+        "seconds": 45.240659,
+        "matches": 6750,
+        "seconds_per_match": 0.006702
+      },
+      "anchor": {
+        "seconds": 69.047135,
+        "matches": 20414,
+        "seconds_per_match": 0.003382
+      },
+      "axelrod": {
+        "seconds": 38.750889,
+        "matches": 11616,
+        "seconds_per_match": 0.003336
+      },
+      "axelrod_extra": {
+        "seconds": 42.88234,
+        "matches": 9628,
+        "seconds_per_match": 0.004454
+      },
+      "conditional_extort": {
+        "seconds": 16.278481,
+        "matches": 2244,
+        "seconds_per_match": 0.007254
+      },
+      "contrition_cycle": {
+        "seconds": 1.771116,
+        "matches": 2048,
+        "seconds_per_match": 0.000865
+      },
+      "defect": {
+        "seconds": 32.143301,
+        "matches": 4472,
+        "seconds_per_match": 0.007188
+      },
+      "delayed_extort": {
+        "seconds": 11.968693,
+        "matches": 2020,
+        "seconds_per_match": 0.005925
+      },
+      "early_harvest": {
+        "seconds": 46.247996,
+        "matches": 6728,
+        "seconds_per_match": 0.006874
+      },
+      "early_probe": {
+        "seconds": 49.433677,
+        "matches": 6946,
+        "seconds_per_match": 0.007117
+      },
+      "endgame_hunter": {
+        "seconds": 12.681578,
+        "matches": 2288,
+        "seconds_per_match": 0.005543
+      },
+      "extort": {
+        "seconds": 24.520167,
+        "matches": 5360,
+        "seconds_per_match": 0.004575
+      },
+      "forgiving": {
+        "seconds": 5.11115,
+        "matches": 6016,
+        "seconds_per_match": 0.00085
+      },
+      "frequent_kamikaze": {
+        "seconds": 47.63136,
+        "matches": 6928,
+        "seconds_per_match": 0.006875
+      },
+      "hyper_extort": {
+        "seconds": 49.628759,
+        "matches": 7006,
+        "seconds_per_match": 0.007084
+      },
+      "late": {
+        "seconds": 34.180838,
+        "matches": 6146,
+        "seconds_per_match": 0.005561
+      },
+      "lookahead": {
+        "seconds": 13.589496,
+        "matches": 2112,
+        "seconds_per_match": 0.006434
+      },
+      "memory_two": {
+        "seconds": 1.831278,
+        "matches": 2144,
+        "seconds_per_match": 0.000854
+      },
+      "meta_mix": {
+        "seconds": 10.499095,
+        "matches": 2142,
+        "seconds_per_match": 0.004902
+      },
+      "nice": {
+        "seconds": 5.350608,
+        "matches": 6178,
+        "seconds_per_match": 0.000866
+      },
+      "noise_adaptive": {
+        "seconds": 2.096019,
+        "matches": 2292,
+        "seconds_per_match": 0.000914
+      },
+      "noisy": {
+        "seconds": 40.72005,
+        "matches": 5850,
+        "seconds_per_match": 0.006961
+      },
+      "pattern_breaker": {
+        "seconds": 14.908934,
+        "matches": 2062,
+        "seconds_per_match": 0.00723
+      },
+      "phase_switch": {
+        "seconds": 14.067991,
+        "matches": 2432,
+        "seconds_per_match": 0.005785
+      },
+      "policy": {
+        "seconds": 95.552063,
+        "matches": 20452,
+        "seconds_per_match": 0.004672
+      },
+      "portfolio": {
+        "seconds": 6.497879,
+        "matches": 2036,
+        "seconds_per_match": 0.003191
+      },
+      "probe_exploit": {
+        "seconds": 14.681783,
+        "matches": 2086,
+        "seconds_per_match": 0.007038
+      },
+      "probe_harvest": {
+        "seconds": 45.670714,
+        "matches": 6928,
+        "seconds_per_match": 0.006592
+      },
+      "punitive": {
+        "seconds": 5.245773,
+        "matches": 6040,
+        "seconds_per_match": 0.000869
+      },
+      "random": {
+        "seconds": 32.172949,
+        "matches": 4472,
+        "seconds_per_match": 0.007194
+      },
+      "reputation_grim": {
+        "seconds": 1.985263,
+        "matches": 2120,
+        "seconds_per_match": 0.000936
+      },
+      "temporal": {
+        "seconds": 37.305238,
+        "matches": 6658,
+        "seconds_per_match": 0.005603
+      },
+      "wild": {
+        "seconds": 31.183956,
+        "matches": 4370,
+        "seconds_per_match": 0.007136
+      }
+    }
+  },
+  "usage_consumed": false,
+  "selection_eligible": false,
+  "no_consume": true,
+  "test_consumption_locked": true,
+  "candidates": [
+    {
+      "kind": "triple-majority",
+      "name": "Triple-majority",
+      "params": {}
+    },
+    {
+      "kind": "triple-v4",
+      "name": "Triple-v4",
+      "params": {}
+    }
+  ],
+  "results": {
+    "Triple-majority": {
+      "test_v7": {
+        "fields": 50,
+        "mean": 471.544619140625,
+        "min": 463.5771484375,
+        "p05": 465.32666015625,
+        "max": 479.92724609375,
+        "std": 3.514005712814442,
+        "worst_family": 131.72592152199763,
+        "min_norm": null,
+        "families": {
+          "AxelrodMix": 431.96889746889747,
+          "adaptive": 594.4645695364238,
+          "adaptive_mix": 262.69820554649266,
+          "adaptive_probe": 611.9629629629629,
+          "anchor": 488.9076124228471,
+          "axelrod": 538.4617768595041,
+          "axelrod_extra": 569.6275446614043,
+          "conditional_extort": 355.22727272727275,
+          "contrition_cycle": 595.0,
+          "defect": 559.7584973166369,
+          "delayed_extort": 425.77623762376237,
+          "early_harvest": 131.72592152199763,
+          "early_probe": 555.8658220558594,
+          "endgame_hunter": 320.86975524475525,
+          "extort": 393.72910447761194,
+          "forgiving": 598.6083776595744,
+          "frequent_kamikaze": 265.72603926096997,
+          "hyper_extort": 134.1458749643163,
+          "late": 325.1861373250895,
+          "lookahead": 659.155303030303,
+          "memory_two": 595.0,
+          "meta_mix": 492.80578898225957,
+          "nice": 599.3907413402395,
+          "noise_adaptive": 595.0,
+          "noisy": 400.6553846153846,
+          "pattern_breaker": 444.54801163918523,
+          "phase_switch": 382.8404605263158,
+          "policy": 594.934774105222,
+          "portfolio": 564.0029469548134,
+          "probe_exploit": 190.00862895493768,
+          "probe_harvest": 343.63077367205545,
+          "punitive": 600.9364238410596,
+          "random": 377.6185152057245,
+          "reputation_grim": 595.0,
+          "temporal": 503.0660859116852,
+          "wild": 481.5107551487414
+        },
+        "family_norm": {},
+        "values": [
+          473.6171875,
+          473.3935546875,
+          471.63427734375,
+          466.64697265625,
+          479.92724609375,
+          469.67431640625,
+          474.12353515625,
+          474.80810546875,
+          465.24755859375,
+          467.60498046875,
+          476.5625,
+          473.34423828125,
+          474.33447265625,
+          468.0615234375,
+          473.732421875,
+          476.62060546875,
+          471.5634765625,
+          472.3154296875,
+          468.01904296875,
+          472.89794921875,
+          471.45751953125,
+          475.935546875,
+          467.55712890625,
+          475.04931640625,
+          471.0068359375,
+          469.0361328125,
+          473.6044921875,
+          469.05224609375,
+          468.63720703125,
+          473.7373046875,
+          474.025390625,
+          471.158203125,
+          472.39990234375,
+          475.4345703125,
+          474.34716796875,
+          469.52294921875,
+          474.15478515625,
+          473.65478515625,
+          463.5771484375,
+          464.8232421875,
+          473.28662109375,
+          474.3583984375,
+          469.369140625,
+          473.25439453125,
+          475.37548828125,
+          468.5244140625,
+          465.42333984375,
+          469.97705078125,
+          468.60888671875,
+          466.751953125
+        ]
+      }
+    },
+    "Triple-v4": {
+      "test_v7": {
+        "fields": 50,
+        "mean": 473.6801953125,
+        "min": 465.5732421875,
+        "p05": 467.74458007812495,
+        "max": 480.88916015625,
+        "std": 3.6091658427882627,
+        "worst_family": 130.9024970273484,
+        "min_norm": 0.9671175072927962,
+        "families": {
+          "AxelrodMix": 437.1145431145431,
+          "adaptive": 594.4629139072848,
+          "adaptive_mix": 261.85481239804244,
+          "adaptive_probe": 611.8213333333333,
+          "anchor": 488.8794944645831,
+          "axelrod": 538.8954889807162,
+          "axelrod_extra": 572.2149979227254,
+          "conditional_extort": 356.1470588235294,
+          "contrition_cycle": 595.0,
+          "defect": 591.505366726297,
+          "delayed_extort": 426.15445544554456,
+          "early_harvest": 130.9024970273484,
+          "early_probe": 565.9265764468759,
+          "endgame_hunter": 320.8776223776224,
+          "extort": 402.54701492537316,
+          "forgiving": 598.6083776595744,
+          "frequent_kamikaze": 262.5825635103926,
+          "hyper_extort": 137.9080787896089,
+          "late": 324.4751057598438,
+          "lookahead": 678.7964015151515,
+          "memory_two": 595.0,
+          "meta_mix": 497.5499533146592,
+          "nice": 599.3907413402395,
+          "noise_adaptive": 595.0,
+          "noisy": 404.4051282051282,
+          "pattern_breaker": 429.9301648884578,
+          "phase_switch": 383.38157894736844,
+          "policy": 594.9361431644827,
+          "portfolio": 564.4282907662083,
+          "probe_exploit": 191.88974113135188,
+          "probe_harvest": 342.45814087759817,
+          "punitive": 600.9364238410596,
+          "random": 377.77862254025047,
+          "reputation_grim": 595.0,
+          "temporal": 509.2198858516071,
+          "wild": 486.8370709382151
+        },
+        "family_norm": {
+          "AxelrodMix": 1.011912074401181,
+          "adaptive": 0.9999972149237754,
+          "adaptive_mix": 0.9967894978700151,
+          "adaptive_probe": 0.9997685650305634,
+          "anchor": 0.999942488197055,
+          "axelrod": 1.0008054650113545,
+          "axelrod_extra": 1.0045423598025955,
+          "conditional_extort": 1.002589289074555,
+          "contrition_cycle": 1.0,
+          "defect": 1.0567152969751203,
+          "delayed_extort": 1.0008883018552022,
+          "early_harvest": 0.993748956278801,
+          "early_probe": 1.0180992498401986,
+          "endgame_hunter": 1.0000245181502418,
+          "extort": 1.0223958817051653,
+          "forgiving": 1.0,
+          "frequent_kamikaze": 0.9881702381922378,
+          "hyper_extort": 1.0280456169546277,
+          "late": 0.9978134628643938,
+          "lookahead": 1.0297973761184251,
+          "memory_two": 1.0,
+          "meta_mix": 1.0096268437556248,
+          "nice": 1.0,
+          "noise_adaptive": 1.0,
+          "noisy": 1.0093590245725594,
+          "pattern_breaker": 0.9671175072927962,
+          "phase_switch": 1.00141343059798,
+          "policy": 1.0000023011921984,
+          "portfolio": 1.0007541517534464,
+          "probe_exploit": 1.0099001407818184,
+          "probe_harvest": 0.9965875210129568,
+          "punitive": 1.0,
+          "random": 1.0004239922781295,
+          "reputation_grim": 1.0,
+          "temporal": 1.0122325875511358,
+          "wild": 1.0110616756376052
+        },
+        "values": [
+          476.30126953125,
+          478.3671875,
+          474.09326171875,
+          469.255859375,
+          480.88916015625,
+          472.408203125,
+          477.78662109375,
+          478.12109375,
+          466.61279296875,
+          468.78271484375,
+          477.6796875,
+          475.58251953125,
+          476.59521484375,
+          469.33642578125,
+          477.20751953125,
+          478.32373046875,
+          475.47265625,
+          472.6025390625,
+          468.9111328125,
+          475.01513671875,
+          473.35302734375,
+          477.17529296875,
+          470.1181640625,
+          477.74560546875,
+          472.97900390625,
+          469.83935546875,
+          475.439453125,
+          471.36181640625,
+          471.2255859375,
+          475.61376953125,
+          475.236328125,
+          472.79150390625,
+          475.34716796875,
+          477.9599609375,
+          475.30859375,
+          469.81298828125,
+          475.6015625,
+          475.09716796875,
+          467.52001953125,
+          465.5732421875,
+          473.814453125,
+          476.59814453125,
+          470.9833984375,
+          474.8603515625,
+          478.5283203125,
+          471.6962890625,
+          468.72509765625,
+          473.74951171875,
+          472.5908203125,
+          468.01904296875
+        ]
+      }
+    }
+  }
+}

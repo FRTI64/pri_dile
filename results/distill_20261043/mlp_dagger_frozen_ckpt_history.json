@@ -1,0 +1,167 @@
+{
+  "student": "mlp",
+  "out": "results/distill_20261043/mlp_dagger_frozen_ckpt.json",
+  "rounds": 2,
+  "bc_fields": 6,
+  "dagger_fields": 4,
+  "val_fields": 2,
+  "n": 48,
+  "explore": 0.05,
+  "hidden": 64,
+  "layers": 1,
+  "lr": 0.001,
+  "epochs": 10,
+  "seed": 20261043,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.14101292204585916,
+      "round": "bc"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.1381581539429177,
+      "round": "bc"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.1373533753279163,
+      "round": "bc"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.13687172317053886,
+      "round": "bc"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.13662549731422444,
+      "round": "bc"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.13646721451779323,
+      "round": "bc"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.1363474650471456,
+      "round": "bc"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.13624816152501437,
+      "round": "bc"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.13615921388316118,
+      "round": "bc"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.13607857294669243,
+      "round": "bc"
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.13501476650974054,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.13312016057038012,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.13272319397205593,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.1325616126796501,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.1324370897247618,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.13232815971677364,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.13222981064759062,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.13214082357189677,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.1320589113967894,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.13198558569538607,
+      "round": "dagger-1"
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.13410730784395702,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.13278793029574737,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.1325693368523993,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.13241589802338918,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.13229142651911804,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.1321803071706895,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.13208451157738377,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.13200283239725794,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.13193264234668675,
+      "round": "dagger-2"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.13186788133756983,
+      "round": "dagger-2"
+    }
+  ]
+}

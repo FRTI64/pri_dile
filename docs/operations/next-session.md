@@ -23,16 +23,23 @@
 
 ## 当前状态
 
-- 最近提交：`git log -1`（RL-Switch C++ 与 promotion 诊断）。
-- 最近完整测试：**330 tests OK**；`python3 -m ipd list-policies` 为
-  **31 个注册候选**。
+- 最近提交：`git log -1`（GRU-DAgger 单模型蒸馏 + C++）。
+- 最近完整测试：**334 tests OK**；`python3 -m ipd list-policies` 为
+  **33 个注册候选（all 集合）**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-- **RL-Switch（`rl-switch`）是 v4 dev/test 最佳（top 6）**，但未
+- **RL-Switch（`rl-switch`）是 v4 dev/test 最佳（top 7）**，但未
   promotion；Python + C++ 双权重实现：默认 RL-Wide160，早期
   mutual-D 后切换 RL-Repair；test_v7 488.26/487.51。
+- **GRU-DAgger（`rl-dagger-gru`）是单模型替代**：1 层 GRU（64
+  hidden）+ 2 轮 DAgger；dev_param 548.58 / dev_complex 455.13，
+  两个 seed 与 RL-Switch 持平；test provisional 487.89/487.02；
+  Python + C++；未 promotion。详见 `docs/research/dagger-gru.md`。
 - **前最佳 / fallback：RL-Wide160 / RL-Wide / RL-Pattern /
   RL-Repair**，均未 promotion。
+- **最佳纯规则：Triple-v4（`triple-v4`）**：dev_param 538.66 /
+  dev_complex 447.08 / dev_ood 514.41；独立 seed 20261029 复现；
+  test_v7 provisional 473.68；无权重、无 probe；未 promotion。
 - RL-Switch 独立 seed 20261029 已复现 test +2.90；Protocol catalog
   suite +0.75；158 bank 持平；level/complexity 高档 tier 小幅提升；
   blue-red 已停用。C++ 双权重已完成 action parity，待接真实接口。
@@ -48,11 +55,12 @@
   `psro-scratch-br` / `psro-v4` / `psro-v4-br` 仍注册为历史实验
   候选；dev 与红队数字只用于复现，不参与当前推荐。
 
-### 头部候选（Protocol v4 dev top 6；30×2048 sample）
+### 头部候选（Protocol v4 dev top 7；30×2048 sample）
 
 | 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 prov. |
 |---|---|---|---:|---:|---:|---:|---:|---:|
 | **RL-Switch** | `rl-switch` | meta（wide160 + repair） | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | **488.26** |
+| **GRU-DAgger** | `rl-dagger-gru` | `weights/rl_dagger_gru_weights.json` | **548.58** | 582.90 | **455.13** | 582.49 | **521.54** | 487.89 |
 | RL-Wide160 | `rl-wide160` | `weights/rl_policy_weights_wide160.json` | 548.26 | **583.08** | **454.31** | 582.38 | 521.37 | 485.62 |
 | RL-Wide | `rl-wide` | `weights/rl_policy_weights_wide.json` | 548.24 | **583.08** | 452.79 | 582.30 | 520.71 | 485.50 |
 | RL-Pattern | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 485.43 |
@@ -61,6 +69,12 @@
 
 `rl-gate` 是学习型上层 gate 实验（阈值 0.9 近中性，test 485.84）；
 **No-Go**，不进入提交推荐，详见 `docs/research/rl-gate.md`。
+
+纯规则头部是 **Triple-v4**（`triple-v4`）：536.87 → 538.66
+（dev_param）、441.17 → 447.08（dev_complex）、511.62 → 514.41
+（dev_ood），dev_family 不变；独立 seed 复现。它仍低于
+RL-Repair / RL-PPO，只作纯规则 fallback。报告
+`docs/research/triple-v4.md`、`results/rule_v4_20261043/`。
 
 下表是 legacy v3 baseline（299 人 / 20 / 40 fields），只作历史对照：
 
@@ -121,7 +135,9 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
      `dev_axelrod` / `dev_ood`；补跑 `dev_level0..4` /
      `dev_complexity0..4` 分级诊断；
    - RL-Switch 已用两个 seed 复现 test +2.64/+2.90；C++ 双权重 +
-     开关逻辑已完成 action parity；接下来跑 test_red 和真实接口；
+     开关逻辑已完成 action parity；GRU-DAgger 两个 seed dev 持平，
+     C++ 单模型也已完成 parity；接下来接真实比赛接口（不再跑
+     test_red，blue-red 已停用）；
    - RL-Wide160 的 test_v7 provisional 低 0.69，作为单模型 fallback；
    - `test_v7` 只做 provisional 诊断，不能当作独立 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
@@ -131,10 +147,16 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
      加大权重，改做显式 ZD 识别 + expert / portfolio；
    - `periodic_hard` 也已实现但 **No-Go**（test +0.77，PB -41）；
      若继续，应训练 periodic specialist + meta gate；
-   - RL-Switch 单模型蒸馏也 **No-Go**（dev_param 535.46）；若要
-     单模型，先做 DAgger 或 GRU 状态；
+   - 旧 MLP 蒸馏 **No-Go**（normalization bug；修正后仍受
+     pattern_breaker 限制）；GRU + 2 轮 DAgger 已得到单模型
+     `rl-dagger-gru`，dev 与 RL-Switch 持平；下一步是外部比赛/
+     独立 seed 验证，而不是继续调 dev；
    - 加入 Gap0.45/0.55/0.64、FSM.F1/F5、ProbeBot、Harvest21 到
      hard mining；
+   - **规则线已完成一轮**：`triple-v4` 在 Final 加入噪声互惠分支，
+     dev_param +1.79 / dev_complex +5.91 / dev_ood +2.79，独立 seed
+     复现；若继续，做显式 ZD / probe-style 响应，不要扫同一组
+     Triple 参数，也不要加入全局主动 probe；
    - 参考 `docs/research/weak-opponents-20261036.md` 和
      `docs/research/extort-hard.md`。
 3. **E3 multi-teacher distillation + gating（研究备选）**

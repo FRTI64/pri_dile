@@ -6,9 +6,11 @@
   [../reference/protocol-v4.md](../reference/protocol-v4.md)。旧 heldout / v2
   流程仅作历史记录。
 - **Repo:** `/home/frti64/pri_dile`
-- **Current best candidate (Protocol v4 dev/test top 6):**
+- **Current best candidate (Protocol v4 dev/test top 7):**
   `RL-Switch` / `rl-switch`（窄 meta；test 488.26/487.51；
-  Python + C++；未 promotion）
+  Python + C++；未 promotion）；单模型替代 `GRU-DAgger` /
+  `rl-dagger-gru`（dev 持平，complex +0.89，test provisional
+  487.89/487.02；Python + C++；未 promotion）
 - **Prior best / fallbacks:** `RL-Wide160` / `rl-wide160`、
   `RL-Wide` / `rl-wide`、`RL-Pattern` / `rl-pattern`、
   `RL-Repair` / `rl-repair`（未 promotion）；`RL-PPO`（主权重，`rl`）、

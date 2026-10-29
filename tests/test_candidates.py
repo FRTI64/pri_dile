@@ -12,8 +12,8 @@ try:
 except ImportError:  # direct execution
     from helpers import ROOT  # noqa: F401
 
-from ipd.core.opponents import LateDefector, ProbeBot
-from ipd.core.simulator import AllD, Grim, RandomMoves, TFT
+from ipd.core.opponents import Joss, LateDefector, ProbeBot
+from ipd.core.simulator import AllD, C, D, Grim, RandomMoves, TFT
 from ipd.policies.registry import make_policy
 from ipd.policies.rules import (
     GapStartPolicy, Hybrid, ParamBayesPrior, ParamHarvest, ParamPolicy,
@@ -151,6 +151,30 @@ class CandidateEquivalenceTests(unittest.TestCase):
                                 mode="sample"),
                     opp_factory())
                 self.assertEqual(actual, expected, f"{name} vs {opp_kind}")
+
+
+class TripleV4Tests(unittest.TestCase):
+    def test_clean_opponents_match_triple_majority(self):
+        for factory in (lambda: TFT(), lambda: Grim(), lambda: AllD()):
+            expected = _actions(make_policy("triple-majority"), factory())
+            actual = _actions(make_policy("triple-v4"), factory())
+            self.assertEqual(actual, expected)
+
+    def test_noisy_reciprocator_is_forgiven_more(self):
+        expected = _actions(
+            make_policy("triple-majority"), Joss(0.28, random.Random(7)))
+        actual = _actions(
+            make_policy("triple-v4"), Joss(0.28, random.Random(7)))
+        self.assertGreater(actual.count(C), expected.count(C))
+        self.assertEqual(actual[-1], D)
+
+    def test_reset_restores_independent_state(self):
+        policy = make_policy("triple-v4")
+        first = _actions(policy, Joss(0.28, random.Random(7)))
+        second = _actions(policy, TFT())
+        fresh = _actions(make_policy("triple-v4"), TFT())
+        self.assertEqual(second, fresh)
+        self.assertNotEqual(first, second)
 
 
 class ExploitTrackerTests(unittest.TestCase):

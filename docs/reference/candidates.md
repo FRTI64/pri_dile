@@ -11,9 +11,9 @@ python3 -m ipd list-policies
 ## 1. 当前候选
 
 > 新候选比较使用 Protocol v4（977 configs + Axelrod，2048/30/50）。
-> top 6（RL-PPO / RL-Repair / RL-Pattern / RL-Wide / RL-Wide160 /
-> RL-Switch）的 v4 dev 已运行；全候选 v4 baseline 尚未运行。未特别
-> 注明时，状态仍参考 legacy v3 baseline。
+> top 7（RL-PPO / RL-Repair / RL-Pattern / RL-Wide / RL-Wide160 /
+> RL-Switch / GRU-DAgger）的 v4 dev 已运行；全候选 v4 baseline 尚未
+> 运行。未特别注明时，状态仍参考 legacy v3 baseline。
 
 | 注册名 | 显示名 | 类型 | 权重 / 配置 | 状态 |
 |---|---|---|---|---|
@@ -27,6 +27,7 @@ python3 -m ipd list-policies
 | `harvest45` | Harvest45 | 规则 | - | late 特化 |
 | `harvest-tuned` | Harvest-tuned | 规则 | 参数内嵌 | late 特化 |
 | `triple-majority` | Triple-majority | 规则 | - | 规则中最均衡 |
+| `triple-v4` | Triple-v4 | 规则 | 参数内嵌 | 最佳纯规则；Protocol v4 校准的 Triple 变体；未 promotion |
 | `gap-start` | GapStart | 规则 | - | 搜索骨架；不用于提交 |
 | `neural` | Neural | MLP | `weights/neural_policy_weights.json` | 可部署；低于 RL 系列 |
 | `gru` | GRU | GRU | `weights/gru_policy_weights.json` | 有状态；低于 RL 系列 |
@@ -36,7 +37,8 @@ python3 -m ipd list-policies
 | `rl-pattern` | RL-Pattern | RL | `weights/rl_policy_weights_pattern.json` | v4 dev 前列；pattern_breaker 修复版；未 promotion |
 | `rl-wide` | RL-Wide | RL 128/128 | `weights/rl_policy_weights_wide.json` | v4 dev 前列；complex min_norm 0.973；未 promotion |
 | `rl-wide160` | RL-Wide160 | RL 160/128 | `weights/rl_policy_weights_wide160.json` | v4 dev_complex 454.31；complex/ood min_norm 0.997；未 promotion |
-| `rl-switch` | RL-Switch | meta（2 RL） | `weights/rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | **v4 dev/test 最佳（top 6）；Python + C++；未 promotion** |
+| `rl-switch` | RL-Switch | meta（2 RL） | `weights/rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | **v4 dev/test 最佳（top 7）；Python + C++；未 promotion** |
+| `rl-dagger-gru` | GRU-DAgger | GRU | `weights/rl_dagger_gru_weights.json` | 单模型 RL-Switch 蒸馏；v4 dev 与 RL-Switch 持平；Python + C++；未 promotion |
 | `rl-gate` | RL-Gate | meta（learned gate） | 同上 + `weights/meta_gate_wide160_repair.json` | 实验；阈值 0.9 近中性；**No-Go** |
 | `adv-mlp` | Adv-MLP | MLP + 规则 | base 权重 + `configs/adversarial_policy_config*.json` | 只有 Python |
 | `adv-gru` | Adv-GRU | GRU + 规则 | base 权重 + `configs/adversarial_gru_policy_config*.json` | 只有 Python |
@@ -53,12 +55,12 @@ python3 -m ipd list-policies
 
 | 集合 | 成员 |
 |---|---|
-| `core` | `final-tuned`, `resp3-tuned`, `bayes-tuned`, `triple-majority` |
+| `core` | `final-tuned`, `resp3-tuned`, `bayes-tuned`, `triple-majority`, `triple-v4` |
 | `base` / `legacy` | Final/Resp3/Bayes（base+tuned）+ `hybrid` |
 | `classic` | `base` + `harvest45`, `harvest-tuned`, `gap-start` |
-| `suite` | `base` + `harvest45`, `triple-majority` |
-| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `rl-wide160`, `rl-switch`, `rl-gate`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `psro-v4`, `psro-v4-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
-| `all` | 全部 31 个注册候选 |
+| `suite` | `base` + `harvest45`, `triple-majority`, `triple-v4` |
+| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `rl-wide160`, `rl-switch`, `rl-dagger-gru`, `rl-gate`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `psro-v4`, `psro-v4-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
+| `all` | 全部 33 个注册候选 |
 
 ## 3. 常用别名
 
@@ -73,6 +75,7 @@ python3 -m ipd list-policies
 | `wide-rl`, `rl-128` | `rl-wide` |
 | `wide160`, `rl-160` | `rl-wide160` |
 | `switch`, `meta-switch` | `rl-switch` |
+| `dagger-gru`, `gru-dagger`, `switch-gru` | `rl-dagger-gru` |
 | `gate`, `meta-gate` | `rl-gate` |
 | `adv`, `adversarial`, `advmlp` | `adv-mlp` |
 | `advgru` / `advrl` | `adv-gru` / `adv-rl` |
@@ -90,6 +93,7 @@ python3 -m ipd list-policies
 | `bayes` | `bayes-tuned` |
 | `harvest` | `harvest-tuned` |
 | `triple`, `triplemajority` | `triple-majority` |
+| `triplev4`, `v4-rule`, `rule-v4` | `triple-v4` |
 | `gap`, `gapstart` | `gap-start` |
 
 名称解析会忽略大小写、空格、下划线和连字符差异；未知名称直接报错。

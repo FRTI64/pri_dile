@@ -13,14 +13,22 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   RL-Wide160→RL-Repair），dev_param 548.58 / dev_complex 454.24 /
 >   dev_axelrod 582.86；`test_v7` provisional **488.26**（seed 27）和
 >   **487.51**（seed 29）；但 **未 promotion**，Python + C++ 已移植；
+> - **单模型替代**：`rl-dagger-gru`（GRU-DAgger，64 hidden，1 层），
+>   用 DAgger 蒸馏 RL-Switch；dev 两个 seed 与 RL-Switch 持平，
+>   dev_complex **455.13**；test provisional 487.89/487.02（低 0.4，
+>   噪声内）；Python + C++；未 promotion；
 > - 前最佳候选 / fallback：`rl-wide160`（160/128）、`rl-wide`（128/128）、
 >   `rl-pattern`（64/32）、`rl-repair`；A60 仍为 `rl-hard60`；
+> - **最佳纯规则**：`triple-v4`（Triple-v4），在 Triple-majority 的
+>   Final 组件加入窄噪声互惠分支；dev_param 538.66 / dev_complex
+>   447.08 / dev_ood 514.41，独立 seed 复现；无权重、无 probe；
+>   **未 promotion**；
 > - **Protocol v4**：977 configs；14 个 complex 风格 + 224 个 Axelrod 策略 +
 >   15 个 AxelrodMix；
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
-> - v4 全候选 baseline **尚未运行**；top 6 的 dev 已运行，v3 的
+> - v4 全候选 baseline **尚未运行**；top 7 的 dev 已运行，v3 的
 >   299/20/40 结果只作 legacy；
-> - **330 tests OK**（本轮全量运行）；注册候选 31 个；
+> - **334 tests OK**（本轮全量运行）；注册候选 33 个（`all` 集合）；
 > - **PSRO / red 历史存档**：以下 PSRO 结果只用于复现，不再作为
 >   当前评估或 promotion 门槛。
 > - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
@@ -102,17 +110,26 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 | 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | 状态 |
 |---|---|---:|---:|---:|---:|---:|---|
 | **RL-Switch** | `rl-switch` | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | v4 dev/test 最佳；Python + C++；未 promotion |
+| **GRU-DAgger** | `rl-dagger-gru` | **548.58** | 582.90 | **455.13** | 582.49 | **521.54** | 单模型 RL-Switch 蒸馏；Python + C++；未 promotion |
 | RL-Wide160 | `rl-wide160` | 548.26 | **583.08** | **454.31** | 582.38 | 521.37 | 160/128；未 promotion |
 | RL-Wide | `rl-wide` | 548.24 | **583.08** | 452.79 | 582.30 | 520.71 | 128/128 前最佳；未 promotion |
 | RL-Pattern | `rl-pattern` | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 64/32；未 promotion |
 | RL-Repair | `rl-repair` | 547.96 | 582.76 | 434.28 | **582.46** | 515.19 | proven fallback |
 | RL-PPO | `rl` | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 当前主权重；baseline |
+| **Triple-v4** | `triple-v4` | 538.66 | **583.07** | 447.08 | 568.38 | 514.41 | 最佳纯规则；无权重；未 promotion |
 
 - `test_v7` 永久 locked；top provisional：RL-Switch **488.26**、
-  RL-Repair 486.31、RL-Wide160 485.62、RL-Wide 485.50、RL-Pattern
-  485.43、RL-PPO 477.26（`--no-consume`，不参与选模）。
+  GRU-DAgger 487.89、RL-Repair 486.31、RL-Wide160 485.62、RL-Wide
+  485.50、RL-Pattern 485.43、RL-PPO 477.26（`--no-consume`，不参与
+  选模）。
 - RL-Wide160 把第一层扩到 160：`pattern_breaker` 420.3 → 511.6，
   complex `min_norm` 0.845 → 0.997；dev_param 与 RL-Pattern 基本持平。
+- **Triple-v4** 相对 Triple-majority：dev_param +1.79、dev_complex
+  +5.91、dev_axelrod +1.45、dev_ood +2.79、dev_family +0.01；独立
+  seed 20261029 复现；test_v7 provisional +2.14。它是纯规则候选，
+  仍低于 RL-Repair / RL-PPO 的 `dev_param`，不替代学习策略。报告
+  [docs/research/triple-v4.md](docs/research/triple-v4.md)、
+  [results/rule_v4_20261043/](results/rule_v4_20261043/)。
 - 全候选 v4 baseline 尚未运行；完整报告见
   [docs/research/rl-pattern.md](docs/research/rl-pattern.md) 和
   [results/rl_v4_20261028/](results/rl_v4_20261028/)。
@@ -156,8 +173,9 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | 阶段 | 结论 |
 |---|---|
 | Protocol v4 split | **启用**；977 configs + 新风格/Axelrod/complex/policy；test 消费永久锁定 |
-| Protocol v4 baseline | **top 6 dev 已运行**；全候选 baseline 未运行；v3 baseline 仅作 legacy |
+| Protocol v4 baseline | **top 7 dev 已运行**；全候选 baseline 未运行；v3 baseline 仅作 legacy |
 | **RL-Switch** | **窄 meta RL-Wide160→RL-Repair；test_v7 488.26/487.51；dev 基本不变**；未 promotion |
+| **GRU-DAgger** | **单模型 GRU 蒸馏 RL-Switch；dev 两 seed 持平（complex +0.89）；test provisional -0.4；未 promotion** |
 | **RL-Wide160** | **160/128；dev_complex 454.31、complex min_norm 0.997**；test provisional -0.69；未 promotion |
 | **RL-Wide** | **128/128；dev_complex 452.79、complex min_norm 0.973**；test provisional -0.81；未 promotion |
 | 输入特征 v2 | 85→97，三端 parity 通过；dev_complex +2～4 但 dev_param/test 回退；**No-Go** |
@@ -165,7 +183,9 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | Extort-hard | 新增 `extort_hard`；strong/gentle 均只小幅改善 extort，PB/complex 回退；**No-Go** |
 | RL-Gate | 学习型上层 gate；CS 版 dev 548.62/454.61，但 test 486.98；**No-Go**（实验候选） |
 | Periodic-hard | 新增 `periodic_hard`；test +0.77，但 complex/PB 回退；**No-Go** |
-| Distill-Switch | RL-Switch 蒸馏单模型；BCE 0.19 但 dev_param 535.46；**No-Go** |
+| MLP Distill | 旧蒸馏 normalization bug；修正后 dev_param 548.84，但 complex 446.59（pattern_breaker）；**No-Go** |
+| GRU-DAgger | 单模型 GRU + 2 轮 DAgger；dev 与 RL-Switch 持平，complex +0.89；**实验候选** |
+| **Triple-v4** | **最佳纯规则**；Final 噪声互惠分支；dev_param +1.79、dev_complex +5.91、dev_ood +2.79；独立 seed 复现；未 promotion |
 | **RL-Pattern** | **v4 dev 4/5 tier 超 RL-Repair**（pattern_breaker 236.8→420.3）；test provisional -0.88；未 promotion |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

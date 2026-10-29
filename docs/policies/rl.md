@@ -2,9 +2,10 @@
 
 > **状态（2026-10-29）**：本文记录 85 维 PPO 的方法和截至 2026-10-26 的
 > 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）、RL-Repair（E1c）、
-> RL-Pattern、RL-Wide（128/128）、RL-Wide160（160/128）和
-> RL-Switch（窄 meta）；**Protocol v4 dev/test 最佳（top 6）是
-> RL-Switch，但未 promotion**；RL-Repair 仍是 proven fallback。
+> RL-Pattern、RL-Wide（128/128）、RL-Wide160（160/128）、
+> RL-Switch（窄 meta）和 GRU-DAgger（单模型蒸馏）；**Protocol v4
+> dev/test 最佳（top 7）是 RL-Switch，GRU-DAgger 是单模型替代；
+> 两者都未 promotion**；RL-Repair 仍是 proven fallback。
 > 下方 5.1/5.2 的 10-field 盲测表只代表当时的基线。当前候选比较见
 > [README.md](../../README.md)、`results/meta_20261039/`、
 > `docs/research/rl-switch.md`、`docs/research/rl-wide160.md`、

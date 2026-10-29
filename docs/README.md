@@ -24,14 +24,15 @@
 | 项 | 值 |
 |---|---|
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
-| v4 dev/test 最佳（top 6） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python + C++） |
+| v4 dev/test 最佳（top 7） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python + C++）；单模型替代 `rl-dagger-gru`（GRU-DAgger） |
 | 前最佳 / fallback | `rl-wide160` / `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
-| 测试 | **330 tests OK**（本轮全量运行） |
-| 注册候选 | 31 个（`python3 -m ipd list-policies`） |
+| 最佳纯规则 | `triple-v4`（dev_param 538.66 / dev_complex 447.08 / dev_ood 514.41；未 promotion） |
+| 测试 | **334 tests OK**（本轮全量运行） |
+| 注册候选 | 33 个（`all` 集合，`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
-| Protocol v4 baseline | **top 6 dev 已运行**；全候选未运行；v3 的 484.32/476.54/471.44 只作 legacy |
+| Protocol v4 baseline | **top 7 dev 已运行**；全候选未运行；v3 的 484.32/476.54/471.44 只作 legacy |
 | held-out | test 消费永久锁定（provisional only）；v2/v3 已进入 legacy |
 | PSRO | 完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro` / `psro-br` 实验候选，未 promotion |
 | PSRO from scratch | blue 仅 random/scratch/BR，现有模型只做 red；`psro-scratch` / `psro-scratch-br`；red_win 0.0，但 dev 480.43；未 promotion |
@@ -65,7 +66,7 @@
 | 文档 | 内容 |
 |---|---|
 | [reference/cli.md](reference/cli.md) | `python3 -m ipd <command>` 命令与常用参数 |
-| [reference/candidates.md](reference/candidates.md) | 31 个候选、别名、集合、权重、状态 |
+| [reference/candidates.md](reference/candidates.md) | 33 个候选、别名、集合、权重、状态 |
 | [reference/configuration.md](reference/configuration.md) | `configs/`、`weights/`、`results/`、路径与配置格式 |
 | [reference/metrics.md](reference/metrics.md) | 四分布、blind、suite、league、CVaR、min_norm 的定义与口径 |
 | [reference/protocol-v4.md](reference/protocol-v4.md) | Protocol v4 的 train/dev/test 划分、manifest、usage ledger |
@@ -93,6 +94,8 @@
 | [research/p3-expansion.md](research/p3-expansion.md) | P3 multi-red + PSRO-lite | No-Go |
 | [research/psro.md](research/psro.md) | 完整 PSRO：blue population + 红队 oracle；§8 为 v4 更强 oracle | 实验候选，No-Go for promotion |
 | [research/psro-scratch.md](research/psro-scratch.md) | 从零 PSRO：现有模型只做 red | red_win 0.0，但 official 掉约 63；No-Go |
+| [research/dagger-gru.md](research/dagger-gru.md) | GRU + DAgger 蒸馏 RL-Switch 单模型 | 实验候选；dev 持平；未 promotion |
+| [research/triple-v4.md](research/triple-v4.md) | Triple-v4 规则优化（Final 噪声互惠分支） | 最佳纯规则；dev +1.8～5.9；未 promotion |
 | [research/p2-c1-belief-planner.md](research/p2-c1-belief-planner.md) | C1 Bayesian planner | No-Go |
 | [research/p2-c2c3-opponent-model.md](research/p2-c2c3-opponent-model.md) | C2/C3 opponent model + gate | No-Go |
 | [research/p2-c2c3-excitation.md](research/p2-c2c3-excitation.md) | C2/C3 excitation / counterfactual | data Go；planner No-Go |

@@ -5,6 +5,8 @@
 > 最新一手为 C 时，切换到 RL-Repair。dev 基本不变，test_v7
 > provisional +2.6～2.9，Protocol catalog suite +0.75。
 > Python + C++ 双权重实现；C++ action parity 已通过。
+> 单模型替代：`rl-dagger-gru`（GRU-DAgger），见
+> [dagger-gru.md](dagger-gru.md)。
 
 ## 1. 动机
 

@@ -26,6 +26,7 @@ DISPLAY = {
     "harvest-tuned": "Harvest-tuned",
     "hybrid": "Final+Resp3",
     "triple-majority": "Triple-majority",
+    "triple-v4": "Triple-v4",
     "triple-or": "Triple-or",
     "triple-and": "Triple-and",
     "gap-start": "GapStart",
@@ -38,6 +39,7 @@ DISPLAY = {
     "rl-wide": "RL-Wide",
     "rl-wide160": "RL-Wide160",
     "rl-switch": "RL-Switch",
+    "rl-dagger-gru": "GRU-DAgger",
     "rl-gate": "RL-Gate",
     "psro": "PSRO-Meta",
     "psro-br": "PSRO-BR",
@@ -73,6 +75,9 @@ ALIASES = {
     "hybrid-best": "hybrid",
     "triple": "triple-majority",
     "triplemajority": "triple-majority",
+    "triplev4": "triple-v4",
+    "v4-rule": "triple-v4",
+    "rule-v4": "triple-v4",
     "gap": "gap-start",
     "gapstart": "gap-start",
     "mlp": "neural",
@@ -102,6 +107,10 @@ ALIASES = {
     "rl-switch": "rl-switch",
     "switch": "rl-switch",
     "meta-switch": "rl-switch",
+    "rl-dagger-gru": "rl-dagger-gru",
+    "dagger-gru": "rl-dagger-gru",
+    "gru-dagger": "rl-dagger-gru",
+    "switch-gru": "rl-dagger-gru",
     "rl-gate": "rl-gate",
     "gate": "rl-gate",
     "meta-gate": "rl-gate",
@@ -128,17 +137,18 @@ ALIASES = {
     "sp": "selfplay",
 }
 
-CORE_NAMES = ("final-tuned", "resp3-tuned", "bayes-tuned", "triple-majority")
+CORE_NAMES = ("final-tuned", "resp3-tuned", "bayes-tuned",
+              "triple-majority", "triple-v4")
 BASE_NAMES = (
     "final-base", "final-tuned", "resp3-base", "resp3-tuned",
     "bayes-base", "bayes-tuned", "hybrid",
 )
 LEGACY_NAMES = BASE_NAMES
 CLASSIC_NAMES = BASE_NAMES + ("harvest45", "harvest-tuned", "gap-start")
-SUITE_NAMES = BASE_NAMES + ("harvest45", "triple-majority")
+SUITE_NAMES = BASE_NAMES + ("harvest45", "triple-majority", "triple-v4")
 LEARNED_NAMES = ("neural", "gru", "rl", "rl-hard60", "rl-repair",
                  "rl-pattern", "rl-wide", "rl-wide160", "rl-switch",
-                 "rl-gate",
+                 "rl-dagger-gru", "rl-gate",
                  "psro", "psro-br", "psro-scratch", "psro-scratch-br",
                  "psro-v4", "psro-v4-br",
                  "adv-mlp", "adv-gru", "adv-rl", "selfplay")
@@ -196,7 +206,7 @@ def make_policy(
         "name": label,
         "tuned": tuned,
     }
-    if kind.startswith("triple-"):
+    if kind in ("triple-majority", "triple-or", "triple-and"):
         kwargs["voting"] = kind.removeprefix("triple-")
     policy = build_candidate(kind, **kwargs)
     policy.name = label
@@ -229,7 +239,7 @@ def _params_for(kind: str, weights: str | None, config: str | None,
     params: dict[str, Any] = {}
     if kind in ("neural", "gru", "rl", "rl-hard60", "rl-repair",
                 "rl-pattern", "rl-wide", "rl-wide160", "rl-switch",
-                "rl-gate",
+                "rl-dagger-gru", "rl-gate",
                 "psro", "psro-br", "psro-scratch", "psro-scratch-br",
                 "selfplay"):
         if weights:

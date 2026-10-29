@@ -11,6 +11,8 @@
 | `policies/bayes_plus_policy.hpp` | `ipd::BayesPlus` | `ipd::BayesPlusParams` / `::tuned()` |
 | `policies/neural_policy.hpp` | `ipd::NeuralPolicy` | `ipd::NeuralParams` |
 | `policies/gru_policy.hpp` | `ipd::GRUPolicy` | `ipd::GRUParams` |
+| `policies/rl_switch_policy.hpp` | `ipd::RLSwitchPolicy` | `ipd::RLSwitchParams` |
+| `policies/rl_dagger_gru_policy.hpp` | `ipd::RLDAggerGRUPolicy` | `ipd::RLDAggerGRUParams` |
 | `policies/adversarial_rl_policy.hpp` | `ipd::AdversarialRLPolicy` | `ipd::AdvRLParams` |
 
 MLP/RL 权重仍由编译宏选择：
@@ -26,6 +28,12 @@ g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
 # Adv-RL 的 BC base
 g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_BC_WEIGHTS \
   -DADVERSARIAL_RL_DEMO cpp/adversarial_rl.cpp -o adv_rl_bc_demo
+
+# RL-Switch（双 MLP + 开关）
+g++ -std=c++17 -O2 -Icpp cpp/rl_switch_demo.cpp -o rl_switch_demo
+
+# GRU-DAgger（单模型 GRU）
+g++ -std=c++17 -O2 -Icpp cpp/rl_dagger_gru_demo.cpp -o rl_dagger_gru_demo
 ```
 
 ## 对手
@@ -45,6 +53,8 @@ ipd::FinalPolicy final_policy(20261024u, ipd::FinalParams::tuned());
 ipd::Responsive3 resp(20261024u, ipd::Responsive3Params::tuned());
 ipd::BayesPlus bayes(ipd::BayesPlusParams::tuned());
 ipd::GRUPolicy gru(20261024u, ipd::GRUParams{true, true, true});
+ipd::RLDAggerGRUPolicy gru_dagger(20261024u,
+    ipd::RLDAggerGRUParams{true, true, true});
 ipd::NeuralPolicy mlp(20261024u, ipd::NeuralParams{true, true, true});
 ipd::AdversarialRLPolicy adv(20261024u, true,
     ipd::AdvRLParams{0.2, 12, 2, 40, true});

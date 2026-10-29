@@ -4,16 +4,26 @@
 >
 > - 主权重未替换：`weights/rl_policy_weights.json`，sha256
 >   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-> - **RL-Switch（`rl-switch`）是 Protocol v4 dev/test 最佳（top 6
+> - **RL-Switch（`rl-switch`）是 Protocol v4 dev/test 最佳（top 7
 >   对比）**，但只注册、不 promotion；Python + C++ 双权重实现已通过 action parity：
 >   默认 RL-Wide160；第 6 回合前双方各 D≥2 且对手最新 C 时切换
 >   RL-Repair。dev_param 548.58 / dev_complex 454.24 / dev_axelrod
 >   582.86；test_v7 provisional 488.26（seed 27）/ 487.51（seed 29）。
+> - **GRU-DAgger（`rl-dagger-gru`）是单模型替代**：1 层 GRU（64
+>   hidden）用 2 轮 DAgger 蒸馏 RL-Switch；dev_param 548.58 /
+>   dev_complex **455.13**；两个 seed 与 RL-Switch 持平；test_v7
+>   provisional 487.89（seed 27）/ 487.02（seed 29）；Python + C++
+>   已通过 action parity；未 promotion。详见
+>   `docs/research/dagger-gru.md`。
 > - **前最佳 / fallback：RL-Wide160（`rl-wide160`）、RL-Wide
 >   （`rl-wide`）、RL-Pattern（`rl-pattern`）与 RL-Repair
 >   （`rl-repair`）**；均未 promotion。
-> - 最近完整测试：**330 tests OK**（本轮全量运行）。
->   `python3 -m ipd list-policies`：**31 个注册候选**。
+> - **最佳纯规则：Triple-v4（`triple-v4`）**：Triple-majority + Final
+>   噪声互惠分支；dev_param 538.66 / dev_complex 447.08 / dev_ood
+>   514.41；独立 seed 20261029 复现；test_v7 provisional 473.68；
+>   无权重、无 probe；仍低于 RL-Repair / RL-PPO，**未 promotion**。
+> - 最近完整测试：**334 tests OK**（本轮全量运行）。
+>   `python3 -m ipd list-policies`：**33 个注册候选（all 集合）**。
 > - `rl-gate` 是学习型上层 gate 实验：阈值 0.9 基本退化为
 >   RL-Wide160（test 485.84），阈值 0.5 会过度切换；**No-Go**，
 >   仅保留为实验候选。
@@ -24,12 +34,12 @@
 > - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
-> - **v4 top 6 dev 已运行**；全候选 baseline 尚未运行；v3 的
+> - **v4 top 7 dev 已运行**；全候选 baseline 尚未运行；v3 的
 >   RL-Repair 484.32 / A60 476.54 / Adv-RL 471.44 只作 legacy。
 >   test 消费已永久锁定（provisional only）。
 > - **blue-red 对战已停用**（ADR 0011）：以后不再用 red /
 >   exploitability 作为评估或 promotion 门槛；不新增 red 任务。
-> - 最近提交：`git log -1`（RL-Switch C++ 与 promotion 诊断）。
+> - 最近提交：`git log -1`（GRU-DAgger 单模型蒸馏 + C++）。
 
 > **2026-10-28 更新**
 >
@@ -110,6 +120,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 场景 | 建议 | 依据 |
 |---|---|---|
 | 现在提交，允许新候选 | **RL-Switch** | dev_param 548.58、dev_complex 454.24；test 488.26/487.51；C++ 已移植 |
+| 需要单模型 / 不想维护双权重开关 | **GRU-DAgger**（`rl-dagger-gru`） | dev_param 548.58、dev_complex 455.13；test provisional 487.89/487.02；Python + C++ |
 | 需要 160/128 单模型部署 | **RL-Wide160** | dev_complex 454.31、complex min_norm 0.997；test 485.62 |
 | 需要 128/128 部署 | **RL-Wide** | dev_complex 452.79、complex min_norm 0.973；test 485.50 |
 | 需要 64/32 部署 / 更小模型 | **RL-Pattern** | dev_param 548.45；test 485.43 |
@@ -119,18 +130,18 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | v3 legacy test 476.54；min_norm 0.9989 |
 | dev_complex / OOD 高 | **Adv-RL** | v3 legacy dev 526.58；complex 415.19 |
 | 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维；v3 legacy dev 513.85 |
-| 需要 C++ | RL-Switch / 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
-| 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | v3 legacy dev 523.39 / 517.07 |
+| 需要 C++ | RL-Switch / GRU-DAgger / 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
+| 纯规则、无权重 | **Triple-v4**（`triple-v4`） | v4 dev_param 538.66、dev_complex 447.08、dev_ood 514.41；独立 seed 复现；未 promotion |
 | PSRO / red 历史对照 | `psro` / `psro-scratch` / `psro-v4` 等 | 仅历史复现；**不再作为评估或 promotion 门槛**（ADR 0011） |
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch；C++ 双权重 + 开关
-逻辑已完成并通过固定序列 action parity，但还需要第 1/100 天行为、权重
-checksum 和真实比赛接口验证。RL-Switch 的 test_v7 增益已用两个 seed
-验证；blue-red 已停用（ADR 0011），不再作为 promotion 证据。test 消费
-已在 policy 层永久关闭，provisional test 不能当作独立 final。得到确认后
-才把 `weights/rl_policy_weights.json` 替换为 RL-Switch 或 RL-Wide160。
-当前文档不假设已经替换。
+`dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch / GRU-DAgger；
+C++ 实现已完成并通过固定序列 action parity，但还需要第 1/100 天行为、
+权重 checksum 和真实比赛接口验证。RL-Switch 和 GRU-DAgger 的 test_v7
+都只做了两个 seed 的 provisional 诊断；blue-red 已停用（ADR 0011），
+不再作为 promotion 证据。test 消费已在 policy 层永久关闭，provisional
+test 不能当作独立 final。得到确认后才把 `weights/rl_policy_weights.json`
+替换为 RL-Switch、GRU-DAgger 或 RL-Wide160。当前文档不假设已经替换。
 
 ---
 
@@ -160,12 +171,13 @@ checksum 和真实比赛接口验证。RL-Switch 的 test_v7 增益已用两个 
 ledger，不能用于排名或 final。**`dev_red` / `test_red` 是历史口径**；
 blue-red 对战已停用（ADR 0011），不再参与当前选模或 promotion。
 
-v4 **top 6 dev 已运行**（30 fields × 2048，sample，v5 GPU/CPU）；
+v4 **top 7 dev 已运行**（30 fields × 2048，sample，v5 GPU/CPU）；
 全候选 baseline 尚未运行。test_v7 为 provisional，不参与选模：
 
 | 候选 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 provisional |
 |---|---:|---:|---:|---:|---:|---:|
 | **RL-Switch** | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | **488.26** |
+| **GRU-DAgger** | **548.58** | 582.90 | **455.13** | 582.49 | **521.54** | 487.89 |
 | RL-Wide160 | 548.26 | **583.08** | **454.31** | 582.38 | 521.37 | 485.62 |
 | RL-Wide | 548.24 | **583.08** | 452.79 | 582.30 | 520.71 | 485.50 |
 | RL-Pattern | 548.45 | 583.07 | 447.64 | 582.22 | 519.46 | 485.43 |
@@ -176,6 +188,12 @@ v4 **top 6 dev 已运行**（30 fields × 2048，sample，v5 GPU/CPU）；
   dev_ood +0.05；dev_family -0.17、dev_complex -0.07；test_v7 +2.64。
 - RL-Switch 独立 seed 20261029：test_v7 487.51 vs 484.61（+2.90）；
   Protocol catalog suite +0.75；158 bank 基本持平。
+- GRU-DAgger 相对 RL-Switch：dev_param 0.00、dev_family -0.01、
+  dev_complex +0.89、dev_axelrod -0.37、dev_ood +0.12；test_v7
+  provisional -0.37（seed 27）/ -0.49（seed 29）。独立 seed
+  20261029 dev：546.97 / 582.59 / 454.39 / 581.93 / 523.05
+  （+0.16 / -0.03 / +0.12 / -0.20 / +0.21）。level/complexity
+  全部 ±1.3 内。
 - 下面是 legacy v3 baseline（20/40 fields × 299），仅用于历史对照；
   不能与上表混用：
 
@@ -267,6 +285,7 @@ family 最小归一化分数，raw `min_family` 不可跨 family 比较。`E4 re
 | `weights/rl_policy_weights_wide160.json` | RL-Wide160 160/128 部署权重（iter1 导出） |
 | `weights/rl_policy_checkpoint_wide160.json` | RL-Wide160 actor-critic checkpoint |
 | `rl-switch` | 无独立权重；组合 `wide160` + `repair`，开关逻辑在 `ipd/policies/meta.py` |
+| `weights/rl_dagger_gru_weights.json` | GRU-DAgger 单模型：85→GRU(64)→64→tanh→1；1,063,718 bytes；sha256 `7b7bbe67…c80cca196` |
 | `weights/rl_policy_weights_bc.json` | BC 初始化 + hard（Adv-RL base） |
 | `weights/rl_policy_weights_scratch_base.json` | 纯从零 base |
 | `weights/rl_policy_weights_stage1.json` | run3（wide + KL） |
@@ -299,6 +318,7 @@ E1c   repair，20 iter         554.76 / 564.61  -> rl-repair
 | Resp3-tuned | `ipd/policies/candidates/resp3_tuned.py` | Responsive3 状态机 |
 | Bayes-tuned | `ipd/policies/candidates/bayes_tuned.py` | 对 Grim/punitive 强，对 smart/wide 弱 |
 | Triple-majority | `ipd/policies/candidates/triple_majority.py` | Final + Resp3 + Bayes 多数票 |
+| **Triple-v4** | `ipd/policies/candidates/triple_v4.py` | Triple-majority + Final 噪声互惠分支；v4 最佳纯规则 |
 | Final+Resp3 | `ipd/policies/candidates/hybrid.py` | Final-tuned + 默认 Resp3，不一致时 D |
 | Harvest45 / Harvest-tuned / GapStart | `candidates/` | 特化/搜索候选，不推荐单独提交 |
 
@@ -340,6 +360,13 @@ PUNITIVE_THRESHOLD = 0.7531347429866336
 
 Triple 规则：三个子策略各自维护状态，按多数票出招（2:1 或 3:0）；
 第 100 天三家都会 D。Final+Resp3：动作一致时采用，不一致时 D（p=0）。
+
+Triple-v4 在 Final 上增加一条窄分支：当 `p_d >= 0.70`、
+`0.20 <= p_c <= 0.62`、`p_d - p_c >= 0.30` 且 `d_rate >= 0.15`
+（样本足够）时，把对手视为噪声互惠者，对手刚 D 时以 0.75 概率原谅。
+该分支不会命中干净 TFT / AllD / 时间表 late defector，也没有主动
+probe，因此 `dev_family` 不变。完整报告见
+`docs/research/triple-v4.md`。
 
 ### 3.3 神经 / 自博弈
 
@@ -387,9 +414,9 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 224 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
   opponent；每个 entry 带 `thinking_level` / `complexity` 0–4；
 - 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
-- **top 6 dev 已运行**（2026-10-31）；全候选 baseline 尚未运行；
+- **top 7 dev 已运行**（2026-10-31）；全候选 baseline 尚未运行；
   test 消费永久锁定；
-- Red-v5 / Red-v6 仍 100% 击败 top 3（v3 legacy 结果）；
+- blue-red 已停用（ADR 0011）；旧 Red-v5/v6 结果只作历史；
 - 文档：`docs/reference/protocol-v4.md`，ADR 0007 / 0008。
 
 ### RL-Pattern（2026-10-29；实验候选，未 promotion）
@@ -493,16 +520,59 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 判定：**No-Go**，保留为实验候选，不进入提交推荐。报告
   `docs/research/rl-gate.md`、`results/meta_20261040/`。
 
-### Distill-Switch（2026-10-29；No-Go）
+### Distill-Switch（2026-10-29；旧结果 No-Go，已由 GRU-DAgger 修正）
 
 - 从 RL-Switch 教师收集 96,196 个非强制状态，蒸馏到 160/128 MLP；
-- BCE 0.19（4 epochs），但 dev_param 535.46 vs 548.58、
-  dev_complex 442.43 vs 454.24、dev_axelrod 571.99 vs 582.86；
-- 失败原因：match-level switch 无法被无状态 MLP 稳定表示，BC
-  分布偏移，软标签在切换边界被平均化；
-- 判定：**No-Go，不注册候选**；若继续单模型，应先做 DAgger 或
-  用 GRU 保留切换状态。报告 `docs/research/distill-switch.md`、
-  `results/distill_20261042/`。
+- 旧结果 dev_param 535.46，低于 RL-Switch 548.58；
+- **复查发现 normalization bug**：初始化 checkpoint 的
+  `feature_mean/std` 不是 0/1，旧脚本却用 identity 训练并导出；
+  同一 wide160 权重在 dev_param（5×1024）上正确归一化 544.74，
+  identity 仅 498.61，旧蒸馏 531.75；
+- 修正后 MLP BC 官方 dev_param 548.84，但 dev_complex 446.59
+  （pattern_breaker 383.19 vs RL-Switch 512.94）；冻结 trunk /
+  DAgger 仍无法恢复 pattern_breaker；
+- 判定：**MLP 单模型 No-Go**；后续用 GRU + DAgger 解决。报告
+  `docs/research/distill-switch.md`、`docs/research/dagger-gru.md`。
+
+### GRU-DAgger（2026-10-29；实验候选，未 promotion）
+
+- 单模型 1 层 GRU（64 hidden），教师为 RL-Switch 的确定性开关；
+- 训练分布 6 源：`train` / `train_complex` /
+  `train_pattern_breaker` / `extort_hard` / `periodic_hard` /
+  `hard`；BC 12 fields/source，2 轮 DAgger 6 fields/source，
+  epsilon=0.05，软标签；
+- 官方 dev seed 27：548.58 / 582.90 / **455.13** / 582.49 /
+  **521.54**；seed 29：546.97 / 582.59 / 454.39 / 581.93 /
+  523.05；与 RL-Switch 差在 ±0.4 内；
+- level / complexity 全部 ±1.3 内，level4 +1.20、complexity4
+  +1.26；
+- test_v7 provisional 487.89 / 487.02，比 RL-Switch 低
+  0.37 / 0.49（test 锁定，不选模）；
+- 部署：`ipd-gru-policy-v1`，1,063,718 bytes，sha256
+  `7b7bbe67…c80cca196`；C++ `RLDAggerGRUPolicy` 已通过 action
+  parity；
+- 判定：**实验候选，未 promotion**；单模型部署替代 RL-Switch。
+  报告 `docs/research/dagger-gru.md`、`results/distill_20261043/`。
+
+### Triple-v4（2026-10-29；规则候选，未 promotion）
+
+- Triple-majority + Final 噪声互惠分支：`p_d >= 0.70`、
+  `0.20 <= p_c <= 0.62`、`p_d - p_c >= 0.30`、`d_rate >= 0.15`
+  时，对手刚 D 以 0.75 概率原谅；无主动 probe。
+- 官方 dev（seed 27）：536.87 → **538.66**（+1.79）；
+  dev_complex 441.17 → **447.08**（+5.91）；dev_ood 511.62 →
+  **514.41**（+2.79）；dev_axelrod 566.93 → **568.38**；
+  dev_family 583.06 → **583.07**（+0.01）。
+- 独立 seed 20261029：dev_param +1.72、dev_complex +5.78、
+  dev_ood +2.92；`dev_level4` +11.92、`dev_complexity4` +9.04。
+- 收益主要来自 `pattern_breaker`（complex +65.7 / ood +77.9）、
+  `lookahead`（+18.5 / +15.0）、`extort` / `noisy` / `temporal`
+  （+3～6）；代价是 `adaptive_mix` dev_ood -2.3、`portfolio` -1.0；
+  `min_norm` 0.992–1.000。
+- test_v7 provisional 471.54 → **473.68**（+2.14，不选模）。
+- 判定：**最佳纯规则，未 promotion**；仍低于 sample-mode
+  RL-Repair 547.96 / RL-PPO 540.35（dev_param），不能替代学习策略。
+  报告 `docs/research/triple-v4.md`、`results/rule_v4_20261043/`。
 
 ### Periodic-hard（2026-10-29；No-Go）
 
@@ -759,7 +829,7 @@ python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO
 python3 -m ipd protocol eval \
-  --candidates RL-Switch,RL-Wide160,RL-Pattern,RL-Repair,RL-PPO-Hard60,Adv-RL \
+  --candidates RL-Switch,GRU-DAgger,RL-Wide160,RL-Pattern,RL-Repair,RL-PPO-Hard60,Adv-RL \
   --tiers test_v7 --fields 50 --n 2048 --no-consume
 # red / blue-red 命令仅作历史复现，当前流程不再执行（ADR 0011）
 ```
@@ -894,6 +964,7 @@ python3 -m ipd league --config configs/eval/e1c_final_league.json \
 ```bash
 g++ -std=c++17 -O2 -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o neural_demo
 g++ -std=c++17 -O2 -DGRU_POLICY_DEMO cpp/gru_policy.cpp -o gru_demo
+g++ -std=c++17 -O2 -Icpp cpp/rl_dagger_gru_demo.cpp -o rl_dagger_gru_demo
 g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_WEIGHTS \
   -DNEURAL_POLICY_DEMO cpp/neural_policy.cpp -o rl_demo
 g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_BC_WEIGHTS \
@@ -920,6 +991,9 @@ python3 -m ipd matchup --candidates final-tuned --opponent-set axelrod-fast \
   Responsive3 / BayesPlus；
 - `cpp/policies/neural_policy.hpp` / `gru_policy.hpp`：
   MLP / GRU 推理；
+- `cpp/policies/rl_switch_policy.hpp`：RL-Switch 双 MLP + 开关；
+- `cpp/policies/rl_dagger_gru_policy.hpp` /
+  `cpp/rl_dagger_gru_demo.cpp`：GRU-DAgger 单模型；
 - `cpp/policies/adversarial_rl_policy.hpp` / `cpp/adversarial_rl.cpp`：
   Adv-RL；
 - `cpp/opponents/*.hpp`：演示/测试用对手；
@@ -986,6 +1060,18 @@ mine/theirs = 到此日之前的动作
 18. **RL-Gate 不是提交候选**：学习型 gate 阈值 0.5 过度切换、
     0.9 退化为 RL-Wide160；分类准确率不等于得分最优。不要用
     `rl-gate` 替换 `rl-switch`，除非重新设计 cost-sensitive gate。
+19. **GRU-DAgger 是单模型替代，不是 promotion**：dev 两个 seed
+    与 RL-Switch 持平，但 test_v7 provisional 低 0.37/0.49；单文件
+    1.06MB；有状态，必须每场 `reset()`，同一时间步只调用一次
+    `act()`；C++ 已通过固定序列 parity，但未接真实比赛接口。若比赛
+    接口不能保证 reset，继续用 RL-Switch / RL-Wide160。不要用
+    test provisional 宣称超越 RL-Switch。
+20. **Triple-v4 是规则候选，不是学习策略替代**：dev_param 538.66
+    仍低于 RL-Repair 547.96 / RL-PPO 540.35（sample）；收益集中在
+    pattern_breaker / lookahead / noisy / extort，规则线仍有
+    probe_exploit、late、axelrod_extra 大缺口。不要为了追分加入
+    全局主动 probe（dev_family 的 DelayedGrim 会崩）；如需提交，
+    先补 C++ 移植和 action parity。
 
 ---
 
@@ -994,7 +1080,7 @@ mine/theirs = 到此日之前的动作
 - [ ] 确认比赛接口：`act` / `move` 签名、历史格式、是否允许 `reset()`。
 - [ ] 确认是否允许每天运行三个子策略（Triple）。
 - [ ] 确认是否允许提交权重文件；单文件限制下决定是否内嵌。
-- [ ] 确定提交版本：RL-Switch / RL-Wide160 / RL-Wide / RL-Pattern / RL-Repair / A60 / RL-PPO / Adv-RL / SelfPlay / 规则。
+- [ ] 确定提交版本：RL-Switch / GRU-DAgger / RL-Wide160 / RL-Wide / RL-Pattern / RL-Repair / A60 / RL-PPO / Adv-RL / SelfPlay / 规则。
 - [ ] 若提交 RL-Repair，先做独立 seed 复现，再决定是否替换主权重。
 - [ ] 运行 `python3 -m ipd test` 和
       `python3 -m ipd self-test --candidates all`。
@@ -1032,6 +1118,10 @@ mine/theirs = 到此日之前的动作
 | `ipd/training/selfplay/` | 21 维自博弈训练器 |
 | `ipd/policies/moe.py` | C3 three-way gate + MoE |
 | `ipd/policies/belief_planner.py` | C1 belief planner |
+| `ipd/policies/candidates/rl_dagger_gru.py` | GRU-DAgger 候选 |
+| `cpp/policies/rl_dagger_gru_policy.hpp` | GRU-DAgger C++ 推理 |
+| `docs/research/dagger-gru.md` | GRU-DAgger 方法与结果 |
+| `results/distill_20261043/` | DAgger/GRU 实验数据与汇总 |
 | `docs/README.md` | 文档导航与状态 |
 | `docs/architecture/overview.md` | 分层与接口 |
 | `results/*/README.md` | 各实验的完整报告 |

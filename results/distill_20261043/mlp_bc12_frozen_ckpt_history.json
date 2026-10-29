@@ -1,0 +1,67 @@
+{
+  "student": "mlp",
+  "out": "results/distill_20261043/mlp_bc12_frozen_ckpt.json",
+  "rounds": 0,
+  "bc_fields": 12,
+  "dagger_fields": 4,
+  "val_fields": 3,
+  "n": 48,
+  "explore": 0.05,
+  "hidden": 64,
+  "layers": 1,
+  "lr": 0.001,
+  "epochs": 10,
+  "seed": 20261043,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.1390452793871475,
+      "round": "bc"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.13667384431183505,
+      "round": "bc"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.13611066702215793,
+      "round": "bc"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.13587402774849172,
+      "round": "bc"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.13570452902401922,
+      "round": "bc"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.13556584602898258,
+      "round": "bc"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.13544482209240732,
+      "round": "bc"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.13533752596690898,
+      "round": "bc"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.13524079657429844,
+      "round": "bc"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.13515250466773343,
+      "round": "bc"
+    }
+  ]
+}

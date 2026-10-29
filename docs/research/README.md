@@ -28,14 +28,16 @@
 | Plan 6 | [plan6-python-bottleneck.md](plan6-python-bottleneck.md) | **实现完成**；policy 对手 GPU sample、Axelrod 增量、严格同序 native CPU 推理；24/24 逐位一致，272.77s |
 | RL-Pattern | [rl-pattern.md](rl-pattern.md) | **实验候选**；`train_v4` + `train_pattern_breaker`；v4 dev 4/5 tier 超 RL-Repair，test_v7 provisional -0.88；未 promotion |
 | RL-Wide | [rl-wide.md](rl-wide.md) | **实验候选**；net2wider 64/32→128/128；dev_param 548.24、dev_complex 452.79、complex min_norm 0.973；test_v7 provisional 485.50；未 promotion |
-| RL-Wide160 | [rl-wide160.md](rl-wide160.md) | **实验候选（当前最均衡）**；160/128；dev_param 548.26、dev_complex 454.31、complex/ood min_norm 0.997；test_v7 485.62；red 仍 100%；未 promotion |
+| RL-Wide160 | [rl-wide160.md](rl-wide160.md) | **实验候选（当前最均衡）**；160/128；dev_param 548.26、dev_complex 454.31、complex/ood min_norm 0.997；test_v7 485.62；未 promotion |
 | 输入特征 v2 | [feature-v2.md](feature-v2.md) | 85→97；Python/GPU/C++ parity 通过；dev_complex +2～4 但 dev_param/test 回退；**No-Go**，未注册 |
 | 全量对手扫描 | [weak-opponents-20261036.md](weak-opponents-20261036.md) | 158 / 977 / 224 对手 + 参考候选；薄弱点：extortion/ZD、periodic/Kamikaze、Gap/FSM、PB 尾部、noisy/Joss |
 | Extort-hard | [extort-hard.md](extort-hard.md) | 新增 `extort_hard` 训练分布；strong/gentle 均未解决 extort 弱点，PB 回退；**No-Go** |
-| RL-Switch | [rl-switch.md](rl-switch.md) | 窄 meta RL-Wide160→RL-Repair；dev 基本不变，test_v7 488.26/487.51，Protocol suite +0.75；**当前最佳，Python-only，未 promotion** |
+| RL-Switch | [rl-switch.md](rl-switch.md) | 窄 meta RL-Wide160→RL-Repair；dev 基本不变，test_v7 488.26/487.51，Protocol suite +0.75；**当前最佳，Python + C++，未 promotion** |
 | RL-Gate | [rl-gate.md](rl-gate.md) | 学习型 gate（25 维 logistic，K=10）；分类器 No-Go；CS 版 dev 接近 RL-Switch，test 486.98；**No-Go** |
 | Periodic-hard | [periodic-hard.md](periodic-hard.md) | 新增 `periodic_hard`；test +0.77，但 complex/PB 回退；**No-Go** |
-| Distill-Switch | [distill-switch.md](distill-switch.md) | 单模型蒸馏 RL-Switch；BCE 0.19 但 dev_param 535.46；**No-Go** |
+| Distill-Switch | [distill-switch.md](distill-switch.md) | 旧 MLP 蒸馏有 normalization bug；修正后 dev_param 548.84 但 complex 446.59；**No-Go** |
+| GRU-DAgger | [dagger-gru.md](dagger-gru.md) | 单模型 GRU + 2 轮 DAgger；dev 两个 seed 与 RL-Switch 持平，complex +0.89；test provisional -0.4；**实验候选，未 promotion** |
+| Triple-v4 | [triple-v4.md](triple-v4.md) | 规则候选；Final 加噪声互惠分支；dev_param +1.79、dev_complex +5.91、dev_ood +2.79；独立 seed 复现；**最佳纯规则，未 promotion** |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |

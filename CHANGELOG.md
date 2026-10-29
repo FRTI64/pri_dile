@@ -7,6 +7,31 @@
 
 ### Added
 
+- **Triple-v4（`triple-v4` / `Triple-v4`）**：规则策略定向优化。
+  在 Triple-majority 的 Final 组件加入窄噪声互惠分支
+  （`p_d >= 0.70`、`0.20 <= p_c <= 0.62`、`p_d - p_c >= 0.30`、
+  `d_rate >= 0.15` 时以 0.75 概率原谅），不新增主动 probe。
+  Protocol v4 dev（30×2048）：dev_param 536.87 → **538.66**、
+  dev_complex 441.17 → **447.08**（+5.91）、dev_ood 511.62 →
+  **514.41**；dev_family 不变。独立 seed 20261029 复现；
+  test_v7 provisional 471.54 → **473.68**（不选模）。
+  最佳纯规则，但低于 RL-Repair / RL-PPO，**未 promotion**。
+  报告 `docs/research/triple-v4.md`、`results/rule_v4_20261043/`。
+- **GRU-DAgger（`rl-dagger-gru` / `GRU-DAgger`）**：把 RL-Switch
+  蒸馏成单个 1 层 GRU（64 hidden），BC 12 fields/source + 2 轮
+  DAgger（6 fields/source/round，epsilon=0.05，软标签）。官方 dev
+  seed 27：548.58 / 582.90 / **455.13** / 582.49 / **521.54**；
+  seed 29：546.97 / 582.59 / 454.39 / 581.93 / 523.05；与
+  RL-Switch 持平，complex +0.89。test_v7 provisional 487.89 /
+  487.02（低 0.37/0.49，噪声内，test 锁定）。Python + C++ 已通过
+  action parity。**实验候选，未 promotion**。报告
+  `docs/research/dagger-gru.md`、`results/distill_20261043/`。
+- **修正 MLP 蒸馏 normalization bug**：旧脚本从 wide160 checkpoint
+  初始化却用 `mean=0, std=1` 训练/导出；正确归一化下 wide160
+  dev_param（5×1024）544.74 vs identity 498.61，旧蒸馏 531.75。
+  修正后 MLP BC official dev_param 548.84，但 dev_complex 446.59
+  （pattern_breaker 383.19），仍 **No-Go**；详见
+  `docs/research/distill-switch.md`。
 - **PSRO v4（`psro-v4` / `psro-v4-br`）**：更强 blue oracle
   （3 轮 × 30 iter、40% red、`bc_kl=0.02`，blue 加入 RL-Switch /
   RL-Wide160 / RL-Pattern）。第 1 轮 BR_01 进入 maximin support
@@ -15,11 +40,10 @@
   486.93 vs RL-Repair 546.47（-59.5）、min_norm 0.56。**No-Go
   for promotion**；anti-exploitation specialist。报告
   `docs/research/psro.md`、`results/psro_v4_20261029/`。
-- **RL-Switch 单模型蒸馏**：从 RL-Switch 教师收集 96,196 个状态，
-  蒸馏到 160/128 MLP；BCE 0.19，但 dev_param 535.46 vs 548.58、
-  dev_complex 442.43 vs 454.24。match-level switch 无法被无状态
-  MLP 稳定表示，**No-Go，不注册候选**。报告
-  `docs/research/distill-switch.md`、`results/distill_20261042/`。
+- **旧 MLP 蒸馏归档**：96,196 个状态、160/128 MLP；旧结果
+  dev_param 535.46，后来定位为 normalization bug（见上），
+  原始实验保留在 `docs/research/distill-switch.md`、
+  `results/distill_20261042/`；单模型方向由 GRU-DAgger 接替。
 - **Periodic-hard 训练分布**：`ipd/evaluation/periodic.py` 采样
   Kamikaze period 4–12、7 种短周期 Periodic、DynamicWindow 和
   RandomFSM，并保留 TFT/Grim/AllC/AllD anchors；注册为
@@ -215,12 +239,14 @@
   结果只作历史存档；不新增 red 任务。候选比较继续使用 Protocol v4
   dev/test、level/complexity、独立 seed、Python/C++ parity 和外部
   比赛结果。
-- 注册候选从 20 增至 31（新增 `rl-pattern` / `rl-wide` /
-  `rl-wide160` / `rl-switch` / `rl-gate` / `psro-v4` /
-  `psro-v4-br`）；完整测试 **330 OK**。
-- Protocol v4 top 6（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
-  RL-Wide160 / RL-Switch）的 dev 已运行；RL-Switch 当前最佳，
-  Python + C++ 已移植，暂不 promotion；`rl-gate` 为近中性实验候选。
+- 注册候选增至 33（`all` 集合；新增 `rl-pattern` / `rl-wide` /
+  `rl-wide160` / `rl-switch` / `rl-dagger-gru` / `rl-gate` /
+  `psro-v4` / `psro-v4-br`，并补录 `triple-v4`）；完整测试
+  **334 OK**。
+- Protocol v4 top 7（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
+  RL-Wide160 / RL-Switch / GRU-DAgger）的 dev 已运行；RL-Switch
+  当前最佳，Python + C++ 已移植；GRU-DAgger 为单模型替代；
+  暂不 promotion；`rl-gate` 为近中性实验候选。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为

@@ -1,10 +1,12 @@
-# RL-Switch 单模型蒸馏（No-Go）
+# RL-Switch 单模型蒸馏（旧结果 No-Go；已由 GRU-DAgger 接替）
 
-> **状态（2026-10-29）：实验完成，No-Go。**
-> 把一个 match-level meta（RL-Wide160 ↔ RL-Repair 的硬切换）蒸馏到
-> 单个 160/128 MLP。BCE 可以降到 0.19，但 dev_param 535.46
-> （RL-Switch 548.58）、dev_complex 442.43（454.24），行为漂移明显。
-> **不注册候选。**
+> **状态（2026-10-29）：旧 MLP 结果 No-Go，但主要原因是
+> normalization bug。** 本页保留原始实验；修正 normalization 后
+> MLP BC 官方 dev_param 548.84，但 dev_complex 仍只有 446.59
+> （pattern_breaker 383.19）。后续的 GRU + DAgger 单模型
+> `rl-dagger-gru` 已与 RL-Switch 持平，见
+> [dagger-gru.md](dagger-gru.md)。**本页的 535.46 不应再作为
+> “蒸馏不可行”的证据。**
 
 ## 1. 动机
 
@@ -48,6 +50,10 @@ dev：
 
 ## 4. 为什么失败
 
+0. **normalization bug（主因）**：从 wide160 checkpoint 初始化，
+   却用 `mean=0, std=1` 训练并导出；同一权重在 dev_param
+   （5×1024）上正确归一化 544.74，identity 只有 498.61。旧蒸馏
+   531.75 与这个错误一致。修正后 MLP BC 到 548.84；
 1. **match-level 状态不可见**：教师每场只决定一次（前 6 回合后），
    学生是无状态 MLP，只能从当前 history 推断“本场是否已经切换”；
 2. **教师轨迹分布偏移**：BC 数据只覆盖教师访问的状态，学生一 drift
@@ -59,13 +65,13 @@ dev：
 
 ## 5. 判定与下一步
 
-**No-Go。** 不注册 `rl-distill`，不替换 RL-Switch。
-
-如果继续单模型方向，应该：
+**旧 MLP 方案 No-Go。** 不注册 `rl-distill`，不替换 RL-Switch。
+后续已按下面方向完成 **GRU-DAgger**：
 
 1. 用 **DAgger**（学生轨迹 + 教师查询）而不是纯 BC；
 2. 用 **GRU / 有状态模型**，显式保留“本场是否已切换”；
-3. 或直接把 switch 逻辑作为特征/规则保留，不强行蒸馏。
+3. 结果：`rl-dagger-gru` dev 与 RL-Switch 持平，见
+   [dagger-gru.md](dagger-gru.md)。
 
 当前最佳仍是双权重 RL-Switch；单模型蒸馏不是优先方向。
 
