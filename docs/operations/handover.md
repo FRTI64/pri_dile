@@ -412,6 +412,14 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   axelrod 1.0072、family 1.0；RL-Pattern 为 0.9970 / 0.8448 / 0.8424。
 - test_v7 provisional（50×2048）：485.50 vs RL-Repair 486.31
   （-0.81）、RL-Pattern 485.43（+0.07）。
+- 独立 seed 20261029：dev_param 546.60、dev_complex 452.05、
+  dev_ood 522.14（RL-Pattern 546.66 / 447.26 / 520.86），
+  complex/OOD 收益可复现。
+- `dev_red`（30 seeds）：blue 378.67 / red 711.33，red_win 100%；
+  anti-exploitation 未改善，不能把 complex 提升当成 red 防御。
+- 192/128 消融：dev_complex 459.57、dev_ood 522.32 更高，但
+  dev_param 547.44、test_v7 484.90 回退；不注册，128/128 是当前
+  综合最优宽度（`results/rl_v4_20261030/`）。
 - 代价：`extort` / `temporal` / `probe_exploit` 小幅回退；test-only
   `hyper_extort` / `axelrod_extra` 仍未恢复。
 - 判定：注册 `rl-wide`，**不 promotion**；主权重不变。报告

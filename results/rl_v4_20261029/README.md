@@ -27,6 +27,13 @@
 - test_v7 相对 RL-Repair -0.81，但相对 RL-Pattern +0.07；
 - legacy 20-field：四分布 avg **554.96**、blind **564.72**，与
   RL-Pattern（554.93 / 564.91）基本持平；
+- 独立 seed 20261029：dev_param 546.60、dev_complex 452.05、
+  dev_ood 522.14；与 RL-Pattern 的 546.66 / 447.26 / 520.86 相比，
+  complex/OOD 收益可复现；
+- `dev_red`（30 seeds）：blue 378.67 / red 711.33，red_win 仍 100%，
+  anti-exploitation 没有改善；
+- 192/128 消融见 `results/rl_v4_20261030/`：complex 459.57 更高，但
+  dev_param / test_v7 回退，不注册；
 - 主权重未替换。
 
 ## 文件

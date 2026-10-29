@@ -34,6 +34,8 @@
 - **前最佳 / fallback：RL-Pattern / RL-Repair**，均未 promotion：
   `weights/rl_policy_weights_pattern.json`（sha256 `5c50db0e…3619ae`）、
   `weights/rl_policy_weights_repair.json`（sha256 `a759a7b6…1bd2b`）。
+- RL-Wide 独立 seed 20261029 已复现 complex/OOD 收益；`dev_red`
+  仍 red_win 100%；192/128 消融在 dev_param / test_v7 回退，不注册。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
   `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional；
   另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /

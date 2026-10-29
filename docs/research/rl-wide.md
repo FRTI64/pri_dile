@@ -123,6 +123,30 @@ PB 权重只给 1/11，避免 128/128 的大容量再次把 PB 学成唯一目�
 - legacy 20-field 兼容性：四分布 avg **554.96**、blind **564.72**
   （RL-Pattern 554.93 / 564.91）。
 
+### 4.3 独立 seed 复现（seed=20261029）
+
+| 候选 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood |
+|---|---:|---:|---:|---:|---:|
+| RL-Repair | 546.15 | 582.47 | 433.32 | 581.65 | 516.79 |
+| RL-Pattern | 546.66 | 582.78 | 447.26 | 581.68 | 520.86 |
+| **RL-Wide** | **546.60** | **582.79** | **452.05** | 581.62 | **522.14** |
+
+- RL-Wide 的 dev_param 与 RL-Pattern 持平（-0.06），比 RL-Repair
+  +0.45；dev_complex +4.79、dev_ood +1.28（vs RL-Pattern）；
+- 说明 seed 20261027 上的 complex/OOD 收益可复现；dev_param 不是
+  靠单次 seed 的噪声。
+
+### 4.4 dev_red（30 seeds）
+
+| 候选 | blue | red | diff | red_win |
+|---|---:|---:|---:|---:|
+| RL-Wide | 378.67 | 711.33 | -332.67 | 100.0% |
+| RL-Repair | 379.17 | 713.17 | -334.00 | 100.0% |
+
+anti-exploitation **没有改善**；RL-Wide 与 RL-Repair 基本同水平，
+red 仍 100% 击败蓝方。这与 PSRO / P3 的历史结论一致，不能把
+complex 提升当成 red 防御。
+
 ## 5. 消融：宽度与 PB 权重
 
 | 变体 | 宽度 | PB 权重 | dev_param | dev_complex | complex min_norm | test_v7 |
@@ -132,13 +156,16 @@ PB 权重只给 1/11，避免 128/128 的大容量再次把 PB 学成唯一目�
 | Wide gentle | 128/64 | 0 | 548.55 | 447.13 | 0.781 | 486.25 |
 | Wide 128/128 gentle | 128/128 | 0 | 548.89 | 445.90 | 0.730 | **486.38** |
 | **Wide balanced** | 128/128 | 1/11 | 548.24 | 452.79 | **0.973** | 485.50 |
+| Wide 192/128 balanced | 192/128 | 1/11 | 547.44 | **459.57** | 0.990 | 484.90 |
 
 结论：
 
 - 宽度本身主要提升 dev_complex / OOD 的上限，但会放大 PB 的波动；
 - 完全不训 PB 时，`pattern_breaker` 重新成为最差 family（min_norm 0.73–0.78）；
 - 小权重 PB（1/11）能在不牺牲 dev_param 的情况下把 min_norm 拉到 0.97；
-- 继续加大 PB 或宽度不是下一步首选，应先做独立 seed 复现和 red 检查。
+- 192/128 继续提高 dev_complex（459.57）和 complex min_norm（0.990），
+  但 dev_param -0.80、test_v7 -0.60，**不注册**；128/128 是当前
+  综合最优宽度（`results/rl_v4_20261030/`）。
 
 ## 6. 判定与下一步
 

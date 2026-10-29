@@ -21,6 +21,12 @@
 - **`train expand`**：`ipd/training/expand.py`，支持
   `ipd-rl-policy-v1` / `ipd-neural-policy-v1` 的 net2wider 扩展；
   `tests/test_expand.py` 覆盖形状、函数近似与确定性。
+- **RL-Wide 验证与宽度消融**：独立 seed 20261029 复现 dev_param
+  546.60 / dev_complex 452.05 / dev_ood 522.14；`dev_red` 仍
+  red_win 100%；192/128 消融 dev_complex 459.57，但 dev_param
+  547.44、test_v7 484.90 回退，不注册。报告
+  `results/rl_v4_20261029/`（复现/red）和
+  `results/rl_v4_20261030/`（192/128）。
 - **RL-Pattern（`rl-pattern`）**：从 RL-Repair + entropy v4 fine-tune
   出发，混入 `train_v4` 与新的 `train_pattern_breaker` profile，
   修复 Protocol v4 `pattern_breaker` 漏洞。全量 dev（30×2048，sample）：
