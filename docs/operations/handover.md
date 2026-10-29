@@ -17,26 +17,19 @@
 > - `rl-gate` 是学习型上层 gate 实验：阈值 0.9 基本退化为
 >   RL-Wide160（test 485.84），阈值 0.5 会过度切换；**No-Go**，
 >   仅保留为实验候选。
-> - **PSRO 已引入**：`ipd/training/psro.py`（blue-vs-red maximin +
->   PPO best-response oracle）；`psro`（meta-policy）和 `psro-br`
->   （最后一轮 best response）为实验候选，**未 promotion**。
-> - **从零 PSRO 已加入**：`psro-scratch` / `psro-scratch-br`；blue 只有
->   random/scratch base/从零 BR，现有模型只做 red；dev 480.43，但
->   dev_red / held-out Red-v5/v6 **red_win 0.0**；**未 promotion**。
-> - **PSRO v4 已训练**：`psro-v4` / `psro-v4-br`；3 轮 × 30 iter、
->   40% red、低 KL；BR_01 进入 blue maximin support（权重 1.0），
->   exploitability 290.00 → **0.00**；`psro-v4-br` 在 dev_red /
->   Red-v5/v6 上 **red_win 0.0**，但 dev_param 486.93 vs RL-Repair
->   546.47（-59.5）、min_norm 0.56；**anti-exploitation specialist，
->   未 promotion**。
+> - **PSRO / red 历史存档**：`ipd/training/psro.py`、`psro` /
+>   `psro-br` / `psro-scratch` / `psro-scratch-br` / `psro-v4` /
+>   `psro-v4-br` 仍注册为历史实验候选；dev/red 结果只用于复现，
+>   **不再作为当前评估或 promotion 门槛**。
 > - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
 >   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
 > - **v4 top 6 dev 已运行**；全候选 baseline 尚未运行；v3 的
 >   RL-Repair 484.32 / A60 476.54 / Adv-RL 471.44 只作 legacy。
 >   test 消费已永久锁定（provisional only）。
-> - anti-exploitation **未解决**：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
-> - 最近提交：`git log -1`（PSRO v4 更强 oracle 与 anti-exploitation specialist）。
+> - **blue-red 对战已停用**（ADR 0011）：以后不再用 red /
+>   exploitability 作为评估或 promotion 门槛；不新增 red 任务。
+> - 最近提交：`git log -1`（RL-Switch C++ 与 promotion 诊断）。
 
 > **2026-10-28 更新**
 >
@@ -126,20 +119,18 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | v3 legacy test 476.54；min_norm 0.9989 |
 | dev_complex / OOD 高 | **Adv-RL** | v3 legacy dev 526.58；complex 415.19 |
 | 限制 21 维观测、无 PyTorch 推理 | **SelfPlay-GRU** | 固定 21 维；v3 legacy dev 513.85 |
-| 需要 C++ | 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
+| 需要 C++ | RL-Switch / 主权重 RL-PPO / Adv-RL / Neural / GRU / Final / Resp3 / Bayes | Triple 没有 C++ 版 |
 | 纯规则、无权重 | **Final-tuned** 或 **Triple-majority** | v3 legacy dev 523.39 / 517.07 |
-| anti-exploitation 研究 | **PSRO-Meta**（`psro`） | 仅实验；dev 527.71，held-out red diff -21.4%；未 promotion |
-| 从零 anti-exploitation | **PSRO-Scratch**（`psro-scratch`） | 仅实验；dev 480.43，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
-| 最强 anti-exploitation specialist | **PSRO-V4-BR**（`psro-v4-br`） | 仅实验；dev_param 486.93，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
+| PSRO / red 历史对照 | `psro` / `psro-scratch` / `psro-v4` 等 | 仅历史复现；**不再作为评估或 promotion 门槛**（ADR 0011） |
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
 `dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch；C++ 双权重 + 开关
 逻辑已完成并通过固定序列 action parity，但还需要第 1/100 天行为、权重
 checksum 和真实比赛接口验证。RL-Switch 的 test_v7 增益已用两个 seed
-验证，但 C++ 只做了离线 parity，且 red 无改善；test 消费已在 policy 层
-永久关闭，provisional test 不能当作独立 final。得到确认后才把
-`weights/rl_policy_weights.json` 替换为 RL-Switch 或 RL-Wide160。当前
-文档不假设已经替换。
+验证；blue-red 已停用（ADR 0011），不再作为 promotion 证据。test 消费
+已在 policy 层永久关闭，provisional test 不能当作独立 final。得到确认后
+才把 `weights/rl_policy_weights.json` 替换为 RL-Switch 或 RL-Wide160。
+当前文档不假设已经替换。
 
 ---
 
@@ -166,7 +157,8 @@ checksum 和真实比赛接口验证。RL-Switch 的 test_v7 增益已用两个 
 | `dev_red` / `test_red` | exploitability | 30 seeds |
 
 `test_v7` / `test_red` **永久锁定**：所有运行都是 provisional，不写 usage
-ledger，不能用于排名或 final。
+ledger，不能用于排名或 final。**`dev_red` / `test_red` 是历史口径**；
+blue-red 对战已停用（ADR 0011），不再参与当前选模或 promotion。
 
 v4 **top 6 dev 已运行**（30 fields × 2048，sample，v5 GPU/CPU）；
 全候选 baseline 尚未运行。test_v7 为 provisional，不参与选模：
@@ -385,6 +377,9 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 ---
 
 ## 4. 实验结论账本
+
+> **历史说明：** 以下 E4 / P3 / PSRO / red 相关结论只用于复现。
+> blue-red 对战已停用（ADR 0011），不再作为当前评估或 promotion 门槛。
 
 ### Protocol v4（2026-10-27）
 
@@ -755,12 +750,7 @@ python3 -m ipd protocol eval --candidates all \
 python3 -m ipd protocol eval \
   --candidates RL-Switch,RL-Wide160,RL-Pattern,RL-Repair,RL-PPO-Hard60,Adv-RL \
   --tiers test_v7 --fields 50 --n 2048 --no-consume
-python3 -m ipd protocol red \
-  --candidates RL-Switch,RL-Wide160,RL-Pattern,RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tier dev_red --seeds 30
-python3 -m ipd protocol red \
-  --candidates RL-Switch,RL-Wide160,RL-Pattern,RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tier test_red --seeds 30 --no-consume
+# red / blue-red 命令仅作历史复现，当前流程不再执行（ADR 0011）
 ```
 
 Legacy 四分布 / blind（只用于历史复现）：
@@ -969,29 +959,20 @@ mine/theirs = 到此日之前的动作
 12. **所有候选都应在第 100 天 D**；移植时漏掉会损失最后一天收益。
 13. **NPU 路径未实机验证**：代码支持 `--device npu`，本轮只在 CUDA/CPU
     上完成训练和测试。
-14. **PSRO 不是 promotion 证据**：`psro` / `psro-br` 只做实验；
-    PSRO-Meta 的 dev_param 仍低于 RL-Repair 约 15.6 分，red 也仍 100%
-    击败所有候选。不要用 meta-game exploitability 单独宣称 anti-exploitation
-    解决。
-15. **从零 PSRO 是 anti-exploitation specialist**：`psro-scratch` 在
-    dev_red / Red-v5/v6 上 red_win 0.0，但 dev_param 只有 480.43、
-    min_norm 0.5501；它不能替代 RL-Repair，也不能只用 red 结果证明
-    promotion。Scratch-Base（528.99）是更保守的 from-scratch 选择。
-16. **PSRO v4 仍是 specialist**：`psro-v4-br` 在 dev_red / Red-v5/v6
-    上 red_win 0.0、exploitability 0.00，但 dev_param 486.93
-    （-59.5 vs RL-Repair）、min_norm 0.5599；不能替代主权重，也不能
-    用 in-population exploitability 单独证明 anti-exploitation 解决。
-17. **RL-Pattern / RL-Wide / RL-Wide160 仍有过拟合迹象**：test_v7
+14. **PSRO / red 仅历史**：`psro` / `psro-scratch` / `psro-v4` 等
+    只保留为历史实验和复现；blue-red 已停用（ADR 0011），不再作为
+    promotion 证据，也不新增 red 任务。
+15. **RL-Pattern / RL-Wide / RL-Wide160 仍有过拟合迹象**：test_v7
     provisional 分别比 RL-Repair 低 0.88 / 0.81 / 0.69，test-only 的
     `hyper_extort` / `axelrod_extra` 仍有回退。不要把 dev 第一当成
-    promotion 证据；先用独立 seed 复现，并检查 red / 外部比赛。
-18. **RL-Wide / RL-Wide160 部署文件更大**：128/128 权重约 890KB，
+    promotion 证据；先用独立 seed 复现，并检查外部比赛。
+16. **RL-Wide / RL-Wide160 部署文件更大**：128/128 权重约 890KB，
     160/128 约 1.1MB，C++ 导出已通过，但比 64/32 的约 249KB 更大；
     如果比赛有文件大小限制，优先用 RL-Pattern 或 RL-Repair。
-19. **RL-Switch C++ 已移植但未实战**：`cpp/policies/rl_switch_policy.hpp`
+17. **RL-Switch C++ 已移植但未实战**：`cpp/policies/rl_switch_policy.hpp`
     组合 160/128 与 64/32 两个 MLP，固定序列 action parity 通过；
-    但尚未接入真实比赛接口，test 增益也不能替代 red 证据。
-19. **RL-Gate 不是提交候选**：学习型 gate 阈值 0.5 过度切换、
+    但尚未接入真实比赛接口；test 增益仍需外部比赛验证。
+18. **RL-Gate 不是提交候选**：学习型 gate 阈值 0.5 过度切换、
     0.9 退化为 RL-Wide160；分类准确率不等于得分最优。不要用
     `rl-gate` 替换 `rl-switch`，除非重新设计 cost-sensitive gate。
 

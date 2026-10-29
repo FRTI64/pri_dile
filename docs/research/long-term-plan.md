@@ -1,19 +1,20 @@
 # IPD 策略长期改进计划（无 3 天限制）
 
-- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool Go / league-lite No-Go / P3 expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go; **Protocol v4 已定义（2026-10-27，baseline 未运行）**
+- **Status:** E0 PASS; E1c `RL-Repair` Go candidate; E2 No-Go; P3 red pool / league-lite / expansion No-Go; P2 C1/C2/C3 offline No-Go; P2 C2/C3 excitation data Go / planner No-Go; P2 C3 three-way gate + MoE No-Go; P2 C3 repeated calibration No-Go; **Protocol v4 已定义**; **blue-red 已停用（ADR 0011）**
 - **New split:** `train_v4` / `dev_param` / `dev_family` / `dev_complex` /
   `dev_axelrod` / `dev_ood` / `test_v7`，见
   [../reference/protocol-v4.md](../reference/protocol-v4.md)。旧 heldout / v2
   流程仅作历史记录。
 - **Repo:** `/home/frti64/pri_dile`
-- **Current best candidate (Protocol v4 dev top 5):** `RL-Wide160` /
-  `rl-wide160`（160/128 net2wider；未 promotion）
-- **Prior best / fallbacks:** `RL-Wide` / `rl-wide`（128/128）、
-  `RL-Pattern` / `rl-pattern`（64/32）、`RL-Repair` / `rl-repair`
-  （E1c；未 promotion）；`RL-PPO`（主权重，`rl`）、
+- **Current best candidate (Protocol v4 dev/test top 6):**
+  `RL-Switch` / `rl-switch`（窄 meta；test 488.26/487.51；
+  Python + C++；未 promotion）
+- **Prior best / fallbacks:** `RL-Wide160` / `rl-wide160`、
+  `RL-Wide` / `rl-wide`、`RL-Pattern` / `rl-pattern`、
+  `RL-Repair` / `rl-repair`（未 promotion）；`RL-PPO`（主权重，`rl`）、
   `RL-PPO-Hard60`（A60，`rl-hard60`）
 - **E0 harness:** `python3 -m ipd league` / `docs/research/e0-league.md`
-- **目标:** 在未知对手分布、一次固定提交的比赛中，最大化期望总分，同时控制 worst-case / 被针对性剥削的风险。
+- **目标:** 在未知对手分布、一次固定提交的比赛中，最大化期望总分，同时控制 worst-case 风险。**blue-red / exploitability 不再是评估或 promotion 门槛（ADR 0011）。**
 
 ---
 
@@ -165,7 +166,10 @@ ipd/evaluation/opponent_suite.py
 
 ---
 
-### Track D：League / PSRO（P3，中期）
+### Track D：League / PSRO（P3，中期；**已暂停**）
+
+> **blue-red 已停用（ADR 0011）**：以下 Track D / red oracle /
+> exploitability 内容只作历史设计记录，不再安排新实验。
 
 目标：把“单个 red”升级成“策略种群 + meta-game”。
 

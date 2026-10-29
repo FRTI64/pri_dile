@@ -23,7 +23,7 @@
 
 ## 当前状态
 
-- 最近提交：`git log -1`（PSRO v4 更强 oracle 与 anti-exploitation specialist）。
+- 最近提交：`git log -1`（RL-Switch C++ 与 promotion 诊断）。
 - 最近完整测试：**330 tests OK**；`python3 -m ipd list-policies` 为
   **31 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
@@ -35,25 +35,18 @@
   RL-Repair**，均未 promotion。
 - RL-Switch 独立 seed 20261029 已复现 test +2.90；Protocol catalog
   suite +0.75；158 bank 持平；level/complexity 高档 tier 小幅提升；
-  red 仍 100%。C++ 双权重已完成 action parity，待接真实接口。
+  blue-red 已停用。C++ 双权重已完成 action parity，待接真实接口。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
   `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional；
   另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /
   test 50）；旧四分布 / blind / v2 / v3 是 legacy。
 - `test_v7` / `test_red` **永久锁定**（`consume_test=false`），CLI 无覆盖
   开关；所有 test 运行都是 provisional，不写 usage ledger。
-- anti-exploitation 未解决：Red-v5 / Red-v6 对 top 3 仍 100% 胜率。
-- **PSRO 已引入：** `psro`（meta-policy）/ `psro-br` 为实验候选；
-  PSRO-Meta 在 held-out Red-v5/v6 上 red diff -21.4%，但 dev_param
-  527.71 vs 543.35，未 promotion。详见 `docs/research/psro.md`。
-- **PSRO v4：** `psro-v4` / `psro-v4-br`；3 轮 × 30 iter、40% red、
-  低 KL；BR_01 入 support，exploitability 0；dev_param 486.93、
-  min_norm 0.56，但 dev_red / Red-v5/v6 red_win 0.0；未 promotion。
-  详见 `docs/research/psro.md` §8。
-- **从零 PSRO：** `psro-scratch` / `psro-scratch-br`；blue 只有
-  random/scratch base/BR，已有模型只做 red；dev 480.43，但
-  dev_red / Red-v5/v6 red_win 0.0；未 promotion。详见
-  `docs/research/psro-scratch.md`。
+- **blue-red 已停用（ADR 0011）：** 不再用 red / exploitability 作为
+  评估或 promotion 门槛，也不新增 red 任务。
+- **PSRO / red 历史：** `psro` / `psro-br` / `psro-scratch` /
+  `psro-scratch-br` / `psro-v4` / `psro-v4-br` 仍注册为历史实验
+  候选；dev 与红队数字只用于复现，不参与当前推荐。
 
 ### 头部候选（Protocol v4 dev top 6；30×2048 sample）
 
@@ -78,10 +71,10 @@
 | Adv-RL | `adv-rl` | aggressive config | 526.58 | 583.20 | 415.19 | 487.22 | 471.44 |
 | RL-PPO（主权重） | `rl` | `weights/rl_policy_weights.json` | 524.37 | 582.72 | 397.90 | 478.61 | - |
 
-Red-v5 / Red-v6 对 top 3 仍 100% 胜率。旧 official/blind/heldout/v2 表已进入
-legacy，不能与新表混用。
+blue-red 已停用（ADR 0011）；旧 official/blind/heldout/v2 表和
+red/PSRO 数字都只作历史存档，不能与新表混用。
 
-### 已完成的 Gate 结论
+### 已完成的 Gate 结论（red/PSRO 为历史）
 
 - **E0：PASS。** cross-play / Nash / Elo / exploitability / heldout red
   完整；报告 `results/e0_league_20261026/`。
@@ -145,14 +138,10 @@ legacy，不能与新表混用。
 3. **E3 multi-teacher distillation + gating（研究备选）**
    - 教师：RL-Repair / A60 / Adv-RL / SelfPlay / 规则策略；
    - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune；
-   - 报告 per-family、min_norm、CVaR、held-out red，而不只看官方均值。
-4. **P3 / PSRO anti-exploitation（仅在有新 held-out red 时）**
-   - 之前的 red pool / PSRO-lite / 完整 PSRO / PSRO v4 都未过 Gate D；
-     不要复读相同实验。
-   - v4 已证明更强 blue oracle 能让 learned BR 入 support 并做到
-     red_win 0.0，但 official 仍掉约 59.5；下一步应做约束/多目标
-     oracle（official family floor + red objective）或 red oracle
-     （double oracle），不要重复当前 3 轮 blue-only 配置。
+   - 报告 per-family、min_norm、CVaR 和外部比赛结果，而不只看官方均值。
+4. **blue-red / PSRO anti-exploitation：不安排**
+   - 用户已明确停用 blue-red 对战（ADR 0011）；不要新增 red pool、
+     PSRO anti-exploitation 或 red oracle 任务。
 5. **E9 容量/特征 ablation（可选，低优先级）**
    - 85→128→64 vs 85→64→32，同 init/seed/data；
    - 或一次只加一组新特征（response gap / phase / first-D timing）；
@@ -165,8 +154,8 @@ legacy，不能与新表混用。
   test 消费永久锁定。
 - `test_v7` / `test_red` 运行结果标记 `selection_eligible=false`，
   不写 usage ledger；不要用 test 结果排名或选模。
-- 不把“对训练 red 有效”当成 anti-exploitation 解决；必须有 held-out red
-  best response。
+- blue-red 已停用；不再要求 red best response，也不把 red 结果当成
+  评估或 promotion 证据。
 - `min_family` 跨 family 不可比；看 `min_norm_family` / per-family /
   per-opponent。
 - 任何提升都要同时报告 official、blind、heldout、CVaR、min_norm 和 red。

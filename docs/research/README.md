@@ -14,6 +14,9 @@
 
 ## 实验总表
 
+> PSRO / red / anti-exploitation 行只作历史记录；blue-red 已停用
+> （ADR 0011），不再作为当前评估或 promotion 门槛。
+
 | 阶段 | 文档 | 结论 |
 |---|---|---|
 | Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | **已定义**；977 configs + level/complexity + Axelrod；baseline 未运行 |

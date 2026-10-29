@@ -36,7 +36,7 @@
 | PSRO | 完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro` / `psro-br` 实验候选，未 promotion |
 | PSRO from scratch | blue 仅 random/scratch/BR，现有模型只做 red；`psro-scratch` / `psro-scratch-br`；red_win 0.0，但 dev 480.43；未 promotion |
 | PSRO v4 | 3 轮 × 30 iter 更强 oracle；`psro-v4` / `psro-v4-br`；BR_01 入 support（exploitability 0），red_win 0.0，但 dev 486.93 / min_norm 0.56；未 promotion |
-| 已知未解决 | anti-exploitation；Red-v5/v6 仍 100% 击败 top 3；`psro-scratch` / `psro-v4-br` red_win 0.0，但 dev 分别 480.43 / 486.93；PSRO-Meta dev 掉约 15.6 |
+| blue-red 状态 | **已停用**（ADR 0011）：不再用 red / exploitability 作为评估或 promotion 门槛；PSRO/red 结果仅历史存档 |
 
 推荐、权重、风险和 promotion 条件以
 [operations/handover.md](operations/handover.md) 为准。
@@ -128,7 +128,8 @@
 | [decisions/README.md](decisions/README.md) | ADR 索引与模板 |
 | [decisions/0001-frozen-league-evaluation.md](decisions/0001-frozen-league-evaluation.md) | 用冻结 league + held-out 作为主评估 |
 | [decisions/0002-no-promotion-without-reproduction.md](decisions/0002-no-promotion-without-reproduction.md) | 未独立复现不得替换主权重 |
-| [decisions/0003-anti-exploitation-unsolved.md](decisions/0003-anti-exploitation-unsolved.md) | 不把 red 训练收益当成 anti-exploitation |
+| [decisions/0003-anti-exploitation-unsolved.md](decisions/0003-anti-exploitation-unsolved.md) | 不把 red 训练收益当成 anti-exploitation（历史） |
+| [decisions/0011-stop-blue-red-gating.md](decisions/0011-stop-blue-red-gating.md) | **停止用 blue-red 作为评估/promotion 门槛** |
 | [decisions/0004-archive-no-go-research.md](decisions/0004-archive-no-go-research.md) | No-Go 实验归档，不删除原始记录 |
 
 ## 4. 阅读路径

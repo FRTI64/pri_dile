@@ -17,6 +17,7 @@
 | [0008](0008-protocol-v4-style-expansion.md) | Protocol v4 新增风格集与旧 family 扩展 | Accepted |
 | [0009](0009-protocol-v4-level-complexity.md) | Protocol v4 按思考等级/复杂度划分对手集 | Accepted |
 | [0010](0010-lock-test-consumption.md) | 永久锁定 test_v7 / test_red 消费 | Accepted |
+| [0011](0011-stop-blue-red-gating.md) | 停止用 blue-red 对战作为评估/promotion 门槛 | Accepted |
 
 ## 新 ADR 模板
 

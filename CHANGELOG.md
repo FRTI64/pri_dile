@@ -205,12 +205,17 @@
 
 ### Changed
 
-- 注册候选从 20 增至 29（新增 `rl-pattern` / `rl-wide` /
-  `rl-wide160` / `rl-switch` / `rl-gate`；此前 24 含 4 个 PSRO）；
-  完整测试 **327 OK**。
+- **停止使用 blue-red 对战作为评估/promotion 门槛**（ADR 0011）：
+  `dev_red` / `test_red` / exploitability / PSRO anti-exploitation
+  结果只作历史存档；不新增 red 任务。候选比较继续使用 Protocol v4
+  dev/test、level/complexity、独立 seed、Python/C++ parity 和外部
+  比赛结果。
+- 注册候选从 20 增至 31（新增 `rl-pattern` / `rl-wide` /
+  `rl-wide160` / `rl-switch` / `rl-gate` / `psro-v4` /
+  `psro-v4-br`）；完整测试 **330 OK**。
 - Protocol v4 top 6（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
   RL-Wide160 / RL-Switch）的 dev 已运行；RL-Switch 当前最佳，
-  但 Python-only，暂不 promotion；`rl-gate` 为近中性实验候选。
+  Python + C++ 已移植，暂不 promotion；`rl-gate` 为近中性实验候选。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为
