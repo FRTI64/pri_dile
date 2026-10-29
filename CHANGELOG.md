@@ -15,7 +15,9 @@
   min_norm 0.9970。`test_v7` provisional 485.62（vs RL-Repair
   486.31，未消费）；`dev_red` / `test_red` 仍 red_win 100%；
   分级诊断中 dev_level3/4 与 dev_complexity4 提升，低难度 tier
-  小幅回退。独立 seed 20261029 复现 complex/OOD 收益。注册为实验
+  小幅回退。后续 `train_hard` / 160/160 / 192 变体只有噪声级收益
+  或回退，均不注册（`results/rl_v4_20261033/`、`1034/`、`1031/`）。
+  独立 seed 20261029 复现 complex/OOD 收益。注册为实验
   候选，**未 promotion**；权重
   `weights/rl_policy_weights_wide160.json`，报告
   `docs/research/rl-wide160.md`、`results/rl_v4_20261032/`。

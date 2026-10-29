@@ -32,7 +32,9 @@
 - 分级诊断：`dev_level3` 451.52、`dev_level4` 447.54、
   `dev_complexity4` 401.27；低难度 tier 有 0.1–0.8 的小幅回退；
 - legacy 20-field：四分布 avg **554.77**、blind **564.75**；
-- C++ 导出验证通过（`N_HIDDEN0=160` / `N_HIDDEN1=128`）。
+- C++ 导出验证通过（`N_HIDDEN0=160` / `N_HIDDEN1=128`）；
+- 后续消融：`train_hard` 仅 +0.05 dev / +0.14 test；160/160 回退；
+  均未注册（`results/rl_v4_20261033/`、`results/rl_v4_20261034/`）。
 
 ## 独立 seed（20261029）
 
