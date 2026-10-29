@@ -1,0 +1,289 @@
+{
+  "meta": {
+    "algorithm": "ppo",
+    "seed": 20261054,
+    "dists": [
+      "dev_param",
+      "dev_complex",
+      "dev_ood"
+    ],
+    "train_dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide",
+      "train_v4",
+      "train_complex",
+      "periodic_hard"
+    ],
+    "opponent_weights": [],
+    "opponent_pool": [],
+    "opponent_pool_path": null,
+    "opponent_penalty": 0.0,
+    "opponent_fraction": 1.0,
+    "fields_per_dist": 2,
+    "dist_weights": {
+      "original": 1.0,
+      "late": 1.0,
+      "grim30": 1.0,
+      "wide": 2.0,
+      "train_v4": 2.0,
+      "train_complex": 1.0,
+      "periodic_hard": 1.0
+    },
+    "n": 128,
+    "val_fields_per_dist": 2,
+    "val_n": 256,
+    "hidden": [
+      160,
+      128
+    ],
+    "lr": 2e-05,
+    "clip": 0.2,
+    "vf_coef": 0.5,
+    "ent_coef": 0.01,
+    "bc_kl_coef": 0.1,
+    "risk_objective": "none",
+    "risk_coef": 0.0,
+    "risk_quantile": 0.2,
+    "dro_eta": 0.5,
+    "dro_quantile": 0.5,
+    "dro_blend": 0.5,
+    "dro_floor": 0.1,
+    "dirichlet_concentration": 0.0,
+    "freeze_policy_trunk": false,
+    "select_metric": "balanced",
+    "save_all_checkpoints": "results/rl_v4_20261041/wide160_periodic_ckpts",
+    "gamma": 1.0,
+    "lam": 0.95,
+    "center_rewards": false,
+    "center_advantages": true,
+    "value_bias": 5.5,
+    "safe": true,
+    "init_weights": "weights/rl_policy_checkpoint_wide160.json",
+    "feature_version": "ipd-neural-features-v1",
+    "best_iteration": 0,
+    "best_val": {
+      "by_dist": {
+        "dev_param": 540.939453125,
+        "dev_complex": 433.15234375,
+        "dev_ood": 513.8515625
+      },
+      "avg": 495.9811197916667,
+      "worst": 433.15234375,
+      "selection": 480.27392578125
+    }
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "val": {
+        "by_dist": {
+          "dev_param": 540.939453125,
+          "dev_complex": 433.15234375,
+          "dev_ood": 513.8515625
+        },
+        "avg": 495.9811197916667,
+        "worst": 433.15234375,
+        "selection": 480.27392578125
+      },
+      "phase": "init"
+    },
+    {
+      "iteration": 1,
+      "reward_mean": 528.1918402777778,
+      "reward_by_dist": {
+        "original": 563.6015625,
+        "late": 545.66015625,
+        "grim30": 552.87109375,
+        "wide": 566.9453125,
+        "train_v4": 532.712890625,
+        "train_complex": 467.48046875,
+        "periodic_hard": 424.796875
+      },
+      "reward_min": 98,
+      "reward_max": 977,
+      "rollout_s": 14.029757022857666,
+      "train_s": 2.491551399230957,
+      "lr": 1.7071067811865477e-05,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "periodic_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0007706356910007187,
+      "value_loss": 0.09538283121996913,
+      "entropy": 0.09542414501052478,
+      "approx_kl": 0.0002718147755972854,
+      "clip_frac": 0.002228918765091482,
+      "bc_kl": 0.0002845489909602826,
+      "explained_var": 0.9443420182680655,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 540.41796875,
+          "dev_complex": 432.65234375,
+          "dev_ood": 514.796875
+        },
+        "avg": 495.9557291666667,
+        "worst": 432.65234375,
+        "selection": 480.1298828125
+      }
+    },
+    {
+      "iteration": 2,
+      "reward_mean": 532.9787326388889,
+      "reward_by_dist": {
+        "original": 577.97265625,
+        "late": 540.78515625,
+        "grim30": 564.70703125,
+        "wide": 579.447265625,
+        "train_v4": 520.298828125,
+        "train_complex": 462.0234375,
+        "periodic_hard": 451.828125
+      },
+      "reward_min": 96,
+      "reward_max": 970,
+      "rollout_s": 10.217897176742554,
+      "train_s": 0.6528704166412354,
+      "lr": 1e-05,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "periodic_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -1.002066710498184e-05,
+      "value_loss": 0.08634502537034709,
+      "entropy": 0.09986537836235145,
+      "approx_kl": 0.0002575106307170715,
+      "clip_frac": 0.0021988721745056583,
+      "bc_kl": 0.0006838516196223971,
+      "explained_var": 0.9467584921191722,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 540.591796875,
+          "dev_complex": 430.26953125,
+          "dev_ood": 512.6171875
+        },
+        "avg": 494.4928385416667,
+        "worst": 430.26953125,
+        "selection": 478.43701171875
+      }
+    },
+    {
+      "iteration": 3,
+      "reward_mean": 526.5802951388889,
+      "reward_by_dist": {
+        "original": 581.26171875,
+        "late": 559.5234375,
+        "grim30": 552.65625,
+        "wide": 561.009765625,
+        "train_v4": 519.390625,
+        "train_complex": 469.33984375,
+        "periodic_hard": 415.640625
+      },
+      "reward_min": 94,
+      "reward_max": 977,
+      "rollout_s": 10.470854759216309,
+      "train_s": 0.5277504920959473,
+      "lr": 2.9289321881345257e-06,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "periodic_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.00029382658374680465,
+      "value_loss": 0.09651915812543754,
+      "entropy": 0.10341914325695613,
+      "approx_kl": 0.00025516166096163016,
+      "clip_frac": 0.0007846608501056146,
+      "bc_kl": 0.001230478718282719,
+      "explained_var": 0.9395249739103696,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 540.1328125,
+          "dev_complex": 430.9140625,
+          "dev_ood": 512.3203125
+        },
+        "avg": 494.4557291666667,
+        "worst": 430.9140625,
+        "selection": 478.5703125
+      }
+    },
+    {
+      "iteration": 4,
+      "reward_mean": 522.0208333333334,
+      "reward_by_dist": {
+        "original": 567.04296875,
+        "late": 558.8203125,
+        "grim30": 553.00390625,
+        "wide": 551.1640625,
+        "train_v4": 521.810546875,
+        "train_complex": 463.6796875,
+        "periodic_hard": 409.69140625
+      },
+      "reward_min": 98,
+      "reward_max": 978,
+      "rollout_s": 13.660416841506958,
+      "train_s": 0.6681900024414062,
+      "lr": 0.0,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "periodic_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0005030680296276214,
+      "value_loss": 0.09025497117946887,
+      "entropy": 0.1021660227842372,
+      "approx_kl": 2.468209797215243e-05,
+      "clip_frac": 0.0,
+      "bc_kl": 0.0017888940718217656,
+      "explained_var": 0.9417702184788729,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 540.060546875,
+          "dev_complex": 431.13671875,
+          "dev_ood": 513.62109375
+        },
+        "avg": 494.939453125,
+        "worst": 431.13671875,
+        "selection": 478.98876953125
+      }
+    }
+  ]
+}

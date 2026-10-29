@@ -149,7 +149,8 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | 输入特征 v2 | 85→97，三端 parity 通过；dev_complex +2～4 但 dev_param/test 回退；**No-Go** |
 | 全量对手扫描 | 158 / 977 / 224 对手；薄弱点：extortion/ZD、periodic/Kamikaze、Gap/FSM、PB 尾部、noisy/Joss |
 | Extort-hard | 新增 `extort_hard`；strong/gentle 均只小幅改善 extort，PB/complex 回退；**No-Go** |
-| RL-Gate | 学习型上层 gate；阈值 0.5 过度切换、0.9 退化为 RL-Wide160；**No-Go**（实验候选） |
+| RL-Gate | 学习型上层 gate；CS 版 dev 548.62/454.61，但 test 486.98；**No-Go**（实验候选） |
+| Periodic-hard | 新增 `periodic_hard`；test +0.77，但 complex/PB 回退；**No-Go** |
 | **RL-Pattern** | **v4 dev 4/5 tier 超 RL-Repair**（pattern_breaker 236.8→420.3）；test provisional -0.88；未 promotion |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

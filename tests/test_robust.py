@@ -8,6 +8,9 @@ from ipd.evaluation.distributions import TRAIN_DISTS, build_train_dist_field
 from ipd.evaluation.extort import (
     EXTORT_HARD_OPPONENTS, build_extort_hard_field,
 )
+from ipd.evaluation.periodic import (
+    PERIODIC_HARD_OPPONENTS, build_periodic_hard_field,
+)
 from ipd.evaluation.robust import (
     REPAIR_OPPONENTS, ROBUST_OPPONENTS, build_repair_field,
     build_robust_field,
@@ -105,6 +108,25 @@ class ExtortHardTests(unittest.TestCase):
         self.assertIn("ExtortZD", kinds)
         self.assertTrue(any(getattr(x, "chi", 0.0) >= 4.5
                             for x in field if type(x).__name__ == "ExtortZD"))
+
+
+class PeriodicHardTests(unittest.TestCase):
+    def test_registered_and_deterministic(self) -> None:
+        self.assertIn("periodic_hard", TRAIN_DISTS)
+        a = build_periodic_hard_field(20261037, 80)
+        b = build_periodic_hard_field(20261037, 80)
+        self.assertEqual(len(a), 80)
+        self.assertEqual([x.name for x in a], [x.name for x in b])
+
+    def test_includes_periodic_and_anchors(self) -> None:
+        names = {name for name, _weight, _factory in PERIODIC_HARD_OPPONENTS}
+        for required in ("Kamikaze", "Periodic", "DynamicWindow",
+                         "TFT", "Grim", "AllC", "AllD"):
+            self.assertIn(required, names)
+        field = build_periodic_hard_field(7, 200)
+        kinds = {type(x).__name__ for x in field}
+        self.assertIn("Kamikaze", kinds)
+        self.assertIn("Periodic", kinds)
 
 
 if __name__ == "__main__":

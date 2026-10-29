@@ -482,8 +482,22 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   516.07、test 485.67（过度切换）。
 - 阈值 0.9：dev_param 548.30、dev_complex 454.63、dev_ood 521.34、
   test 485.84；基本退化为 RL-Wide160，远低于 RL-Switch。
+- cost-sensitive 版（complex 权重 2.5、margin 5）：dev_param
+  548.62、dev_complex 454.61、dev_ood 521.40，接近 RL-Switch；
+  test 486.98，仍低 1.28。
 - 判定：**No-Go**，保留为实验候选，不进入提交推荐。报告
   `docs/research/rl-gate.md`、`results/meta_20261040/`。
+
+### Periodic-hard（2026-10-29；No-Go）
+
+- 新增训练专用 `periodic_hard`：Kamikaze period 4–12、7 种短周期
+  Periodic、DynamicWindow、RandomFSM + anchors。
+- RL-Wide160 上 4 iter：dev_param 548.54、dev_complex 451.41、
+  dev_ood 520.43、test_v7 486.39；frequent_kamikaze +8、
+  temporal +2，但 pattern_breaker -41、complex min_norm 0.909。
+- 判定：**No-Go，不注册候选**；不要继续加大权重。若继续，
+  应训练 periodic specialist + meta gate。报告
+  `docs/research/periodic-hard.md`、`results/rl_v4_20261041/`。
 
 ### 输入特征 v2（2026-10-29；No-Go）
 

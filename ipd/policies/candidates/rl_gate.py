@@ -1,10 +1,10 @@
 """Candidate: learned match-level gate between RL-Wide160 and RL-Repair.
 
 The gate observes the first 10 rounds (played by RL-Wide160) and then chooses
-one expert for the rest of the match.  The gate is a small logistic model
-trained on train-tier counterfactual rollouts; see
-``results/meta_20261040/build_gate.py`` and ``docs/research/rl-gate.md``.
-Python-only for now.
+one expert for the rest of the match.  The default gate is the cost-sensitive
+logistic model trained on train-tier counterfactual rollouts; see
+``results/meta_20261040/train_cost_sensitive_gate.py`` and
+``docs/research/rl-gate.md``.  Python-only for now.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ KIND = "rl-gate"
 DISPLAY = "RL-Gate"
 BASE_WEIGHTS = "rl_policy_weights_wide160.json"
 ALT_WEIGHTS = "rl_policy_weights_repair.json"
-GATE_WEIGHTS = "meta_gate_wide160_repair.json"
+GATE_WEIGHTS = "meta_gate_cs_wide160_repair.json"
 
 
 def build(*, seed: int = 20261024, mode: str = "sample",

@@ -126,7 +126,8 @@ legacy，不能与新表混用。
 2. **按全量扫描结果做定向训练（研究首选）**
    - `extort_hard` 已实现但 **No-Go**（PB/complex 回退）；不要再
      加大权重，改做显式 ZD 识别 + expert / portfolio；
-   - 仍建议新增 `train_periodic`（Kamikaze / Periodic / DynamicWindow）；
+   - `periodic_hard` 也已实现但 **No-Go**（test +0.77，PB -41）；
+     若继续，应训练 periodic specialist + meta gate；
    - 加入 Gap0.45/0.55/0.64、FSM.F1/F5、ProbeBot、Harvest21 到
      hard mining；
    - 参考 `docs/research/weak-opponents-20261036.md` 和

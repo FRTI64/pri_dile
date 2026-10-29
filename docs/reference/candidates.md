@@ -37,7 +37,7 @@ python3 -m ipd list-policies
 | `rl-wide` | RL-Wide | RL 128/128 | `weights/rl_policy_weights_wide.json` | v4 dev 前列；complex min_norm 0.973；未 promotion |
 | `rl-wide160` | RL-Wide160 | RL 160/128 | `weights/rl_policy_weights_wide160.json` | v4 dev_complex 454.31；complex/ood min_norm 0.997；未 promotion |
 | `rl-switch` | RL-Switch | meta（2 RL） | `weights/rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | **v4 dev/test 最佳（top 6）；Python-only；未 promotion** |
-| `rl-gate` | RL-Gate | meta（learned gate） | 同上 + `weights/meta_gate_wide160_repair.json` | 实验；阈值 0.9 近中性；**No-Go** |
+| `rl-gate` | RL-Gate | meta（learned gate） | 同上 + `weights/meta_gate_cs_wide160_repair.json` | 实验；CS 版 dev 548.62/454.61、test 486.98；**No-Go** |
 | `adv-mlp` | Adv-MLP | MLP + 规则 | base 权重 + `configs/adversarial_policy_config*.json` | 只有 Python |
 | `adv-gru` | Adv-GRU | GRU + 规则 | base 权重 + `configs/adversarial_gru_policy_config*.json` | 只有 Python |
 | `adv-rl` | Adv-RL | RL + 规则 | `rl_policy_weights_bc.json` + `configs/adversarial_rl_policy_config*.json` | v3 dev 高；test 第三；red 弱（legacy） |

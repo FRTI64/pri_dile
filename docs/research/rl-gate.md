@@ -1,10 +1,11 @@
 # RL-Gate：用机器学习学习上层 meta 开关（No-Go）
 
-> **状态（2026-10-29）：基础设施 + 实验完成，效果 No-Go。**
-> 用监督学习训练一个 match-level gate，在前 10 回合后选择
-> RL-Wide160 或 RL-Repair。阈值 0.5 时会过度切换、dev_complex
-> 掉 18.8；阈值校准到 0.9 后基本退化为 RL-Wide160，test 只
-> +0.2，远不如手写 RL-Switch 的 +2.6。
+> **状态（2026-10-29）：基础设施 + 两版 gate 实验完成，效果 No-Go。**
+> 分类器 gate 阈值 0.5 会过度切换、dev_complex 掉 18.8；阈值 0.9
+> 基本退化为 RL-Wide160。随后实现 **cost-sensitive / constrained
+> gate**，把 complex/ood 误切代价写进训练目标：dev 548.62 /
+> complex 454.61，接近手写 RL-Switch；但 test 486.98，仍低于
+> RL-Switch 488.26。
 > **不推荐 promotion；保留为实验候选。**
 
 ## 1. 动机
@@ -76,7 +77,51 @@ train_acc=0.810 val_acc=0.816
 4. **单阈值全局切换**：一个概率阈值无法同时满足“多切 extortion”
    和“少切 complex”。
 
-## 6. 判定与下一步
+## 6. Cost-sensitive / constrained gate（最终版）
+
+分类器版本失败后，改为直接优化**期望得分**而不是分类标签：
+
+```text
+maximize  E[ p * score(Repair) + (1-p) * score(Wide) ]
+        - switching margin
+```
+
+实现：
+
+- 复用 1052 个反事实样本；
+- `p = sigmoid(w·x+b)`；
+- loss = `-mean(p * (delta - margin) * weight) / 100 + L2`；
+- `margin=5`，complex family 样本权重 `2.5`；
+- 不再单独调阈值，固定 0.5。
+
+训练/验证：
+
+```text
+train: switch=0.244 util=515.22 alwaysA=510.89 alwaysB=512.00
+val:   switch=0.297 util=518.96 alwaysA=515.24 alwaysB=518.25
+```
+
+评估：
+
+| 集 | RL-Wide160 | RL-Switch | RL-Gate（CS） |
+|---|---:|---:|---:|
+| dev_param | 548.26 | 548.58 | **548.62** |
+| dev_family | **583.08** | 582.91 | 582.95 |
+| dev_complex | 454.31 | 454.24 | **454.61** |
+| dev_axelrod | 582.38 | **582.86** | 582.85 |
+| dev_ood | **521.37** | **521.42** | 521.40 |
+| test_v7 | 485.62 | **488.26** | 486.98 |
+
+- CS gate 在 dev 上略优于手写 switch（param +0.04、complex +0.37），
+  test 低 1.28；
+- 它明显优于分类器 gate（test 485.84），说明把误切代价写进目标
+  是有效的；
+- 但 test 泛化仍不如手写规则，因此 `rl-switch` 仍是首选。
+
+`rl-gate` 默认已改用 CS gate（`weights/meta_gate_cs_wide160_repair.json`）；
+分类器 gate 保留为 `results/meta_20261040/meta_gate_classifier_t90.json`。
+
+## 7. 判定与下一步
 
 **No-Go for promotion / recommendation。** 保留 `rl-gate` 作为实验
 候选（gate 权重很小，便于后续对照），但不进入提交推荐。
@@ -89,7 +134,7 @@ train_acc=0.810 val_acc=0.816
 - 或者保留手写 RL-Switch，把精力转向 periodic/Kamikaze 训练，
   而不是继续调 gate 阈值。
 
-## 7. 复现
+## 8. 复现
 
 ```bash
 python3 results/meta_20261040/build_gate.py \

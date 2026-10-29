@@ -7,13 +7,22 @@
 
 ### Added
 
+- **Periodic-hard 训练分布**：`ipd/evaluation/periodic.py` 采样
+  Kamikaze period 4–12、7 种短周期 Periodic、DynamicWindow 和
+  RandomFSM，并保留 TFT/Grim/AllC/AllD anchors；注册为
+  `periodic_hard`。RL-Wide160 上 4 iter：test_v7 486.39，但
+  dev_complex -2.90、PatternBreaker -40.7、min_norm 0.89–0.91。
+  **No-Go，不注册候选**。报告 `docs/research/periodic-hard.md`、
+  `results/rl_v4_20261041/`。
 - **RL-Gate（`rl-gate`）**：学习型 match-level gate。前 10 回合由
   RL-Wide160 打，25 维对手特征 + logistic regression 决定剩余回合
   用 RL-Wide160 还是 RL-Repair；1052 个 train-tier 反事实样本，
-  val_acc 0.816。阈值 0.5 过度切换（dev_complex -18.8），阈值
-  0.9 退化为 RL-Wide160（test 485.84）。**No-Go，不推荐
-  promotion**；保留为实验候选。报告 `docs/research/rl-gate.md`、
-  `results/meta_20261040/`。
+  val_acc 0.816。分类器阈值 0.5 过度切换（dev_complex -18.8），
+  阈值 0.9 退化为 RL-Wide160（test 485.84）。随后加入
+  cost-sensitive 目标（complex 权重 2.5、margin 5）：
+  dev_param 548.62、dev_complex 454.61，接近 RL-Switch；test
+  486.98，仍低 1.28。**No-Go，不推荐 promotion**；保留为实验
+  候选。报告 `docs/research/rl-gate.md`、`results/meta_20261040/`。
 - **RL-Switch（`rl-switch`）**：窄 meta 模型。默认 RL-Wide160；
   第 6 回合前双方各 D≥2 且对手最新 C 时切换到 RL-Repair。
   dev（seed 27）：dev_param 548.58、dev_complex 454.24、
