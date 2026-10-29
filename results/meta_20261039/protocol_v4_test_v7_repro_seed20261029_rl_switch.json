@@ -1,0 +1,579 @@
+{
+  "schema": "ipd-protocol-eval-v1",
+  "protocol": "protocol_v4",
+  "protocol_version": "5",
+  "catalog_sha256": "beb594ab4a2840675a37079fe5f7b2ce8eac1f98de46aae3c090a5e4fad5fe47",
+  "created": "2026-10-29T16:58:05",
+  "seconds": 65.71,
+  "tiers": [
+    "test_v7"
+  ],
+  "fields": 50,
+  "n": 2048,
+  "rounds": 100,
+  "seed": 20261029,
+  "baseline": null,
+  "workers": 20,
+  "worker_budget": {
+    "requested": "20",
+    "resolved": 20,
+    "cpu_count": 24,
+    "cpu_limit": 22,
+    "ram_available_gb": 25.09,
+    "ram_limit": 23,
+    "max_workers": 20,
+    "ram_per_worker_gb": 1.0,
+    "parent_reserve_gb": 2.0
+  },
+  "candidate_chunk": 1,
+  "field_reuse": "auto",
+  "mode": "sample",
+  "sample_rng": "per-match",
+  "gpu_sample": true,
+  "opponent_mode": "sample (GPU v5 blue + policy opponents; Adv/PSRO CPU)",
+  "gpu": {
+    "enabled": true,
+    "requested": "on",
+    "reason": "CUDA available; Protocol v5 per-match sample RNG",
+    "device": "cuda",
+    "dtype": "float32",
+    "max_batch": 32768,
+    "min_batch": 2048,
+    "workers": 4,
+    "field_batch": 2,
+    "mode": "sample",
+    "sample_rng": "per-match",
+    "candidates": [
+      "RL-Wide160"
+    ],
+    "cpu_candidates": [
+      "RL-Switch"
+    ]
+  },
+  "fast_rules": {
+    "available": true,
+    "requested": "auto",
+    "reason": "native C++ rules available",
+    "auto_threshold": 0.9
+  },
+  "field_tasks": 75,
+  "peak_rss_mb": 23546.11,
+  "peak_pss_mb": 17314.53,
+  "peak_anon_mb": 16663.96,
+  "memory": {
+    "samples": 61,
+    "processes_peak": 23,
+    "peak_rss_mb": 23730.91,
+    "peak_pss_mb": 17314.53,
+    "peak_anon_mb": 16663.96
+  },
+  "workers_rss_mb": 23546.11,
+  "workers_peak_rss_mb": {
+    "115340": 978.92,
+    "115343": 2016.97,
+    "115346": 993.48,
+    "115347": 2011.13,
+    "115348": 972.73,
+    "115349": 2015.77,
+    "115350": 946.37,
+    "115351": 1998.55,
+    "115352": 980.32,
+    "115353": 961.27,
+    "115354": 959.77,
+    "115355": 963.11,
+    "115356": 969.67,
+    "115357": 970.08,
+    "115358": 970.53,
+    "115359": 957.61,
+    "115360": 981.89,
+    "115592": 973.29,
+    "115593": 971.04,
+    "115660": 953.61
+  },
+  "profile": {
+    "schema": "ipd-protocol-profile-v1",
+    "workers": 20,
+    "workers_requested": "20",
+    "candidate_chunk": 1,
+    "field_reuse": "auto",
+    "field_tasks": 100,
+    "field_tasks_reused": 0,
+    "field_build_seconds": 210.602125,
+    "wall_seconds": 65.706007,
+    "peak_rss_mb": 23546.11,
+    "by_candidate": {
+      "RL-Switch": {
+        "fields": 50,
+        "eval_seconds": 462.91075,
+        "candidate_build_seconds": 1.374427,
+        "field_build_seconds_shared": 136.068461,
+        "family_seconds": {
+          "AxelrodMix": 22.185009,
+          "adaptive": 7.521313,
+          "adaptive_mix": 8.67338,
+          "adaptive_probe": 25.292176,
+          "anchor": 29.901891,
+          "axelrod": 16.64527,
+          "axelrod_extra": 19.302326,
+          "conditional_extort": 9.128037,
+          "contrition_cycle": 0.098055,
+          "defect": 12.556931,
+          "delayed_extort": 5.952625,
+          "early_harvest": 29.474822,
+          "early_probe": 23.497457,
+          "endgame_hunter": 5.745845,
+          "extort": 12.008977,
+          "forgiving": 0.282374,
+          "frequent_kamikaze": 28.95,
+          "hyper_extort": 23.94157,
+          "late": 13.771711,
+          "lookahead": 7.085,
+          "memory_two": 0.102028,
+          "meta_mix": 4.827033,
+          "nice": 0.308811,
+          "noise_adaptive": 0.172091,
+          "noisy": 20.140064,
+          "pattern_breaker": 9.286671,
+          "phase_switch": 6.481338,
+          "policy": 39.410932,
+          "portfolio": 2.687657,
+          "probe_exploit": 8.247105,
+          "probe_harvest": 22.364202,
+          "punitive": 0.322695,
+          "random": 13.871151,
+          "reputation_grim": 0.180886,
+          "temporal": 16.837031,
+          "wild": 15.378741
+        }
+      },
+      "RL-Wide160": {
+        "fields": 50,
+        "eval_seconds": 165.790615,
+        "candidate_build_seconds": 1.025343,
+        "field_build_seconds_shared": 74.533663,
+        "family_seconds": {}
+      }
+    },
+    "by_tier": {
+      "test_v7": {
+        "fields": 50,
+        "candidate_fields": 100,
+        "tasks": 75,
+        "eval_seconds": 628.701365,
+        "candidate_build_seconds": 2.39977,
+        "field_build_seconds": 210.602125,
+        "peak_rss_mb": 2016.97
+      }
+    },
+    "by_family": {
+      "AxelrodMix": {
+        "seconds": 22.185009,
+        "matches": 4852,
+        "seconds_per_match": 0.004572
+      },
+      "adaptive": {
+        "seconds": 7.521313,
+        "matches": 2949,
+        "seconds_per_match": 0.00255
+      },
+      "adaptive_mix": {
+        "seconds": 8.67338,
+        "matches": 1221,
+        "seconds_per_match": 0.007104
+      },
+      "adaptive_probe": {
+        "seconds": 25.292176,
+        "matches": 3469,
+        "seconds_per_match": 0.007291
+      },
+      "anchor": {
+        "seconds": 29.901891,
+        "matches": 10162,
+        "seconds_per_match": 0.002943
+      },
+      "axelrod": {
+        "seconds": 16.64527,
+        "matches": 5917,
+        "seconds_per_match": 0.002813
+      },
+      "axelrod_extra": {
+        "seconds": 19.302326,
+        "matches": 4809,
+        "seconds_per_match": 0.004014
+      },
+      "conditional_extort": {
+        "seconds": 9.128037,
+        "matches": 1204,
+        "seconds_per_match": 0.007581
+      },
+      "contrition_cycle": {
+        "seconds": 0.098055,
+        "matches": 1009,
+        "seconds_per_match": 9.7e-05
+      },
+      "defect": {
+        "seconds": 12.556931,
+        "matches": 2283,
+        "seconds_per_match": 0.0055
+      },
+      "delayed_extort": {
+        "seconds": 5.952625,
+        "matches": 1057,
+        "seconds_per_match": 0.005632
+      },
+      "early_harvest": {
+        "seconds": 29.474822,
+        "matches": 3540,
+        "seconds_per_match": 0.008326
+      },
+      "early_probe": {
+        "seconds": 23.497457,
+        "matches": 3248,
+        "seconds_per_match": 0.007234
+      },
+      "endgame_hunter": {
+        "seconds": 5.745845,
+        "matches": 1196,
+        "seconds_per_match": 0.004804
+      },
+      "extort": {
+        "seconds": 12.008977,
+        "matches": 2728,
+        "seconds_per_match": 0.004402
+      },
+      "forgiving": {
+        "seconds": 0.282374,
+        "matches": 3025,
+        "seconds_per_match": 9.3e-05
+      },
+      "frequent_kamikaze": {
+        "seconds": 28.95,
+        "matches": 3357,
+        "seconds_per_match": 0.008624
+      },
+      "hyper_extort": {
+        "seconds": 23.94157,
+        "matches": 3498,
+        "seconds_per_match": 0.006844
+      },
+      "late": {
+        "seconds": 13.771711,
+        "matches": 2976,
+        "seconds_per_match": 0.004628
+      },
+      "lookahead": {
+        "seconds": 7.085,
+        "matches": 1020,
+        "seconds_per_match": 0.006946
+      },
+      "memory_two": {
+        "seconds": 0.102028,
+        "matches": 1087,
+        "seconds_per_match": 9.4e-05
+      },
+      "meta_mix": {
+        "seconds": 4.827033,
+        "matches": 1056,
+        "seconds_per_match": 0.004571
+      },
+      "nice": {
+        "seconds": 0.308811,
+        "matches": 2997,
+        "seconds_per_match": 0.000103
+      },
+      "noise_adaptive": {
+        "seconds": 0.172091,
+        "matches": 1164,
+        "seconds_per_match": 0.000148
+      },
+      "noisy": {
+        "seconds": 20.140064,
+        "matches": 2880,
+        "seconds_per_match": 0.006993
+      },
+      "pattern_breaker": {
+        "seconds": 9.286671,
+        "matches": 1081,
+        "seconds_per_match": 0.008591
+      },
+      "phase_switch": {
+        "seconds": 6.481338,
+        "matches": 1254,
+        "seconds_per_match": 0.005169
+      },
+      "policy": {
+        "seconds": 39.410932,
+        "matches": 10392,
+        "seconds_per_match": 0.003792
+      },
+      "portfolio": {
+        "seconds": 2.687657,
+        "matches": 952,
+        "seconds_per_match": 0.002823
+      },
+      "probe_exploit": {
+        "seconds": 8.247105,
+        "matches": 1044,
+        "seconds_per_match": 0.0079
+      },
+      "probe_harvest": {
+        "seconds": 22.364202,
+        "matches": 3324,
+        "seconds_per_match": 0.006728
+      },
+      "punitive": {
+        "seconds": 0.322695,
+        "matches": 2912,
+        "seconds_per_match": 0.000111
+      },
+      "random": {
+        "seconds": 13.871151,
+        "matches": 2193,
+        "seconds_per_match": 0.006325
+      },
+      "reputation_grim": {
+        "seconds": 0.180886,
+        "matches": 1028,
+        "seconds_per_match": 0.000176
+      },
+      "temporal": {
+        "seconds": 16.837031,
+        "matches": 3189,
+        "seconds_per_match": 0.00528
+      },
+      "wild": {
+        "seconds": 15.378741,
+        "matches": 2327,
+        "seconds_per_match": 0.006609
+      }
+    }
+  },
+  "usage_consumed": false,
+  "selection_eligible": false,
+  "no_consume": true,
+  "test_consumption_locked": true,
+  "candidates": [
+    {
+      "kind": "rl-wide160",
+      "name": "RL-Wide160",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-switch",
+      "name": "RL-Switch",
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ],
+  "results": {
+    "RL-Wide160": {
+      "test_v7": {
+        "fields": 50,
+        "mean": 484.6084375,
+        "min": 470.5146484375,
+        "p05": 478.19416503906245,
+        "max": 495.39697265625,
+        "std": 4.5173276061712695,
+        "worst_family": 129.95734463276835,
+        "min_norm": null,
+        "families": {
+          "adaptive": 618.598507968803,
+          "adaptive_mix": 312.91973791973794,
+          "adaptive_probe": 662.8160853271836,
+          "anchor": 486.622515252903,
+          "axelrod": 534.0743620077742,
+          "axelrod_extra": 562.2809315866084,
+          "axelrod_mix": 487.91632316570485,
+          "conditional_extort": 347.5124584717608,
+          "contrition_cycle": 595.0,
+          "defect": 709.9237844940867,
+          "delayed_extort": 401.65184484389783,
+          "early_harvest": 129.95734463276835,
+          "early_probe": 550.9076354679803,
+          "endgame_hunter": 344.1571906354515,
+          "extort": 440.51686217008796,
+          "forgiving": 598.6327272727273,
+          "frequent_kamikaze": 172.02829907655644,
+          "hyper_extort": 176.89822755860493,
+          "late": 346.8793682795699,
+          "lookahead": 690.3264705882353,
+          "memory_two": 595.0,
+          "meta_mix": 513.2462121212121,
+          "nice": 599.4834834834835,
+          "noise_adaptive": 595.0,
+          "noisy": 430.77708333333334,
+          "pattern_breaker": 460.2923219241443,
+          "phase_switch": 383.9609250398724,
+          "policy": 594.9282140107775,
+          "portfolio": 561.2394957983194,
+          "probe_exploit": 264.1034482758621,
+          "probe_harvest": 425.02496991576413,
+          "punitive": 600.9835164835165,
+          "random": 384.92293661650706,
+          "reputation_grim": 595.0,
+          "temporal": 507.870805895265,
+          "wild": 491.1349376880103
+        },
+        "family_norm": {},
+        "values": [
+          488.8759765625,
+          486.52294921875,
+          492.56640625,
+          470.5146484375,
+          481.24169921875,
+          483.05859375,
+          488.2294921875,
+          485.96875,
+          485.76611328125,
+          483.36865234375,
+          486.54638671875,
+          487.46044921875,
+          480.04052734375,
+          483.3115234375,
+          478.7412109375,
+          487.337890625,
+          486.26416015625,
+          489.98095703125,
+          483.81787109375,
+          481.33056640625,
+          482.91650390625,
+          478.54248046875,
+          477.69091796875,
+          485.1064453125,
+          485.56591796875,
+          480.265625,
+          495.39697265625,
+          483.017578125,
+          479.96533203125,
+          486.9677734375,
+          483.09326171875,
+          481.607421875,
+          488.5263671875,
+          486.3388671875,
+          483.556640625,
+          480.615234375,
+          487.32080078125,
+          489.478515625,
+          480.923828125,
+          485.87939453125,
+          483.107421875,
+          483.36328125,
+          477.9091796875,
+          479.26806640625,
+          489.85546875,
+          494.36572265625,
+          485.2822265625,
+          489.47314453125,
+          485.77490234375,
+          488.3017578125
+        ]
+      }
+    },
+    "RL-Switch": {
+      "test_v7": {
+        "fields": 50,
+        "mean": 487.508759765625,
+        "min": 473.025390625,
+        "p05": 480.1744384765625,
+        "max": 499.21484375,
+        "std": 4.566929222329031,
+        "worst_family": 130.07627118644066,
+        "min_norm": null,
+        "families": {
+          "AxelrodMix": 494.3421269579555,
+          "adaptive": 618.6032553407935,
+          "adaptive_mix": 315.31531531531533,
+          "adaptive_probe": 662.9293744594984,
+          "anchor": 485.65853178508166,
+          "axelrod": 537.1820179144837,
+          "axelrod_extra": 588.4884591391142,
+          "conditional_extort": 348.7483388704319,
+          "contrition_cycle": 595.0,
+          "defect": 711.0770915462111,
+          "delayed_extort": 399.31504257332074,
+          "early_harvest": 130.07627118644066,
+          "early_probe": 552.2025862068965,
+          "endgame_hunter": 344.1588628762542,
+          "extort": 447.2133431085044,
+          "forgiving": 598.6327272727273,
+          "frequent_kamikaze": 171.50342567768843,
+          "hyper_extort": 200.76872498570611,
+          "late": 346.96270161290323,
+          "lookahead": 688.1411764705882,
+          "memory_two": 595.0,
+          "meta_mix": 518.1022727272727,
+          "nice": 599.4834834834835,
+          "noise_adaptive": 595.0,
+          "noisy": 433.7090277777778,
+          "pattern_breaker": 467.53931544865867,
+          "phase_switch": 384.35885167464113,
+          "policy": 594.9207082371055,
+          "portfolio": 558.811974789916,
+          "probe_exploit": 269.94731800766283,
+          "probe_harvest": 424.13808664259926,
+          "punitive": 600.9835164835165,
+          "random": 382.41951664386687,
+          "reputation_grim": 595.0,
+          "temporal": 510.41360928190653,
+          "wild": 490.3902019767942
+        },
+        "family_norm": {},
+        "values": [
+          492.6494140625,
+          491.21435546875,
+          495.73046875,
+          473.025390625,
+          484.79150390625,
+          485.33349609375,
+          489.5927734375,
+          489.38232421875,
+          488.10791015625,
+          486.96240234375,
+          488.55224609375,
+          489.689453125,
+          482.81982421875,
+          486.072265625,
+          481.9267578125,
+          488.1767578125,
+          488.8994140625,
+          493.330078125,
+          486.7607421875,
+          484.669921875,
+          485.36669921875,
+          483.6650390625,
+          480.0810546875,
+          487.2138671875,
+          488.00390625,
+          484.5439453125,
+          499.21484375,
+          484.7958984375,
+          482.609375,
+          490.19775390625,
+          488.28759765625,
+          485.14208984375,
+          491.06982421875,
+          489.71728515625,
+          487.11572265625,
+          484.2001953125,
+          489.15673828125,
+          491.34130859375,
+          483.33837890625,
+          489.2392578125,
+          487.3046875,
+          486.30126953125,
+          480.28857421875,
+          480.06494140625,
+          493.673828125,
+          495.1748046875,
+          487.29638671875,
+          493.90576171875,
+          487.45556640625,
+          491.98388671875
+        ]
+      }
+    }
+  }
+}

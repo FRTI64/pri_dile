@@ -178,4 +178,4 @@ results/
 - Axelrod：`pip install -r requirements-axelrod.txt`（`axelrod==4.14.0`）；
 - 可选安装：`pip install -e '.[train]'` / `.[axelrod]`。
 
-最近完整测试：**322 tests OK**（本轮全量运行）。
+最近完整测试：**325 tests OK**（本轮全量运行）。

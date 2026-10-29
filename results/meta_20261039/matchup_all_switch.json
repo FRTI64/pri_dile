@@ -1,0 +1,5060 @@
+{
+  "schema": "ipd-matchup-v2",
+  "created": "2026-10-29T16:58:23",
+  "seconds": 7.61,
+  "seed": 20261036,
+  "reps": 16,
+  "rounds": 100,
+  "opponent_set": "all",
+  "spec_config": null,
+  "candidates": [
+    {
+      "kind": "rl-switch",
+      "name": "RL-Switch",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-wide160",
+      "name": "RL-Wide160",
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ],
+  "opponents": [
+    {
+      "name": "AllC",
+      "family": "nice"
+    },
+    {
+      "name": "AllC-lastD",
+      "family": "nice"
+    },
+    {
+      "name": "TFT",
+      "family": "nice"
+    },
+    {
+      "name": "TFT-lastD",
+      "family": "nice"
+    },
+    {
+      "name": "TFT-last2D",
+      "family": "nice"
+    },
+    {
+      "name": "TFT-last5D",
+      "family": "nice"
+    },
+    {
+      "name": "sTFT",
+      "family": "nice"
+    },
+    {
+      "name": "TFT2",
+      "family": "nice"
+    },
+    {
+      "name": "TFT2-lastD",
+      "family": "nice"
+    },
+    {
+      "name": "ContriteTFT",
+      "family": "nice"
+    },
+    {
+      "name": "TFTForgiveOnce",
+      "family": "nice"
+    },
+    {
+      "name": "TFT-delay2",
+      "family": "nice"
+    },
+    {
+      "name": "FirmButFair",
+      "family": "nice"
+    },
+    {
+      "name": "TTFT",
+      "family": "nice"
+    },
+    {
+      "name": "Pavlov",
+      "family": "nice"
+    },
+    {
+      "name": "WSLS2",
+      "family": "nice"
+    },
+    {
+      "name": "GTFT.01",
+      "family": "forgiving"
+    },
+    {
+      "name": "GTFT.05",
+      "family": "forgiving"
+    },
+    {
+      "name": "GTFT.10",
+      "family": "forgiving"
+    },
+    {
+      "name": "GTFT.20",
+      "family": "forgiving"
+    },
+    {
+      "name": "GTFT.33",
+      "family": "forgiving"
+    },
+    {
+      "name": "GTFT.50",
+      "family": "forgiving"
+    },
+    {
+      "name": "NoisyTFT.02",
+      "family": "forgiving"
+    },
+    {
+      "name": "NoisyTFT.05",
+      "family": "forgiving"
+    },
+    {
+      "name": "NoisyTFT.10",
+      "family": "forgiving"
+    },
+    {
+      "name": "NoisyTFT.20",
+      "family": "forgiving"
+    },
+    {
+      "name": "Joss.02",
+      "family": "forgiving"
+    },
+    {
+      "name": "Joss.05",
+      "family": "forgiving"
+    },
+    {
+      "name": "Joss.10",
+      "family": "forgiving"
+    },
+    {
+      "name": "Joss.20",
+      "family": "forgiving"
+    },
+    {
+      "name": "ForgiveTFT1",
+      "family": "forgiving"
+    },
+    {
+      "name": "ForgiveTFT2",
+      "family": "forgiving"
+    },
+    {
+      "name": "TwoStrike2",
+      "family": "forgiving"
+    },
+    {
+      "name": "TwoStrike3",
+      "family": "forgiving"
+    },
+    {
+      "name": "Grim",
+      "family": "punitive"
+    },
+    {
+      "name": "GrimForgive.05",
+      "family": "punitive"
+    },
+    {
+      "name": "GrimForgive.15",
+      "family": "punitive"
+    },
+    {
+      "name": "Grudger2",
+      "family": "punitive"
+    },
+    {
+      "name": "Grudger3",
+      "family": "punitive"
+    },
+    {
+      "name": "Mistrust",
+      "family": "punitive"
+    },
+    {
+      "name": "Gradual",
+      "family": "punitive"
+    },
+    {
+      "name": "OmegaTFT-lite",
+      "family": "punitive"
+    },
+    {
+      "name": "Bully",
+      "family": "punitive"
+    },
+    {
+      "name": "AllD",
+      "family": "defect"
+    },
+    {
+      "name": "EarlyD1",
+      "family": "defect"
+    },
+    {
+      "name": "EarlyD10",
+      "family": "defect"
+    },
+    {
+      "name": "EarlyD25",
+      "family": "defect"
+    },
+    {
+      "name": "LateD5",
+      "family": "late"
+    },
+    {
+      "name": "LateD10",
+      "family": "late"
+    },
+    {
+      "name": "LateD15",
+      "family": "late"
+    },
+    {
+      "name": "LateD20",
+      "family": "late"
+    },
+    {
+      "name": "LateD25",
+      "family": "late"
+    },
+    {
+      "name": "LateD30",
+      "family": "late"
+    },
+    {
+      "name": "LateD40",
+      "family": "late"
+    },
+    {
+      "name": "LateD50",
+      "family": "late"
+    },
+    {
+      "name": "Tester",
+      "family": "defect"
+    },
+    {
+      "name": "Prober",
+      "family": "defect"
+    },
+    {
+      "name": "RemorsefulProber",
+      "family": "defect"
+    },
+    {
+      "name": "Random.05",
+      "family": "random"
+    },
+    {
+      "name": "Random.10",
+      "family": "random"
+    },
+    {
+      "name": "Random.20",
+      "family": "random"
+    },
+    {
+      "name": "Random.30",
+      "family": "random"
+    },
+    {
+      "name": "Random.50",
+      "family": "random"
+    },
+    {
+      "name": "Random.70",
+      "family": "random"
+    },
+    {
+      "name": "Random.80",
+      "family": "random"
+    },
+    {
+      "name": "Random.90",
+      "family": "random"
+    },
+    {
+      "name": "Alternator",
+      "family": "random"
+    },
+    {
+      "name": "AlternatorD",
+      "family": "random"
+    },
+    {
+      "name": "Periodic3",
+      "family": "random"
+    },
+    {
+      "name": "Periodic4",
+      "family": "random"
+    },
+    {
+      "name": "Rand3->TFT",
+      "family": "random"
+    },
+    {
+      "name": "MemOne-rand",
+      "family": "wild"
+    },
+    {
+      "name": "Reactive-rand",
+      "family": "wild"
+    },
+    {
+      "name": "FSM-rand",
+      "family": "wild"
+    },
+    {
+      "name": "Majority2",
+      "family": "adaptive"
+    },
+    {
+      "name": "Majority3",
+      "family": "adaptive"
+    },
+    {
+      "name": "Majority5",
+      "family": "adaptive"
+    },
+    {
+      "name": "Responsive",
+      "family": "adaptive"
+    },
+    {
+      "name": "Responsive3",
+      "family": "smart"
+    },
+    {
+      "name": "ProbeBot",
+      "family": "adaptive"
+    },
+    {
+      "name": "Extort1.5",
+      "family": "adaptive"
+    },
+    {
+      "name": "Extort2",
+      "family": "adaptive"
+    },
+    {
+      "name": "Extort3",
+      "family": "adaptive"
+    },
+    {
+      "name": "GenZD2",
+      "family": "adaptive"
+    },
+    {
+      "name": "GenZD3",
+      "family": "adaptive"
+    },
+    {
+      "name": "Final",
+      "family": "smart"
+    },
+    {
+      "name": "Harvest45",
+      "family": "smart"
+    },
+    {
+      "name": "Harvest40",
+      "family": "smart"
+    },
+    {
+      "name": "EarlyProbe",
+      "family": "smart"
+    },
+    {
+      "name": "GapStart",
+      "family": "smart"
+    },
+    {
+      "name": "BayesPlus",
+      "family": "smart"
+    },
+    {
+      "name": "MemOne.F0",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F1",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F2",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F3",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F4",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F5",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F6",
+      "family": "plus"
+    },
+    {
+      "name": "MemOne.F7",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F0",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F1",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F2",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F3",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F4",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F5",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F6",
+      "family": "plus"
+    },
+    {
+      "name": "Reactive.F7",
+      "family": "plus"
+    },
+    {
+      "name": "FSM.F0",
+      "family": "plus"
+    },
+    {
+      "name": "FSM.F1",
+      "family": "plus"
+    },
+    {
+      "name": "FSM.F2",
+      "family": "plus"
+    },
+    {
+      "name": "FSM.F3",
+      "family": "plus"
+    },
+    {
+      "name": "FSM.F4",
+      "family": "plus"
+    },
+    {
+      "name": "FSM.F5",
+      "family": "plus"
+    },
+    {
+      "name": "Extort.F1.2",
+      "family": "plus"
+    },
+    {
+      "name": "Extort.F1.5",
+      "family": "plus"
+    },
+    {
+      "name": "Extort.F2.0",
+      "family": "plus"
+    },
+    {
+      "name": "Extort.F2.5",
+      "family": "plus"
+    },
+    {
+      "name": "Extort.F3.0",
+      "family": "plus"
+    },
+    {
+      "name": "GenZD.F1.2",
+      "family": "plus"
+    },
+    {
+      "name": "GenZD.F2.0",
+      "family": "plus"
+    },
+    {
+      "name": "GenZD.F3.0",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.02",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.07",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.13",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.22",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.3",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.45",
+      "family": "plus"
+    },
+    {
+      "name": "GTFT.F0.6",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.015",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.015",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.04",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.04",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.07",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.07",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.11",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.11",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.16",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.16",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.22",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.22",
+      "family": "plus"
+    },
+    {
+      "name": "Joss.F0.3",
+      "family": "plus"
+    },
+    {
+      "name": "Noisy.F0.3",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.08",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.18",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.28",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.42",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.55",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.75",
+      "family": "plus"
+    },
+    {
+      "name": "Random.F0.85",
+      "family": "plus"
+    },
+    {
+      "name": "FinalTuned",
+      "family": "smart"
+    },
+    {
+      "name": "RespTuned",
+      "family": "smart"
+    },
+    {
+      "name": "Harvest21",
+      "family": "smart"
+    },
+    {
+      "name": "Harvest35",
+      "family": "smart"
+    },
+    {
+      "name": "Harvest50",
+      "family": "smart"
+    },
+    {
+      "name": "Harvest75",
+      "family": "smart"
+    },
+    {
+      "name": "Gap0.45",
+      "family": "smart"
+    },
+    {
+      "name": "Gap0.55",
+      "family": "smart"
+    },
+    {
+      "name": "Gap0.64",
+      "family": "smart"
+    }
+  ],
+  "type_rows": [
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort1.5",
+      "family": "adaptive",
+      "our": 477.4375,
+      "opponent": 649.3125,
+      "diff": -171.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort2",
+      "family": "adaptive",
+      "our": 353.5625,
+      "opponent": 659.1875,
+      "diff": -305.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort3",
+      "family": "adaptive",
+      "our": 295.875,
+      "opponent": 679.625,
+      "diff": -383.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GenZD2",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GenZD3",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Majority2",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Majority3",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Majority5",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "ProbeBot",
+      "family": "adaptive",
+      "our": 547.5,
+      "opponent": 360.0,
+      "diff": 187.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Responsive",
+      "family": "adaptive",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "AllD",
+      "family": "defect",
+      "our": 99.0,
+      "opponent": 109.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "EarlyD1",
+      "family": "defect",
+      "our": 974.0,
+      "opponent": 34.0,
+      "diff": 940.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "EarlyD10",
+      "family": "defect",
+      "our": 909.0,
+      "opponent": 19.0,
+      "diff": 890.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "EarlyD25",
+      "family": "defect",
+      "our": 774.0,
+      "opponent": 34.0,
+      "diff": 740.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Prober",
+      "family": "defect",
+      "our": 532.0,
+      "opponent": 92.0,
+      "diff": 440.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "RemorsefulProber",
+      "family": "defect",
+      "our": 585.0,
+      "opponent": 585.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Tester",
+      "family": "defect",
+      "our": 528.0,
+      "opponent": 108.0,
+      "diff": 420.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "ForgiveTFT1",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "ForgiveTFT2",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.01",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.05",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.10",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.20",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.33",
+      "family": "forgiving",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.50",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.02",
+      "family": "forgiving",
+      "our": 586.625,
+      "opponent": 597.875,
+      "diff": -11.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.05",
+      "family": "forgiving",
+      "our": 567.1875,
+      "opponent": 607.8125,
+      "diff": -40.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.10",
+      "family": "forgiving",
+      "our": 540.125,
+      "opponent": 623.25,
+      "diff": -83.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.20",
+      "family": "forgiving",
+      "our": 468.75,
+      "opponent": 656.25,
+      "diff": -187.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "NoisyTFT.02",
+      "family": "forgiving",
+      "our": 585.5,
+      "opponent": 598.0,
+      "diff": -12.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "NoisyTFT.05",
+      "family": "forgiving",
+      "our": 565.5625,
+      "opponent": 607.4375,
+      "diff": -41.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "NoisyTFT.10",
+      "family": "forgiving",
+      "our": 542.625,
+      "opponent": 618.25,
+      "diff": -75.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "NoisyTFT.20",
+      "family": "forgiving",
+      "our": 476.8125,
+      "opponent": 613.6875,
+      "diff": -136.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TwoStrike2",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TwoStrike3",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD10",
+      "family": "late",
+      "our": 549.0,
+      "opponent": 559.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD15",
+      "family": "late",
+      "our": 524.0,
+      "opponent": 534.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD20",
+      "family": "late",
+      "our": 499.0,
+      "opponent": 509.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD25",
+      "family": "late",
+      "our": 474.0,
+      "opponent": 484.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD30",
+      "family": "late",
+      "our": 449.0,
+      "opponent": 459.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD40",
+      "family": "late",
+      "our": 398.0,
+      "opponent": 418.0,
+      "diff": -20.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD5",
+      "family": "late",
+      "our": 574.0,
+      "opponent": 584.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "LateD50",
+      "family": "late",
+      "our": 346.0,
+      "opponent": 386.0,
+      "diff": -40.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "AllC",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "AllC-lastD",
+      "family": "nice",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "ContriteTFT",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FirmButFair",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Pavlov",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT-delay2",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT-last2D",
+      "family": "nice",
+      "our": 589.0,
+      "opponent": 599.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT-last5D",
+      "family": "nice",
+      "our": 574.0,
+      "opponent": 584.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT-lastD",
+      "family": "nice",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT2",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFT2-lastD",
+      "family": "nice",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TFTForgiveOnce",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "TTFT",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "WSLS2",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "sTFT",
+      "family": "nice",
+      "our": 596.0,
+      "opponent": 596.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort.F1.2",
+      "family": "plus",
+      "our": 537.875,
+      "opponent": 618.5,
+      "diff": -80.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort.F1.5",
+      "family": "plus",
+      "our": 487.4375,
+      "opponent": 644.3125,
+      "diff": -156.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort.F2.0",
+      "family": "plus",
+      "our": 411.25,
+      "opponent": 666.25,
+      "diff": -255.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort.F2.5",
+      "family": "plus",
+      "our": 343.6875,
+      "opponent": 661.1875,
+      "diff": -317.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Extort.F3.0",
+      "family": "plus",
+      "our": 298.125,
+      "opponent": 657.5,
+      "diff": -359.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM.F0",
+      "family": "plus",
+      "our": 974.0,
+      "opponent": 34.0,
+      "diff": 940.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM.F1",
+      "family": "plus",
+      "our": 866.0,
+      "opponent": 166.0,
+      "diff": 700.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM.F2",
+      "family": "plus",
+      "our": 733.0,
+      "opponent": 73.0,
+      "diff": 660.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM.F3",
+      "family": "plus",
+      "our": 485.0,
+      "opponent": 135.0,
+      "diff": 350.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM.F4",
+      "family": "plus",
+      "our": 672.0,
+      "opponent": 102.0,
+      "diff": 570.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM.F5",
+      "family": "plus",
+      "our": 569.0,
+      "opponent": 99.0,
+      "diff": 470.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.02",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.07",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.13",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.22",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.3",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.45",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GTFT.F0.6",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GenZD.F1.2",
+      "family": "plus",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GenZD.F2.0",
+      "family": "plus",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GenZD.F3.0",
+      "family": "plus",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.015",
+      "family": "plus",
+      "our": 594.0,
+      "opponent": 596.5,
+      "diff": -2.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.04",
+      "family": "plus",
+      "our": 570.375,
+      "opponent": 607.25,
+      "diff": -36.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.07",
+      "family": "plus",
+      "our": 559.9375,
+      "opponent": 614.3125,
+      "diff": -54.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.11",
+      "family": "plus",
+      "our": 534.25,
+      "opponent": 624.875,
+      "diff": -90.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.16",
+      "family": "plus",
+      "our": 493.6875,
+      "opponent": 644.9375,
+      "diff": -151.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.22",
+      "family": "plus",
+      "our": 457.0,
+      "opponent": 660.125,
+      "diff": -203.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Joss.F0.3",
+      "family": "plus",
+      "our": 406.625,
+      "opponent": 683.5,
+      "diff": -276.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F0",
+      "family": "plus",
+      "our": 434.1875,
+      "opponent": 554.8125,
+      "diff": -120.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F1",
+      "family": "plus",
+      "our": 527.9375,
+      "opponent": 618.5625,
+      "diff": -90.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F2",
+      "family": "plus",
+      "our": 377.5625,
+      "opponent": 376.3125,
+      "diff": 1.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F3",
+      "family": "plus",
+      "our": 597.9375,
+      "opponent": 589.8125,
+      "diff": 8.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F4",
+      "family": "plus",
+      "our": 585.1875,
+      "opponent": 581.4375,
+      "diff": 3.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F5",
+      "family": "plus",
+      "our": 571.25,
+      "opponent": 588.125,
+      "diff": -16.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F6",
+      "family": "plus",
+      "our": 487.6875,
+      "opponent": 432.6875,
+      "diff": 55.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne.F7",
+      "family": "plus",
+      "our": 483.4375,
+      "opponent": 563.4375,
+      "diff": -80.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.015",
+      "family": "plus",
+      "our": 591.25,
+      "opponent": 595.625,
+      "diff": -4.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.04",
+      "family": "plus",
+      "our": 575.125,
+      "opponent": 603.875,
+      "diff": -28.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.07",
+      "family": "plus",
+      "our": 554.375,
+      "opponent": 610.0,
+      "diff": -55.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.11",
+      "family": "plus",
+      "our": 533.5,
+      "opponent": 623.5,
+      "diff": -90.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.16",
+      "family": "plus",
+      "our": 497.625,
+      "opponent": 628.875,
+      "diff": -131.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.22",
+      "family": "plus",
+      "our": 438.6875,
+      "opponent": 553.6875,
+      "diff": -115.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Noisy.F0.3",
+      "family": "plus",
+      "our": 413.875,
+      "opponent": 391.375,
+      "diff": 22.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.08",
+      "family": "plus",
+      "our": 168.625,
+      "opponent": 131.125,
+      "diff": 37.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.18",
+      "family": "plus",
+      "our": 238.5,
+      "opponent": 202.25,
+      "diff": 36.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.28",
+      "family": "plus",
+      "our": 325.5,
+      "opponent": 159.25,
+      "diff": 166.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.42",
+      "family": "plus",
+      "our": 461.5,
+      "opponent": 145.875,
+      "diff": 315.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.55",
+      "family": "plus",
+      "our": 552.125,
+      "opponent": 155.25,
+      "diff": 396.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.75",
+      "family": "plus",
+      "our": 745.75,
+      "opponent": 110.75,
+      "diff": 635.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.F0.85",
+      "family": "plus",
+      "our": 831.625,
+      "opponent": 93.5,
+      "diff": 738.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F0",
+      "family": "plus",
+      "our": 242.5,
+      "opponent": 378.125,
+      "diff": -135.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F1",
+      "family": "plus",
+      "our": 266.0625,
+      "opponent": 327.9375,
+      "diff": -61.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F2",
+      "family": "plus",
+      "our": 512.4375,
+      "opponent": 508.0625,
+      "diff": 4.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F3",
+      "family": "plus",
+      "our": 540.0625,
+      "opponent": 94.4375,
+      "diff": 445.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F4",
+      "family": "plus",
+      "our": 368.125,
+      "opponent": 668.125,
+      "diff": -300.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F5",
+      "family": "plus",
+      "our": 460.9375,
+      "opponent": 283.4375,
+      "diff": 177.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F6",
+      "family": "plus",
+      "our": 263.5625,
+      "opponent": 372.3125,
+      "diff": -108.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive.F7",
+      "family": "plus",
+      "our": 450.875,
+      "opponent": 310.25,
+      "diff": 140.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Bully",
+      "family": "punitive",
+      "our": 886.0,
+      "opponent": 116.0,
+      "diff": 770.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Gradual",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Grim",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GrimForgive.05",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GrimForgive.15",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Grudger2",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Grudger3",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Mistrust",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "OmegaTFT-lite",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Alternator",
+      "family": "random",
+      "our": 533.0,
+      "opponent": 113.0,
+      "diff": 420.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "AlternatorD",
+      "family": "random",
+      "our": 533.0,
+      "opponent": 113.0,
+      "diff": 420.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Periodic3",
+      "family": "random",
+      "our": 688.0,
+      "opponent": 78.0,
+      "diff": 610.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Periodic4",
+      "family": "random",
+      "our": 532.0,
+      "opponent": 92.0,
+      "diff": 440.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Rand3->TFT",
+      "family": "random",
+      "our": 529.0,
+      "opponent": 529.625,
+      "diff": -0.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.05",
+      "family": "random",
+      "our": 141.8125,
+      "opponent": 150.5625,
+      "diff": -8.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.10",
+      "family": "random",
+      "our": 177.1875,
+      "opponent": 125.9375,
+      "diff": 51.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.20",
+      "family": "random",
+      "our": 260.75,
+      "opponent": 178.875,
+      "diff": 81.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.30",
+      "family": "random",
+      "our": 360.3125,
+      "opponent": 151.5625,
+      "diff": 208.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.50",
+      "family": "random",
+      "our": 507.4375,
+      "opponent": 148.0625,
+      "diff": 359.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.70",
+      "family": "random",
+      "our": 676.5,
+      "opponent": 109.0,
+      "diff": 567.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.80",
+      "family": "random",
+      "our": 790.25,
+      "opponent": 88.375,
+      "diff": 701.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Random.90",
+      "family": "random",
+      "our": 838.9375,
+      "opponent": 125.1875,
+      "diff": 713.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "BayesPlus",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "EarlyProbe",
+      "family": "smart",
+      "our": 616.5,
+      "opponent": 404.0,
+      "diff": 212.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Final",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FinalTuned",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Gap0.45",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Gap0.55",
+      "family": "smart",
+      "our": 194.0,
+      "opponent": 104.0,
+      "diff": 90.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Gap0.64",
+      "family": "smart",
+      "our": 137.0,
+      "opponent": 137.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "GapStart",
+      "family": "smart",
+      "our": 968.0,
+      "opponent": 18.0,
+      "diff": 950.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Harvest21",
+      "family": "smart",
+      "our": 547.75,
+      "opponent": 270.875,
+      "diff": 276.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Harvest35",
+      "family": "smart",
+      "our": 597.5625,
+      "opponent": 284.4375,
+      "diff": 313.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Harvest40",
+      "family": "smart",
+      "our": 606.4375,
+      "opponent": 291.4375,
+      "diff": 315.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Harvest45",
+      "family": "smart",
+      "our": 641.0625,
+      "opponent": 304.1875,
+      "diff": 336.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Harvest50",
+      "family": "smart",
+      "our": 662.5625,
+      "opponent": 328.8125,
+      "diff": 333.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Harvest75",
+      "family": "smart",
+      "our": 649.5,
+      "opponent": 464.5,
+      "diff": 185.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "RespTuned",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Responsive3",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "FSM-rand",
+      "family": "wild",
+      "our": 588.0625,
+      "opponent": 201.1875,
+      "diff": 386.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "MemOne-rand",
+      "family": "wild",
+      "our": 495.875,
+      "opponent": 352.125,
+      "diff": 143.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Switch",
+      "type": "Reactive-rand",
+      "family": "wild",
+      "our": 463.375,
+      "opponent": 402.125,
+      "diff": 61.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort1.5",
+      "family": "adaptive",
+      "our": 476.875,
+      "opponent": 648.125,
+      "diff": -171.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort2",
+      "family": "adaptive",
+      "our": 351.25,
+      "opponent": 641.25,
+      "diff": -290.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort3",
+      "family": "adaptive",
+      "our": 274.75,
+      "opponent": 599.75,
+      "diff": -325.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GenZD2",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GenZD3",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Majority2",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Majority3",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Majority5",
+      "family": "adaptive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "ProbeBot",
+      "family": "adaptive",
+      "our": 544.875,
+      "opponent": 349.875,
+      "diff": 195.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Responsive",
+      "family": "adaptive",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "AllD",
+      "family": "defect",
+      "our": 99.0,
+      "opponent": 109.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "EarlyD1",
+      "family": "defect",
+      "our": 974.0,
+      "opponent": 34.0,
+      "diff": 940.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "EarlyD10",
+      "family": "defect",
+      "our": 909.0,
+      "opponent": 19.0,
+      "diff": 890.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "EarlyD25",
+      "family": "defect",
+      "our": 774.0,
+      "opponent": 34.0,
+      "diff": 740.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Prober",
+      "family": "defect",
+      "our": 541.0,
+      "opponent": 71.0,
+      "diff": 470.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "RemorsefulProber",
+      "family": "defect",
+      "our": 573.0,
+      "opponent": 573.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Tester",
+      "family": "defect",
+      "our": 533.0,
+      "opponent": 93.0,
+      "diff": 440.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "ForgiveTFT1",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "ForgiveTFT2",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.01",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.05",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.10",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.20",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.33",
+      "family": "forgiving",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.50",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.02",
+      "family": "forgiving",
+      "our": 586.625,
+      "opponent": 597.875,
+      "diff": -11.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.05",
+      "family": "forgiving",
+      "our": 567.1875,
+      "opponent": 607.8125,
+      "diff": -40.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.10",
+      "family": "forgiving",
+      "our": 540.25,
+      "opponent": 623.375,
+      "diff": -83.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.20",
+      "family": "forgiving",
+      "our": 467.75,
+      "opponent": 657.125,
+      "diff": -189.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "NoisyTFT.02",
+      "family": "forgiving",
+      "our": 585.625,
+      "opponent": 598.125,
+      "diff": -12.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "NoisyTFT.05",
+      "family": "forgiving",
+      "our": 565.5625,
+      "opponent": 607.4375,
+      "diff": -41.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "NoisyTFT.10",
+      "family": "forgiving",
+      "our": 542.1875,
+      "opponent": 617.8125,
+      "diff": -75.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "NoisyTFT.20",
+      "family": "forgiving",
+      "our": 463.1875,
+      "opponent": 568.8125,
+      "diff": -105.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TwoStrike2",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TwoStrike3",
+      "family": "forgiving",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD10",
+      "family": "late",
+      "our": 549.0,
+      "opponent": 559.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD15",
+      "family": "late",
+      "our": 524.0,
+      "opponent": 534.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD20",
+      "family": "late",
+      "our": 499.0,
+      "opponent": 509.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD25",
+      "family": "late",
+      "our": 474.0,
+      "opponent": 484.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD30",
+      "family": "late",
+      "our": 449.0,
+      "opponent": 459.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD40",
+      "family": "late",
+      "our": 398.0,
+      "opponent": 418.0,
+      "diff": -20.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD5",
+      "family": "late",
+      "our": 574.0,
+      "opponent": 584.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "LateD50",
+      "family": "late",
+      "our": 346.0,
+      "opponent": 386.0,
+      "diff": -40.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "AllC",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "AllC-lastD",
+      "family": "nice",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "ContriteTFT",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FirmButFair",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Pavlov",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT-delay2",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT-last2D",
+      "family": "nice",
+      "our": 589.0,
+      "opponent": 599.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT-last5D",
+      "family": "nice",
+      "our": 574.0,
+      "opponent": 584.0,
+      "diff": -10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT-lastD",
+      "family": "nice",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT2",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFT2-lastD",
+      "family": "nice",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TFTForgiveOnce",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "TTFT",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "WSLS2",
+      "family": "nice",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "sTFT",
+      "family": "nice",
+      "our": 596.0,
+      "opponent": 596.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort.F1.2",
+      "family": "plus",
+      "our": 537.875,
+      "opponent": 618.5,
+      "diff": -80.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort.F1.5",
+      "family": "plus",
+      "our": 486.125,
+      "opponent": 644.25,
+      "diff": -158.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort.F2.0",
+      "family": "plus",
+      "our": 408.4375,
+      "opponent": 660.9375,
+      "diff": -252.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort.F2.5",
+      "family": "plus",
+      "our": 343.25,
+      "opponent": 657.0,
+      "diff": -313.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Extort.F3.0",
+      "family": "plus",
+      "our": 282.9375,
+      "opponent": 611.0625,
+      "diff": -328.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM.F0",
+      "family": "plus",
+      "our": 974.0,
+      "opponent": 34.0,
+      "diff": 940.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM.F1",
+      "family": "plus",
+      "our": 866.0,
+      "opponent": 166.0,
+      "diff": 700.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM.F2",
+      "family": "plus",
+      "our": 747.0,
+      "opponent": 57.0,
+      "diff": 690.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM.F3",
+      "family": "plus",
+      "our": 496.0,
+      "opponent": 96.0,
+      "diff": 400.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM.F4",
+      "family": "plus",
+      "our": 672.0,
+      "opponent": 102.0,
+      "diff": 570.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM.F5",
+      "family": "plus",
+      "our": 569.0,
+      "opponent": 99.0,
+      "diff": 470.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.02",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.07",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.13",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.22",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.3",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.45",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GTFT.F0.6",
+      "family": "plus",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GenZD.F1.2",
+      "family": "plus",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GenZD.F2.0",
+      "family": "plus",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GenZD.F3.0",
+      "family": "plus",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.015",
+      "family": "plus",
+      "our": 594.0,
+      "opponent": 596.5,
+      "diff": -2.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.04",
+      "family": "plus",
+      "our": 570.375,
+      "opponent": 607.25,
+      "diff": -36.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.07",
+      "family": "plus",
+      "our": 559.9375,
+      "opponent": 614.3125,
+      "diff": -54.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.11",
+      "family": "plus",
+      "our": 534.1875,
+      "opponent": 624.8125,
+      "diff": -90.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.16",
+      "family": "plus",
+      "our": 493.75,
+      "opponent": 645.0,
+      "diff": -151.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.22",
+      "family": "plus",
+      "our": 455.875,
+      "opponent": 658.375,
+      "diff": -202.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Joss.F0.3",
+      "family": "plus",
+      "our": 403.5625,
+      "opponent": 677.3125,
+      "diff": -273.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F0",
+      "family": "plus",
+      "our": 431.625,
+      "opponent": 554.125,
+      "diff": -122.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F1",
+      "family": "plus",
+      "our": 528.0625,
+      "opponent": 618.6875,
+      "diff": -90.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F2",
+      "family": "plus",
+      "our": 370.75,
+      "opponent": 361.375,
+      "diff": 9.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F3",
+      "family": "plus",
+      "our": 597.9375,
+      "opponent": 589.8125,
+      "diff": 8.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F4",
+      "family": "plus",
+      "our": 585.1875,
+      "opponent": 581.4375,
+      "diff": 3.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F5",
+      "family": "plus",
+      "our": 571.375,
+      "opponent": 588.25,
+      "diff": -16.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F6",
+      "family": "plus",
+      "our": 483.25,
+      "opponent": 407.625,
+      "diff": 75.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne.F7",
+      "family": "plus",
+      "our": 483.4375,
+      "opponent": 563.4375,
+      "diff": -80.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.015",
+      "family": "plus",
+      "our": 591.375,
+      "opponent": 595.75,
+      "diff": -4.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.04",
+      "family": "plus",
+      "our": 575.125,
+      "opponent": 603.875,
+      "diff": -28.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.07",
+      "family": "plus",
+      "our": 554.5,
+      "opponent": 610.125,
+      "diff": -55.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.11",
+      "family": "plus",
+      "our": 533.375,
+      "opponent": 623.375,
+      "diff": -90.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.16",
+      "family": "plus",
+      "our": 498.375,
+      "opponent": 614.625,
+      "diff": -116.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.22",
+      "family": "plus",
+      "our": 440.25,
+      "opponent": 550.25,
+      "diff": -110.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Noisy.F0.3",
+      "family": "plus",
+      "our": 411.875,
+      "opponent": 384.375,
+      "diff": 27.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.08",
+      "family": "plus",
+      "our": 169.3125,
+      "opponent": 126.8125,
+      "diff": 42.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.18",
+      "family": "plus",
+      "our": 248.5,
+      "opponent": 151.625,
+      "diff": 96.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.28",
+      "family": "plus",
+      "our": 333.8125,
+      "opponent": 123.8125,
+      "diff": 210.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.42",
+      "family": "plus",
+      "our": 468.625,
+      "opponent": 115.5,
+      "diff": 353.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.55",
+      "family": "plus",
+      "our": 565.75,
+      "opponent": 109.5,
+      "diff": 456.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.75",
+      "family": "plus",
+      "our": 745.9375,
+      "opponent": 110.9375,
+      "diff": 635.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.F0.85",
+      "family": "plus",
+      "our": 831.375,
+      "opponent": 93.875,
+      "diff": 737.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F0",
+      "family": "plus",
+      "our": 240.0625,
+      "opponent": 296.9375,
+      "diff": -56.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F1",
+      "family": "plus",
+      "our": 264.3125,
+      "opponent": 232.4375,
+      "diff": 31.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F2",
+      "family": "plus",
+      "our": 512.0,
+      "opponent": 509.5,
+      "diff": 2.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F3",
+      "family": "plus",
+      "our": 542.6875,
+      "opponent": 88.3125,
+      "diff": 454.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F4",
+      "family": "plus",
+      "our": 365.25,
+      "opponent": 655.875,
+      "diff": -290.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F5",
+      "family": "plus",
+      "our": 466.5,
+      "opponent": 245.875,
+      "diff": 220.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F6",
+      "family": "plus",
+      "our": 263.25,
+      "opponent": 303.25,
+      "diff": -40.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive.F7",
+      "family": "plus",
+      "our": 453.8125,
+      "opponent": 333.8125,
+      "diff": 120.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Bully",
+      "family": "punitive",
+      "our": 886.0,
+      "opponent": 116.0,
+      "diff": 770.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Gradual",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Grim",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GrimForgive.05",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GrimForgive.15",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Grudger2",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Grudger3",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Mistrust",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "OmegaTFT-lite",
+      "family": "punitive",
+      "our": 604.0,
+      "opponent": 594.0,
+      "diff": 10.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Alternator",
+      "family": "random",
+      "our": 533.0,
+      "opponent": 113.0,
+      "diff": 420.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "AlternatorD",
+      "family": "random",
+      "our": 537.0,
+      "opponent": 107.0,
+      "diff": 430.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Periodic3",
+      "family": "random",
+      "our": 688.0,
+      "opponent": 78.0,
+      "diff": 610.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Periodic4",
+      "family": "random",
+      "our": 532.0,
+      "opponent": 92.0,
+      "diff": 440.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Rand3->TFT",
+      "family": "random",
+      "our": 529.625,
+      "opponent": 530.25,
+      "diff": -0.625,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.05",
+      "family": "random",
+      "our": 143.5625,
+      "opponent": 136.6875,
+      "diff": 6.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.10",
+      "family": "random",
+      "our": 178.5,
+      "opponent": 119.75,
+      "diff": 58.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.20",
+      "family": "random",
+      "our": 270.25,
+      "opponent": 123.375,
+      "diff": 146.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.30",
+      "family": "random",
+      "our": 367.1875,
+      "opponent": 117.8125,
+      "diff": 249.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.50",
+      "family": "random",
+      "our": 521.125,
+      "opponent": 109.25,
+      "diff": 411.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.70",
+      "family": "random",
+      "our": 663.75,
+      "opponent": 139.375,
+      "diff": 524.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.80",
+      "family": "random",
+      "our": 790.5,
+      "opponent": 88.0,
+      "diff": 702.5,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Random.90",
+      "family": "random",
+      "our": 839.4375,
+      "opponent": 124.4375,
+      "diff": 715.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "BayesPlus",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "EarlyProbe",
+      "family": "smart",
+      "our": 606.0,
+      "opponent": 357.875,
+      "diff": 248.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Final",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FinalTuned",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Gap0.45",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Gap0.55",
+      "family": "smart",
+      "our": 192.0,
+      "opponent": 122.0,
+      "diff": 70.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Gap0.64",
+      "family": "smart",
+      "our": 137.0,
+      "opponent": 137.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "GapStart",
+      "family": "smart",
+      "our": 968.0,
+      "opponent": 18.0,
+      "diff": 950.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Harvest21",
+      "family": "smart",
+      "our": 547.75,
+      "opponent": 270.875,
+      "diff": 276.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Harvest35",
+      "family": "smart",
+      "our": 597.5625,
+      "opponent": 284.4375,
+      "diff": 313.125,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Harvest40",
+      "family": "smart",
+      "our": 606.4375,
+      "opponent": 291.4375,
+      "diff": 315.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Harvest45",
+      "family": "smart",
+      "our": 641.0625,
+      "opponent": 304.1875,
+      "diff": 336.875,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Harvest50",
+      "family": "smart",
+      "our": 662.5625,
+      "opponent": 328.8125,
+      "diff": 333.75,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Harvest75",
+      "family": "smart",
+      "our": 649.5,
+      "opponent": 464.5,
+      "diff": 185.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "RespTuned",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Responsive3",
+      "family": "smart",
+      "our": 595.0,
+      "opponent": 595.0,
+      "diff": 0.0,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "FSM-rand",
+      "family": "wild",
+      "our": 590.5625,
+      "opponent": 194.3125,
+      "diff": 396.25,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "MemOne-rand",
+      "family": "wild",
+      "our": 496.125,
+      "opponent": 351.75,
+      "diff": 144.375,
+      "reps": 16
+    },
+    {
+      "candidate": "RL-Wide160",
+      "type": "Reactive-rand",
+      "family": "wild",
+      "our": 465.1875,
+      "opponent": 372.6875,
+      "diff": 92.5,
+      "reps": 16
+    }
+  ],
+  "family_means": {
+    "RL-Switch": {
+      "adaptive": 528.9375,
+      "defect": 628.7142857142857,
+      "forgiving": 571.7881944444445,
+      "late": 476.625,
+      "nice": 599.0,
+      "plus": 518.4148706896551,
+      "punitive": 635.3333333333334,
+      "random": 505.2451923076923,
+      "smart": 574.3984375,
+      "wild": 515.7708333333334
+    },
+    "RL-Wide160": {
+      "adaptive": 526.275,
+      "defect": 629.0,
+      "forgiving": 570.9652777777778,
+      "late": 476.625,
+      "nice": 599.0,
+      "plus": 518.948275862069,
+      "punitive": 635.3333333333334,
+      "random": 507.22596153846155,
+      "smart": 573.6171875,
+      "wild": 517.2916666666666
+    }
+  },
+  "suite_weights": {
+    "original": {
+      "AllC": 0.01431297709923664,
+      "AllC-lastD": 0.01431297709923664,
+      "TFT": 0.01431297709923664,
+      "TFT-lastD": 0.01431297709923664,
+      "TFT-last2D": 0.01431297709923664,
+      "TFT-last5D": 0.01431297709923664,
+      "sTFT": 0.01431297709923664,
+      "TFT2": 0.01431297709923664,
+      "TFT2-lastD": 0.01431297709923664,
+      "ContriteTFT": 0.01431297709923664,
+      "TFTForgiveOnce": 0.01431297709923664,
+      "TFT-delay2": 0.01431297709923664,
+      "FirmButFair": 0.01431297709923664,
+      "TTFT": 0.01431297709923664,
+      "Pavlov": 0.01431297709923664,
+      "WSLS2": 0.01431297709923664,
+      "GTFT.01": 0.01431297709923664,
+      "GTFT.05": 0.01431297709923664,
+      "GTFT.10": 0.01431297709923664,
+      "GTFT.20": 0.01431297709923664,
+      "GTFT.33": 0.01431297709923664,
+      "GTFT.50": 0.01431297709923664,
+      "NoisyTFT.02": 0.01431297709923664,
+      "NoisyTFT.05": 0.01431297709923664,
+      "NoisyTFT.10": 0.01431297709923664,
+      "NoisyTFT.20": 0.01431297709923664,
+      "Joss.02": 0.01431297709923664,
+      "Joss.05": 0.01431297709923664,
+      "Joss.10": 0.01431297709923664,
+      "Joss.20": 0.01431297709923664,
+      "ForgiveTFT1": 0.01431297709923664,
+      "ForgiveTFT2": 0.01431297709923664,
+      "TwoStrike2": 0.01431297709923664,
+      "TwoStrike3": 0.01431297709923664,
+      "Grim": 0.009541984732824428,
+      "GrimForgive.05": 0.009541984732824428,
+      "GrimForgive.15": 0.009541984732824428,
+      "Grudger2": 0.009541984732824428,
+      "Grudger3": 0.009541984732824428,
+      "Mistrust": 0.009541984732824428,
+      "Gradual": 0.009541984732824428,
+      "OmegaTFT-lite": 0.009541984732824428,
+      "Bully": 0.009541984732824428,
+      "AllD": 0.009541984732824428,
+      "EarlyD1": 0.009541984732824428,
+      "EarlyD10": 0.009541984732824428,
+      "EarlyD25": 0.009541984732824428,
+      "LateD5": 0.009541984732824428,
+      "LateD10": 0.009541984732824428,
+      "LateD15": 0.009541984732824428,
+      "LateD20": 0.009541984732824428,
+      "LateD25": 0.009541984732824428,
+      "LateD30": 0.009541984732824428,
+      "LateD40": 0.009541984732824428,
+      "LateD50": 0.009541984732824428,
+      "Tester": 0.009541984732824428,
+      "Prober": 0.009541984732824428,
+      "RemorsefulProber": 0.009541984732824428,
+      "Random.05": 0.009541984732824428,
+      "Random.10": 0.009541984732824428,
+      "Random.20": 0.009541984732824428,
+      "Random.30": 0.009541984732824428,
+      "Random.50": 0.009541984732824428,
+      "Random.70": 0.009541984732824428,
+      "Random.80": 0.009541984732824428,
+      "Random.90": 0.009541984732824428,
+      "Alternator": 0.009541984732824428,
+      "AlternatorD": 0.009541984732824428,
+      "Periodic3": 0.009541984732824428,
+      "Periodic4": 0.009541984732824428,
+      "Rand3->TFT": 0.009541984732824428,
+      "MemOne-rand": 0.004770992366412214,
+      "Reactive-rand": 0.004770992366412214,
+      "FSM-rand": 0.004770992366412214,
+      "Majority2": 0.004770992366412214,
+      "Majority3": 0.004770992366412214,
+      "Majority5": 0.004770992366412214,
+      "Responsive": 0.004770992366412214,
+      "Responsive3": 0.0009541984732824428,
+      "ProbeBot": 0.004770992366412214,
+      "Extort1.5": 0.004770992366412214,
+      "Extort2": 0.004770992366412214,
+      "Extort3": 0.004770992366412214,
+      "GenZD2": 0.004770992366412214,
+      "GenZD3": 0.004770992366412214,
+      "Final": 0.0009541984732824428,
+      "Harvest45": 0.0009541984732824428,
+      "Harvest40": 0.0009541984732824428,
+      "EarlyProbe": 0.0009541984732824428,
+      "GapStart": 0.0009541984732824428,
+      "BayesPlus": 0.0009541984732824428,
+      "MemOne.F0": 0.0014312977099236641,
+      "MemOne.F1": 0.0014312977099236641,
+      "MemOne.F2": 0.0014312977099236641,
+      "MemOne.F3": 0.0014312977099236641,
+      "MemOne.F4": 0.0014312977099236641,
+      "MemOne.F5": 0.0014312977099236641,
+      "MemOne.F6": 0.0014312977099236641,
+      "MemOne.F7": 0.0014312977099236641,
+      "Reactive.F0": 0.0014312977099236641,
+      "Reactive.F1": 0.0014312977099236641,
+      "Reactive.F2": 0.0014312977099236641,
+      "Reactive.F3": 0.0014312977099236641,
+      "Reactive.F4": 0.0014312977099236641,
+      "Reactive.F5": 0.0014312977099236641,
+      "Reactive.F6": 0.0014312977099236641,
+      "Reactive.F7": 0.0014312977099236641,
+      "FSM.F0": 0.0014312977099236641,
+      "FSM.F1": 0.0014312977099236641,
+      "FSM.F2": 0.0014312977099236641,
+      "FSM.F3": 0.0014312977099236641,
+      "FSM.F4": 0.0014312977099236641,
+      "FSM.F5": 0.0014312977099236641,
+      "Extort.F1.2": 0.0014312977099236641,
+      "Extort.F1.5": 0.0014312977099236641,
+      "Extort.F2.0": 0.0014312977099236641,
+      "Extort.F2.5": 0.0014312977099236641,
+      "Extort.F3.0": 0.0014312977099236641,
+      "GenZD.F1.2": 0.0014312977099236641,
+      "GenZD.F2.0": 0.0014312977099236641,
+      "GenZD.F3.0": 0.0014312977099236641,
+      "GTFT.F0.02": 0.0014312977099236641,
+      "GTFT.F0.07": 0.0014312977099236641,
+      "GTFT.F0.13": 0.0014312977099236641,
+      "GTFT.F0.22": 0.0014312977099236641,
+      "GTFT.F0.3": 0.0014312977099236641,
+      "GTFT.F0.45": 0.0014312977099236641,
+      "GTFT.F0.6": 0.0014312977099236641,
+      "Joss.F0.015": 0.0014312977099236641,
+      "Noisy.F0.015": 0.0014312977099236641,
+      "Joss.F0.04": 0.0014312977099236641,
+      "Noisy.F0.04": 0.0014312977099236641,
+      "Joss.F0.07": 0.0014312977099236641,
+      "Noisy.F0.07": 0.0014312977099236641,
+      "Joss.F0.11": 0.0014312977099236641,
+      "Noisy.F0.11": 0.0014312977099236641,
+      "Joss.F0.16": 0.0014312977099236641,
+      "Noisy.F0.16": 0.0014312977099236641,
+      "Joss.F0.22": 0.0014312977099236641,
+      "Noisy.F0.22": 0.0014312977099236641,
+      "Joss.F0.3": 0.0014312977099236641,
+      "Noisy.F0.3": 0.0014312977099236641,
+      "Random.F0.08": 0.0014312977099236641,
+      "Random.F0.18": 0.0014312977099236641,
+      "Random.F0.28": 0.0014312977099236641,
+      "Random.F0.42": 0.0014312977099236641,
+      "Random.F0.55": 0.0014312977099236641,
+      "Random.F0.75": 0.0014312977099236641,
+      "Random.F0.85": 0.0014312977099236641,
+      "FinalTuned": 0.0009541984732824428,
+      "RespTuned": 0.0009541984732824428,
+      "Harvest21": 0.0009541984732824428,
+      "Harvest35": 0.0009541984732824428,
+      "Harvest50": 0.0009541984732824428,
+      "Harvest75": 0.0009541984732824428,
+      "Gap0.45": 0.0009541984732824428,
+      "Gap0.55": 0.0009541984732824428,
+      "Gap0.64": 0.0009541984732824428
+    },
+    "late": {
+      "AllC": 0.011621150493898896,
+      "AllC-lastD": 0.011621150493898896,
+      "TFT": 0.011621150493898896,
+      "TFT-lastD": 0.011621150493898896,
+      "TFT-last2D": 0.011621150493898896,
+      "TFT-last5D": 0.011621150493898896,
+      "sTFT": 0.011621150493898896,
+      "TFT2": 0.011621150493898896,
+      "TFT2-lastD": 0.011621150493898896,
+      "ContriteTFT": 0.011621150493898896,
+      "TFTForgiveOnce": 0.011621150493898896,
+      "TFT-delay2": 0.011621150493898896,
+      "FirmButFair": 0.011621150493898896,
+      "TTFT": 0.011621150493898896,
+      "Pavlov": 0.011621150493898896,
+      "WSLS2": 0.011621150493898896,
+      "GTFT.01": 0.011621150493898896,
+      "GTFT.05": 0.011621150493898896,
+      "GTFT.10": 0.011621150493898896,
+      "GTFT.20": 0.011621150493898896,
+      "GTFT.33": 0.011621150493898896,
+      "GTFT.50": 0.011621150493898896,
+      "NoisyTFT.02": 0.011621150493898896,
+      "NoisyTFT.05": 0.011621150493898896,
+      "NoisyTFT.10": 0.011621150493898896,
+      "NoisyTFT.20": 0.011621150493898896,
+      "Joss.02": 0.011621150493898896,
+      "Joss.05": 0.011621150493898896,
+      "Joss.10": 0.011621150493898896,
+      "Joss.20": 0.011621150493898896,
+      "ForgiveTFT1": 0.011621150493898896,
+      "ForgiveTFT2": 0.011621150493898896,
+      "TwoStrike2": 0.011621150493898896,
+      "TwoStrike3": 0.011621150493898896,
+      "Grim": 0.005810575246949448,
+      "GrimForgive.05": 0.005810575246949448,
+      "GrimForgive.15": 0.005810575246949448,
+      "Grudger2": 0.005810575246949448,
+      "Grudger3": 0.005810575246949448,
+      "Mistrust": 0.005810575246949448,
+      "Gradual": 0.005810575246949448,
+      "OmegaTFT-lite": 0.005810575246949448,
+      "Bully": 0.005810575246949448,
+      "AllD": 0.005810575246949448,
+      "EarlyD1": 0.005810575246949448,
+      "EarlyD10": 0.005810575246949448,
+      "EarlyD25": 0.005810575246949448,
+      "LateD5": 0.034863451481696686,
+      "LateD10": 0.034863451481696686,
+      "LateD15": 0.034863451481696686,
+      "LateD20": 0.034863451481696686,
+      "LateD25": 0.034863451481696686,
+      "LateD30": 0.034863451481696686,
+      "LateD40": 0.034863451481696686,
+      "LateD50": 0.034863451481696686,
+      "Tester": 0.005810575246949448,
+      "Prober": 0.005810575246949448,
+      "RemorsefulProber": 0.005810575246949448,
+      "Random.05": 0.005810575246949448,
+      "Random.10": 0.005810575246949448,
+      "Random.20": 0.005810575246949448,
+      "Random.30": 0.005810575246949448,
+      "Random.50": 0.005810575246949448,
+      "Random.70": 0.005810575246949448,
+      "Random.80": 0.005810575246949448,
+      "Random.90": 0.005810575246949448,
+      "Alternator": 0.005810575246949448,
+      "AlternatorD": 0.005810575246949448,
+      "Periodic3": 0.005810575246949448,
+      "Periodic4": 0.005810575246949448,
+      "Rand3->TFT": 0.005810575246949448,
+      "MemOne-rand": 0.002905287623474724,
+      "Reactive-rand": 0.002905287623474724,
+      "FSM-rand": 0.002905287623474724,
+      "Majority2": 0.002905287623474724,
+      "Majority3": 0.002905287623474724,
+      "Majority5": 0.002905287623474724,
+      "Responsive": 0.002905287623474724,
+      "Responsive3": 0.0011621150493898898,
+      "ProbeBot": 0.002905287623474724,
+      "Extort1.5": 0.002905287623474724,
+      "Extort2": 0.002905287623474724,
+      "Extort3": 0.002905287623474724,
+      "GenZD2": 0.002905287623474724,
+      "GenZD3": 0.002905287623474724,
+      "Final": 0.0011621150493898898,
+      "Harvest45": 0.0011621150493898898,
+      "Harvest40": 0.0011621150493898898,
+      "EarlyProbe": 0.0011621150493898898,
+      "GapStart": 0.0011621150493898898,
+      "BayesPlus": 0.0011621150493898898,
+      "MemOne.F0": 0.0017431725740848344,
+      "MemOne.F1": 0.0017431725740848344,
+      "MemOne.F2": 0.0017431725740848344,
+      "MemOne.F3": 0.0017431725740848344,
+      "MemOne.F4": 0.0017431725740848344,
+      "MemOne.F5": 0.0017431725740848344,
+      "MemOne.F6": 0.0017431725740848344,
+      "MemOne.F7": 0.0017431725740848344,
+      "Reactive.F0": 0.0017431725740848344,
+      "Reactive.F1": 0.0017431725740848344,
+      "Reactive.F2": 0.0017431725740848344,
+      "Reactive.F3": 0.0017431725740848344,
+      "Reactive.F4": 0.0017431725740848344,
+      "Reactive.F5": 0.0017431725740848344,
+      "Reactive.F6": 0.0017431725740848344,
+      "Reactive.F7": 0.0017431725740848344,
+      "FSM.F0": 0.0017431725740848344,
+      "FSM.F1": 0.0017431725740848344,
+      "FSM.F2": 0.0017431725740848344,
+      "FSM.F3": 0.0017431725740848344,
+      "FSM.F4": 0.0017431725740848344,
+      "FSM.F5": 0.0017431725740848344,
+      "Extort.F1.2": 0.0017431725740848344,
+      "Extort.F1.5": 0.0017431725740848344,
+      "Extort.F2.0": 0.0017431725740848344,
+      "Extort.F2.5": 0.0017431725740848344,
+      "Extort.F3.0": 0.0017431725740848344,
+      "GenZD.F1.2": 0.0017431725740848344,
+      "GenZD.F2.0": 0.0017431725740848344,
+      "GenZD.F3.0": 0.0017431725740848344,
+      "GTFT.F0.02": 0.0017431725740848344,
+      "GTFT.F0.07": 0.0017431725740848344,
+      "GTFT.F0.13": 0.0017431725740848344,
+      "GTFT.F0.22": 0.0017431725740848344,
+      "GTFT.F0.3": 0.0017431725740848344,
+      "GTFT.F0.45": 0.0017431725740848344,
+      "GTFT.F0.6": 0.0017431725740848344,
+      "Joss.F0.015": 0.0017431725740848344,
+      "Noisy.F0.015": 0.0017431725740848344,
+      "Joss.F0.04": 0.0017431725740848344,
+      "Noisy.F0.04": 0.0017431725740848344,
+      "Joss.F0.07": 0.0017431725740848344,
+      "Noisy.F0.07": 0.0017431725740848344,
+      "Joss.F0.11": 0.0017431725740848344,
+      "Noisy.F0.11": 0.0017431725740848344,
+      "Joss.F0.16": 0.0017431725740848344,
+      "Noisy.F0.16": 0.0017431725740848344,
+      "Joss.F0.22": 0.0017431725740848344,
+      "Noisy.F0.22": 0.0017431725740848344,
+      "Joss.F0.3": 0.0017431725740848344,
+      "Noisy.F0.3": 0.0017431725740848344,
+      "Random.F0.08": 0.0017431725740848344,
+      "Random.F0.18": 0.0017431725740848344,
+      "Random.F0.28": 0.0017431725740848344,
+      "Random.F0.42": 0.0017431725740848344,
+      "Random.F0.55": 0.0017431725740848344,
+      "Random.F0.75": 0.0017431725740848344,
+      "Random.F0.85": 0.0017431725740848344,
+      "FinalTuned": 0.0011621150493898898,
+      "RespTuned": 0.0011621150493898898,
+      "Harvest21": 0.0011621150493898898,
+      "Harvest35": 0.0011621150493898898,
+      "Harvest50": 0.0011621150493898898,
+      "Harvest75": 0.0011621150493898898,
+      "Gap0.45": 0.0011621150493898898,
+      "Gap0.55": 0.0011621150493898898,
+      "Gap0.64": 0.0011621150493898898
+    },
+    "grim": {
+      "AllC": 0.012730744748567792,
+      "AllC-lastD": 0.012730744748567792,
+      "TFT": 0.012730744748567792,
+      "TFT-lastD": 0.012730744748567792,
+      "TFT-last2D": 0.012730744748567792,
+      "TFT-last5D": 0.012730744748567792,
+      "sTFT": 0.012730744748567792,
+      "TFT2": 0.012730744748567792,
+      "TFT2-lastD": 0.012730744748567792,
+      "ContriteTFT": 0.012730744748567792,
+      "TFTForgiveOnce": 0.012730744748567792,
+      "TFT-delay2": 0.012730744748567792,
+      "FirmButFair": 0.012730744748567792,
+      "TTFT": 0.012730744748567792,
+      "Pavlov": 0.012730744748567792,
+      "WSLS2": 0.012730744748567792,
+      "GTFT.01": 0.006365372374283896,
+      "GTFT.05": 0.006365372374283896,
+      "GTFT.10": 0.006365372374283896,
+      "GTFT.20": 0.006365372374283896,
+      "GTFT.33": 0.006365372374283896,
+      "GTFT.50": 0.006365372374283896,
+      "NoisyTFT.02": 0.006365372374283896,
+      "NoisyTFT.05": 0.006365372374283896,
+      "NoisyTFT.10": 0.006365372374283896,
+      "NoisyTFT.20": 0.006365372374283896,
+      "Joss.02": 0.006365372374283896,
+      "Joss.05": 0.006365372374283896,
+      "Joss.10": 0.006365372374283896,
+      "Joss.20": 0.006365372374283896,
+      "ForgiveTFT1": 0.006365372374283896,
+      "ForgiveTFT2": 0.006365372374283896,
+      "TwoStrike2": 0.006365372374283896,
+      "TwoStrike3": 0.006365372374283896,
+      "Grim": 0.031826861871419476,
+      "GrimForgive.05": 0.031826861871419476,
+      "GrimForgive.15": 0.031826861871419476,
+      "Grudger2": 0.031826861871419476,
+      "Grudger3": 0.031826861871419476,
+      "Mistrust": 0.031826861871419476,
+      "Gradual": 0.031826861871419476,
+      "OmegaTFT-lite": 0.031826861871419476,
+      "Bully": 0.031826861871419476,
+      "AllD": 0.012730744748567792,
+      "EarlyD1": 0.012730744748567792,
+      "EarlyD10": 0.012730744748567792,
+      "EarlyD25": 0.012730744748567792,
+      "LateD5": 0.006365372374283896,
+      "LateD10": 0.006365372374283896,
+      "LateD15": 0.006365372374283896,
+      "LateD20": 0.006365372374283896,
+      "LateD25": 0.006365372374283896,
+      "LateD30": 0.006365372374283896,
+      "LateD40": 0.006365372374283896,
+      "LateD50": 0.006365372374283896,
+      "Tester": 0.012730744748567792,
+      "Prober": 0.012730744748567792,
+      "RemorsefulProber": 0.012730744748567792,
+      "Random.05": 0.006365372374283896,
+      "Random.10": 0.006365372374283896,
+      "Random.20": 0.006365372374283896,
+      "Random.30": 0.006365372374283896,
+      "Random.50": 0.006365372374283896,
+      "Random.70": 0.006365372374283896,
+      "Random.80": 0.006365372374283896,
+      "Random.90": 0.006365372374283896,
+      "Alternator": 0.006365372374283896,
+      "AlternatorD": 0.006365372374283896,
+      "Periodic3": 0.006365372374283896,
+      "Periodic4": 0.006365372374283896,
+      "Rand3->TFT": 0.006365372374283896,
+      "MemOne-rand": 0.003182686187141948,
+      "Reactive-rand": 0.003182686187141948,
+      "FSM-rand": 0.003182686187141948,
+      "Majority2": 0.003182686187141948,
+      "Majority3": 0.003182686187141948,
+      "Majority5": 0.003182686187141948,
+      "Responsive": 0.003182686187141948,
+      "Responsive3": 0.0012730744748567792,
+      "ProbeBot": 0.003182686187141948,
+      "Extort1.5": 0.003182686187141948,
+      "Extort2": 0.003182686187141948,
+      "Extort3": 0.003182686187141948,
+      "GenZD2": 0.003182686187141948,
+      "GenZD3": 0.003182686187141948,
+      "Final": 0.0012730744748567792,
+      "Harvest45": 0.0012730744748567792,
+      "Harvest40": 0.0012730744748567792,
+      "EarlyProbe": 0.0012730744748567792,
+      "GapStart": 0.0012730744748567792,
+      "BayesPlus": 0.0012730744748567792,
+      "MemOne.F0": 0.0019096117122851686,
+      "MemOne.F1": 0.0019096117122851686,
+      "MemOne.F2": 0.0019096117122851686,
+      "MemOne.F3": 0.0019096117122851686,
+      "MemOne.F4": 0.0019096117122851686,
+      "MemOne.F5": 0.0019096117122851686,
+      "MemOne.F6": 0.0019096117122851686,
+      "MemOne.F7": 0.0019096117122851686,
+      "Reactive.F0": 0.0019096117122851686,
+      "Reactive.F1": 0.0019096117122851686,
+      "Reactive.F2": 0.0019096117122851686,
+      "Reactive.F3": 0.0019096117122851686,
+      "Reactive.F4": 0.0019096117122851686,
+      "Reactive.F5": 0.0019096117122851686,
+      "Reactive.F6": 0.0019096117122851686,
+      "Reactive.F7": 0.0019096117122851686,
+      "FSM.F0": 0.0019096117122851686,
+      "FSM.F1": 0.0019096117122851686,
+      "FSM.F2": 0.0019096117122851686,
+      "FSM.F3": 0.0019096117122851686,
+      "FSM.F4": 0.0019096117122851686,
+      "FSM.F5": 0.0019096117122851686,
+      "Extort.F1.2": 0.0019096117122851686,
+      "Extort.F1.5": 0.0019096117122851686,
+      "Extort.F2.0": 0.0019096117122851686,
+      "Extort.F2.5": 0.0019096117122851686,
+      "Extort.F3.0": 0.0019096117122851686,
+      "GenZD.F1.2": 0.0019096117122851686,
+      "GenZD.F2.0": 0.0019096117122851686,
+      "GenZD.F3.0": 0.0019096117122851686,
+      "GTFT.F0.02": 0.0019096117122851686,
+      "GTFT.F0.07": 0.0019096117122851686,
+      "GTFT.F0.13": 0.0019096117122851686,
+      "GTFT.F0.22": 0.0019096117122851686,
+      "GTFT.F0.3": 0.0019096117122851686,
+      "GTFT.F0.45": 0.0019096117122851686,
+      "GTFT.F0.6": 0.0019096117122851686,
+      "Joss.F0.015": 0.0019096117122851686,
+      "Noisy.F0.015": 0.0019096117122851686,
+      "Joss.F0.04": 0.0019096117122851686,
+      "Noisy.F0.04": 0.0019096117122851686,
+      "Joss.F0.07": 0.0019096117122851686,
+      "Noisy.F0.07": 0.0019096117122851686,
+      "Joss.F0.11": 0.0019096117122851686,
+      "Noisy.F0.11": 0.0019096117122851686,
+      "Joss.F0.16": 0.0019096117122851686,
+      "Noisy.F0.16": 0.0019096117122851686,
+      "Joss.F0.22": 0.0019096117122851686,
+      "Noisy.F0.22": 0.0019096117122851686,
+      "Joss.F0.3": 0.0019096117122851686,
+      "Noisy.F0.3": 0.0019096117122851686,
+      "Random.F0.08": 0.0019096117122851686,
+      "Random.F0.18": 0.0019096117122851686,
+      "Random.F0.28": 0.0019096117122851686,
+      "Random.F0.42": 0.0019096117122851686,
+      "Random.F0.55": 0.0019096117122851686,
+      "Random.F0.75": 0.0019096117122851686,
+      "Random.F0.85": 0.0019096117122851686,
+      "FinalTuned": 0.0012730744748567792,
+      "RespTuned": 0.0012730744748567792,
+      "Harvest21": 0.0012730744748567792,
+      "Harvest35": 0.0012730744748567792,
+      "Harvest50": 0.0012730744748567792,
+      "Harvest75": 0.0012730744748567792,
+      "Gap0.45": 0.0012730744748567792,
+      "Gap0.55": 0.0012730744748567792,
+      "Gap0.64": 0.0012730744748567792
+    },
+    "noise": {
+      "AllC": 0.007173601147776184,
+      "AllC-lastD": 0.007173601147776184,
+      "TFT": 0.007173601147776184,
+      "TFT-lastD": 0.007173601147776184,
+      "TFT-last2D": 0.007173601147776184,
+      "TFT-last5D": 0.007173601147776184,
+      "sTFT": 0.007173601147776184,
+      "TFT2": 0.007173601147776184,
+      "TFT2-lastD": 0.007173601147776184,
+      "ContriteTFT": 0.007173601147776184,
+      "TFTForgiveOnce": 0.007173601147776184,
+      "TFT-delay2": 0.007173601147776184,
+      "FirmButFair": 0.007173601147776184,
+      "TTFT": 0.007173601147776184,
+      "Pavlov": 0.007173601147776184,
+      "WSLS2": 0.007173601147776184,
+      "GTFT.01": 0.02152080344332855,
+      "GTFT.05": 0.02152080344332855,
+      "GTFT.10": 0.02152080344332855,
+      "GTFT.20": 0.02152080344332855,
+      "GTFT.33": 0.02152080344332855,
+      "GTFT.50": 0.02152080344332855,
+      "NoisyTFT.02": 0.02152080344332855,
+      "NoisyTFT.05": 0.02152080344332855,
+      "NoisyTFT.10": 0.02152080344332855,
+      "NoisyTFT.20": 0.02152080344332855,
+      "Joss.02": 0.02152080344332855,
+      "Joss.05": 0.02152080344332855,
+      "Joss.10": 0.02152080344332855,
+      "Joss.20": 0.02152080344332855,
+      "ForgiveTFT1": 0.02152080344332855,
+      "ForgiveTFT2": 0.02152080344332855,
+      "TwoStrike2": 0.02152080344332855,
+      "TwoStrike3": 0.02152080344332855,
+      "Grim": 0.003586800573888092,
+      "GrimForgive.05": 0.003586800573888092,
+      "GrimForgive.15": 0.003586800573888092,
+      "Grudger2": 0.003586800573888092,
+      "Grudger3": 0.003586800573888092,
+      "Mistrust": 0.003586800573888092,
+      "Gradual": 0.003586800573888092,
+      "OmegaTFT-lite": 0.003586800573888092,
+      "Bully": 0.003586800573888092,
+      "AllD": 0.003586800573888092,
+      "EarlyD1": 0.003586800573888092,
+      "EarlyD10": 0.003586800573888092,
+      "EarlyD25": 0.003586800573888092,
+      "LateD5": 0.003586800573888092,
+      "LateD10": 0.003586800573888092,
+      "LateD15": 0.003586800573888092,
+      "LateD20": 0.003586800573888092,
+      "LateD25": 0.003586800573888092,
+      "LateD30": 0.003586800573888092,
+      "LateD40": 0.003586800573888092,
+      "LateD50": 0.003586800573888092,
+      "Tester": 0.003586800573888092,
+      "Prober": 0.003586800573888092,
+      "RemorsefulProber": 0.003586800573888092,
+      "Random.05": 0.010760401721664275,
+      "Random.10": 0.010760401721664275,
+      "Random.20": 0.010760401721664275,
+      "Random.30": 0.010760401721664275,
+      "Random.50": 0.010760401721664275,
+      "Random.70": 0.010760401721664275,
+      "Random.80": 0.010760401721664275,
+      "Random.90": 0.010760401721664275,
+      "Alternator": 0.010760401721664275,
+      "AlternatorD": 0.010760401721664275,
+      "Periodic3": 0.010760401721664275,
+      "Periodic4": 0.010760401721664275,
+      "Rand3->TFT": 0.010760401721664275,
+      "MemOne-rand": 0.003586800573888092,
+      "Reactive-rand": 0.003586800573888092,
+      "FSM-rand": 0.003586800573888092,
+      "Majority2": 0.003586800573888092,
+      "Majority3": 0.003586800573888092,
+      "Majority5": 0.003586800573888092,
+      "Responsive": 0.003586800573888092,
+      "Responsive3": 0.0010760401721664275,
+      "ProbeBot": 0.003586800573888092,
+      "Extort1.5": 0.003586800573888092,
+      "Extort2": 0.003586800573888092,
+      "Extort3": 0.003586800573888092,
+      "GenZD2": 0.003586800573888092,
+      "GenZD3": 0.003586800573888092,
+      "Final": 0.0010760401721664275,
+      "Harvest45": 0.0010760401721664275,
+      "Harvest40": 0.0010760401721664275,
+      "EarlyProbe": 0.0010760401721664275,
+      "GapStart": 0.0010760401721664275,
+      "BayesPlus": 0.0010760401721664275,
+      "MemOne.F0": 0.003586800573888092,
+      "MemOne.F1": 0.003586800573888092,
+      "MemOne.F2": 0.003586800573888092,
+      "MemOne.F3": 0.003586800573888092,
+      "MemOne.F4": 0.003586800573888092,
+      "MemOne.F5": 0.003586800573888092,
+      "MemOne.F6": 0.003586800573888092,
+      "MemOne.F7": 0.003586800573888092,
+      "Reactive.F0": 0.003586800573888092,
+      "Reactive.F1": 0.003586800573888092,
+      "Reactive.F2": 0.003586800573888092,
+      "Reactive.F3": 0.003586800573888092,
+      "Reactive.F4": 0.003586800573888092,
+      "Reactive.F5": 0.003586800573888092,
+      "Reactive.F6": 0.003586800573888092,
+      "Reactive.F7": 0.003586800573888092,
+      "FSM.F0": 0.003586800573888092,
+      "FSM.F1": 0.003586800573888092,
+      "FSM.F2": 0.003586800573888092,
+      "FSM.F3": 0.003586800573888092,
+      "FSM.F4": 0.003586800573888092,
+      "FSM.F5": 0.003586800573888092,
+      "Extort.F1.2": 0.003586800573888092,
+      "Extort.F1.5": 0.003586800573888092,
+      "Extort.F2.0": 0.003586800573888092,
+      "Extort.F2.5": 0.003586800573888092,
+      "Extort.F3.0": 0.003586800573888092,
+      "GenZD.F1.2": 0.003586800573888092,
+      "GenZD.F2.0": 0.003586800573888092,
+      "GenZD.F3.0": 0.003586800573888092,
+      "GTFT.F0.02": 0.003586800573888092,
+      "GTFT.F0.07": 0.003586800573888092,
+      "GTFT.F0.13": 0.003586800573888092,
+      "GTFT.F0.22": 0.003586800573888092,
+      "GTFT.F0.3": 0.003586800573888092,
+      "GTFT.F0.45": 0.003586800573888092,
+      "GTFT.F0.6": 0.003586800573888092,
+      "Joss.F0.015": 0.003586800573888092,
+      "Noisy.F0.015": 0.003586800573888092,
+      "Joss.F0.04": 0.003586800573888092,
+      "Noisy.F0.04": 0.003586800573888092,
+      "Joss.F0.07": 0.003586800573888092,
+      "Noisy.F0.07": 0.003586800573888092,
+      "Joss.F0.11": 0.003586800573888092,
+      "Noisy.F0.11": 0.003586800573888092,
+      "Joss.F0.16": 0.003586800573888092,
+      "Noisy.F0.16": 0.003586800573888092,
+      "Joss.F0.22": 0.003586800573888092,
+      "Noisy.F0.22": 0.003586800573888092,
+      "Joss.F0.3": 0.003586800573888092,
+      "Noisy.F0.3": 0.003586800573888092,
+      "Random.F0.08": 0.003586800573888092,
+      "Random.F0.18": 0.003586800573888092,
+      "Random.F0.28": 0.003586800573888092,
+      "Random.F0.42": 0.003586800573888092,
+      "Random.F0.55": 0.003586800573888092,
+      "Random.F0.75": 0.003586800573888092,
+      "Random.F0.85": 0.003586800573888092,
+      "FinalTuned": 0.0010760401721664275,
+      "RespTuned": 0.0010760401721664275,
+      "Harvest21": 0.0010760401721664275,
+      "Harvest35": 0.0010760401721664275,
+      "Harvest50": 0.0010760401721664275,
+      "Harvest75": 0.0010760401721664275,
+      "Gap0.45": 0.0010760401721664275,
+      "Gap0.55": 0.0010760401721664275,
+      "Gap0.64": 0.0010760401721664275
+    },
+    "complex": {
+      "AllC": 0.0024875621890547263,
+      "AllC-lastD": 0.0024875621890547263,
+      "TFT": 0.0024875621890547263,
+      "TFT-lastD": 0.0024875621890547263,
+      "TFT-last2D": 0.0024875621890547263,
+      "TFT-last5D": 0.0024875621890547263,
+      "sTFT": 0.0024875621890547263,
+      "TFT2": 0.0024875621890547263,
+      "TFT2-lastD": 0.0024875621890547263,
+      "ContriteTFT": 0.0024875621890547263,
+      "TFTForgiveOnce": 0.0024875621890547263,
+      "TFT-delay2": 0.0024875621890547263,
+      "FirmButFair": 0.0024875621890547263,
+      "TTFT": 0.0024875621890547263,
+      "Pavlov": 0.0024875621890547263,
+      "WSLS2": 0.0024875621890547263,
+      "GTFT.01": 0.0024875621890547263,
+      "GTFT.05": 0.0024875621890547263,
+      "GTFT.10": 0.0024875621890547263,
+      "GTFT.20": 0.0024875621890547263,
+      "GTFT.33": 0.0024875621890547263,
+      "GTFT.50": 0.0024875621890547263,
+      "NoisyTFT.02": 0.0024875621890547263,
+      "NoisyTFT.05": 0.0024875621890547263,
+      "NoisyTFT.10": 0.0024875621890547263,
+      "NoisyTFT.20": 0.0024875621890547263,
+      "Joss.02": 0.0024875621890547263,
+      "Joss.05": 0.0024875621890547263,
+      "Joss.10": 0.0024875621890547263,
+      "Joss.20": 0.0024875621890547263,
+      "ForgiveTFT1": 0.0024875621890547263,
+      "ForgiveTFT2": 0.0024875621890547263,
+      "TwoStrike2": 0.0024875621890547263,
+      "TwoStrike3": 0.0024875621890547263,
+      "Grim": 0.0024875621890547263,
+      "GrimForgive.05": 0.0024875621890547263,
+      "GrimForgive.15": 0.0024875621890547263,
+      "Grudger2": 0.0024875621890547263,
+      "Grudger3": 0.0024875621890547263,
+      "Mistrust": 0.0024875621890547263,
+      "Gradual": 0.0024875621890547263,
+      "OmegaTFT-lite": 0.0024875621890547263,
+      "Bully": 0.0024875621890547263,
+      "AllD": 0.004975124378109453,
+      "EarlyD1": 0.004975124378109453,
+      "EarlyD10": 0.004975124378109453,
+      "EarlyD25": 0.004975124378109453,
+      "LateD5": 0.0024875621890547263,
+      "LateD10": 0.0024875621890547263,
+      "LateD15": 0.0024875621890547263,
+      "LateD20": 0.0024875621890547263,
+      "LateD25": 0.0024875621890547263,
+      "LateD30": 0.0024875621890547263,
+      "LateD40": 0.0024875621890547263,
+      "LateD50": 0.0024875621890547263,
+      "Tester": 0.004975124378109453,
+      "Prober": 0.004975124378109453,
+      "RemorsefulProber": 0.004975124378109453,
+      "Random.05": 0.007462686567164179,
+      "Random.10": 0.007462686567164179,
+      "Random.20": 0.007462686567164179,
+      "Random.30": 0.007462686567164179,
+      "Random.50": 0.007462686567164179,
+      "Random.70": 0.007462686567164179,
+      "Random.80": 0.007462686567164179,
+      "Random.90": 0.007462686567164179,
+      "Alternator": 0.007462686567164179,
+      "AlternatorD": 0.007462686567164179,
+      "Periodic3": 0.007462686567164179,
+      "Periodic4": 0.007462686567164179,
+      "Rand3->TFT": 0.007462686567164179,
+      "MemOne-rand": 0.014925373134328358,
+      "Reactive-rand": 0.014925373134328358,
+      "FSM-rand": 0.014925373134328358,
+      "Majority2": 0.009950248756218905,
+      "Majority3": 0.009950248756218905,
+      "Majority5": 0.009950248756218905,
+      "Responsive": 0.009950248756218905,
+      "Responsive3": 0.0012437810945273632,
+      "ProbeBot": 0.009950248756218905,
+      "Extort1.5": 0.009950248756218905,
+      "Extort2": 0.009950248756218905,
+      "Extort3": 0.009950248756218905,
+      "GenZD2": 0.009950248756218905,
+      "GenZD3": 0.009950248756218905,
+      "Final": 0.0012437810945273632,
+      "Harvest45": 0.0012437810945273632,
+      "Harvest40": 0.0012437810945273632,
+      "EarlyProbe": 0.0012437810945273632,
+      "GapStart": 0.0012437810945273632,
+      "BayesPlus": 0.0012437810945273632,
+      "MemOne.F0": 0.009950248756218905,
+      "MemOne.F1": 0.009950248756218905,
+      "MemOne.F2": 0.009950248756218905,
+      "MemOne.F3": 0.009950248756218905,
+      "MemOne.F4": 0.009950248756218905,
+      "MemOne.F5": 0.009950248756218905,
+      "MemOne.F6": 0.009950248756218905,
+      "MemOne.F7": 0.009950248756218905,
+      "Reactive.F0": 0.009950248756218905,
+      "Reactive.F1": 0.009950248756218905,
+      "Reactive.F2": 0.009950248756218905,
+      "Reactive.F3": 0.009950248756218905,
+      "Reactive.F4": 0.009950248756218905,
+      "Reactive.F5": 0.009950248756218905,
+      "Reactive.F6": 0.009950248756218905,
+      "Reactive.F7": 0.009950248756218905,
+      "FSM.F0": 0.009950248756218905,
+      "FSM.F1": 0.009950248756218905,
+      "FSM.F2": 0.009950248756218905,
+      "FSM.F3": 0.009950248756218905,
+      "FSM.F4": 0.009950248756218905,
+      "FSM.F5": 0.009950248756218905,
+      "Extort.F1.2": 0.009950248756218905,
+      "Extort.F1.5": 0.009950248756218905,
+      "Extort.F2.0": 0.009950248756218905,
+      "Extort.F2.5": 0.009950248756218905,
+      "Extort.F3.0": 0.009950248756218905,
+      "GenZD.F1.2": 0.009950248756218905,
+      "GenZD.F2.0": 0.009950248756218905,
+      "GenZD.F3.0": 0.009950248756218905,
+      "GTFT.F0.02": 0.009950248756218905,
+      "GTFT.F0.07": 0.009950248756218905,
+      "GTFT.F0.13": 0.009950248756218905,
+      "GTFT.F0.22": 0.009950248756218905,
+      "GTFT.F0.3": 0.009950248756218905,
+      "GTFT.F0.45": 0.009950248756218905,
+      "GTFT.F0.6": 0.009950248756218905,
+      "Joss.F0.015": 0.009950248756218905,
+      "Noisy.F0.015": 0.009950248756218905,
+      "Joss.F0.04": 0.009950248756218905,
+      "Noisy.F0.04": 0.009950248756218905,
+      "Joss.F0.07": 0.009950248756218905,
+      "Noisy.F0.07": 0.009950248756218905,
+      "Joss.F0.11": 0.009950248756218905,
+      "Noisy.F0.11": 0.009950248756218905,
+      "Joss.F0.16": 0.009950248756218905,
+      "Noisy.F0.16": 0.009950248756218905,
+      "Joss.F0.22": 0.009950248756218905,
+      "Noisy.F0.22": 0.009950248756218905,
+      "Joss.F0.3": 0.009950248756218905,
+      "Noisy.F0.3": 0.009950248756218905,
+      "Random.F0.08": 0.009950248756218905,
+      "Random.F0.18": 0.009950248756218905,
+      "Random.F0.28": 0.009950248756218905,
+      "Random.F0.42": 0.009950248756218905,
+      "Random.F0.55": 0.009950248756218905,
+      "Random.F0.75": 0.009950248756218905,
+      "Random.F0.85": 0.009950248756218905,
+      "FinalTuned": 0.0012437810945273632,
+      "RespTuned": 0.0012437810945273632,
+      "Harvest21": 0.0012437810945273632,
+      "Harvest35": 0.0012437810945273632,
+      "Harvest50": 0.0012437810945273632,
+      "Harvest75": 0.0012437810945273632,
+      "Gap0.45": 0.0012437810945273632,
+      "Gap0.55": 0.0012437810945273632,
+      "Gap0.64": 0.0012437810945273632
+    },
+    "smart": {
+      "AllC": 0.006896551724137931,
+      "AllC-lastD": 0.006896551724137931,
+      "TFT": 0.006896551724137931,
+      "TFT-lastD": 0.006896551724137931,
+      "TFT-last2D": 0.006896551724137931,
+      "TFT-last5D": 0.006896551724137931,
+      "sTFT": 0.006896551724137931,
+      "TFT2": 0.006896551724137931,
+      "TFT2-lastD": 0.006896551724137931,
+      "ContriteTFT": 0.006896551724137931,
+      "TFTForgiveOnce": 0.006896551724137931,
+      "TFT-delay2": 0.006896551724137931,
+      "FirmButFair": 0.006896551724137931,
+      "TTFT": 0.006896551724137931,
+      "Pavlov": 0.006896551724137931,
+      "WSLS2": 0.006896551724137931,
+      "GTFT.01": 0.006896551724137931,
+      "GTFT.05": 0.006896551724137931,
+      "GTFT.10": 0.006896551724137931,
+      "GTFT.20": 0.006896551724137931,
+      "GTFT.33": 0.006896551724137931,
+      "GTFT.50": 0.006896551724137931,
+      "NoisyTFT.02": 0.006896551724137931,
+      "NoisyTFT.05": 0.006896551724137931,
+      "NoisyTFT.10": 0.006896551724137931,
+      "NoisyTFT.20": 0.006896551724137931,
+      "Joss.02": 0.006896551724137931,
+      "Joss.05": 0.006896551724137931,
+      "Joss.10": 0.006896551724137931,
+      "Joss.20": 0.006896551724137931,
+      "ForgiveTFT1": 0.006896551724137931,
+      "ForgiveTFT2": 0.006896551724137931,
+      "TwoStrike2": 0.006896551724137931,
+      "TwoStrike3": 0.006896551724137931,
+      "Grim": 0.0034482758620689655,
+      "GrimForgive.05": 0.0034482758620689655,
+      "GrimForgive.15": 0.0034482758620689655,
+      "Grudger2": 0.0034482758620689655,
+      "Grudger3": 0.0034482758620689655,
+      "Mistrust": 0.0034482758620689655,
+      "Gradual": 0.0034482758620689655,
+      "OmegaTFT-lite": 0.0034482758620689655,
+      "Bully": 0.0034482758620689655,
+      "AllD": 0.0034482758620689655,
+      "EarlyD1": 0.0034482758620689655,
+      "EarlyD10": 0.0034482758620689655,
+      "EarlyD25": 0.0034482758620689655,
+      "LateD5": 0.006896551724137931,
+      "LateD10": 0.006896551724137931,
+      "LateD15": 0.006896551724137931,
+      "LateD20": 0.006896551724137931,
+      "LateD25": 0.006896551724137931,
+      "LateD30": 0.006896551724137931,
+      "LateD40": 0.006896551724137931,
+      "LateD50": 0.006896551724137931,
+      "Tester": 0.0034482758620689655,
+      "Prober": 0.0034482758620689655,
+      "RemorsefulProber": 0.0034482758620689655,
+      "Random.05": 0.0034482758620689655,
+      "Random.10": 0.0034482758620689655,
+      "Random.20": 0.0034482758620689655,
+      "Random.30": 0.0034482758620689655,
+      "Random.50": 0.0034482758620689655,
+      "Random.70": 0.0034482758620689655,
+      "Random.80": 0.0034482758620689655,
+      "Random.90": 0.0034482758620689655,
+      "Alternator": 0.0034482758620689655,
+      "AlternatorD": 0.0034482758620689655,
+      "Periodic3": 0.0034482758620689655,
+      "Periodic4": 0.0034482758620689655,
+      "Rand3->TFT": 0.0034482758620689655,
+      "MemOne-rand": 0.0034482758620689655,
+      "Reactive-rand": 0.0034482758620689655,
+      "FSM-rand": 0.0034482758620689655,
+      "Majority2": 0.006896551724137931,
+      "Majority3": 0.006896551724137931,
+      "Majority5": 0.006896551724137931,
+      "Responsive": 0.006896551724137931,
+      "Responsive3": 0.020689655172413793,
+      "ProbeBot": 0.006896551724137931,
+      "Extort1.5": 0.006896551724137931,
+      "Extort2": 0.006896551724137931,
+      "Extort3": 0.006896551724137931,
+      "GenZD2": 0.006896551724137931,
+      "GenZD3": 0.006896551724137931,
+      "Final": 0.020689655172413793,
+      "Harvest45": 0.020689655172413793,
+      "Harvest40": 0.020689655172413793,
+      "EarlyProbe": 0.020689655172413793,
+      "GapStart": 0.020689655172413793,
+      "BayesPlus": 0.020689655172413793,
+      "MemOne.F0": 0.0034482758620689655,
+      "MemOne.F1": 0.0034482758620689655,
+      "MemOne.F2": 0.0034482758620689655,
+      "MemOne.F3": 0.0034482758620689655,
+      "MemOne.F4": 0.0034482758620689655,
+      "MemOne.F5": 0.0034482758620689655,
+      "MemOne.F6": 0.0034482758620689655,
+      "MemOne.F7": 0.0034482758620689655,
+      "Reactive.F0": 0.0034482758620689655,
+      "Reactive.F1": 0.0034482758620689655,
+      "Reactive.F2": 0.0034482758620689655,
+      "Reactive.F3": 0.0034482758620689655,
+      "Reactive.F4": 0.0034482758620689655,
+      "Reactive.F5": 0.0034482758620689655,
+      "Reactive.F6": 0.0034482758620689655,
+      "Reactive.F7": 0.0034482758620689655,
+      "FSM.F0": 0.0034482758620689655,
+      "FSM.F1": 0.0034482758620689655,
+      "FSM.F2": 0.0034482758620689655,
+      "FSM.F3": 0.0034482758620689655,
+      "FSM.F4": 0.0034482758620689655,
+      "FSM.F5": 0.0034482758620689655,
+      "Extort.F1.2": 0.0034482758620689655,
+      "Extort.F1.5": 0.0034482758620689655,
+      "Extort.F2.0": 0.0034482758620689655,
+      "Extort.F2.5": 0.0034482758620689655,
+      "Extort.F3.0": 0.0034482758620689655,
+      "GenZD.F1.2": 0.0034482758620689655,
+      "GenZD.F2.0": 0.0034482758620689655,
+      "GenZD.F3.0": 0.0034482758620689655,
+      "GTFT.F0.02": 0.0034482758620689655,
+      "GTFT.F0.07": 0.0034482758620689655,
+      "GTFT.F0.13": 0.0034482758620689655,
+      "GTFT.F0.22": 0.0034482758620689655,
+      "GTFT.F0.3": 0.0034482758620689655,
+      "GTFT.F0.45": 0.0034482758620689655,
+      "GTFT.F0.6": 0.0034482758620689655,
+      "Joss.F0.015": 0.0034482758620689655,
+      "Noisy.F0.015": 0.0034482758620689655,
+      "Joss.F0.04": 0.0034482758620689655,
+      "Noisy.F0.04": 0.0034482758620689655,
+      "Joss.F0.07": 0.0034482758620689655,
+      "Noisy.F0.07": 0.0034482758620689655,
+      "Joss.F0.11": 0.0034482758620689655,
+      "Noisy.F0.11": 0.0034482758620689655,
+      "Joss.F0.16": 0.0034482758620689655,
+      "Noisy.F0.16": 0.0034482758620689655,
+      "Joss.F0.22": 0.0034482758620689655,
+      "Noisy.F0.22": 0.0034482758620689655,
+      "Joss.F0.3": 0.0034482758620689655,
+      "Noisy.F0.3": 0.0034482758620689655,
+      "Random.F0.08": 0.0034482758620689655,
+      "Random.F0.18": 0.0034482758620689655,
+      "Random.F0.28": 0.0034482758620689655,
+      "Random.F0.42": 0.0034482758620689655,
+      "Random.F0.55": 0.0034482758620689655,
+      "Random.F0.75": 0.0034482758620689655,
+      "Random.F0.85": 0.0034482758620689655,
+      "FinalTuned": 0.020689655172413793,
+      "RespTuned": 0.020689655172413793,
+      "Harvest21": 0.020689655172413793,
+      "Harvest35": 0.020689655172413793,
+      "Harvest50": 0.020689655172413793,
+      "Harvest75": 0.020689655172413793,
+      "Gap0.45": 0.020689655172413793,
+      "Gap0.55": 0.020689655172413793,
+      "Gap0.64": 0.020689655172413793
+    },
+    "punitive": {
+      "AllC": 0.006184291898577613,
+      "AllC-lastD": 0.006184291898577613,
+      "TFT": 0.006184291898577613,
+      "TFT-lastD": 0.006184291898577613,
+      "TFT-last2D": 0.006184291898577613,
+      "TFT-last5D": 0.006184291898577613,
+      "sTFT": 0.006184291898577613,
+      "TFT2": 0.006184291898577613,
+      "TFT2-lastD": 0.006184291898577613,
+      "ContriteTFT": 0.006184291898577613,
+      "TFTForgiveOnce": 0.006184291898577613,
+      "TFT-delay2": 0.006184291898577613,
+      "FirmButFair": 0.006184291898577613,
+      "TTFT": 0.006184291898577613,
+      "Pavlov": 0.006184291898577613,
+      "WSLS2": 0.006184291898577613,
+      "GTFT.01": 0.006184291898577613,
+      "GTFT.05": 0.006184291898577613,
+      "GTFT.10": 0.006184291898577613,
+      "GTFT.20": 0.006184291898577613,
+      "GTFT.33": 0.006184291898577613,
+      "GTFT.50": 0.006184291898577613,
+      "NoisyTFT.02": 0.006184291898577613,
+      "NoisyTFT.05": 0.006184291898577613,
+      "NoisyTFT.10": 0.006184291898577613,
+      "NoisyTFT.20": 0.006184291898577613,
+      "Joss.02": 0.006184291898577613,
+      "Joss.05": 0.006184291898577613,
+      "Joss.10": 0.006184291898577613,
+      "Joss.20": 0.006184291898577613,
+      "ForgiveTFT1": 0.006184291898577613,
+      "ForgiveTFT2": 0.006184291898577613,
+      "TwoStrike2": 0.006184291898577613,
+      "TwoStrike3": 0.006184291898577613,
+      "Grim": 0.03710575139146568,
+      "GrimForgive.05": 0.03710575139146568,
+      "GrimForgive.15": 0.03710575139146568,
+      "Grudger2": 0.03710575139146568,
+      "Grudger3": 0.03710575139146568,
+      "Mistrust": 0.03710575139146568,
+      "Gradual": 0.03710575139146568,
+      "OmegaTFT-lite": 0.03710575139146568,
+      "Bully": 0.03710575139146568,
+      "AllD": 0.012368583797155226,
+      "EarlyD1": 0.012368583797155226,
+      "EarlyD10": 0.012368583797155226,
+      "EarlyD25": 0.012368583797155226,
+      "LateD5": 0.006184291898577613,
+      "LateD10": 0.006184291898577613,
+      "LateD15": 0.006184291898577613,
+      "LateD20": 0.006184291898577613,
+      "LateD25": 0.006184291898577613,
+      "LateD30": 0.006184291898577613,
+      "LateD40": 0.006184291898577613,
+      "LateD50": 0.006184291898577613,
+      "Tester": 0.012368583797155226,
+      "Prober": 0.012368583797155226,
+      "RemorsefulProber": 0.012368583797155226,
+      "Random.05": 0.006184291898577613,
+      "Random.10": 0.006184291898577613,
+      "Random.20": 0.006184291898577613,
+      "Random.30": 0.006184291898577613,
+      "Random.50": 0.006184291898577613,
+      "Random.70": 0.006184291898577613,
+      "Random.80": 0.006184291898577613,
+      "Random.90": 0.006184291898577613,
+      "Alternator": 0.006184291898577613,
+      "AlternatorD": 0.006184291898577613,
+      "Periodic3": 0.006184291898577613,
+      "Periodic4": 0.006184291898577613,
+      "Rand3->TFT": 0.006184291898577613,
+      "MemOne-rand": 0.0030921459492888066,
+      "Reactive-rand": 0.0030921459492888066,
+      "FSM-rand": 0.0030921459492888066,
+      "Majority2": 0.0030921459492888066,
+      "Majority3": 0.0030921459492888066,
+      "Majority5": 0.0030921459492888066,
+      "Responsive": 0.0030921459492888066,
+      "Responsive3": 0.0012368583797155227,
+      "ProbeBot": 0.0030921459492888066,
+      "Extort1.5": 0.0030921459492888066,
+      "Extort2": 0.0030921459492888066,
+      "Extort3": 0.0030921459492888066,
+      "GenZD2": 0.0030921459492888066,
+      "GenZD3": 0.0030921459492888066,
+      "Final": 0.0012368583797155227,
+      "Harvest45": 0.0012368583797155227,
+      "Harvest40": 0.0012368583797155227,
+      "EarlyProbe": 0.0012368583797155227,
+      "GapStart": 0.0012368583797155227,
+      "BayesPlus": 0.0012368583797155227,
+      "MemOne.F0": 0.0030921459492888066,
+      "MemOne.F1": 0.0030921459492888066,
+      "MemOne.F2": 0.0030921459492888066,
+      "MemOne.F3": 0.0030921459492888066,
+      "MemOne.F4": 0.0030921459492888066,
+      "MemOne.F5": 0.0030921459492888066,
+      "MemOne.F6": 0.0030921459492888066,
+      "MemOne.F7": 0.0030921459492888066,
+      "Reactive.F0": 0.0030921459492888066,
+      "Reactive.F1": 0.0030921459492888066,
+      "Reactive.F2": 0.0030921459492888066,
+      "Reactive.F3": 0.0030921459492888066,
+      "Reactive.F4": 0.0030921459492888066,
+      "Reactive.F5": 0.0030921459492888066,
+      "Reactive.F6": 0.0030921459492888066,
+      "Reactive.F7": 0.0030921459492888066,
+      "FSM.F0": 0.0030921459492888066,
+      "FSM.F1": 0.0030921459492888066,
+      "FSM.F2": 0.0030921459492888066,
+      "FSM.F3": 0.0030921459492888066,
+      "FSM.F4": 0.0030921459492888066,
+      "FSM.F5": 0.0030921459492888066,
+      "Extort.F1.2": 0.0030921459492888066,
+      "Extort.F1.5": 0.0030921459492888066,
+      "Extort.F2.0": 0.0030921459492888066,
+      "Extort.F2.5": 0.0030921459492888066,
+      "Extort.F3.0": 0.0030921459492888066,
+      "GenZD.F1.2": 0.0030921459492888066,
+      "GenZD.F2.0": 0.0030921459492888066,
+      "GenZD.F3.0": 0.0030921459492888066,
+      "GTFT.F0.02": 0.0030921459492888066,
+      "GTFT.F0.07": 0.0030921459492888066,
+      "GTFT.F0.13": 0.0030921459492888066,
+      "GTFT.F0.22": 0.0030921459492888066,
+      "GTFT.F0.3": 0.0030921459492888066,
+      "GTFT.F0.45": 0.0030921459492888066,
+      "GTFT.F0.6": 0.0030921459492888066,
+      "Joss.F0.015": 0.0030921459492888066,
+      "Noisy.F0.015": 0.0030921459492888066,
+      "Joss.F0.04": 0.0030921459492888066,
+      "Noisy.F0.04": 0.0030921459492888066,
+      "Joss.F0.07": 0.0030921459492888066,
+      "Noisy.F0.07": 0.0030921459492888066,
+      "Joss.F0.11": 0.0030921459492888066,
+      "Noisy.F0.11": 0.0030921459492888066,
+      "Joss.F0.16": 0.0030921459492888066,
+      "Noisy.F0.16": 0.0030921459492888066,
+      "Joss.F0.22": 0.0030921459492888066,
+      "Noisy.F0.22": 0.0030921459492888066,
+      "Joss.F0.3": 0.0030921459492888066,
+      "Noisy.F0.3": 0.0030921459492888066,
+      "Random.F0.08": 0.0030921459492888066,
+      "Random.F0.18": 0.0030921459492888066,
+      "Random.F0.28": 0.0030921459492888066,
+      "Random.F0.42": 0.0030921459492888066,
+      "Random.F0.55": 0.0030921459492888066,
+      "Random.F0.75": 0.0030921459492888066,
+      "Random.F0.85": 0.0030921459492888066,
+      "FinalTuned": 0.0012368583797155227,
+      "RespTuned": 0.0012368583797155227,
+      "Harvest21": 0.0012368583797155227,
+      "Harvest35": 0.0012368583797155227,
+      "Harvest50": 0.0012368583797155227,
+      "Harvest75": 0.0012368583797155227,
+      "Gap0.45": 0.0012368583797155227,
+      "Gap0.55": 0.0012368583797155227,
+      "Gap0.64": 0.0012368583797155227
+    },
+    "random": {
+      "AllC": 0.0037285607755406414,
+      "AllC-lastD": 0.0037285607755406414,
+      "TFT": 0.0037285607755406414,
+      "TFT-lastD": 0.0037285607755406414,
+      "TFT-last2D": 0.0037285607755406414,
+      "TFT-last5D": 0.0037285607755406414,
+      "sTFT": 0.0037285607755406414,
+      "TFT2": 0.0037285607755406414,
+      "TFT2-lastD": 0.0037285607755406414,
+      "ContriteTFT": 0.0037285607755406414,
+      "TFTForgiveOnce": 0.0037285607755406414,
+      "TFT-delay2": 0.0037285607755406414,
+      "FirmButFair": 0.0037285607755406414,
+      "TTFT": 0.0037285607755406414,
+      "Pavlov": 0.0037285607755406414,
+      "WSLS2": 0.0037285607755406414,
+      "GTFT.01": 0.0037285607755406414,
+      "GTFT.05": 0.0037285607755406414,
+      "GTFT.10": 0.0037285607755406414,
+      "GTFT.20": 0.0037285607755406414,
+      "GTFT.33": 0.0037285607755406414,
+      "GTFT.50": 0.0037285607755406414,
+      "NoisyTFT.02": 0.0037285607755406414,
+      "NoisyTFT.05": 0.0037285607755406414,
+      "NoisyTFT.10": 0.0037285607755406414,
+      "NoisyTFT.20": 0.0037285607755406414,
+      "Joss.02": 0.0037285607755406414,
+      "Joss.05": 0.0037285607755406414,
+      "Joss.10": 0.0037285607755406414,
+      "Joss.20": 0.0037285607755406414,
+      "ForgiveTFT1": 0.0037285607755406414,
+      "ForgiveTFT2": 0.0037285607755406414,
+      "TwoStrike2": 0.0037285607755406414,
+      "TwoStrike3": 0.0037285607755406414,
+      "Grim": 0.0037285607755406414,
+      "GrimForgive.05": 0.0037285607755406414,
+      "GrimForgive.15": 0.0037285607755406414,
+      "Grudger2": 0.0037285607755406414,
+      "Grudger3": 0.0037285607755406414,
+      "Mistrust": 0.0037285607755406414,
+      "Gradual": 0.0037285607755406414,
+      "OmegaTFT-lite": 0.0037285607755406414,
+      "Bully": 0.0037285607755406414,
+      "AllD": 0.0037285607755406414,
+      "EarlyD1": 0.0037285607755406414,
+      "EarlyD10": 0.0037285607755406414,
+      "EarlyD25": 0.0037285607755406414,
+      "LateD5": 0.0037285607755406414,
+      "LateD10": 0.0037285607755406414,
+      "LateD15": 0.0037285607755406414,
+      "LateD20": 0.0037285607755406414,
+      "LateD25": 0.0037285607755406414,
+      "LateD30": 0.0037285607755406414,
+      "LateD40": 0.0037285607755406414,
+      "LateD50": 0.0037285607755406414,
+      "Tester": 0.0037285607755406414,
+      "Prober": 0.0037285607755406414,
+      "RemorsefulProber": 0.0037285607755406414,
+      "Random.05": 0.02237136465324385,
+      "Random.10": 0.02237136465324385,
+      "Random.20": 0.02237136465324385,
+      "Random.30": 0.02237136465324385,
+      "Random.50": 0.02237136465324385,
+      "Random.70": 0.02237136465324385,
+      "Random.80": 0.02237136465324385,
+      "Random.90": 0.02237136465324385,
+      "Alternator": 0.02237136465324385,
+      "AlternatorD": 0.02237136465324385,
+      "Periodic3": 0.02237136465324385,
+      "Periodic4": 0.02237136465324385,
+      "Rand3->TFT": 0.02237136465324385,
+      "MemOne-rand": 0.0037285607755406414,
+      "Reactive-rand": 0.0037285607755406414,
+      "FSM-rand": 0.0037285607755406414,
+      "Majority2": 0.0037285607755406414,
+      "Majority3": 0.0037285607755406414,
+      "Majority5": 0.0037285607755406414,
+      "Responsive": 0.0037285607755406414,
+      "Responsive3": 0.0007457121551081283,
+      "ProbeBot": 0.0037285607755406414,
+      "Extort1.5": 0.0037285607755406414,
+      "Extort2": 0.0037285607755406414,
+      "Extort3": 0.0037285607755406414,
+      "GenZD2": 0.0037285607755406414,
+      "GenZD3": 0.0037285607755406414,
+      "Final": 0.0007457121551081283,
+      "Harvest45": 0.0007457121551081283,
+      "Harvest40": 0.0007457121551081283,
+      "EarlyProbe": 0.0007457121551081283,
+      "GapStart": 0.0007457121551081283,
+      "BayesPlus": 0.0007457121551081283,
+      "MemOne.F0": 0.007457121551081283,
+      "MemOne.F1": 0.007457121551081283,
+      "MemOne.F2": 0.007457121551081283,
+      "MemOne.F3": 0.007457121551081283,
+      "MemOne.F4": 0.007457121551081283,
+      "MemOne.F5": 0.007457121551081283,
+      "MemOne.F6": 0.007457121551081283,
+      "MemOne.F7": 0.007457121551081283,
+      "Reactive.F0": 0.007457121551081283,
+      "Reactive.F1": 0.007457121551081283,
+      "Reactive.F2": 0.007457121551081283,
+      "Reactive.F3": 0.007457121551081283,
+      "Reactive.F4": 0.007457121551081283,
+      "Reactive.F5": 0.007457121551081283,
+      "Reactive.F6": 0.007457121551081283,
+      "Reactive.F7": 0.007457121551081283,
+      "FSM.F0": 0.007457121551081283,
+      "FSM.F1": 0.007457121551081283,
+      "FSM.F2": 0.007457121551081283,
+      "FSM.F3": 0.007457121551081283,
+      "FSM.F4": 0.007457121551081283,
+      "FSM.F5": 0.007457121551081283,
+      "Extort.F1.2": 0.007457121551081283,
+      "Extort.F1.5": 0.007457121551081283,
+      "Extort.F2.0": 0.007457121551081283,
+      "Extort.F2.5": 0.007457121551081283,
+      "Extort.F3.0": 0.007457121551081283,
+      "GenZD.F1.2": 0.007457121551081283,
+      "GenZD.F2.0": 0.007457121551081283,
+      "GenZD.F3.0": 0.007457121551081283,
+      "GTFT.F0.02": 0.007457121551081283,
+      "GTFT.F0.07": 0.007457121551081283,
+      "GTFT.F0.13": 0.007457121551081283,
+      "GTFT.F0.22": 0.007457121551081283,
+      "GTFT.F0.3": 0.007457121551081283,
+      "GTFT.F0.45": 0.007457121551081283,
+      "GTFT.F0.6": 0.007457121551081283,
+      "Joss.F0.015": 0.007457121551081283,
+      "Noisy.F0.015": 0.007457121551081283,
+      "Joss.F0.04": 0.007457121551081283,
+      "Noisy.F0.04": 0.007457121551081283,
+      "Joss.F0.07": 0.007457121551081283,
+      "Noisy.F0.07": 0.007457121551081283,
+      "Joss.F0.11": 0.007457121551081283,
+      "Noisy.F0.11": 0.007457121551081283,
+      "Joss.F0.16": 0.007457121551081283,
+      "Noisy.F0.16": 0.007457121551081283,
+      "Joss.F0.22": 0.007457121551081283,
+      "Noisy.F0.22": 0.007457121551081283,
+      "Joss.F0.3": 0.007457121551081283,
+      "Noisy.F0.3": 0.007457121551081283,
+      "Random.F0.08": 0.007457121551081283,
+      "Random.F0.18": 0.007457121551081283,
+      "Random.F0.28": 0.007457121551081283,
+      "Random.F0.42": 0.007457121551081283,
+      "Random.F0.55": 0.007457121551081283,
+      "Random.F0.75": 0.007457121551081283,
+      "Random.F0.85": 0.007457121551081283,
+      "FinalTuned": 0.0007457121551081283,
+      "RespTuned": 0.0007457121551081283,
+      "Harvest21": 0.0007457121551081283,
+      "Harvest35": 0.0007457121551081283,
+      "Harvest50": 0.0007457121551081283,
+      "Harvest75": 0.0007457121551081283,
+      "Gap0.45": 0.0007457121551081283,
+      "Gap0.55": 0.0007457121551081283,
+      "Gap0.64": 0.0007457121551081283
+    },
+    "wide": {
+      "AllC": 0.007263922518159807,
+      "AllC-lastD": 0.007263922518159807,
+      "TFT": 0.007263922518159807,
+      "TFT-lastD": 0.007263922518159807,
+      "TFT-last2D": 0.007263922518159807,
+      "TFT-last5D": 0.007263922518159807,
+      "sTFT": 0.007263922518159807,
+      "TFT2": 0.007263922518159807,
+      "TFT2-lastD": 0.007263922518159807,
+      "ContriteTFT": 0.007263922518159807,
+      "TFTForgiveOnce": 0.007263922518159807,
+      "TFT-delay2": 0.007263922518159807,
+      "FirmButFair": 0.007263922518159807,
+      "TTFT": 0.007263922518159807,
+      "Pavlov": 0.007263922518159807,
+      "WSLS2": 0.007263922518159807,
+      "GTFT.01": 0.007263922518159807,
+      "GTFT.05": 0.007263922518159807,
+      "GTFT.10": 0.007263922518159807,
+      "GTFT.20": 0.007263922518159807,
+      "GTFT.33": 0.007263922518159807,
+      "GTFT.50": 0.007263922518159807,
+      "NoisyTFT.02": 0.007263922518159807,
+      "NoisyTFT.05": 0.007263922518159807,
+      "NoisyTFT.10": 0.007263922518159807,
+      "NoisyTFT.20": 0.007263922518159807,
+      "Joss.02": 0.007263922518159807,
+      "Joss.05": 0.007263922518159807,
+      "Joss.10": 0.007263922518159807,
+      "Joss.20": 0.007263922518159807,
+      "ForgiveTFT1": 0.007263922518159807,
+      "ForgiveTFT2": 0.007263922518159807,
+      "TwoStrike2": 0.007263922518159807,
+      "TwoStrike3": 0.007263922518159807,
+      "Grim": 0.007263922518159807,
+      "GrimForgive.05": 0.007263922518159807,
+      "GrimForgive.15": 0.007263922518159807,
+      "Grudger2": 0.007263922518159807,
+      "Grudger3": 0.007263922518159807,
+      "Mistrust": 0.007263922518159807,
+      "Gradual": 0.007263922518159807,
+      "OmegaTFT-lite": 0.007263922518159807,
+      "Bully": 0.007263922518159807,
+      "AllD": 0.007263922518159807,
+      "EarlyD1": 0.007263922518159807,
+      "EarlyD10": 0.007263922518159807,
+      "EarlyD25": 0.007263922518159807,
+      "LateD5": 0.007263922518159807,
+      "LateD10": 0.007263922518159807,
+      "LateD15": 0.007263922518159807,
+      "LateD20": 0.007263922518159807,
+      "LateD25": 0.007263922518159807,
+      "LateD30": 0.007263922518159807,
+      "LateD40": 0.007263922518159807,
+      "LateD50": 0.007263922518159807,
+      "Tester": 0.007263922518159807,
+      "Prober": 0.007263922518159807,
+      "RemorsefulProber": 0.007263922518159807,
+      "Random.05": 0.007263922518159807,
+      "Random.10": 0.007263922518159807,
+      "Random.20": 0.007263922518159807,
+      "Random.30": 0.007263922518159807,
+      "Random.50": 0.007263922518159807,
+      "Random.70": 0.007263922518159807,
+      "Random.80": 0.007263922518159807,
+      "Random.90": 0.007263922518159807,
+      "Alternator": 0.007263922518159807,
+      "AlternatorD": 0.007263922518159807,
+      "Periodic3": 0.007263922518159807,
+      "Periodic4": 0.007263922518159807,
+      "Rand3->TFT": 0.007263922518159807,
+      "MemOne-rand": 0.009685230024213076,
+      "Reactive-rand": 0.009685230024213076,
+      "FSM-rand": 0.009685230024213076,
+      "Majority2": 0.009685230024213076,
+      "Majority3": 0.009685230024213076,
+      "Majority5": 0.009685230024213076,
+      "Responsive": 0.009685230024213076,
+      "Responsive3": 0.004842615012106538,
+      "ProbeBot": 0.009685230024213076,
+      "Extort1.5": 0.009685230024213076,
+      "Extort2": 0.009685230024213076,
+      "Extort3": 0.009685230024213076,
+      "GenZD2": 0.009685230024213076,
+      "GenZD3": 0.009685230024213076,
+      "Final": 0.004842615012106538,
+      "Harvest45": 0.004842615012106538,
+      "Harvest40": 0.004842615012106538,
+      "EarlyProbe": 0.004842615012106538,
+      "GapStart": 0.004842615012106538,
+      "BayesPlus": 0.004842615012106538,
+      "MemOne.F0": 0.004842615012106538,
+      "MemOne.F1": 0.004842615012106538,
+      "MemOne.F2": 0.004842615012106538,
+      "MemOne.F3": 0.004842615012106538,
+      "MemOne.F4": 0.004842615012106538,
+      "MemOne.F5": 0.004842615012106538,
+      "MemOne.F6": 0.004842615012106538,
+      "MemOne.F7": 0.004842615012106538,
+      "Reactive.F0": 0.004842615012106538,
+      "Reactive.F1": 0.004842615012106538,
+      "Reactive.F2": 0.004842615012106538,
+      "Reactive.F3": 0.004842615012106538,
+      "Reactive.F4": 0.004842615012106538,
+      "Reactive.F5": 0.004842615012106538,
+      "Reactive.F6": 0.004842615012106538,
+      "Reactive.F7": 0.004842615012106538,
+      "FSM.F0": 0.004842615012106538,
+      "FSM.F1": 0.004842615012106538,
+      "FSM.F2": 0.004842615012106538,
+      "FSM.F3": 0.004842615012106538,
+      "FSM.F4": 0.004842615012106538,
+      "FSM.F5": 0.004842615012106538,
+      "Extort.F1.2": 0.004842615012106538,
+      "Extort.F1.5": 0.004842615012106538,
+      "Extort.F2.0": 0.004842615012106538,
+      "Extort.F2.5": 0.004842615012106538,
+      "Extort.F3.0": 0.004842615012106538,
+      "GenZD.F1.2": 0.004842615012106538,
+      "GenZD.F2.0": 0.004842615012106538,
+      "GenZD.F3.0": 0.004842615012106538,
+      "GTFT.F0.02": 0.004842615012106538,
+      "GTFT.F0.07": 0.004842615012106538,
+      "GTFT.F0.13": 0.004842615012106538,
+      "GTFT.F0.22": 0.004842615012106538,
+      "GTFT.F0.3": 0.004842615012106538,
+      "GTFT.F0.45": 0.004842615012106538,
+      "GTFT.F0.6": 0.004842615012106538,
+      "Joss.F0.015": 0.004842615012106538,
+      "Noisy.F0.015": 0.004842615012106538,
+      "Joss.F0.04": 0.004842615012106538,
+      "Noisy.F0.04": 0.004842615012106538,
+      "Joss.F0.07": 0.004842615012106538,
+      "Noisy.F0.07": 0.004842615012106538,
+      "Joss.F0.11": 0.004842615012106538,
+      "Noisy.F0.11": 0.004842615012106538,
+      "Joss.F0.16": 0.004842615012106538,
+      "Noisy.F0.16": 0.004842615012106538,
+      "Joss.F0.22": 0.004842615012106538,
+      "Noisy.F0.22": 0.004842615012106538,
+      "Joss.F0.3": 0.004842615012106538,
+      "Noisy.F0.3": 0.004842615012106538,
+      "Random.F0.08": 0.004842615012106538,
+      "Random.F0.18": 0.004842615012106538,
+      "Random.F0.28": 0.004842615012106538,
+      "Random.F0.42": 0.004842615012106538,
+      "Random.F0.55": 0.004842615012106538,
+      "Random.F0.75": 0.004842615012106538,
+      "Random.F0.85": 0.004842615012106538,
+      "FinalTuned": 0.004842615012106538,
+      "RespTuned": 0.004842615012106538,
+      "Harvest21": 0.004842615012106538,
+      "Harvest35": 0.004842615012106538,
+      "Harvest50": 0.004842615012106538,
+      "Harvest75": 0.004842615012106538,
+      "Gap0.45": 0.004842615012106538,
+      "Gap0.55": 0.004842615012106538,
+      "Gap0.64": 0.004842615012106538
+    }
+  },
+  "suite_scores": {
+    "RL-Switch": {
+      "original": 564.5234673187025,
+      "late": 543.8373038930847,
+      "grim": 582.4965786123479,
+      "noise": 553.1547704447631,
+      "complex": 530.404384328358,
+      "smart": 556.5584051724134,
+      "punitive": 579.2073283858988,
+      "random": 529.5607755406421,
+      "wide": 549.6192493946736
+    },
+    "RL-Wide160": {
+      "original": 564.5033396946568,
+      "late": 543.8017141196967,
+      "grim": 582.5646085295979,
+      "noise": 553.1386298421808,
+      "complex": 530.6651119402981,
+      "smart": 556.232112068965,
+      "punitive": 579.3116883116872,
+      "random": 530.2281879194642,
+      "wide": 549.5888317191286
+    }
+  },
+  "candidate_summary": {
+    "RL-Switch": {
+      "equal_type_mean": 547.2879746835443,
+      "family_means": {
+        "adaptive": 528.9375,
+        "defect": 628.7142857142857,
+        "forgiving": 571.7881944444445,
+        "late": 476.625,
+        "nice": 599.0,
+        "plus": 518.4148706896551,
+        "punitive": 635.3333333333334,
+        "random": 505.2451923076923,
+        "smart": 574.3984375,
+        "wild": 515.7708333333334
+      },
+      "family_avg": 555.4227647322743,
+      "family_worst": 476.625,
+      "suite_scores": {
+        "original": 564.5234673187025,
+        "late": 543.8373038930847,
+        "grim": 582.4965786123479,
+        "noise": 553.1547704447631,
+        "complex": 530.404384328358,
+        "smart": 556.5584051724134,
+        "punitive": 579.2073283858988,
+        "random": 529.5607755406421,
+        "wide": 549.6192493946736
+      },
+      "suite_avg": 554.373584787876,
+      "suite_worst": 529.5607755406421
+    },
+    "RL-Wide160": {
+      "equal_type_mean": 547.346914556962,
+      "family_means": {
+        "adaptive": 526.275,
+        "defect": 629.0,
+        "forgiving": 570.9652777777778,
+        "late": 476.625,
+        "nice": 599.0,
+        "plus": 518.948275862069,
+        "punitive": 635.3333333333334,
+        "random": 507.22596153846155,
+        "smart": 573.6171875,
+        "wild": 517.2916666666666
+      },
+      "family_avg": 555.4281702678309,
+      "family_worst": 476.625,
+      "suite_scores": {
+        "original": 564.5033396946568,
+        "late": 543.8017141196967,
+        "grim": 582.5646085295979,
+        "noise": 553.1386298421808,
+        "complex": 530.6651119402981,
+        "smart": 556.232112068965,
+        "punitive": 579.3116883116872,
+        "random": 530.2281879194642,
+        "wide": 549.5888317191286
+      },
+      "suite_avg": 554.4482471272972,
+      "suite_worst": 530.2281879194642
+    }
+  }
+}

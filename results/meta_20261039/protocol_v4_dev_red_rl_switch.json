@@ -1,0 +1,57 @@
+{
+  "schema": "ipd-protocol-red-eval-v1",
+  "protocol": "protocol_v4",
+  "catalog_sha256": "beb594ab4a2840675a37079fe5f7b2ce8eac1f98de46aae3c090a5e4fad5fe47",
+  "created": "2026-10-29T16:58:10",
+  "seconds": 0.64,
+  "tier": "dev_red",
+  "seeds": 30,
+  "rounds": 100,
+  "seed": 20261027,
+  "workers": 20,
+  "worker_budget": {
+    "requested": "20",
+    "resolved": 20,
+    "cpu_count": 24,
+    "cpu_limit": 22,
+    "ram_available_gb": 25.04,
+    "ram_limit": 23,
+    "max_workers": 20,
+    "ram_per_worker_gb": 1.0,
+    "parent_reserve_gb": 2.0
+  },
+  "peak_rss_mb": 40.01,
+  "usage_consumed": false,
+  "selection_eligible": true,
+  "no_consume": false,
+  "test_consumption_locked": false,
+  "results": {
+    "RL-Switch": {
+      "seeds": 30,
+      "blue_mean": 378.4,
+      "blue_min": 355.0,
+      "blue_p05": 363.45000000000005,
+      "red_mean": 711.7333333333333,
+      "diff": -333.3333333333333,
+      "red_win": 1.0
+    },
+    "RL-Wide160": {
+      "seeds": 30,
+      "blue_mean": 378.4,
+      "blue_min": 355.0,
+      "blue_p05": 363.45000000000005,
+      "red_mean": 711.7333333333333,
+      "diff": -333.3333333333333,
+      "red_win": 1.0
+    },
+    "RL-Repair": {
+      "seeds": 30,
+      "blue_mean": 379.1666666666667,
+      "blue_min": 365.0,
+      "blue_p05": 366.45,
+      "red_mean": 713.1666666666666,
+      "diff": -334.0,
+      "red_win": 1.0
+    }
+  }
+}

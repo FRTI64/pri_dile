@@ -7,6 +7,15 @@
 
 ### Added
 
+- **RL-Switch（`rl-switch`）**：窄 meta 模型。默认 RL-Wide160；
+  第 6 回合前双方各 D≥2 且对手最新 C 时切换到 RL-Repair。
+  dev（seed 27）：dev_param 548.58、dev_complex 454.24、
+  dev_axelrod 582.86、dev_ood 521.42；test_v7 provisional
+  **488.26**（seed 27）/ **487.51**（seed 29）；
+  Protocol catalog suite 520.43→**521.18**；158 bank 基本持平。
+  `min_norm` 0.994–0.998；red 仍 100%。注册为当前最佳实验候选，
+  **未 promotion**；Python-only，C++ 双权重移植待做。报告
+  `docs/research/rl-switch.md`、`results/meta_20261039/`。
 - **Extort-hard 训练分布**：`ipd/evaluation/extort.py` 连续采样
   ExtortZD chi 1.5–7.0、GenerousZD 与 TFT/Grim/AllD/AllC anchors；
   注册为 `extort_hard`。RL-Wide160 上 strong（权重 2/9，6 iter）
@@ -167,11 +176,12 @@
 
 ### Changed
 
-- 注册候选从 20 增至 27（新增 `rl-pattern` / `rl-wide` /
-  `rl-wide160`；此前 24 含 4 个 PSRO）；完整测试 **322 OK**。
-- Protocol v4 top 5（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
-  RL-Wide160）的 dev 已运行；RL-Wide160 综合最均衡，但 test_v7
-  provisional 仍低 0.69，暂不 promotion。
+- 注册候选从 20 增至 28（新增 `rl-pattern` / `rl-wide` /
+  `rl-wide160` / `rl-switch`；此前 24 含 4 个 PSRO）；完整测试
+  **325 OK**。
+- Protocol v4 top 6（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
+  RL-Wide160 / RL-Switch）的 dev 已运行；RL-Switch 当前最佳，
+  但 Python-only，暂不 promotion。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为

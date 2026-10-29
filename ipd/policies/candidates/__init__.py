@@ -29,6 +29,7 @@ MODULES = {
     "rl-pattern": "rl_pattern",
     "rl-wide": "rl_wide",
     "rl-wide160": "rl_wide160",
+    "rl-switch": "rl_switch",
     "psro": "psro",
     "psro-br": "psro_br",
     "psro-scratch": "psro_scratch",

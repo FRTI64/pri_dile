@@ -24,14 +24,14 @@
 | 项 | 值 |
 |---|---|
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
-| v4 dev 综合最均衡（top 5） | `rl-wide160`（RL-Wide160，160/128，未 promotion） |
-| 前最佳 / fallback | `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
-| 测试 | **322 tests OK**（本轮全量运行） |
-| 注册候选 | 27 个（`python3 -m ipd list-policies`） |
+| v4 dev/test 最佳（top 6） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python-only） |
+| 前最佳 / fallback | `rl-wide160` / `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
+| 测试 | **325 tests OK**（本轮全量运行） |
+| 注册候选 | 28 个（`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
-| Protocol v4 baseline | **top 5 dev 已运行**；全候选未运行；v3 的 484.32/476.54/471.44 只作 legacy |
+| Protocol v4 baseline | **top 6 dev 已运行**；全候选未运行；v3 的 484.32/476.54/471.44 只作 legacy |
 | held-out | test 消费永久锁定（provisional only）；v2/v3 已进入 legacy |
 | PSRO | 完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro` / `psro-br` 实验候选，未 promotion |
 | PSRO from scratch | blue 仅 random/scratch/BR，现有模型只做 red；`psro-scratch` / `psro-scratch-br`；red_win 0.0，但 dev 480.43；未 promotion |
@@ -64,7 +64,7 @@
 | 文档 | 内容 |
 |---|---|
 | [reference/cli.md](reference/cli.md) | `python3 -m ipd <command>` 命令与常用参数 |
-| [reference/candidates.md](reference/candidates.md) | 27 个候选、别名、集合、权重、状态 |
+| [reference/candidates.md](reference/candidates.md) | 28 个候选、别名、集合、权重、状态 |
 | [reference/configuration.md](reference/configuration.md) | `configs/`、`weights/`、`results/`、路径与配置格式 |
 | [reference/metrics.md](reference/metrics.md) | 四分布、blind、suite、league、CVaR、min_norm 的定义与口径 |
 | [reference/protocol-v4.md](reference/protocol-v4.md) | Protocol v4 的 train/dev/test 划分、manifest、usage ledger |

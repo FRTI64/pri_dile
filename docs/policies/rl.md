@@ -2,13 +2,13 @@
 
 > **状态（2026-10-29）**：本文记录 85 维 PPO 的方法和截至 2026-10-26 的
 > 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）、RL-Repair（E1c）、
-> RL-Pattern（v4 定向 fine-tune）、RL-Wide（128/128）和 RL-Wide160
-> （160/128）；**Protocol v4 dev 综合最均衡（top 5）是 RL-Wide160，
-> 但未 promotion**；RL-Repair 仍是 proven fallback。下方 5.1/5.2 的
-> 10-field 盲测表只代表当时的基线。当前候选比较见
-> [README.md](../../README.md)、`results/rl_v4_20261032/`、
-> `docs/research/rl-wide160.md`、`docs/research/rl-wide.md` 和
-> `docs/research/rl-pattern.md`。
+> RL-Pattern、RL-Wide（128/128）、RL-Wide160（160/128）和
+> RL-Switch（窄 meta）；**Protocol v4 dev/test 最佳（top 6）是
+> RL-Switch，但未 promotion**；RL-Repair 仍是 proven fallback。
+> 下方 5.1/5.2 的 10-field 盲测表只代表当时的基线。当前候选比较见
+> [README.md](../../README.md)、`results/meta_20261039/`、
+> `docs/research/rl-switch.md`、`docs/research/rl-wide160.md`、
+> `docs/research/rl-wide.md` 和 `docs/research/rl-pattern.md`。
 
 本文记录 `ipd/training/rl.py` 的完整 RL 训练流程。它不是行为克隆，也不是
 DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过 PPO 更新。
@@ -19,7 +19,8 @@ DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过
 
 | 候选 | 注册名 | 权重 | official 20 | blind 20 | heldout v2 | 备注 |
 |---|---|---|---:|---:|---:|---|
-| **RL-Wide160** | `rl-wide160` | `weights/rl_policy_weights_wide160.json` | - | - | - | **160/128；v4 dev 综合最均衡；未 promotion** |
+| **RL-Switch** | `rl-switch` | `rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | - | - | - | **窄 meta；v4 dev/test 最佳；Python-only；未 promotion** |
+| **RL-Wide160** | `rl-wide160` | `weights/rl_policy_weights_wide160.json` | - | - | - | 160/128；v4 dev_complex 454.31；未 promotion |
 | **RL-Wide** | `rl-wide` | `weights/rl_policy_weights_wide.json` | - | - | - | 128/128；v4 dev 前列；未 promotion |
 | **RL-Pattern** | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | - | - | - | 64/32；v4 dev 前列；未 promotion |
 | **RL-Repair** | `rl-repair` | `weights/rl_policy_weights_repair.json` | **554.72** | **564.68** | **503.17** | 前最佳 / fallback |
@@ -31,6 +32,13 @@ RL-Repair 554.76 / 564.61。下方 5.1/5.2 表是 10-field 盲测的早期基线
 不能与上表 20-field 数字混排。详见
 `results/hard2_20261026/README.md`、`results/robust_20261026/README.md`
 和 `docs/research/e1-robust-finetune.md`。
+
+### RL-Switch（2026-10-29，当前最佳 meta）
+
+默认 RL-Wide160；第 6 回合前双方各 D≥2 且对手最新 C 时切换到
+RL-Repair。dev 基本不变，test_v7 provisional 488.26/487.51，
+Protocol catalog suite +0.75。Python-only，C++ 双权重移植尚未完成。
+详见 `docs/research/rl-switch.md`；**未 promotion**。
 
 ### 输入特征 v2（2026-10-29，No-Go）
 
