@@ -13,8 +13,10 @@
   **454.31**、dev_axelrod 582.38、dev_ood **521.37**；
   complex min_norm **0.9974**、ood min_norm **0.9966**、dev_param
   min_norm 0.9970。`test_v7` provisional 485.62（vs RL-Repair
-  486.31，未消费）；`dev_red` 仍 red_win 100%。独立 seed 20261029
-  复现 complex/OOD 收益。注册为实验候选，**未 promotion**；权重
+  486.31，未消费）；`dev_red` / `test_red` 仍 red_win 100%；
+  分级诊断中 dev_level3/4 与 dev_complexity4 提升，低难度 tier
+  小幅回退。独立 seed 20261029 复现 complex/OOD 收益。注册为实验
+  候选，**未 promotion**；权重
   `weights/rl_policy_weights_wide160.json`，报告
   `docs/research/rl-wide160.md`、`results/rl_v4_20261032/`。
 - **RL-Wide（`rl-wide`）**：用新增的 `python -m ipd train expand`

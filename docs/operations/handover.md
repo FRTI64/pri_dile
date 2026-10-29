@@ -444,7 +444,10 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - test_v7 provisional：485.62 vs RL-Repair 486.31（-0.69）、
   RL-Wide 485.50（+0.12）。
 - `dev_red`（30 seeds）：blue 378.40 / red 711.73，red_win 100%；
+  `test_red` provisional：blue 319.43 / red 742.43，red_win 100%；
   anti-exploitation 未改善。
+- 分级诊断：dev_level3 451.52、dev_level4 447.54、
+  dev_complexity4 401.27；低难度 tier 有 0.1–0.8 的小幅回退。
 - 判定：注册 `rl-wide160`，**不 promotion**；主权重不变。报告
   `docs/research/rl-wide160.md`、`results/rl_v4_20261032/`。
 

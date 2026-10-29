@@ -98,7 +98,27 @@ dev_param 与 RL-Wide 基本持平（-0.21），complex/OOD 收益和 min_norm
 test-only 的 `hyper_extort` / `axelrod_extra` 仍未恢复到 RL-Repair
 水平，不能 promotion。
 
-## 5. dev_red（30 seeds）
+### 4.5 分级诊断（30×2048，sample）
+
+| tier | RL-Wide | **RL-Wide160** |
+|---|---:|---:|
+| dev_level0 | 628.26 | 627.87 |
+| dev_level1 | 550.65 | 550.59 |
+| dev_level2 | 550.14 | 549.95 |
+| dev_level3 | 449.28 | **451.52** |
+| dev_level4 | 447.43 | **447.54** |
+| dev_complexity0 | 628.26 | 627.87 |
+| dev_complexity1 | 543.83 | 543.77 |
+| dev_complexity2 | 534.85 | 534.07 |
+| dev_complexity3 | 523.47 | 523.43 |
+| dev_complexity4 | 396.30 | **401.27** |
+
+- 低难度 tier 有 0.1–0.8 的小幅回退；
+- 最高思考等级 `dev_level3/4` 和最高复杂度 `dev_complexity4`
+  分别 +2.24/+0.11/+4.97（相对 RL-Wide）；
+- 与 dev_complex/OOD 的收益方向一致，没有新的低级 tier 崩塌。
+
+## 5. dev_red / test_red（30 seeds）
 
 | 候选 | blue | red | diff | red_win |
 |---|---:|---:|---:|---:|
@@ -106,7 +126,16 @@ test-only 的 `hyper_extort` / `axelrod_extra` 仍未恢复到 RL-Repair
 | RL-Wide | 378.67 | 711.33 | -332.67 | 100.0% |
 | RL-Repair | 379.17 | 713.17 | -334.00 | 100.0% |
 
-anti-exploitation 没有改善；不要用 complex 均值提升宣称 red 防御。
+`test_red`（provisional，未消费）：
+
+| 候选 | blue | red | diff | red_win |
+|---|---:|---:|---:|---:|
+| RL-Wide160 | 319.43 | 742.43 | -423.00 | 100.0% |
+| RL-Wide | 318.60 | 741.60 | -423.00 | 100.0% |
+| RL-Repair | 312.80 | 747.47 | -434.67 | 100.0% |
+
+anti-exploitation 没有改善；wide160 的 blue 比 RL-Repair 高 6.63，
+但 red 仍 100% 获胜。不要用 complex 均值提升宣称 red 防御。
 
 legacy 20-field：四分布 avg **554.77**、blind **564.75**；C++ 导出
 验证通过（`N_HIDDEN0=160` / `N_HIDDEN1=128`）。
