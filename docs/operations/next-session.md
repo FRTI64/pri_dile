@@ -25,17 +25,20 @@
 
 - 最近提交：`git log -1`（RL-Wide 128/128 与 net2wider 工具）。
 - 最近完整测试：**312 tests OK**；`python3 -m ipd list-policies` 为
-  **26 个注册候选**。
+  **27 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-- **RL-Wide（`rl-wide`）是 v4 dev 综合最均衡（top 4）**，但未
-  promotion：`weights/rl_policy_weights_wide.json`，sha256
-  `176787bdb6048d7a5cb0e5adcda9afef12fb77ed1d676b4f2c6ce67b1669d00b`。
-- **前最佳 / fallback：RL-Pattern / RL-Repair**，均未 promotion：
-  `weights/rl_policy_weights_pattern.json`（sha256 `5c50db0e…3619ae`）、
-  `weights/rl_policy_weights_repair.json`（sha256 `a759a7b6…1bd2b`）。
-- RL-Wide 独立 seed 20261029 已复现 complex/OOD 收益；`dev_red`
-  仍 red_win 100%；192/128 消融在 dev_param / test_v7 回退，不注册。
+- **RL-Wide160（`rl-wide160`）是 v4 dev 综合最均衡（top 5）**，但未
+  promotion：`weights/rl_policy_weights_wide160.json`，sha256
+  `dca9006c9fce5da0a7a152ed1935ad1ebb8176c56a485772d5e77fccc0eb682d`。
+- **前最佳 / fallback：RL-Wide / RL-Pattern / RL-Repair**，均未
+  promotion：`weights/rl_policy_weights_wide.json`（sha256
+  `176787bd…69d00b`）、`weights/rl_policy_weights_pattern.json`
+  （sha256 `5c50db0e…3619ae`）、`weights/rl_policy_weights_repair.json`
+  （sha256 `a759a7b6…1bd2b`）。
+- RL-Wide / RL-Wide160 独立 seed 20261029 已复现 complex/OOD 收益；
+  `dev_red` 仍 red_win 100%；192/128 消融在 dev_param / test_v7 回退，
+  不注册。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
   `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional；
   另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /
@@ -51,11 +54,12 @@
   dev_red / Red-v5/v6 red_win 0.0；未 promotion。详见
   `docs/research/psro-scratch.md`。
 
-### 头部候选（Protocol v4 dev top 4；30×2048 sample）
+### 头部候选（Protocol v4 dev top 5；30×2048 sample）
 
 | 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 prov. |
 |---|---|---|---:|---:|---:|---:|---:|---:|
-| **RL-Wide** | `rl-wide` | `weights/rl_policy_weights_wide.json` | 548.24 | **583.08** | **452.79** | **582.30** | **520.71** | 485.50 |
+| **RL-Wide160** | `rl-wide160` | `weights/rl_policy_weights_wide160.json` | 548.26 | **583.08** | **454.31** | **582.38** | **521.37** | 485.62 |
+| RL-Wide | `rl-wide` | `weights/rl_policy_weights_wide.json` | 548.24 | **583.08** | 452.79 | 582.30 | 520.71 | 485.50 |
 | RL-Pattern | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 485.43 |
 | RL-Repair | `rl-repair` | `weights/rl_policy_weights_repair.json` | 547.96 | 582.76 | 434.28 | 582.46 | 515.19 | **486.31** |
 | RL-PPO | `rl` | `weights/rl_policy_weights.json` | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 477.26 |
@@ -109,10 +113,10 @@ legacy，不能与新表混用。
    - `Adv-*` / PSRO meta 保持 CPU；见
      `docs/research/plan6-python-bottleneck.md`。
 1. **比赛提交硬化（若近期提交）**
-   - 在 v4 上复现 RL-Wide / RL-Pattern / RL-Repair 的 `dev_param` /
-     `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood`；补跑
-     `dev_level0..4` / `dev_complexity0..4` 分级诊断；
-   - RL-Wide 的 test_v7 provisional 低 0.81，必须先做独立 seed
+   - 在 v4 上复现 RL-Wide160 / RL-Wide / RL-Pattern / RL-Repair 的
+     `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
+     `dev_ood`；补跑 `dev_level0..4` / `dev_complexity0..4` 分级诊断；
+   - RL-Wide160 的 test_v7 provisional 低 0.69，必须先做独立 seed
      复现和 red 检查；
    - `test_v7` 只做 provisional 诊断，不能当作独立 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
@@ -164,7 +168,7 @@ legacy，不能与新表混用。
 cd /home/frti64/pri_dile
 git status                    # 文档重组提交后应为 clean
 python3 -m ipd test           # 全量测试
-python3 -m ipd list-policies  # 26 candidates
+python3 -m ipd list-policies  # 27 candidates
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates core --tiers dev_param \
   --fields 1 --n 32 --workers 4
@@ -180,9 +184,9 @@ python3 -m ipd protocol eval --candidates core --tiers dev_param \
 python3 -m unittest discover -s tests -t . -v
 
 # 当前 v4 dev 头部 / 前最佳
-python3 -m ipd self-test --candidates rl-wide,rl-pattern,rl-repair
-python3 -m ipd benchmark --candidates rl-wide,rl-pattern,rl-repair --fields 20 --workers 20
-python3 -m ipd blind --candidates rl-wide,rl-pattern,rl-repair --fields 20 --workers 10
+python3 -m ipd self-test --candidates rl-wide160,rl-wide,rl-pattern,rl-repair
+python3 -m ipd benchmark --candidates rl-wide160,rl-wide,rl-pattern,rl-repair --fields 20 --workers 20
+python3 -m ipd blind --candidates rl-wide160,rl-wide,rl-pattern,rl-repair --fields 20 --workers 10
 
 # E0 / E1c 冻结评估
 python3 -m ipd league --config configs/eval/e0_league.json --workers 20 \

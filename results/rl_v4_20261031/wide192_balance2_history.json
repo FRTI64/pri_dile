@@ -1,0 +1,185 @@
+{
+  "meta": {
+    "algorithm": "ppo",
+    "seed": 20261039,
+    "dists": [
+      "dev_param",
+      "dev_complex",
+      "dev_ood"
+    ],
+    "train_dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide",
+      "train_v4",
+      "train_pattern_breaker"
+    ],
+    "opponent_weights": [],
+    "opponent_pool": [],
+    "opponent_pool_path": null,
+    "opponent_penalty": 0.0,
+    "opponent_fraction": 1.0,
+    "fields_per_dist": 2,
+    "dist_weights": {
+      "original": 1.0,
+      "late": 1.0,
+      "grim30": 1.0,
+      "wide": 2.0,
+      "train_v4": 2.0,
+      "train_pattern_breaker": 1.0
+    },
+    "n": 128,
+    "val_fields_per_dist": 2,
+    "val_n": 256,
+    "hidden": [
+      192,
+      128
+    ],
+    "lr": 3e-05,
+    "clip": 0.2,
+    "vf_coef": 0.5,
+    "ent_coef": 0.01,
+    "bc_kl_coef": 0.1,
+    "risk_objective": "none",
+    "risk_coef": 0.0,
+    "risk_quantile": 0.2,
+    "dro_eta": 0.5,
+    "dro_quantile": 0.5,
+    "dro_blend": 0.5,
+    "dro_floor": 0.1,
+    "dirichlet_concentration": 0.0,
+    "freeze_policy_trunk": false,
+    "select_metric": "balanced",
+    "save_all_checkpoints": "results/rl_v4_20261031/wide192_balance2_ckpts",
+    "gamma": 1.0,
+    "lam": 0.95,
+    "center_rewards": false,
+    "center_advantages": true,
+    "value_bias": 5.5,
+    "safe": true,
+    "init_weights": "results/rl_v4_20261031/wide192_gentle_ckpts/iter_002.json",
+    "feature_version": "ipd-neural-features-v1",
+    "best_iteration": 2,
+    "best_val": {
+      "by_dist": {
+        "dev_param": 551.03125,
+        "dev_complex": 442.783203125,
+        "dev_ood": 511.7421875
+      },
+      "avg": 501.8522135416667,
+      "worst": 442.783203125,
+      "selection": 487.0849609375
+    }
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "val": {
+        "by_dist": {
+          "dev_param": 550.513671875,
+          "dev_complex": 440.59765625,
+          "dev_ood": 510.994140625
+        },
+        "avg": 500.7018229166667,
+        "worst": 440.59765625,
+        "selection": 485.67578125
+      },
+      "phase": "init"
+    },
+    {
+      "iteration": 1,
+      "reward_mean": 538.47705078125,
+      "reward_by_dist": {
+        "original": 561.59765625,
+        "late": 542.04296875,
+        "grim30": 555.01171875,
+        "wide": 557.830078125,
+        "train_v4": 525.21875,
+        "train_pattern_breaker": 483.06640625
+      },
+      "reward_min": 94,
+      "reward_max": 973,
+      "rollout_s": 14.13810110092163,
+      "train_s": 2.422807216644287,
+      "lr": 1.5e-05,
+      "mixture": {
+        "original": 0.125,
+        "late": 0.125,
+        "grim30": 0.125,
+        "wide": 0.25,
+        "train_v4": 0.25,
+        "train_pattern_breaker": 0.125,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0005241862790717278,
+      "value_loss": 0.08132097862660885,
+      "entropy": 0.10163344100117683,
+      "approx_kl": 0.0002543506862426545,
+      "clip_frac": 0.0022275597325642593,
+      "bc_kl": 0.00025627501387134546,
+      "explained_var": 0.9478273034123454,
+      "n_steps": 204800,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 550.697265625,
+          "dev_complex": 439.337890625,
+          "dev_ood": 510.701171875
+        },
+        "avg": 500.2454427083333,
+        "worst": 439.337890625,
+        "selection": 485.0185546875
+      }
+    },
+    {
+      "iteration": 2,
+      "reward_mean": 549.3427734375,
+      "reward_by_dist": {
+        "original": 558.57421875,
+        "late": 557.1328125,
+        "grim30": 533.91015625,
+        "wide": 580.279296875,
+        "train_v4": 529.7265625,
+        "train_pattern_breaker": 525.11328125
+      },
+      "reward_min": 96,
+      "reward_max": 970,
+      "rollout_s": 13.91225290298462,
+      "train_s": 0.48349809646606445,
+      "lr": 0.0,
+      "mixture": {
+        "original": 0.125,
+        "late": 0.125,
+        "grim30": 0.125,
+        "wide": 0.25,
+        "train_v4": 0.25,
+        "train_pattern_breaker": 0.125,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0006909939430079248,
+      "value_loss": 0.0804835543036461,
+      "entropy": 0.09559282436966896,
+      "approx_kl": 0.0003552932075373727,
+      "clip_frac": 0.0029062121213064528,
+      "bc_kl": 0.0010124015089240856,
+      "explained_var": 0.9488588946139624,
+      "n_steps": 204800,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 551.03125,
+          "dev_complex": 442.783203125,
+          "dev_ood": 511.7421875
+        },
+        "avg": 501.8522135416667,
+        "worst": 442.783203125,
+        "selection": 487.0849609375
+      }
+    }
+  ]
+}

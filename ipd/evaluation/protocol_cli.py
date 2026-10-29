@@ -38,7 +38,7 @@ ALL_DEFAULT = DEV_DEFAULT
 
 _PLAIN_GPU_KINDS = frozenset({
     "neural", "gru", "rl", "rl-hard60", "rl-repair", "rl-pattern",
-    "rl-wide", "selfplay", "psro-br", "psro-scratch-br",
+    "rl-wide", "rl-wide160", "selfplay", "psro-br", "psro-scratch-br",
 })
 _ADV_GPU_KINDS = frozenset({"adv-mlp", "adv-gru", "adv-rl"})
 _PSRO_META_KINDS = frozenset({"psro", "psro-scratch"})

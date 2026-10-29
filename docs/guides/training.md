@@ -151,8 +151,10 @@ python3 -m ipd train expand \
   --weights-out /tmp/wide_weights.json
 ```
 
-扩展后再用 `--hidden 128 64` / `--hidden 128 128` 继续 PPO。详细配方、
-消融和结果见 [../research/rl-wide.md](../research/rl-wide.md)。
+扩展后再用 `--hidden 128 64` / `--hidden 128 128` / `--hidden 160 128`
+继续 PPO。当前最均衡的是 160/128；详细配方、消融和结果见
+[../research/rl-wide160.md](../research/rl-wide160.md) 与
+[../research/rl-wide.md](../research/rl-wide.md)。
 
 ## 4. PSRO
 

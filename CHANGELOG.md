@@ -7,6 +7,16 @@
 
 ### Added
 
+- **RL-Wide160（`rl-wide160`）**：从 RL-Wide 128/128 只扩第一层到
+  160/128，再做 2 iter balance PPO（PB 1/11）。全量 dev（30×2048，
+  sample）：dev_param 548.26、dev_family 583.08、dev_complex
+  **454.31**、dev_axelrod 582.38、dev_ood **521.37**；
+  complex min_norm **0.9974**、ood min_norm **0.9966**、dev_param
+  min_norm 0.9970。`test_v7` provisional 485.62（vs RL-Repair
+  486.31，未消费）；`dev_red` 仍 red_win 100%。独立 seed 20261029
+  复现 complex/OOD 收益。注册为实验候选，**未 promotion**；权重
+  `weights/rl_policy_weights_wide160.json`，报告
+  `docs/research/rl-wide160.md`、`results/rl_v4_20261032/`。
 - **RL-Wide（`rl-wide`）**：用新增的 `python -m ipd train expand`
   （net2wider）把 RL-Pattern 的 64/32 trunk 扩到 128/64、128/128，
   再做 128/64 gentle → 128/128 gentle → 128/128 balance（PB 1/11）
@@ -128,11 +138,11 @@
 
 ### Changed
 
-- 注册候选从 20 增至 26（新增 `rl-pattern` / `rl-wide`；此前 24 含
-  4 个 PSRO）；完整测试 **312 OK**。
-- Protocol v4 top 4（RL-PPO / RL-Repair / RL-Pattern / RL-Wide）的 dev
-  已运行；RL-Wide 综合最均衡，但 test_v7 provisional 仍低 0.81，
-  暂不 promotion。
+- 注册候选从 20 增至 27（新增 `rl-pattern` / `rl-wide` /
+  `rl-wide160`；此前 24 含 4 个 PSRO）；完整测试 **312 OK**。
+- Protocol v4 top 5（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
+  RL-Wide160）的 dev 已运行；RL-Wide160 综合最均衡，但 test_v7
+  provisional 仍低 0.69，暂不 promotion。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为

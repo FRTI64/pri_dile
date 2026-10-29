@@ -36,6 +36,7 @@ DISPLAY = {
     "rl-repair": "RL-Repair",
     "rl-pattern": "RL-Pattern",
     "rl-wide": "RL-Wide",
+    "rl-wide160": "RL-Wide160",
     "psro": "PSRO-Meta",
     "psro-br": "PSRO-BR",
     "psro-scratch": "PSRO-Scratch",
@@ -91,6 +92,9 @@ ALIASES = {
     "rl-wide": "rl-wide",
     "wide-rl": "rl-wide",
     "rl-128": "rl-wide",
+    "rl-wide160": "rl-wide160",
+    "wide160": "rl-wide160",
+    "rl-160": "rl-wide160",
     "psro": "psro",
     "psro-meta": "psro",
     "psro-br": "psro-br",
@@ -119,7 +123,7 @@ LEGACY_NAMES = BASE_NAMES
 CLASSIC_NAMES = BASE_NAMES + ("harvest45", "harvest-tuned", "gap-start")
 SUITE_NAMES = BASE_NAMES + ("harvest45", "triple-majority")
 LEARNED_NAMES = ("neural", "gru", "rl", "rl-hard60", "rl-repair",
-                 "rl-pattern", "rl-wide",
+                 "rl-pattern", "rl-wide", "rl-wide160",
                  "psro", "psro-br", "psro-scratch", "psro-scratch-br",
                  "adv-mlp", "adv-gru", "adv-rl", "selfplay")
 ALL_NAMES = tuple(dict.fromkeys(
@@ -208,7 +212,7 @@ def _params_for(kind: str, weights: str | None, config: str | None,
                 mode: str) -> dict[str, Any]:
     params: dict[str, Any] = {}
     if kind in ("neural", "gru", "rl", "rl-hard60", "rl-repair",
-                "rl-pattern", "rl-wide",
+                "rl-pattern", "rl-wide", "rl-wide160",
                 "psro", "psro-br", "psro-scratch", "psro-scratch-br",
                 "selfplay"):
         if weights:

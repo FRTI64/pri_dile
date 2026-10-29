@@ -6,9 +6,10 @@
 - 规模：50 fields × 2048，100 天
 - seed：20261027
 - 结果：`protocol_v4_test_v7_all24_provisional.json`
-- v4 top 4 dev 已运行（`RL-PPO` / `RL-Repair` / `RL-Pattern` /
-  `RL-Wide`），见 `results/rl_v4_20261028/` 和
-  `results/rl_v4_20261029/`；全候选 dev baseline 仍未运行
+- v4 top 5 dev 已运行（`RL-PPO` / `RL-Repair` / `RL-Pattern` /
+  `RL-Wide` / `RL-Wide160`），见 `results/rl_v4_20261028/`、
+  `results/rl_v4_20261029/` 和 `results/rl_v4_20261032/`；全候选
+  dev baseline 仍未运行
 
 ## 排名
 

@@ -93,6 +93,8 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(canonical_name("rl-pb"), "rl-pattern")
         self.assertEqual(canonical_name("wide-rl"), "rl-wide")
         self.assertEqual(canonical_name("rl-128"), "rl-wide")
+        self.assertEqual(canonical_name("wide160"), "rl-wide160")
+        self.assertEqual(canonical_name("rl-160"), "rl-wide160")
         self.assertEqual(legacy_arch_names("rl"), ["rl"])
         with self.assertRaises(ValueError):
             canonical_name("does-not-exist")
