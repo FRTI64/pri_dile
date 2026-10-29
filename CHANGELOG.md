@@ -31,6 +31,11 @@
   dev_param 548.62、dev_complex 454.61，接近 RL-Switch；test
   486.98，仍低 1.28。**No-Go，不推荐 promotion**；保留为实验
   候选。报告 `docs/research/rl-gate.md`、`results/meta_20261040/`。
+- **RL-Switch C++ 移植**：`ipd/tools/export_switch_cpp.py` 生成双
+  namespace 权重头，`cpp/policies/rl_switch_policy.hpp` 实现
+  160/128 + 64/32 双 MLP 与开关规则；`cpp/rl_switch_demo.cpp`
+  可编译；`tests/test_switch_cpp.py` 对固定序列做 Python/C++
+  action parity。`cpp/rl_switch_weights.hpp` 已生成。
 - **RL-Switch（`rl-switch`）**：窄 meta 模型。默认 RL-Wide160；
   第 6 回合前双方各 D≥2 且对手最新 C 时切换到 RL-Repair。
   dev（seed 27）：dev_param 548.58、dev_complex 454.24、

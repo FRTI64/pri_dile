@@ -5,14 +5,14 @@
 > - 主权重未替换：`weights/rl_policy_weights.json`，sha256
 >   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 > - **RL-Switch（`rl-switch`）是 Protocol v4 dev/test 最佳（top 6
->   对比）**，但只注册、不 promotion，且目前只有 Python 版：
+>   对比）**，但只注册、不 promotion；Python + C++ 双权重实现已通过 action parity：
 >   默认 RL-Wide160；第 6 回合前双方各 D≥2 且对手最新 C 时切换
 >   RL-Repair。dev_param 548.58 / dev_complex 454.24 / dev_axelrod
 >   582.86；test_v7 provisional 488.26（seed 27）/ 487.51（seed 29）。
 > - **前最佳 / fallback：RL-Wide160（`rl-wide160`）、RL-Wide
 >   （`rl-wide`）、RL-Pattern（`rl-pattern`）与 RL-Repair
 >   （`rl-repair`）**；均未 promotion。
-> - 最近完整测试：**329 tests OK**（本轮全量运行）。
+> - 最近完整测试：**330 tests OK**（本轮全量运行）。
 >   `python3 -m ipd list-policies`：**31 个注册候选**。
 > - `rl-gate` 是学习型上层 gate 实验：阈值 0.9 基本退化为
 >   RL-Wide160（test 485.84），阈值 0.5 会过度切换；**No-Go**，
@@ -116,7 +116,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 
 | 场景 | 建议 | 依据 |
 |---|---|---|
-| 现在提交，允许新候选 | **RL-Switch** | dev_param 548.58、dev_complex 454.24；test 488.26/487.51；Python-only |
+| 现在提交，允许新候选 | **RL-Switch** | dev_param 548.58、dev_complex 454.24；test 488.26/487.51；C++ 已移植 |
 | 需要 160/128 单模型部署 | **RL-Wide160** | dev_complex 454.31、complex min_norm 0.997；test 485.62 |
 | 需要 128/128 部署 | **RL-Wide** | dev_complex 452.79、complex min_norm 0.973；test 485.50 |
 | 需要 64/32 部署 / 更小模型 | **RL-Pattern** | dev_param 548.45；test 485.43 |
@@ -133,10 +133,11 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 最强 anti-exploitation specialist | **PSRO-V4-BR**（`psro-v4-br`） | 仅实验；dev_param 486.93，dev_red / Red-v5/v6 red_win 0.0；未 promotion |
 
 **Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch，再完成 C++ 双权重
-+ 开关逻辑、第 1/100 天行为、权重 checksum。RL-Switch 的 test_v7 增益
-已用两个 seed 验证，但它仍是 Python-only，且 red 无改善；test 消费已在
-policy 层永久关闭，provisional test 不能当作独立 final。得到确认后才把
+`dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch；C++ 双权重 + 开关
+逻辑已完成并通过固定序列 action parity，但还需要第 1/100 天行为、权重
+checksum 和真实比赛接口验证。RL-Switch 的 test_v7 增益已用两个 seed
+验证，但 C++ 只做了离线 parity，且 red 无改善；test 消费已在 policy 层
+永久关闭，provisional test 不能当作独立 final。得到确认后才把
 `weights/rl_policy_weights.json` 替换为 RL-Switch 或 RL-Wide160。当前
 文档不假设已经替换。
 
@@ -476,8 +477,10 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
   158 bank 554.45 → 554.37（基本持平）。
 - red：dev_red blue 378.40 相同；test_red blue 319.37 vs 319.43；
   red_win 仍 100%，anti-exploitation 未改善。
-- 限制：**Python-only**，C++ 双权重 + 开关逻辑尚未移植；不能直接
-  promotion。
+- 分级诊断：dev_level0 -2.68，level1–4 +0.19/+1.34/+0.42/+1.13；
+  dev_complexity0 -2.68，complexity1–4 +0.07/+1.62/+0.26/+1.38。
+- 限制：C++ 双权重实现已完成（`cpp/policies/rl_switch_policy.hpp`，
+  action parity 通过），但尚未接入真实比赛接口；不能直接 promotion。
 - 报告 `docs/research/rl-switch.md`、`results/meta_20261039/`。
 
 ### RL-Gate（2026-10-29；No-Go）
@@ -985,9 +988,9 @@ mine/theirs = 到此日之前的动作
 18. **RL-Wide / RL-Wide160 部署文件更大**：128/128 权重约 890KB，
     160/128 约 1.1MB，C++ 导出已通过，但比 64/32 的约 249KB 更大；
     如果比赛有文件大小限制，优先用 RL-Pattern 或 RL-Repair。
-19. **RL-Switch 只有 Python 版**：它组合两份权重和早期开关逻辑；
-    C++ 需要同时嵌入 160/128 与 64/32 两个 MLP，并复刻开关条件。
-    未完成移植前不能作为 C++ 提交；test 增益也不能替代 red 证据。
+19. **RL-Switch C++ 已移植但未实战**：`cpp/policies/rl_switch_policy.hpp`
+    组合 160/128 与 64/32 两个 MLP，固定序列 action parity 通过；
+    但尚未接入真实比赛接口，test 增益也不能替代 red 证据。
 19. **RL-Gate 不是提交候选**：学习型 gate 阈值 0.5 过度切换、
     0.9 退化为 RL-Wide160；分类准确率不等于得分最优。不要用
     `rl-gate` 替换 `rl-switch`，除非重新设计 cost-sensitive gate。

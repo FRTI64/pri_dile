@@ -4,7 +4,7 @@
 > 默认走 RL-Wide160；仅当第 6 回合前双方都至少 D 过 2 次、且对手
 > 最新一手为 C 时，切换到 RL-Repair。dev 基本不变，test_v7
 > provisional +2.6～2.9，Protocol catalog suite +0.75。
-> **Python-only，尚未移植 C++。**
+> Python + C++ 双权重实现；C++ action parity 已通过。
 
 ## 1. 动机
 
@@ -33,8 +33,11 @@ AllC / 正常合作路径不会触发。触发后不回头，避免来回抖动�
 - `ipd/policies/candidates/rl_switch.py`（`rl-switch` / `RL-Switch`）；
 - 两个子策略仍按 `ipd-rl-policy-v1` / `ipd-neural-policy-v1` 加载；
 - 每场 `reset()` 清除 `switched`；
-- 目前只在 Python 路径；GPU 评估会把它路由到 CPU；
-- C++ 版本需要同时嵌入两份权重和开关逻辑，尚未实现。
+- GPU 评估会把它路由到 CPU；
+- C++ 版本在 `cpp/policies/rl_switch_policy.hpp`，双权重头由
+  `python -m ipd.tools.export_switch_cpp` 生成；
+  `cpp/rl_switch_demo.cpp` 可编译运行，`tests/test_switch_cpp.py`
+  对固定序列做 Python/C++ 动作 parity。
 
 ## 3. Protocol v4 dev（seed 20261027，30×2048）
 
@@ -104,7 +107,50 @@ seed 20261027 的 test_v7 为 485.62 → **488.26（+2.64）**；两次
 
 anti-exploitation 没有改善；RL-Switch 不改变 red 结论。
 
-## 7. 判定与下一步
+## 7. 分级诊断（30×2048）
+
+| tier | RL-Wide160 | RL-Switch |
+|---|---:|---:|
+| dev_level0 | **627.87** | 625.19 |
+| dev_level1 | 550.59 | **550.78** |
+| dev_level2 | 549.95 | **551.29** |
+| dev_level3 | 451.52 | **451.94** |
+| dev_level4 | 447.54 | **448.67** |
+| dev_complexity0 | **627.87** | 625.19 |
+| dev_complexity1 | 543.77 | **543.84** |
+| dev_complexity2 | 534.07 | **535.69** |
+| dev_complexity3 | 523.43 | **523.69** |
+| dev_complexity4 | 401.27 | **402.65** |
+
+低难度 tier0 有 -2.68 的小幅回退；level1–4 / complexity1–4 都是
+小幅提升，最高复杂度 +1.38。
+
+## 8. C++ 移植
+
+文件：
+
+- `ipd/tools/export_switch_cpp.py`：把两份 deployable 权重写成一个
+  包含 `rl_switch_base` / `rl_switch_alt` 两个 namespace 的头文件；
+- `cpp/policies/rl_switch_policy.hpp`：双 MLP 前向 + 开关规则；
+- `cpp/rl_switch_demo.cpp`：最小 demo；
+- `cpp/rl_switch_weights.hpp`：已生成（约 663KB）；
+- `tests/test_switch_cpp.py`：固定序列 Python/C++ 动作 parity。
+
+编译：
+
+```bash
+python3 -m ipd.tools.export_switch_cpp \
+  --base weights/rl_policy_weights_wide160.json \
+  --alt weights/rl_policy_weights_repair.json \
+  --out cpp/rl_switch_weights.hpp
+g++ -std=c++17 -O2 -Icpp cpp/rl_switch_demo.cpp -o rl_switch_demo
+./rl_switch_demo
+```
+
+parity：两个固定对手序列（D,D,C... 和全 C）各 100 回合，
+C++ argmax 动作与 Python `RL-Switch` 完全一致；切换标志一致。
+
+## 9. 判定与下一步
 
 **注册 `rl-switch`，作为当前最佳 v4 dev/test 候选，但不 promotion。**
 
@@ -112,12 +158,11 @@ anti-exploitation 没有改善；RL-Switch 不改变 red 结论。
 - 158 bank 持平，没有明显 overall 回退；
 - red 仍 100%，C++ 还没有；
 - 下一步：
-  1. 移植 C++ 双权重 + 开关逻辑；
-  2. 跑 `dev_level0..4` / `dev_complexity0..4` 和 `test_red`；
-  3. 独立 seed 再复现一次 test_v7；
-  4. 如果用户确认，再讨论 promotion / 主权重替换。
+  1. 跑 `dev_level0..4` / `dev_complexity0..4` 和 `test_red`；
+  2. 独立 seed 再复现一次 test_v7；
+  3. 如果用户确认，再讨论 promotion / 主权重替换。
 
-## 8. 复现
+## 10. 复现
 
 ```bash
 python3 -m ipd self-test --candidates rl-switch

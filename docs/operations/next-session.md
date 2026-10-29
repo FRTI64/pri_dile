@@ -24,17 +24,18 @@
 ## 当前状态
 
 - 最近提交：`git log -1`（PSRO v4 更强 oracle 与 anti-exploitation specialist）。
-- 最近完整测试：**329 tests OK**；`python3 -m ipd list-policies` 为
+- 最近完整测试：**330 tests OK**；`python3 -m ipd list-policies` 为
   **31 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Switch（`rl-switch`）是 v4 dev/test 最佳（top 6）**，但未
-  promotion，且是 Python-only：默认 RL-Wide160，早期 mutual-D 后
-  切换 RL-Repair；test_v7 488.26/487.51。
+  promotion；Python + C++ 双权重实现：默认 RL-Wide160，早期
+  mutual-D 后切换 RL-Repair；test_v7 488.26/487.51。
 - **前最佳 / fallback：RL-Wide160 / RL-Wide / RL-Pattern /
   RL-Repair**，均未 promotion。
 - RL-Switch 独立 seed 20261029 已复现 test +2.90；Protocol catalog
-  suite +0.75；158 bank 持平；red 仍 100%。C++ 双权重移植待做。
+  suite +0.75；158 bank 持平；level/complexity 高档 tier 小幅提升；
+  red 仍 100%。C++ 双权重已完成 action parity，待接真实接口。
 - 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
   `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional；
   另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /
@@ -126,8 +127,8 @@ legacy，不能与新表混用。
      RL-Repair 的 `dev_param` / `dev_family` / `dev_complex` /
      `dev_axelrod` / `dev_ood`；补跑 `dev_level0..4` /
      `dev_complexity0..4` 分级诊断；
-   - RL-Switch 已用两个 seed 复现 test +2.64/+2.90，但仍是
-     Python-only；先移植 C++ 双权重 + 开关逻辑，再跑 test_red；
+   - RL-Switch 已用两个 seed 复现 test +2.64/+2.90；C++ 双权重 +
+     开关逻辑已完成 action parity；接下来跑 test_red 和真实接口；
    - RL-Wide160 的 test_v7 provisional 低 0.69，作为单模型 fallback；
    - `test_v7` 只做 provisional 诊断，不能当作独立 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；

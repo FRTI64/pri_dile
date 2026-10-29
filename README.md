@@ -12,7 +12,7 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 > - **Protocol v4 dev/test 最佳候选**：`rl-switch`（RL-Switch，窄 meta
 >   RL-Wide160→RL-Repair），dev_param 548.58 / dev_complex 454.24 /
 >   dev_axelrod 582.86；`test_v7` provisional **488.26**（seed 27）和
->   **487.51**（seed 29）；但 **未 promotion**，且只有 Python 版；
+>   **487.51**（seed 29）；但 **未 promotion**，Python + C++ 已移植；
 > - 前最佳候选 / fallback：`rl-wide160`（160/128）、`rl-wide`（128/128）、
 >   `rl-pattern`（64/32）、`rl-repair`；A60 仍为 `rl-hard60`；
 > - **Protocol v4**：977 configs；14 个 complex 风格 + 224 个 Axelrod 策略 +
@@ -20,7 +20,7 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 全候选 baseline **尚未运行**；top 5 的 dev 已运行，v3 的
 >   299/20/40 结果只作 legacy；
-> - **329 tests OK**（本轮全量运行）；注册候选 31 个；
+> - **330 tests OK**（本轮全量运行）；注册候选 31 个；
 > - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
 >   meta-policy 在 held-out Red-v5/v6 上 red-minus-blue -21.4%，但
 >   dev_param 527.71 vs RL-Repair 543.35；`psro-br` 未进入 maximin support；
@@ -98,7 +98,7 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 
 | 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | 状态 |
 |---|---|---:|---:|---:|---:|---:|---|
-| **RL-Switch** | `rl-switch` | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | v4 dev/test 最佳；Python-only；未 promotion |
+| **RL-Switch** | `rl-switch` | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | v4 dev/test 最佳；Python + C++；未 promotion |
 | RL-Wide160 | `rl-wide160` | 548.26 | **583.08** | **454.31** | 582.38 | 521.37 | 160/128；未 promotion |
 | RL-Wide | `rl-wide` | 548.24 | **583.08** | 452.79 | 582.30 | 520.71 | 128/128 前最佳；未 promotion |
 | RL-Pattern | `rl-pattern` | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 64/32；未 promotion |

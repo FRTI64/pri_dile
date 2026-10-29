@@ -24,9 +24,9 @@
 | 项 | 值 |
 |---|---|
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
-| v4 dev/test 最佳（top 6） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python-only） |
+| v4 dev/test 最佳（top 6） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python + C++） |
 | 前最佳 / fallback | `rl-wide160` / `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
-| 测试 | **329 tests OK**（本轮全量运行） |
+| 测试 | **330 tests OK**（本轮全量运行） |
 | 注册候选 | 31 个（`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |

@@ -45,6 +45,7 @@ python3 -m ipd self-test --candidates selfplay --weights weights/selfplay_gru_po
 | Neural | `weights/neural_policy_weights.json` | 约 243 KB |
 | GRU | `weights/gru_policy_weights.json` | 约 395 KB；有状态 |
 | RL / A60 / Repair | `weights/rl_policy_weights*.json` | 85 维 MLP |
+| RL-Switch | `rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | Python + C++ 双 MLP；C++ 已通过 action parity |
 | SelfPlay-GRU | `weights/selfplay_gru_policy.json` | 21 维 GRU；有状态 |
 | Adv-MLP / Adv-GRU | 对应 base 权重 + `configs/adversarial_*_config*.json` | 只有 Python |
 | Adv-RL | `weights/rl_policy_weights_bc.json` + aggressive config | 有 C++ |
@@ -75,6 +76,14 @@ g++ -std=c++17 -O2 -DNEURAL_POLICY_USE_RL_BC_WEIGHTS \
 
 # BayesPlus / Responsive3
 g++ -std=c++17 -O2 -DRESP_BAYES_DEMO cpp/bayesplus_responsive3.cpp -o demo
+
+# RL-Switch（先导出双权重头文件）
+python3 -m ipd.tools.export_switch_cpp \
+  --base weights/rl_policy_weights_wide160.json \
+  --alt weights/rl_policy_weights_repair.json \
+  --out cpp/rl_switch_weights.hpp
+g++ -std=c++17 -O2 -Icpp cpp/rl_switch_demo.cpp -o rl_switch_demo
+./rl_switch_demo
 ```
 
 头文件与参数说明见 [../../cpp/README.md](../../cpp/README.md)。
@@ -88,6 +97,10 @@ python3 -m ipd export --weights weights/rl_policy_weights.json \
   --out cpp/rl_policy_weights.hpp
 python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
   --out cpp/rl_policy_weights_bc.hpp
+python3 -m ipd.tools.export_switch_cpp \
+  --base weights/rl_policy_weights_wide160.json \
+  --alt weights/rl_policy_weights_repair.json \
+  --out cpp/rl_switch_weights.hpp
 ```
 
 导出后重新编译，并跑一次 `python3 -m ipd test` 和 C++ demo。
@@ -102,6 +115,7 @@ python3 -m ipd export --weights weights/rl_policy_weights_bc.json \
 | Neural MLP | 是 | `cpp/policies/neural_policy.hpp` |
 | GRU | 是 | `cpp/policies/gru_policy.hpp` |
 | RL-PPO | 是 | `cpp/policies/neural_policy.hpp` + `cpp/rl_policy_weights.hpp` |
+| RL-Switch | 是 | `cpp/policies/rl_switch_policy.hpp` + `cpp/rl_switch_weights.hpp` |
 | Adv-RL | 是 | `cpp/policies/adversarial_rl_policy.hpp` |
 | Adv-MLP / Adv-GRU | 否 | 需在 Neural/GRU 外自行加两条规则 |
 | PSRO-BR | 是（标准 MLP） | `cpp/policies/neural_policy.hpp` + 导出的 PSRO 权重 |

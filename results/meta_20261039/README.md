@@ -33,6 +33,8 @@
 | `protocol_v4_test_v7_rl_switch_provisional.json` | 官方 test_v7（seed 27） |
 | `protocol_v4_dev_repro_seed20261029_rl_switch.json` | 独立 dev seed |
 | `protocol_v4_test_v7_repro_seed20261029_rl_switch.json` | 独立 test seed |
+| `protocol_v4_dev_level_rl_switch.json` | `dev_level0..4` 分级诊断 |
+| `protocol_v4_dev_complexity_rl_switch.json` | `dev_complexity0..4` 分级诊断 |
 | `protocol_v4_dev_red_rl_switch.json` | dev_red |
 | `protocol_v4_test_red_rl_switch_provisional.json` | test_red provisional |
 | `matchup_protocol_switch.*` | protocol catalog 对比 |
