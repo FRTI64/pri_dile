@@ -2,6 +2,11 @@
 
 - **Status:** complete — **No-Go for promotion**; experimental candidates
   `psro` / `psro-br` are registered.
+- **v4 (2026-10-29):** stronger oracle; BR_01 enters the maximin support
+  with weight 1.0 and exploitability drops from **290.00 to 0.00**.  It also
+  flips `dev_red` / Red-v5/v6 to red win **0.0**, but `dev_param` falls to
+  **486.93 vs 546.47** for RL-Repair.  **No-Go for promotion**; `psro-v4` /
+  `psro-v4-br` are experimental anti-exploitation specialists.  See §8.
 - **Code:** `ipd/training/psro.py`, `ipd/policies/psro.py`,
   `ipd/policies/candidates/psro.py`, `ipd/policies/candidates/psro_br.py`
 - **Config:** `configs/psro/psro_20261027.json`
@@ -170,3 +175,60 @@ deedc25c7c384e86c0223ec5395ba6f3dfd21b5358de57c8d903ce056d92ed9b  weights/psro/p
 ```
 
 完整结果与 caveats 见 `results/psro_20261027/README.md`。
+
+## 8. PSRO v4 — stronger oracle（2026-10-29）
+
+上一轮 2 轮 / 12 iter / 60% red / `bc_kl=0.05` 的 oracle 没有进入 blue
+maximin support。v4 按 §6 的建议只改 oracle 和 population，没有改
+meta-solver：
+
+- Config：`configs/psro/psro_v4_20261029.json`（3 轮）；
+- Blue：RL-Switch、RL-Wide160、RL-Pattern、RL-Repair、RL-PPO、Final-tuned、
+  Triple-majority、Adv-RL；
+- Red：Red-RL-v1 / v3 / v4（Red-v5/v6 仍只做 held-out）；
+- Cross-play：16 seeds × 100 rounds；
+- Oracle：RL-Repair 初始化，30 iter/轮，40% red，`bc_kl=0.02`，
+  `opponent_penalty=1.0`，`lr=1e-4`，`fields_per_dist=5`，`n=96`。
+
+### 元博弈
+
+初始 blue maximin 仍是 Final-tuned 0.998 + Triple-majority 0.002，
+exploitability **290.00**。第 1 轮 BR_01 的 cross-play 对 Red-v1/v3/v4
+取得 **+33.1 / -265.9 / -203.8** 的 score difference；加入后 blue
+support 直接变成 **BR_01 权重 1.0**，exploitability **0.00**。第 2/3 轮
+BR 的 expected 只有 -73.3 / -10.0，均未进入 support。
+
+这说明“更强 oracle + 更低 KL”可以训练出真正入 support 的 learned
+best response；此前 v1 的 learned BR 全是权重 0。
+
+### 诊断
+
+| 指标 | PSRO-V4-BR | RL-Repair | 差 |
+|---|---:|---:|---:|
+| dev_param（10×1024） | **486.93** | 546.47 | **-59.54** |
+| dev_param min_norm | 0.5599 | 1.0000 | -0.4401 |
+| worst family | noisy 260.0 | late 305.98 | -45.9 |
+| dev_complex（3×512） | **436.43** | 434.28 | +2.15 |
+| dev_ood（3×512） | 477.72 | 515.19 | -37.47 |
+| dev_axelrod（3×512） | 498.11 | 582.46 | -84.35 |
+| dev_red red win（10 seeds） | **0.0** | 1.0 | — |
+| Red-v5/v6 red win（10 seeds） | **0.0** | 1.0 | — |
+| Red-v5/v6 blue mean | **530.55** | 348.35 | **+182.20** |
+
+`dev_param` 的损失集中在 `noisy`（260.0 vs 464.4）、`adaptive`
+（397.1 vs 585.8）和 `extort`（366.2 vs 496.8）；`defect` 680.0 仍是
+强项。`dev_complex` 基本持平，说明 v4 不是简单的“全面变差”。
+
+### 决策
+
+- **No-Go for promotion**：dev_param -59.5、min_norm 0.56，远低于
+  RL-Repair；主权重不变。
+- 但它是目前最强的 anti-exploitation specialist：dev_red 和 held-out
+  Red-v5/v6 都到 **red win 0.0**，且 dev_param 比 `psro-scratch` 高约
+  6.5；`psro-v4-br` 是单策略可部署版本。
+- `psro-v4` meta 只含 BR_01 一个成员，但每场重新采样 member RNG，
+  因此仍有约 20–30% red win；对 red 稳定性以 `psro-v4-br` 为准。
+- 下一步：约束 / 多目标 oracle（official family floor + red objective），
+  或 red oracle / double oracle；不要重复同一 blue-only 3 轮配置。
+- 完整结果：`results/psro_v4_20261029/`；checksum 见
+  `results/psro_v4_20261029/checksums.txt`。

@@ -43,6 +43,8 @@ DISPLAY = {
     "psro-br": "PSRO-BR",
     "psro-scratch": "PSRO-Scratch",
     "psro-scratch-br": "PSRO-Scratch-BR",
+    "psro-v4": "PSRO-V4-Meta",
+    "psro-v4-br": "PSRO-V4-BR",
     "adv-mlp": "Adv-MLP",
     "adv-gru": "Adv-GRU",
     "adv-rl": "Adv-RL",
@@ -111,6 +113,10 @@ ALIASES = {
     "psro-zero": "psro-scratch",
     "psro-scratch-br": "psro-scratch-br",
     "psro-zero-br": "psro-scratch-br",
+    "psro-v4": "psro-v4",
+    "psro4": "psro-v4",
+    "psro-v4-br": "psro-v4-br",
+    "psro4-br": "psro-v4-br",
     "adv": "adv-mlp",
     "adversarial": "adv-mlp",
     "advmlp": "adv-mlp",
@@ -134,6 +140,7 @@ LEARNED_NAMES = ("neural", "gru", "rl", "rl-hard60", "rl-repair",
                  "rl-pattern", "rl-wide", "rl-wide160", "rl-switch",
                  "rl-gate",
                  "psro", "psro-br", "psro-scratch", "psro-scratch-br",
+                 "psro-v4", "psro-v4-br",
                  "adv-mlp", "adv-gru", "adv-rl", "selfplay")
 ALL_NAMES = tuple(dict.fromkeys(
     SUITE_NAMES + CLASSIC_NAMES + LEARNED_NAMES))

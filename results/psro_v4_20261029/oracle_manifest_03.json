@@ -1,0 +1,39 @@
+{
+  "schema": "ipd-opponent-pool-v1",
+  "name": "psro_v4_20261029-round3",
+  "entries": [
+    {
+      "kind": "rl",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v1.json",
+        "mode": "sample"
+      },
+      "name": "Red-RL-v1",
+      "role": "red",
+      "generation": 0,
+      "weight": 0.8999575000000001
+    },
+    {
+      "kind": "rl",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v3.json",
+        "mode": "sample"
+      },
+      "name": "Red-RL-v3",
+      "role": "red",
+      "generation": 0,
+      "weight": 0.0500425
+    },
+    {
+      "kind": "rl",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v4.json",
+        "mode": "sample"
+      },
+      "name": "Red-RL-v4",
+      "role": "red",
+      "generation": 0,
+      "weight": 0.049999999999999996
+    }
+  ]
+}

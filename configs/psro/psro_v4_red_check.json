@@ -1,0 +1,43 @@
+{
+  "schema": "ipd-league-config-v1",
+  "name": "psro_v4_red_check",
+  "note": "Diagnostic only: compare the PSRO v4 meta-policy / final best response with current candidates on held-out Red-v5/v6. Not a selection run and not a Gate D evaluation.",
+  "baseline": "RL-Repair",
+  "defaults": {
+    "workers": 20,
+    "rounds": 100,
+    "red_seeds": 10
+  },
+  "candidates": [
+    {"name": "PSRO-V4-Meta", "kind": "psro-v4"},
+    {"name": "PSRO-V4-BR", "kind": "psro-v4-br"},
+    {"name": "RL-Repair", "kind": "rl-repair"},
+    {"name": "RL-Wide160", "kind": "rl-wide160"},
+    {"name": "RL-Switch", "kind": "rl-switch"},
+    {"name": "Final-tuned", "kind": "final-tuned"},
+    {"name": "Triple-majority", "kind": "triple-majority"}
+  ],
+  "red_policies": [
+    {
+      "name": "Red-v5-heldout",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v5_heldout.json",
+        "mode": "sample"
+      }
+    },
+    {
+      "name": "Red-v6-heldout",
+      "kind": "rl",
+      "params": {
+        "weights": "weights/red_pool/red_rl_v6_heldout.json",
+        "mode": "sample"
+      }
+    }
+  ],
+  "red": {
+    "seeds": 10,
+    "seed_base": 20561026,
+    "policy_seed_base": 20361026
+  }
+}

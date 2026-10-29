@@ -1,0 +1,75 @@
+{
+  "schema": "ipd-protocol-red-eval-v1",
+  "protocol": "protocol_v4",
+  "catalog_sha256": "beb594ab4a2840675a37079fe5f7b2ce8eac1f98de46aae3c090a5e4fad5fe47",
+  "created": "2026-10-29T17:50:47",
+  "seconds": 0.47,
+  "tier": "dev_red",
+  "seeds": 10,
+  "rounds": 100,
+  "seed": 20261027,
+  "workers": 20,
+  "worker_budget": {
+    "requested": "20",
+    "resolved": 20,
+    "cpu_count": 24,
+    "cpu_limit": 22,
+    "ram_available_gb": 23.64,
+    "ram_limit": 21,
+    "max_workers": 20,
+    "ram_per_worker_gb": 1.0,
+    "parent_reserve_gb": 2.0
+  },
+  "peak_rss_mb": 551.99,
+  "usage_consumed": false,
+  "selection_eligible": true,
+  "no_consume": false,
+  "test_consumption_locked": false,
+  "results": {
+    "PSRO-V4-Meta": {
+      "seeds": 10,
+      "blue_mean": 430.3,
+      "blue_min": 411.0,
+      "blue_p05": 411.9,
+      "red_mean": 307.3,
+      "diff": 123.0,
+      "red_win": 0.2
+    },
+    "PSRO-V4-BR": {
+      "seeds": 10,
+      "blue_mean": 422.9,
+      "blue_min": 395.0,
+      "blue_p05": 397.70000000000005,
+      "red_mean": 145.9,
+      "diff": 277.0,
+      "red_win": 0.0
+    },
+    "PSRO-Meta": {
+      "seeds": 10,
+      "blue_mean": 384.9,
+      "blue_min": 368.0,
+      "blue_p05": 372.95000000000005,
+      "red_mean": 719.9,
+      "diff": -335.0,
+      "red_win": 1.0
+    },
+    "PSRO-BR": {
+      "seeds": 10,
+      "blue_mean": 382.8,
+      "blue_min": 368.0,
+      "blue_p05": 370.70000000000005,
+      "red_mean": 705.8,
+      "diff": -323.0,
+      "red_win": 1.0
+    },
+    "RL-Repair": {
+      "seeds": 10,
+      "blue_mean": 379.2,
+      "blue_min": 370.0,
+      "blue_p05": 370.0,
+      "red_mean": 715.2,
+      "diff": -336.0,
+      "red_win": 1.0
+    }
+  }
+}

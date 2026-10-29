@@ -35,6 +35,8 @@ MODULES = {
     "psro-br": "psro_br",
     "psro-scratch": "psro_scratch",
     "psro-scratch-br": "psro_scratch_br",
+    "psro-v4": "psro_v4",
+    "psro-v4-br": "psro_v4_br",
     "adv-mlp": "adv_mlp",
     "adv-gru": "adv_gru",
     "adv-rl": "adv_rl",

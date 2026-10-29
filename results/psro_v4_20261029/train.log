@@ -1,0 +1,162 @@
+PSRO psro_v4_20261029: blue=8 red=3 seeds=16 rounds=3 workers=20
+  meta 2/24 pairs (1.1s)
+  meta 4/24 pairs (1.1s)
+  meta 6/24 pairs (1.1s)
+  meta 8/24 pairs (1.1s)
+  meta 10/24 pairs (1.1s)
+  meta 12/24 pairs (1.1s)
+  meta 14/24 pairs (1.1s)
+  meta 16/24 pairs (1.1s)
+  meta 18/24 pairs (1.1s)
+  meta 20/24 pairs (1.1s)
+  meta 22/24 pairs (1.3s)
+  meta 24/24 pairs (1.3s)
+  initial blue worst-case=-290.002 exploitability=290.002 best_red=Red-RL-v4
+  oracle: /home/frti64/pri_dile/.venv/bin/python -m ipd train rl --opponent-pool /home/frti64/pri_dile/results/psro_v4_20261029/oracle_manifest_01.json --opponent-fraction 0.4 --opponent-penalty 1.0 --fields-per-dist 5 --n 96 --workers 20 --iterations 30 --lr 0.0001 --bc-kl-coef 0.02 --ent-coef 0.0001 --target-kl 0.02 --seed 20262048 --device auto --no-validation --out /home/frti64/pri_dile/results/psro_v4_20261029/br_01.json --checkpoint-out /home/frti64/pri_dile/results/psro_v4_20261029/br_01_checkpoint.json --history-out /home/frti64/pri_dile/results/psro_v4_20261029/br_01_history.json --init-weights /home/frti64/pri_dile/weights/rl_policy_checkpoint_repair.json --train-dists original,late,grim30,wide,repair --dist-weights 1,1,1,2,2
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,repair val_dists=original,late,grim30,wide fields/iter/dist=5 n=96 iterations=30 safe=True risk=none dirichlet=0 blue_pool=3
+initialised from /home/frti64/pri_dile/weights/rl_policy_checkpoint_repair.json
+using reference-policy KL penalty (coef=0.02)
+initial val avg=557.22 worst=548.88 original=548.88 late=558.77 grim30=556.78 wide=564.44
+iter   1 reward= 456.25 pi=+0.0006 v=0.1605 H=0.1304 kl=0.0007 bckl=0.0007 clip=0.008 ev=+0.935 (5.0s+2.8s)
+iter   2 reward= 458.03 pi=-0.0023 v=0.1650 H=0.1247 kl=0.0004 bckl=0.0020 clip=0.004 ev=+0.888 (4.7s+0.9s)
+iter   3 reward= 458.73 pi=-0.0011 v=0.1908 H=0.1340 kl=0.0007 bckl=0.0050 clip=0.009 ev=+0.839 (4.8s+0.7s)
+iter   4 reward= 459.91 pi=-0.0014 v=0.2074 H=0.1395 kl=0.0010 bckl=0.0103 clip=0.013 ev=+0.824 (4.8s+0.9s)
+iter   5 reward= 453.71 pi=-0.0042 v=0.2170 H=0.1362 kl=0.0008 bckl=0.0147 clip=0.009 ev=+0.836 (4.8s+1.1s)
+iter   6 reward= 454.96 pi=-0.0010 v=0.2028 H=0.1418 kl=0.0011 bckl=0.0229 clip=0.015 ev=+0.846 (4.9s+0.9s)
+iter   7 reward= 458.84 pi=-0.0020 v=0.2024 H=0.1453 kl=0.0009 bckl=0.0314 clip=0.012 ev=+0.851 (4.9s+0.8s)
+iter   8 reward= 461.00 pi=-0.0010 v=0.2014 H=0.1516 kl=0.0008 bckl=0.0444 clip=0.011 ev=+0.852 (5.0s+0.8s)
+iter   9 reward= 459.86 pi=-0.0029 v=0.2062 H=0.1536 kl=0.0009 bckl=0.0550 clip=0.011 ev=+0.851 (5.0s+0.8s)
+iter  10 reward= 455.78 pi=-0.0007 v=0.2059 H=0.1540 kl=0.0008 bckl=0.0671 clip=0.010 ev=+0.855 (5.1s+0.9s)
+  saved checkpoint (best iter 10, val avg=none)
+iter  11 reward= 462.97 pi=-0.0025 v=0.2309 H=0.1573 kl=0.0007 bckl=0.0797 clip=0.008 ev=+0.848 (5.0s+1.2s)
+iter  12 reward= 456.77 pi=-0.0000 v=0.2154 H=0.1539 kl=0.0006 bckl=0.0798 clip=0.007 ev=+0.846 (5.1s+0.9s)
+iter  13 reward= 454.94 pi=-0.0007 v=0.2073 H=0.1574 kl=0.0010 bckl=0.0986 clip=0.010 ev=+0.847 (5.0s+1.0s)
+iter  14 reward= 460.40 pi=-0.0006 v=0.2178 H=0.1599 kl=0.0008 bckl=0.1201 clip=0.008 ev=+0.852 (5.1s+0.9s)
+iter  15 reward= 457.97 pi=+0.0005 v=0.2073 H=0.1639 kl=0.0008 bckl=0.1377 clip=0.008 ev=+0.844 (5.0s+0.9s)
+iter  16 reward= 458.70 pi=-0.0010 v=0.2051 H=0.1625 kl=0.0010 bckl=0.1530 clip=0.009 ev=+0.851 (5.1s+0.9s)
+iter  17 reward= 461.63 pi=-0.0006 v=0.1987 H=0.1693 kl=0.0008 bckl=0.1824 clip=0.008 ev=+0.847 (5.1s+1.2s)
+iter  18 reward= 461.52 pi=-0.0007 v=0.2050 H=0.1679 kl=0.0009 bckl=0.2046 clip=0.007 ev=+0.851 (5.1s+0.8s)
+iter  19 reward= 456.28 pi=-0.0037 v=0.1995 H=0.1660 kl=0.0008 bckl=0.2296 clip=0.007 ev=+0.850 (5.1s+0.8s)
+iter  20 reward= 458.07 pi=-0.0022 v=0.2070 H=0.1638 kl=0.0009 bckl=0.2524 clip=0.007 ev=+0.847 (5.1s+1.1s)
+  saved checkpoint (best iter 20, val avg=none)
+iter  21 reward= 461.86 pi=-0.0010 v=0.1971 H=0.1686 kl=0.0009 bckl=0.2835 clip=0.009 ev=+0.846 (5.0s+1.0s)
+iter  22 reward= 455.95 pi=-0.0013 v=0.1923 H=0.1639 kl=0.0009 bckl=0.3076 clip=0.009 ev=+0.846 (5.2s+1.1s)
+iter  23 reward= 457.66 pi=-0.0017 v=0.1908 H=0.1643 kl=0.0011 bckl=0.3539 clip=0.012 ev=+0.839 (5.2s+1.3s)
+iter  24 reward= 461.78 pi=-0.0027 v=0.1927 H=0.1624 kl=0.0011 bckl=0.4070 clip=0.012 ev=+0.845 (5.3s+1.3s)
+iter  25 reward= 459.04 pi=-0.0021 v=0.1907 H=0.1557 kl=0.0012 bckl=0.4501 clip=0.014 ev=+0.826 (5.3s+0.8s)
+iter  26 reward= 456.53 pi=-0.0045 v=0.1900 H=0.1410 kl=0.0014 bckl=0.5029 clip=0.017 ev=+0.819 (5.4s+1.2s)
+iter  27 reward= 462.35 pi=-0.0051 v=0.2021 H=0.1220 kl=0.0014 bckl=0.5734 clip=0.019 ev=+0.806 (5.4s+0.9s)
+iter  28 reward= 462.33 pi=-0.0060 v=0.2316 H=0.0916 kl=0.0010 bckl=0.6278 clip=0.014 ev=+0.780 (5.6s+1.1s)
+iter  29 reward= 470.15 pi=-0.0001 v=0.2364 H=0.0616 kl=0.0004 bckl=0.6629 clip=0.005 ev=+0.747 (5.6s+1.3s)
+iter  30 reward= 464.26 pi=-0.0013 v=0.2569 H=0.0480 kl=0.0000 bckl=0.6665 clip=0.000 ev=+0.734 (5.6s+1.0s)
+  saved checkpoint (best iter 30, val avg=none)
+best iteration 30 val=None
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_01_checkpoint.json
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_01.json (249927 bytes)
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_01_history.json
+vs AllC-until-90: C=91 D=9 score=549
+  meta+1 1/3 pairs (0.6s)
+  meta+1 2/3 pairs (0.6s)
+  meta+1 3/3 pairs (0.6s)
+  round 1: added PSRO-BR-br_01; exploitability 290.002 -> 0.000
+  oracle: /home/frti64/pri_dile/.venv/bin/python -m ipd train rl --opponent-pool /home/frti64/pri_dile/results/psro_v4_20261029/oracle_manifest_02.json --opponent-fraction 0.4 --opponent-penalty 1.0 --fields-per-dist 5 --n 96 --workers 20 --iterations 30 --lr 0.0001 --bc-kl-coef 0.02 --ent-coef 0.0001 --target-kl 0.02 --seed 20263057 --device auto --no-validation --out /home/frti64/pri_dile/results/psro_v4_20261029/br_02.json --checkpoint-out /home/frti64/pri_dile/results/psro_v4_20261029/br_02_checkpoint.json --history-out /home/frti64/pri_dile/results/psro_v4_20261029/br_02_history.json --init-weights /home/frti64/pri_dile/weights/rl_policy_checkpoint_repair.json --train-dists original,late,grim30,wide,repair --dist-weights 1,1,1,2,2
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,repair val_dists=original,late,grim30,wide fields/iter/dist=5 n=96 iterations=30 safe=True risk=none dirichlet=0 blue_pool=3
+initialised from /home/frti64/pri_dile/weights/rl_policy_checkpoint_repair.json
+using reference-policy KL penalty (coef=0.02)
+initial val avg=559.01 worst=545.54 original=574.27 late=555.84 grim30=545.54 wide=560.41
+iter   1 reward= 453.16 pi=-0.0018 v=0.1752 H=0.1410 kl=0.0010 bckl=0.0010 clip=0.012 ev=+0.933 (5.7s+2.8s)
+iter   2 reward= 453.80 pi=-0.0007 v=0.1894 H=0.1459 kl=0.0008 bckl=0.0021 clip=0.008 ev=+0.871 (5.3s+0.9s)
+iter   3 reward= 453.81 pi=-0.0027 v=0.2180 H=0.1428 kl=0.0010 bckl=0.0034 clip=0.013 ev=+0.803 (5.2s+1.3s)
+iter   4 reward= 451.16 pi=-0.0020 v=0.2338 H=0.1413 kl=0.0009 bckl=0.0083 clip=0.012 ev=+0.804 (5.2s+1.2s)
+iter   5 reward= 453.79 pi=-0.0008 v=0.2257 H=0.1455 kl=0.0012 bckl=0.0170 clip=0.016 ev=+0.817 (5.2s+1.1s)
+iter   6 reward= 455.49 pi=-0.0026 v=0.2214 H=0.1461 kl=0.0010 bckl=0.0250 clip=0.012 ev=+0.825 (5.3s+1.4s)
+iter   7 reward= 453.60 pi=-0.0014 v=0.2324 H=0.1456 kl=0.0008 bckl=0.0347 clip=0.010 ev=+0.824 (5.3s+0.9s)
+iter   8 reward= 452.16 pi=-0.0004 v=0.2483 H=0.1447 kl=0.0008 bckl=0.0416 clip=0.009 ev=+0.830 (5.2s+0.9s)
+iter   9 reward= 454.92 pi=+0.0013 v=0.2201 H=0.1511 kl=0.0007 bckl=0.0584 clip=0.008 ev=+0.829 (5.2s+1.2s)
+iter  10 reward= 454.04 pi=-0.0025 v=0.2416 H=0.1499 kl=0.0009 bckl=0.0645 clip=0.008 ev=+0.828 (5.2s+0.8s)
+  saved checkpoint (best iter 10, val avg=none)
+iter  11 reward= 451.62 pi=-0.0038 v=0.2585 H=0.1472 kl=0.0008 bckl=0.0746 clip=0.007 ev=+0.827 (5.4s+1.4s)
+iter  12 reward= 448.63 pi=-0.0020 v=0.2437 H=0.1509 kl=0.0007 bckl=0.0897 clip=0.006 ev=+0.824 (5.3s+1.1s)
+iter  13 reward= 452.88 pi=-0.0002 v=0.2340 H=0.1542 kl=0.0008 bckl=0.1049 clip=0.006 ev=+0.823 (5.4s+0.7s)
+iter  14 reward= 457.03 pi=-0.0012 v=0.2496 H=0.1492 kl=0.0006 bckl=0.1126 clip=0.007 ev=+0.831 (5.3s+1.1s)
+iter  15 reward= 457.61 pi=-0.0024 v=0.2600 H=0.1487 kl=0.0006 bckl=0.1273 clip=0.005 ev=+0.828 (5.4s+1.2s)
+iter  16 reward= 454.00 pi=-0.0026 v=0.2292 H=0.1555 kl=0.0006 bckl=0.1549 clip=0.007 ev=+0.826 (5.3s+1.3s)
+iter  17 reward= 452.88 pi=-0.0016 v=0.2314 H=0.1596 kl=0.0009 bckl=0.1797 clip=0.007 ev=+0.820 (5.3s+0.9s)
+iter  18 reward= 456.65 pi=+0.0014 v=0.2555 H=0.1539 kl=0.0006 bckl=0.1873 clip=0.006 ev=+0.831 (5.4s+0.9s)
+iter  19 reward= 456.45 pi=-0.0003 v=0.2246 H=0.1606 kl=0.0009 bckl=0.2234 clip=0.009 ev=+0.816 (5.2s+1.3s)
+iter  20 reward= 453.49 pi=-0.0040 v=0.2159 H=0.1636 kl=0.0009 bckl=0.2511 clip=0.009 ev=+0.818 (5.5s+0.8s)
+  saved checkpoint (best iter 20, val avg=none)
+iter  21 reward= 454.57 pi=-0.0034 v=0.2339 H=0.1560 kl=0.0010 bckl=0.2695 clip=0.010 ev=+0.819 (5.4s+1.4s)
+iter  22 reward= 447.47 pi=-0.0019 v=0.2225 H=0.1498 kl=0.0009 bckl=0.3041 clip=0.009 ev=+0.818 (5.7s+0.8s)
+iter  23 reward= 454.33 pi=-0.0020 v=0.2220 H=0.1474 kl=0.0010 bckl=0.3454 clip=0.012 ev=+0.813 (5.4s+1.1s)
+iter  24 reward= 454.76 pi=-0.0003 v=0.2040 H=0.1462 kl=0.0010 bckl=0.3840 clip=0.013 ev=+0.807 (5.6s+1.0s)
+iter  25 reward= 452.34 pi=-0.0016 v=0.2058 H=0.1414 kl=0.0011 bckl=0.4198 clip=0.013 ev=+0.801 (5.7s+0.8s)
+iter  26 reward= 453.03 pi=-0.0030 v=0.2075 H=0.1350 kl=0.0011 bckl=0.4774 clip=0.013 ev=+0.787 (5.7s+1.0s)
+iter  27 reward= 447.71 pi=-0.0008 v=0.1975 H=0.1255 kl=0.0010 bckl=0.5018 clip=0.013 ev=+0.789 (5.7s+0.7s)
+iter  28 reward= 451.34 pi=+0.0015 v=0.1805 H=0.1227 kl=0.0009 bckl=0.5686 clip=0.011 ev=+0.773 (5.8s+1.0s)
+iter  29 reward= 454.29 pi=-0.0010 v=0.1799 H=0.1157 kl=0.0007 bckl=0.6037 clip=0.007 ev=+0.784 (5.6s+1.3s)
+iter  30 reward= 442.19 pi=-0.0013 v=0.1796 H=0.1066 kl=0.0001 bckl=0.6045 clip=0.000 ev=+0.775 (5.7s+0.9s)
+  saved checkpoint (best iter 30, val avg=none)
+best iteration 30 val=None
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_02_checkpoint.json
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_02.json (249945 bytes)
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_02_history.json
+vs AllC-until-90: C=91 D=9 score=549
+  meta+2 1/3 pairs (0.6s)
+  meta+2 2/3 pairs (0.6s)
+  meta+2 3/3 pairs (0.6s)
+  round 2: added PSRO-BR-br_02; exploitability 0.000 -> 0.000
+  oracle: /home/frti64/pri_dile/.venv/bin/python -m ipd train rl --opponent-pool /home/frti64/pri_dile/results/psro_v4_20261029/oracle_manifest_03.json --opponent-fraction 0.4 --opponent-penalty 1.0 --fields-per-dist 5 --n 96 --workers 20 --iterations 30 --lr 0.0001 --bc-kl-coef 0.02 --ent-coef 0.0001 --target-kl 0.02 --seed 20264066 --device auto --no-validation --out /home/frti64/pri_dile/results/psro_v4_20261029/br_03.json --checkpoint-out /home/frti64/pri_dile/results/psro_v4_20261029/br_03_checkpoint.json --history-out /home/frti64/pri_dile/results/psro_v4_20261029/br_03_history.json --init-weights /home/frti64/pri_dile/weights/rl_policy_checkpoint_repair.json --train-dists original,late,grim30,wide,repair --dist-weights 1,1,1,2,2
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,repair val_dists=original,late,grim30,wide fields/iter/dist=5 n=96 iterations=30 safe=True risk=none dirichlet=0 blue_pool=3
+initialised from /home/frti64/pri_dile/weights/rl_policy_checkpoint_repair.json
+using reference-policy KL penalty (coef=0.02)
+initial val avg=557.86 worst=552.34 original=564.56 late=552.34 grim30=558.09 wide=556.43
+iter   1 reward= 451.92 pi=-0.0010 v=0.1779 H=0.1414 kl=0.0010 bckl=0.0010 clip=0.013 ev=+0.933 (5.9s+2.9s)
+iter   2 reward= 451.09 pi=-0.0011 v=0.1935 H=0.1450 kl=0.0009 bckl=0.0030 clip=0.011 ev=+0.865 (5.7s+0.7s)
+iter   3 reward= 454.54 pi=+0.0009 v=0.2187 H=0.1476 kl=0.0010 bckl=0.0036 clip=0.012 ev=+0.806 (5.8s+1.1s)
+iter   4 reward= 454.09 pi=-0.0005 v=0.2387 H=0.1480 kl=0.0011 bckl=0.0123 clip=0.014 ev=+0.803 (5.9s+0.8s)
+iter   5 reward= 451.84 pi=-0.0007 v=0.2149 H=0.1541 kl=0.0012 bckl=0.0271 clip=0.016 ev=+0.812 (5.9s+1.1s)
+iter   6 reward= 458.59 pi=-0.0026 v=0.2373 H=0.1586 kl=0.0012 bckl=0.0422 clip=0.016 ev=+0.831 (5.7s+1.2s)
+iter   7 reward= 457.63 pi=+0.0006 v=0.2172 H=0.1620 kl=0.0012 bckl=0.0582 clip=0.015 ev=+0.827 (5.8s+0.8s)
+iter   8 reward= 454.05 pi=-0.0031 v=0.2392 H=0.1561 kl=0.0008 bckl=0.0641 clip=0.008 ev=+0.832 (5.8s+0.8s)
+iter   9 reward= 453.82 pi=-0.0017 v=0.2326 H=0.1635 kl=0.0008 bckl=0.0762 clip=0.009 ev=+0.825 (5.5s+0.7s)
+iter  10 reward= 455.26 pi=+0.0006 v=0.2523 H=0.1610 kl=0.0007 bckl=0.0870 clip=0.007 ev=+0.827 (5.5s+0.7s)
+  saved checkpoint (best iter 10, val avg=none)
+iter  11 reward= 455.35 pi=-0.0018 v=0.2322 H=0.1669 kl=0.0008 bckl=0.0997 clip=0.008 ev=+0.828 (5.6s+0.8s)
+iter  12 reward= 456.61 pi=-0.0017 v=0.2305 H=0.1678 kl=0.0009 bckl=0.1184 clip=0.008 ev=+0.823 (5.6s+0.8s)
+iter  13 reward= 453.91 pi=+0.0001 v=0.2406 H=0.1653 kl=0.0007 bckl=0.1307 clip=0.007 ev=+0.822 (5.5s+0.7s)
+iter  14 reward= 455.50 pi=-0.0023 v=0.2349 H=0.1679 kl=0.0006 bckl=0.1475 clip=0.006 ev=+0.824 (5.6s+0.8s)
+iter  15 reward= 456.67 pi=-0.0002 v=0.2413 H=0.1670 kl=0.0007 bckl=0.1579 clip=0.007 ev=+0.817 (5.7s+0.9s)
+iter  16 reward= 454.33 pi=+0.0000 v=0.2364 H=0.1673 kl=0.0009 bckl=0.1864 clip=0.009 ev=+0.823 (5.7s+1.1s)
+iter  17 reward= 460.85 pi=+0.0004 v=0.2431 H=0.1652 kl=0.0008 bckl=0.2061 clip=0.009 ev=+0.821 (8.2s+0.8s)
+iter  18 reward= 460.32 pi=-0.0015 v=0.2301 H=0.1675 kl=0.0009 bckl=0.2434 clip=0.011 ev=+0.820 (5.7s+0.9s)
+iter  19 reward= 451.85 pi=-0.0052 v=0.2237 H=0.1635 kl=0.0012 bckl=0.2815 clip=0.014 ev=+0.809 (5.7s+1.0s)
+iter  20 reward= 454.74 pi=-0.0036 v=0.2156 H=0.1571 kl=0.0012 bckl=0.3314 clip=0.016 ev=+0.815 (5.8s+1.2s)
+  saved checkpoint (best iter 20, val avg=none)
+iter  21 reward= 455.87 pi=-0.0039 v=0.2171 H=0.1525 kl=0.0013 bckl=0.3892 clip=0.017 ev=+0.798 (6.0s+0.8s)
+iter  22 reward= 457.74 pi=-0.0012 v=0.2110 H=0.1431 kl=0.0013 bckl=0.4434 clip=0.018 ev=+0.803 (5.7s+0.8s)
+iter  23 reward= 453.45 pi=-0.0054 v=0.1954 H=0.1353 kl=0.0014 bckl=0.5172 clip=0.020 ev=+0.793 (5.8s+0.8s)
+iter  24 reward= 447.19 pi=-0.0031 v=0.1859 H=0.1217 kl=0.0012 bckl=0.5616 clip=0.018 ev=+0.780 (5.9s+1.2s)
+iter  25 reward= 450.26 pi=-0.0027 v=0.1862 H=0.1107 kl=0.0011 bckl=0.6033 clip=0.016 ev=+0.781 (5.8s+1.1s)
+iter  26 reward= 449.60 pi=-0.0045 v=0.1659 H=0.1029 kl=0.0011 bckl=0.6470 clip=0.016 ev=+0.782 (5.9s+1.5s)
+iter  27 reward= 451.59 pi=-0.0009 v=0.1498 H=0.0961 kl=0.0009 bckl=0.7014 clip=0.014 ev=+0.776 (5.9s+1.0s)
+iter  28 reward= 451.91 pi=-0.0013 v=0.1467 H=0.0880 kl=0.0007 bckl=0.7163 clip=0.011 ev=+0.775 (6.1s+0.9s)
+iter  29 reward= 451.19 pi=-0.0009 v=0.1400 H=0.0820 kl=0.0004 bckl=0.7531 clip=0.004 ev=+0.754 (5.9s+0.8s)
+iter  30 reward= 444.64 pi=-0.0038 v=0.1412 H=0.0729 kl=0.0000 bckl=0.7266 clip=0.000 ev=+0.746 (5.6s+0.9s)
+  saved checkpoint (best iter 30, val avg=none)
+best iteration 30 val=None
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_03_checkpoint.json
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_03.json (249881 bytes)
+written /home/frti64/pri_dile/results/psro_v4_20261029/br_03_history.json
+vs AllC-until-90: C=91 D=9 score=549
+  meta+3 1/3 pairs (0.6s)
+  meta+3 2/3 pairs (0.6s)
+  meta+3 3/3 pairs (0.6s)
+  round 3: added PSRO-BR-br_03; exploitability 0.000 -> 0.000
+final blue worst-case=33.125 exploitability=0.000 best_red=Red-RL-v1
+deployed PSRO-BR-br_03 -> /home/frti64/pri_dile/weights/psro_v4/psro_policy.json (c9694bd1e85f)
+written /home/frti64/pri_dile/results/psro_v4_20261029/report.json
+written /home/frti64/pri_dile/results/psro_v4_20261029/README.md
