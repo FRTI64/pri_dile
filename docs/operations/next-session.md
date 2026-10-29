@@ -131,6 +131,8 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
      加大权重，改做显式 ZD 识别 + expert / portfolio；
    - `periodic_hard` 也已实现但 **No-Go**（test +0.77，PB -41）；
      若继续，应训练 periodic specialist + meta gate；
+   - RL-Switch 单模型蒸馏也 **No-Go**（dev_param 535.46）；若要
+     单模型，先做 DAgger 或 GRU 状态；
    - 加入 Gap0.45/0.55/0.64、FSM.F1/F5、ProbeBot、Harvest21 到
      hard mining；
    - 参考 `docs/research/weak-opponents-20261036.md` 和

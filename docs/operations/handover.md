@@ -493,6 +493,17 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 判定：**No-Go**，保留为实验候选，不进入提交推荐。报告
   `docs/research/rl-gate.md`、`results/meta_20261040/`。
 
+### Distill-Switch（2026-10-29；No-Go）
+
+- 从 RL-Switch 教师收集 96,196 个非强制状态，蒸馏到 160/128 MLP；
+- BCE 0.19（4 epochs），但 dev_param 535.46 vs 548.58、
+  dev_complex 442.43 vs 454.24、dev_axelrod 571.99 vs 582.86；
+- 失败原因：match-level switch 无法被无状态 MLP 稳定表示，BC
+  分布偏移，软标签在切换边界被平均化；
+- 判定：**No-Go，不注册候选**；若继续单模型，应先做 DAgger 或
+  用 GRU 保留切换状态。报告 `docs/research/distill-switch.md`、
+  `results/distill_20261042/`。
+
 ### Periodic-hard（2026-10-29；No-Go）
 
 - 新增训练专用 `periodic_hard`：Kamikaze period 4–12、7 种短周期

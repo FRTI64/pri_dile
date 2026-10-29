@@ -40,6 +40,7 @@
 | `matchup_protocol_switch.*` | protocol catalog 对比 |
 | `matchup_all_switch.*` | 158 类 bank 对比 |
 | `meta_probe.py` / `meta_safe_probe.py` / `meta_prefix_probe.py` / `meta_switch_probe.py` | meta 原型与消融 |
+| `meta_ensemble_probe.py` | 现有模型安全集成消融：dev_param 约 +0.2，但 complex -1.8，未注册 |
 
 ## 复现
 

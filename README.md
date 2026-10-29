@@ -165,6 +165,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | Extort-hard | 新增 `extort_hard`；strong/gentle 均只小幅改善 extort，PB/complex 回退；**No-Go** |
 | RL-Gate | 学习型上层 gate；CS 版 dev 548.62/454.61，但 test 486.98；**No-Go**（实验候选） |
 | Periodic-hard | 新增 `periodic_hard`；test +0.77，但 complex/PB 回退；**No-Go** |
+| Distill-Switch | RL-Switch 蒸馏单模型；BCE 0.19 但 dev_param 535.46；**No-Go** |
 | **RL-Pattern** | **v4 dev 4/5 tier 超 RL-Repair**（pattern_breaker 236.8→420.3）；test provisional -0.88；未 promotion |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

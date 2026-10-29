@@ -15,6 +15,11 @@
   486.93 vs RL-Repair 546.47（-59.5）、min_norm 0.56。**No-Go
   for promotion**；anti-exploitation specialist。报告
   `docs/research/psro.md`、`results/psro_v4_20261029/`。
+- **RL-Switch 单模型蒸馏**：从 RL-Switch 教师收集 96,196 个状态，
+  蒸馏到 160/128 MLP；BCE 0.19，但 dev_param 535.46 vs 548.58、
+  dev_complex 442.43 vs 454.24。match-level switch 无法被无状态
+  MLP 稳定表示，**No-Go，不注册候选**。报告
+  `docs/research/distill-switch.md`、`results/distill_20261042/`。
 - **Periodic-hard 训练分布**：`ipd/evaluation/periodic.py` 采样
   Kamikaze period 4–12、7 种短周期 Periodic、DynamicWindow 和
   RandomFSM，并保留 TFT/Grim/AllC/AllD anchors；注册为
