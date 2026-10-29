@@ -20,7 +20,7 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
 > - v4 全候选 baseline **尚未运行**；top 5 的 dev 已运行，v3 的
 >   299/20/40 结果只作 legacy；
-> - **320 tests OK**（本轮全量运行）；注册候选 27 个；
+> - **322 tests OK**（本轮全量运行）；注册候选 27 个；
 > - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
 >   meta-policy 在 held-out Red-v5/v6 上 red-minus-blue -21.4%，但
 >   dev_param 527.71 vs RL-Repair 543.35；`psro-br` 未进入 maximin support；
@@ -146,6 +146,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | **RL-Wide** | **128/128；dev_complex 452.79、complex min_norm 0.973**；test provisional -0.81；未 promotion |
 | 输入特征 v2 | 85→97，三端 parity 通过；dev_complex +2～4 但 dev_param/test 回退；**No-Go** |
 | 全量对手扫描 | 158 / 977 / 224 对手；薄弱点：extortion/ZD、periodic/Kamikaze、Gap/FSM、PB 尾部、noisy/Joss |
+| Extort-hard | 新增 `extort_hard`；strong/gentle 均只小幅改善 extort，PB/complex 回退；**No-Go** |
 | **RL-Pattern** | **v4 dev 4/5 tier 超 RL-Repair**（pattern_breaker 236.8→420.3）；test provisional -0.88；未 promotion |
 | A60 / hard×2 | 候选 / fallback；v3 test 476.54（legacy） |
 | E0 league | **PASS**（legacy）；建立 cross-play / Nash / exploitability |

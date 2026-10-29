@@ -14,7 +14,7 @@
 > - **前最佳 / fallback：RL-Wide（`rl-wide`）、RL-Pattern
 >   （`rl-pattern`）与 RL-Repair（`rl-repair`）**：RL-Repair 仍是
 >   test_v7 provisional 第一；均未 promotion。
-> - 最近完整测试：**320 tests OK**（本轮全量运行）。
+> - 最近完整测试：**322 tests OK**（本轮全量运行）。
 >   `python3 -m ipd list-policies`：**27 个注册候选**。
 > - **PSRO 已引入**：`ipd/training/psro.py`（blue-vs-red maximin +
 >   PPO best-response oracle）；`psro`（meta-policy）和 `psro-br`
@@ -487,6 +487,20 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 报告 `docs/research/weak-opponents-20261036.md`、
   `results/full_test_20261036/`；下一步优先做 extortion-aware 与
   periodic/Kamikaze 训练 profile。
+
+### Extort-hard（2026-10-29；No-Go）
+
+- 新增训练专用 `extort_hard`：ExtortZD chi 1.5–7.0、GenerousZD、
+  Random、TFT/Grim/AllD/AllC/Bully anchors。
+- strong（权重 2/9，6 iter）：dev_param 548.77、dev_complex 450.25、
+  test_v7 486.44；test hyper_extort +13.2、extort +5.5，但
+  pattern_breaker -58.2、complex min_norm 0.850。
+- gentle（权重 1/10 + train_complex，3 iter）：dev_param 548.42、
+  dev_complex 453.93、test 485.65；extort 只有 +1.7/+3.0。
+- 判定：**No-Go，不注册候选**；不要继续加大 extort_hard 权重。
+  下一步若继续 extortion，应做显式 ZD 识别 + expert / portfolio，
+  而不是全局 PPO。报告 `docs/research/extort-hard.md`、
+  `results/rl_v4_20261037/`、`results/rl_v4_20261038/`。
 
 ### Protocol v3 baseline（legacy）
 

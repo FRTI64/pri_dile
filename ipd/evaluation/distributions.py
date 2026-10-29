@@ -38,8 +38,8 @@ PROTOCOL_TRAIN_DISTS = ("train_v4", "train_v3", "train_easy",
     + PROTOCOL_COMPLEXITY_TRAIN
 PROTOCOL_VAL_DISTS = ("dev_param", "dev_family", "dev_complex",
                       "dev_axelrod", "dev_ood")
-TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair") \
-    + PROTOCOL_TRAIN_DISTS
+TRAIN_DISTS = DISTS + ("hard", "hard2", "robust", "repair",
+                       "extort_hard") + PROTOCOL_TRAIN_DISTS
 VALIDATION_DISTS = DISTS + PROTOCOL_VAL_DISTS
 
 # Base weights for a fixed high-Grim population.  Late harvesters remain a
@@ -232,6 +232,9 @@ def build_train_dist_field(dist: str, seed: int, n: int):
     if dist == "repair":
         from .robust import build_repair_field
         return build_repair_field(seed, n)
+    if dist == "extort_hard":
+        from .extort import build_extort_hard_field
+        return build_extort_hard_field(seed, n)
     if dist != "hard":
         return build_dist_field(dist, seed, n)
     rng = random.Random(seed)

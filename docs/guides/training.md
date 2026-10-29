@@ -136,6 +136,12 @@ python3 -m ipd train rl --device auto --iterations 40 \
 `requirements-axelrod.txt`；不用 Axelrod 时改用 `train_easy` /
 `train_hard` / `train_complex`。
 
+另有训练专用分布 `hard` / `hard2` / `robust` / `repair` /
+`extort_hard`。`extort_hard` 连续采样 ExtortZD chi 1.5–7.0 并保留
+TFT / Grim / AllD / AllC anchors；它不进入 Protocol catalog。
+实测在 RL-Wide160 上为 No-Go（extort 小幅提升但 PB/complex 回退），
+见 [../research/extort-hard.md](../research/extort-hard.md)。
+
 PPO 的 MDP、网络、损失、验证指标见 [../policies/rl.md](../policies/rl.md)；
 E1 的 Gate 和结果见 [../research/e1-robust-finetune.md](../research/e1-robust-finetune.md)。
 

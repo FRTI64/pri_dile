@@ -5,6 +5,9 @@ import random
 import unittest
 
 from ipd.evaluation.distributions import TRAIN_DISTS, build_train_dist_field
+from ipd.evaluation.extort import (
+    EXTORT_HARD_OPPONENTS, build_extort_hard_field,
+)
 from ipd.evaluation.robust import (
     REPAIR_OPPONENTS, ROBUST_OPPONENTS, build_repair_field,
     build_robust_field,
@@ -81,6 +84,27 @@ class RobustDistributionTests(unittest.TestCase):
                          [type(x).__name__ for x in b])
         self.assertEqual([getattr(x, "name", "") for x in a],
                          [getattr(x, "name", "") for x in b])
+
+
+class ExtortHardTests(unittest.TestCase):
+    def test_registered_and_deterministic(self) -> None:
+        self.assertIn("extort_hard", TRAIN_DISTS)
+        a = build_extort_hard_field(20261036, 80)
+        b = build_extort_hard_field(20261036, 80)
+        self.assertEqual(len(a), 80)
+        self.assertEqual([x.name for x in a], [x.name for x in b])
+
+    def test_includes_strong_extortion_and_anchors(self) -> None:
+        names = {name for name, _weight, _factory in EXTORT_HARD_OPPONENTS}
+        self.assertIn("ExtortStrong", names)
+        self.assertIn("TFT", names)
+        self.assertIn("Grim", names)
+        self.assertIn("AllD", names)
+        field = build_extort_hard_field(7, 200)
+        kinds = {type(x).__name__ for x in field}
+        self.assertIn("ExtortZD", kinds)
+        self.assertTrue(any(getattr(x, "chi", 0.0) >= 4.5
+                            for x in field if type(x).__name__ == "ExtortZD"))
 
 
 if __name__ == "__main__":

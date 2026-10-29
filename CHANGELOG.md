@@ -7,6 +7,13 @@
 
 ### Added
 
+- **Extort-hard 训练分布**：`ipd/evaluation/extort.py` 连续采样
+  ExtortZD chi 1.5–7.0、GenerousZD 与 TFT/Grim/AllD/AllC anchors；
+  注册为 `extort_hard`。RL-Wide160 上 strong（权重 2/9，6 iter）
+  test_v7 486.44，但 PatternBreaker -58、complex min_norm 0.850；
+  gentle（权重 1/10，3 iter）几乎不动。**No-Go，不注册候选**。
+  报告 `docs/research/extort-hard.md`、`results/rl_v4_20261037/`、
+  `results/rl_v4_20261038/`。
 - **RL-Wide160 全量对手扫描**：158 类 bank（16 reps）、977 个 Protocol
   config（8 reps）、224 个 Axelrod fast（8 reps），并与 RL-Repair /
   RL-Pattern / RL-Wide / Triple-majority 对照。主要薄弱点：
@@ -161,7 +168,7 @@
 ### Changed
 
 - 注册候选从 20 增至 27（新增 `rl-pattern` / `rl-wide` /
-  `rl-wide160`；此前 24 含 4 个 PSRO）；完整测试 **320 OK**。
+  `rl-wide160`；此前 24 含 4 个 PSRO）；完整测试 **322 OK**。
 - Protocol v4 top 5（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
   RL-Wide160）的 dev 已运行；RL-Wide160 综合最均衡，但 test_v7
   provisional 仍低 0.69，暂不 promotion。

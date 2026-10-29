@@ -1,0 +1,240 @@
+{
+  "meta": {
+    "algorithm": "ppo",
+    "seed": 20261053,
+    "dists": [
+      "dev_param",
+      "dev_complex",
+      "dev_ood"
+    ],
+    "train_dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide",
+      "train_v4",
+      "train_complex",
+      "extort_hard"
+    ],
+    "opponent_weights": [],
+    "opponent_pool": [],
+    "opponent_pool_path": null,
+    "opponent_penalty": 0.0,
+    "opponent_fraction": 1.0,
+    "fields_per_dist": 2,
+    "dist_weights": {
+      "original": 1.0,
+      "late": 1.0,
+      "grim30": 1.0,
+      "wide": 2.0,
+      "train_v4": 2.0,
+      "train_complex": 1.0,
+      "extort_hard": 1.0
+    },
+    "n": 128,
+    "val_fields_per_dist": 2,
+    "val_n": 256,
+    "hidden": [
+      160,
+      128
+    ],
+    "lr": 2e-05,
+    "clip": 0.2,
+    "vf_coef": 0.5,
+    "ent_coef": 0.01,
+    "bc_kl_coef": 0.1,
+    "risk_objective": "none",
+    "risk_coef": 0.0,
+    "risk_quantile": 0.2,
+    "dro_eta": 0.5,
+    "dro_quantile": 0.5,
+    "dro_blend": 0.5,
+    "dro_floor": 0.1,
+    "dirichlet_concentration": 0.0,
+    "freeze_policy_trunk": false,
+    "select_metric": "balanced",
+    "save_all_checkpoints": "results/rl_v4_20261038/wide160_extort_gentle_ckpts",
+    "gamma": 1.0,
+    "lam": 0.95,
+    "center_rewards": false,
+    "center_advantages": true,
+    "value_bias": 5.5,
+    "safe": true,
+    "init_weights": "weights/rl_policy_checkpoint_wide160.json",
+    "feature_version": "ipd-neural-features-v1",
+    "best_iteration": 1,
+    "best_val": {
+      "by_dist": {
+        "dev_param": 544.93359375,
+        "dev_complex": 448.30859375,
+        "dev_ood": 526.259765625
+      },
+      "avg": 506.5006510416667,
+      "worst": 448.30859375,
+      "selection": 491.95263671875
+    }
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "val": {
+        "by_dist": {
+          "dev_param": 544.357421875,
+          "dev_complex": 447.796875,
+          "dev_ood": 526.201171875
+        },
+        "avg": 506.1184895833333,
+        "worst": 447.796875,
+        "selection": 491.5380859375
+      },
+      "phase": "init"
+    },
+    {
+      "iteration": 1,
+      "reward_mean": 515.8667534722222,
+      "reward_by_dist": {
+        "original": 536.80859375,
+        "late": 564.50390625,
+        "grim30": 563.54296875,
+        "wide": 554.25390625,
+        "train_v4": 522.69921875,
+        "train_complex": 453.51953125,
+        "extort_hard": 370.51953125
+      },
+      "reward_min": 95,
+      "reward_max": 974,
+      "rollout_s": 13.022194147109985,
+      "train_s": 2.5193727016448975,
+      "lr": 1.5000000000000002e-05,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "extort_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0005216949807147792,
+      "value_loss": 0.08088771343745034,
+      "entropy": 0.10854481886430033,
+      "approx_kl": 0.00025611165719978233,
+      "clip_frac": 0.0019453299502292167,
+      "bc_kl": 0.00025118758698038714,
+      "explained_var": 0.9499052692669283,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 544.93359375,
+          "dev_complex": 448.30859375,
+          "dev_ood": 526.259765625
+        },
+        "avg": 506.5006510416667,
+        "worst": 448.30859375,
+        "selection": 491.95263671875
+      }
+    },
+    {
+      "iteration": 2,
+      "reward_mean": 512.1814236111111,
+      "reward_by_dist": {
+        "original": 545.53125,
+        "late": 529.30859375,
+        "grim30": 558.984375,
+        "wide": 560.265625,
+        "train_v4": 525.1640625,
+        "train_complex": 462.6640625,
+        "extort_hard": 342.28515625
+      },
+      "reward_min": 92,
+      "reward_max": 973,
+      "rollout_s": 9.724252462387085,
+      "train_s": 0.7205755710601807,
+      "lr": 5.000000000000003e-06,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "extort_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": 0.00032621168015637146,
+      "value_loss": 0.0864858547032907,
+      "entropy": 0.11242958010527594,
+      "approx_kl": 0.00037574284221601414,
+      "clip_frac": 0.00227002079191152,
+      "bc_kl": 0.0010955276319973878,
+      "explained_var": 0.9449360247708051,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 545.080078125,
+          "dev_complex": 446.138671875,
+          "dev_ood": 526.279296875
+        },
+        "avg": 505.8326822916667,
+        "worst": 446.138671875,
+        "selection": 490.9091796875
+      }
+    },
+    {
+      "iteration": 3,
+      "reward_mean": 514.2000868055555,
+      "reward_by_dist": {
+        "original": 561.15234375,
+        "late": 555.16015625,
+        "grim30": 553.76953125,
+        "wide": 567.93359375,
+        "train_v4": 522.08203125,
+        "train_complex": 465.72265625,
+        "extort_hard": 311.96484375
+      },
+      "reward_min": 96,
+      "reward_max": 970,
+      "rollout_s": 12.875805377960205,
+      "train_s": 0.6221187114715576,
+      "lr": 0.0,
+      "mixture": {
+        "original": 0.1111111111111111,
+        "late": 0.1111111111111111,
+        "grim30": 0.1111111111111111,
+        "wide": 0.2222222222222222,
+        "train_v4": 0.2222222222222222,
+        "train_complex": 0.1111111111111111,
+        "extort_hard": 0.1111111111111111,
+        "blue_pool": 0.0
+      },
+      "policy_loss": 0.0002666911081303561,
+      "value_loss": 0.08157361549293173,
+      "entropy": 0.11655468679964542,
+      "approx_kl": 3.4285791492870323e-05,
+      "clip_frac": 0.0,
+      "bc_kl": 0.0013779632326673139,
+      "explained_var": 0.9467019184832146,
+      "n_steps": 230400,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 545.572265625,
+          "dev_complex": 445.521484375,
+          "dev_ood": 526.306640625
+        },
+        "avg": 505.8001302083333,
+        "worst": 445.521484375,
+        "selection": 490.73046875
+      }
+    }
+  ]
+}

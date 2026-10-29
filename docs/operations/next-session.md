@@ -24,7 +24,7 @@
 ## 当前状态
 
 - 最近提交：`git log -1`（RL-Wide 128/128 与 net2wider 工具）。
-- 最近完整测试：**320 tests OK**；`python3 -m ipd list-policies` 为
+- 最近完整测试：**322 tests OK**；`python3 -m ipd list-policies` 为
   **27 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
@@ -122,12 +122,13 @@ legacy，不能与新表混用。
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
 2. **按全量扫描结果做定向训练（研究首选）**
-   - 新增 `train_extort_hard`（ExtortZD chi 1.5–7、ConditionalExtort、
-     DelayedExtort、ProbeExploit extort）；
-   - 新增 `train_periodic`（Kamikaze / Periodic / DynamicWindow）；
+   - `extort_hard` 已实现但 **No-Go**（PB/complex 回退）；不要再
+     加大权重，改做显式 ZD 识别 + expert / portfolio；
+   - 仍建议新增 `train_periodic`（Kamikaze / Periodic / DynamicWindow）；
    - 加入 Gap0.45/0.55/0.64、FSM.F1/F5、ProbeBot、Harvest21 到
      hard mining；
-   - 参考 `docs/research/weak-opponents-20261036.md`。
+   - 参考 `docs/research/weak-opponents-20261036.md` 和
+     `docs/research/extort-hard.md`。
 3. **E3 multi-teacher distillation + gating（研究备选）**
    - 教师：RL-Repair / A60 / Adv-RL / SelfPlay / 规则策略；
    - 学生：85 维 MLP / GRU；BC + DAgger + PPO fine-tune；
