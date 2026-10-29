@@ -7,6 +7,13 @@
 
 ### Added
 
+- **RL-Gate（`rl-gate`）**：学习型 match-level gate。前 10 回合由
+  RL-Wide160 打，25 维对手特征 + logistic regression 决定剩余回合
+  用 RL-Wide160 还是 RL-Repair；1052 个 train-tier 反事实样本，
+  val_acc 0.816。阈值 0.5 过度切换（dev_complex -18.8），阈值
+  0.9 退化为 RL-Wide160（test 485.84）。**No-Go，不推荐
+  promotion**；保留为实验候选。报告 `docs/research/rl-gate.md`、
+  `results/meta_20261040/`。
 - **RL-Switch（`rl-switch`）**：窄 meta 模型。默认 RL-Wide160；
   第 6 回合前双方各 D≥2 且对手最新 C 时切换到 RL-Repair。
   dev（seed 27）：dev_param 548.58、dev_complex 454.24、
@@ -176,12 +183,12 @@
 
 ### Changed
 
-- 注册候选从 20 增至 28（新增 `rl-pattern` / `rl-wide` /
-  `rl-wide160` / `rl-switch`；此前 24 含 4 个 PSRO）；完整测试
-  **325 OK**。
+- 注册候选从 20 增至 29（新增 `rl-pattern` / `rl-wide` /
+  `rl-wide160` / `rl-switch` / `rl-gate`；此前 24 含 4 个 PSRO）；
+  完整测试 **327 OK**。
 - Protocol v4 top 6（RL-PPO / RL-Repair / RL-Pattern / RL-Wide /
   RL-Wide160 / RL-Switch）的 dev 已运行；RL-Switch 当前最佳，
-  但 Python-only，暂不 promotion。
+  但 Python-only，暂不 promotion；`rl-gate` 为近中性实验候选。
 - `official` / `blind` 标记为 legacy in-distribution 诊断；新候选比较使用
   Protocol v4 dev/test，旧表不再作为 held-out 证据。
 - `heldout_v2/v3/v4` 与 Protocol v2/v3 的选模流程被 v4 取代；历史结果保留为

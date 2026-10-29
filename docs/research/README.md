@@ -30,6 +30,7 @@
 | 全量对手扫描 | [weak-opponents-20261036.md](weak-opponents-20261036.md) | 158 / 977 / 224 对手 + 参考候选；薄弱点：extortion/ZD、periodic/Kamikaze、Gap/FSM、PB 尾部、noisy/Joss |
 | Extort-hard | [extort-hard.md](extort-hard.md) | 新增 `extort_hard` 训练分布；strong/gentle 均未解决 extort 弱点，PB 回退；**No-Go** |
 | RL-Switch | [rl-switch.md](rl-switch.md) | 窄 meta RL-Wide160→RL-Repair；dev 基本不变，test_v7 488.26/487.51，Protocol suite +0.75；**当前最佳，Python-only，未 promotion** |
+| RL-Gate | [rl-gate.md](rl-gate.md) | 学习型 gate（25 维 logistic，K=10）；阈值 0.5 过度切换，0.9 退化为 RL-Wide160；**No-Go** |
 | E0 | [e0-league.md](e0-league.md) | **PASS**；建立 cross-play / Nash / exploitability / held-out red |
 | E0 plan | [e0-league-plan.md](e0-league-plan.md) | implemented |
 | E1 | [e1-robust-finetune.md](e1-robust-finetune.md) | E1a/E1b No-Go；**E1c Go candidate**（RL-Repair） |

@@ -37,6 +37,7 @@ python3 -m ipd list-policies
 | `rl-wide` | RL-Wide | RL 128/128 | `weights/rl_policy_weights_wide.json` | v4 dev 前列；complex min_norm 0.973；未 promotion |
 | `rl-wide160` | RL-Wide160 | RL 160/128 | `weights/rl_policy_weights_wide160.json` | v4 dev_complex 454.31；complex/ood min_norm 0.997；未 promotion |
 | `rl-switch` | RL-Switch | meta（2 RL） | `weights/rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | **v4 dev/test 最佳（top 6）；Python-only；未 promotion** |
+| `rl-gate` | RL-Gate | meta（learned gate） | 同上 + `weights/meta_gate_wide160_repair.json` | 实验；阈值 0.9 近中性；**No-Go** |
 | `adv-mlp` | Adv-MLP | MLP + 规则 | base 权重 + `configs/adversarial_policy_config*.json` | 只有 Python |
 | `adv-gru` | Adv-GRU | GRU + 规则 | base 权重 + `configs/adversarial_gru_policy_config*.json` | 只有 Python |
 | `adv-rl` | Adv-RL | RL + 规则 | `rl_policy_weights_bc.json` + `configs/adversarial_rl_policy_config*.json` | v3 dev 高；test 第三；red 弱（legacy） |
@@ -54,8 +55,8 @@ python3 -m ipd list-policies
 | `base` / `legacy` | Final/Resp3/Bayes（base+tuned）+ `hybrid` |
 | `classic` | `base` + `harvest45`, `harvest-tuned`, `gap-start` |
 | `suite` | `base` + `harvest45`, `triple-majority` |
-| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `rl-wide160`, `rl-switch`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
-| `all` | 全部 28 个注册候选 |
+| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `rl-wide160`, `rl-switch`, `rl-gate`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
+| `all` | 全部 29 个注册候选 |
 
 ## 3. 常用别名
 
@@ -70,6 +71,7 @@ python3 -m ipd list-policies
 | `wide-rl`, `rl-128` | `rl-wide` |
 | `wide160`, `rl-160` | `rl-wide160` |
 | `switch`, `meta-switch` | `rl-switch` |
+| `gate`, `meta-gate` | `rl-gate` |
 | `adv`, `adversarial`, `advmlp` | `adv-mlp` |
 | `advgru` / `advrl` | `adv-gru` / `adv-rl` |
 | `self-play`, `selfplay-gru`, `sp` | `selfplay` |

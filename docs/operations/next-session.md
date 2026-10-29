@@ -24,8 +24,8 @@
 ## 当前状态
 
 - 最近提交：`git log -1`（RL-Switch 窄 meta 与全量验证）。
-- 最近完整测试：**325 tests OK**；`python3 -m ipd list-policies` 为
-  **28 个注册候选**。
+- 最近完整测试：**327 tests OK**；`python3 -m ipd list-policies` 为
+  **29 个注册候选**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **RL-Switch（`rl-switch`）是 v4 dev/test 最佳（top 6）**，但未
@@ -60,6 +60,9 @@
 | RL-Pattern | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | **548.45** | 583.07 | 447.64 | 582.22 | 519.46 | 485.43 |
 | RL-Repair | `rl-repair` | `weights/rl_policy_weights_repair.json` | 547.96 | 582.76 | 434.28 | 582.46 | 515.19 | **486.31** |
 | RL-PPO | `rl` | `weights/rl_policy_weights.json` | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 477.26 |
+
+`rl-gate` 是学习型上层 gate 实验（阈值 0.9 近中性，test 485.84）；
+**No-Go**，不进入提交推荐，详见 `docs/research/rl-gate.md`。
 
 下表是 legacy v3 baseline（299 人 / 20 / 40 fields），只作历史对照：
 

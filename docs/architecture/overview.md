@@ -332,4 +332,4 @@ python3 -m ipd test
 # 等价：python3 -m unittest discover -s tests -t . -v
 ```
 
-最近完整测试：**325 tests OK**。新模块仍应先写测试，再训练/评估。
+最近完整测试：**327 tests OK**。新模块仍应先写测试，再训练/评估。

@@ -12,8 +12,11 @@
 > - **前最佳 / fallback：RL-Wide160（`rl-wide160`）、RL-Wide
 >   （`rl-wide`）、RL-Pattern（`rl-pattern`）与 RL-Repair
 >   （`rl-repair`）**；均未 promotion。
-> - 最近完整测试：**325 tests OK**（本轮全量运行）。
->   `python3 -m ipd list-policies`：**28 个注册候选**。
+> - 最近完整测试：**327 tests OK**（本轮全量运行）。
+>   `python3 -m ipd list-policies`：**29 个注册候选**。
+> - `rl-gate` 是学习型上层 gate 实验：阈值 0.9 基本退化为
+>   RL-Wide160（test 485.84），阈值 0.5 会过度切换；**No-Go**，
+>   仅保留为实验候选。
 > - **PSRO 已引入**：`ipd/training/psro.py`（blue-vs-red maximin +
 >   PPO best-response oracle）；`psro`（meta-policy）和 `psro-br`
 >   （最后一轮 best response）为实验候选，**未 promotion**。
@@ -111,6 +114,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 需要 160/128 单模型部署 | **RL-Wide160** | dev_complex 454.31、complex min_norm 0.997；test 485.62 |
 | 需要 128/128 部署 | **RL-Wide** | dev_complex 452.79、complex min_norm 0.973；test 485.50 |
 | 需要 64/32 部署 / 更小模型 | **RL-Pattern** | dev_param 548.45；test 485.43 |
+| meta 学习研究 | **RL-Gate** | 学习型 gate 近中性；**No-Go**，不用于提交 |
 | 保守提交，保留 proven fallback | **RL-Repair** | v4 dev_param 547.96；test_v7 provisional 486.31 第一 |
 | 保守提交，不替换主权重 | **RL-PPO（从零 + hard）** | 当前主权重；v3 legacy dev 524.37 |
 | 需要第二候选 / fallback | **RL-PPO-Hard60（A60）** | v3 legacy test 476.54；min_norm 0.9989 |
@@ -468,6 +472,18 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 - 限制：**Python-only**，C++ 双权重 + 开关逻辑尚未移植；不能直接
   promotion。
 - 报告 `docs/research/rl-switch.md`、`results/meta_20261039/`。
+
+### RL-Gate（2026-10-29；No-Go）
+
+- 学习型 match-level gate：前 10 回合 RL-Wide160，25 维对手特征 +
+  logistic regression 选择剩余回合 RL-Wide160 / RL-Repair。
+- 1052 个 train-tier 反事实样本，train_acc 0.810、val_acc 0.816。
+- 阈值 0.5：dev_param 548.76，但 dev_complex 435.55、dev_ood
+  516.07、test 485.67（过度切换）。
+- 阈值 0.9：dev_param 548.30、dev_complex 454.63、dev_ood 521.34、
+  test 485.84；基本退化为 RL-Wide160，远低于 RL-Switch。
+- 判定：**No-Go**，保留为实验候选，不进入提交推荐。报告
+  `docs/research/rl-gate.md`、`results/meta_20261040/`。
 
 ### 输入特征 v2（2026-10-29；No-Go）
 
@@ -923,6 +939,9 @@ mine/theirs = 到此日之前的动作
 18. **RL-Switch 只有 Python 版**：它组合两份权重和早期开关逻辑；
     C++ 需要同时嵌入 160/128 与 64/32 两个 MLP，并复刻开关条件。
     未完成移植前不能作为 C++ 提交；test 增益也不能替代 red 证据。
+19. **RL-Gate 不是提交候选**：学习型 gate 阈值 0.5 过度切换、
+    0.9 退化为 RL-Wide160；分类准确率不等于得分最优。不要用
+    `rl-gate` 替换 `rl-switch`，除非重新设计 cost-sensitive gate。
 
 ---
 

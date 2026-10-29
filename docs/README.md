@@ -26,8 +26,8 @@
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
 | v4 dev/test 最佳（top 6） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python-only） |
 | 前最佳 / fallback | `rl-wide160` / `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
-| 测试 | **325 tests OK**（本轮全量运行） |
-| 注册候选 | 28 个（`python3 -m ipd list-policies`） |
+| 测试 | **327 tests OK**（本轮全量运行） |
+| 注册候选 | 29 个（`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
@@ -64,7 +64,7 @@
 | 文档 | 内容 |
 |---|---|
 | [reference/cli.md](reference/cli.md) | `python3 -m ipd <command>` 命令与常用参数 |
-| [reference/candidates.md](reference/candidates.md) | 28 个候选、别名、集合、权重、状态 |
+| [reference/candidates.md](reference/candidates.md) | 29 个候选、别名、集合、权重、状态 |
 | [reference/configuration.md](reference/configuration.md) | `configs/`、`weights/`、`results/`、路径与配置格式 |
 | [reference/metrics.md](reference/metrics.md) | 四分布、blind、suite、league、CVaR、min_norm 的定义与口径 |
 | [reference/protocol-v4.md](reference/protocol-v4.md) | Protocol v4 的 train/dev/test 划分、manifest、usage ledger |

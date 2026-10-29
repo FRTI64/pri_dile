@@ -20,6 +20,7 @@ DAgger：策略直接以 100 天总分（每轮收益之和）为目标，通过
 | 候选 | 注册名 | 权重 | official 20 | blind 20 | heldout v2 | 备注 |
 |---|---|---|---:|---:|---:|---|
 | **RL-Switch** | `rl-switch` | `rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | - | - | - | **窄 meta；v4 dev/test 最佳；Python-only；未 promotion** |
+| **RL-Gate** | `rl-gate` | 同上 + `weights/meta_gate_wide160_repair.json` | - | - | - | 学习型 gate；近中性；**No-Go** |
 | **RL-Wide160** | `rl-wide160` | `weights/rl_policy_weights_wide160.json` | - | - | - | 160/128；v4 dev_complex 454.31；未 promotion |
 | **RL-Wide** | `rl-wide` | `weights/rl_policy_weights_wide.json` | - | - | - | 128/128；v4 dev 前列；未 promotion |
 | **RL-Pattern** | `rl-pattern` | `weights/rl_policy_weights_pattern.json` | - | - | - | 64/32；v4 dev 前列；未 promotion |
@@ -39,6 +40,14 @@ RL-Repair 554.76 / 564.61。下方 5.1/5.2 表是 10-field 盲测的早期基线
 RL-Repair。dev 基本不变，test_v7 provisional 488.26/487.51，
 Protocol catalog suite +0.75。Python-only，C++ 双权重移植尚未完成。
 详见 `docs/research/rl-switch.md`；**未 promotion**。
+
+### RL-Gate（2026-10-29，No-Go）
+
+学习型 match-level gate：前 10 回合 RL-Wide160，25 维对手特征 +
+logistic regression 决定剩余回合用 RL-Wide160 或 RL-Repair。
+1052 个反事实样本，val_acc 0.816；阈值 0.5 过度切换
+（dev_complex -18.8），阈值 0.9 退化为 RL-Wide160（test 485.84）。
+保留为实验候选，不推荐 promotion。详见 `docs/research/rl-gate.md`。
 
 ### 输入特征 v2（2026-10-29，No-Go）
 

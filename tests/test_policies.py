@@ -97,6 +97,8 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(canonical_name("rl-160"), "rl-wide160")
         self.assertEqual(canonical_name("switch"), "rl-switch")
         self.assertEqual(canonical_name("meta-switch"), "rl-switch")
+        self.assertEqual(canonical_name("gate"), "rl-gate")
+        self.assertEqual(canonical_name("meta-gate"), "rl-gate")
         self.assertEqual(legacy_arch_names("rl"), ["rl"])
         with self.assertRaises(ValueError):
             canonical_name("does-not-exist")
