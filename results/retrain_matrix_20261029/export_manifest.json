@@ -1,0 +1,30 @@
+{
+  "rl_pattern_rm": {
+    "checkpoint": "/home/frti64/pri_dile/results/retrain_matrix_20261029/pattern_ckpts/iter_006.json",
+    "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_policy_weights_pattern_rm.json",
+    "sha256": "c454bd739bb8f5e08f1903c6caf3ca43b26dafc0369026f90049e94d3e6478e4",
+    "format": "ipd-neural-policy-v1",
+    "hidden": null
+  },
+  "rl_wide_rm": {
+    "checkpoint": "/home/frti64/pri_dile/results/retrain_matrix_20261029/wide_balance_ckpts/iter_004.json",
+    "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_policy_weights_wide_rm.json",
+    "sha256": "c2891dc529f5e495ad633e68ceebbf58bf87552436030fb6bfc8fd941ab499d3",
+    "format": "ipd-neural-policy-v1",
+    "hidden": null
+  },
+  "rl_wide160_rm": {
+    "checkpoint": "/home/frti64/pri_dile/results/retrain_matrix_20261029/wide160_ckpts/iter_001.json",
+    "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_policy_weights_wide160_rm.json",
+    "sha256": "eff57924c5bb20797862821afdd6f717993c3341247101fc23740dbeeb1c3864",
+    "format": "ipd-neural-policy-v1",
+    "hidden": null
+  },
+  "rl_wide160_rm_s2": {
+    "checkpoint": "/home/frti64/pri_dile/results/retrain_matrix_20261029/wide160_seed2_ckpts/iter_001.json",
+    "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_policy_weights_wide160_rm_s2.json",
+    "sha256": "1c35dfd6f9afd2582b9f6c62e0dd98c3d0b54bd9a2ef6813e0895a27ad910996",
+    "format": "ipd-neural-policy-v1",
+    "hidden": null
+  }
+}

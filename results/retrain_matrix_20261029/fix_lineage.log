@@ -1,0 +1,65 @@
+===== 2026-10-30T11:58:08+08:00 :: python3 -m ipd train rl --device auto --hidden 128 128 --iterations 8 --fields-per-dist 2 --n 128 --workers 20 --seed 20261035 --init-weights results/retrain_matrix_20261029/wide128_ac.json --train-dists original,late,grim30,wide,train_v4 --dist-weights 1,1,1,2,2 --dists dev_param,dev_complex,dev_ood --val-fields-per-dist 2 --val-n 256 --val-every 2 --select-metric balanced --save-all-checkpoints results/retrain_matrix_20261029/fix_wide128_ckpts --bc-kl-coef 0.1 --lr 5e-5 --ent-coef 0.01 --target-kl 0.02 --out results/retrain_matrix_20261029/fix_wide128_weights.json --checkpoint-out results/retrain_matrix_20261029/fix_wide128_ac.json --history-out results/retrain_matrix_20261029/fix_wide128_history.json
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,train_v4 val_dists=dev_param,dev_complex,dev_ood fields/iter/dist=2 n=128 iterations=8 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from results/retrain_matrix_20261029/wide128_ac.json
+using reference-policy KL penalty (coef=0.1)
+initial val avg=510.55 worst=452.94 dev_param=550.48 dev_complex=452.94 dev_ood=528.23
+iter   1 reward= 554.87 pi=-0.0001 v=0.0643 H=0.0764 kl=0.0001 bckl=0.0002 clip=0.001 ev=+0.960 (11.1s+2.9s)
+iter   2 reward= 545.90 pi=-0.0002 v=0.0593 H=0.0798 kl=0.0002 bckl=0.0003 clip=0.001 ev=+0.962 (7.8s+0.5s)
+      train original=558.49 late=557.83 grim30=559.18 wide=549.64 train_v4=523.25 | val avg=510.02 worst=451.75 dev_param=550.14 dev_complex=451.75 dev_ood=528.18
+iter   3 reward= 553.45 pi=-0.0002 v=0.0664 H=0.0804 kl=0.0001 bckl=0.0005 clip=0.001 ev=+0.958 (7.8s+0.4s)
+iter   4 reward= 553.19 pi=-0.0002 v=0.0605 H=0.0766 kl=0.0002 bckl=0.0005 clip=0.001 ev=+0.962 (11.0s+0.5s)
+      train original=542.86 late=564.65 grim30=542.64 wide=570.10 train_v4=541.00 | val avg=510.36 worst=452.33 dev_param=549.78 dev_complex=452.33 dev_ood=528.96
+iter   5 reward= 544.99 pi=-0.0002 v=0.0601 H=0.0870 kl=0.0001 bckl=0.0007 clip=0.000 ev=+0.962 (7.9s+0.4s)
+iter   6 reward= 550.62 pi=-0.0001 v=0.0683 H=0.0727 kl=0.0001 bckl=0.0007 clip=0.000 ev=+0.958 (11.0s+0.4s)
+      train original=552.07 late=551.97 grim30=560.08 wide=556.47 train_v4=538.64 | val avg=510.31 worst=452.66 dev_param=549.70 dev_complex=452.66 dev_ood=528.58
+iter   7 reward= 549.68 pi=-0.0000 v=0.0621 H=0.0816 kl=0.0001 bckl=0.0007 clip=0.000 ev=+0.960 (8.3s+0.4s)
+  new best at iter 8: avg=510.50 worst=453.36
+iter   8 reward= 548.97 pi=-0.0001 v=0.0642 H=0.0754 kl=0.0000 bckl=0.0006 clip=0.000 ev=+0.959 (8.6s+0.4s)
+      train original=538.77 late=546.72 grim30=554.00 wide=566.90 train_v4=534.76 | val avg=510.50 worst=453.36 dev_param=549.56 dev_complex=453.36 dev_ood=528.58
+  saved checkpoint (best iter 8, val avg=510.498046875)
+best iteration 8 val={'by_dist': {'dev_param': 549.556640625, 'dev_complex': 453.35546875, 'dev_ood': 528.58203125}, 'avg': 510.498046875, 'worst': 453.35546875, 'selection': 496.21240234375}
+written results/retrain_matrix_20261029/fix_wide128_ac.json
+written results/retrain_matrix_20261029/fix_wide128_weights.json (890532 bytes)
+written results/retrain_matrix_20261029/fix_wide128_history.json
+vs AllC-until-90: C=92 D=8 score=548
+===== 2026-10-30T11:59:47+08:00 :: python3 -m ipd train rl --device auto --hidden 128 128 --iterations 4 --fields-per-dist 2 --n 128 --workers 20 --seed 20261036 --init-weights results/retrain_matrix_20261029/fix_wide128_ckpts/iter_004.json --train-dists original,late,grim30,wide,train_v4,train_pattern_breaker --dist-weights 1,1,1,2,2,1 --dists dev_param,dev_complex,dev_ood --val-fields-per-dist 2 --val-n 256 --val-every 2 --select-metric balanced --save-all-checkpoints results/retrain_matrix_20261029/fix_wide_balance_ckpts --bc-kl-coef 0.1 --lr 3e-5 --ent-coef 0.01 --target-kl 0.02 --out results/retrain_matrix_20261029/fix_wide_balance_weights.json --checkpoint-out results/retrain_matrix_20261029/fix_wide_balance_ac.json --history-out results/retrain_matrix_20261029/fix_wide_balance_history.json
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,train_v4,train_pattern_breaker val_dists=dev_param,dev_complex,dev_ood fields/iter/dist=2 n=128 iterations=4 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from results/retrain_matrix_20261029/fix_wide128_ckpts/iter_004.json
+using reference-policy KL penalty (coef=0.1)
+initial val avg=499.35 worst=433.77 dev_param=540.69 dev_complex=433.77 dev_ood=523.58
+iter   1 reward= 539.54 pi=-0.0007 v=0.0919 H=0.0953 kl=0.0004 bckl=0.0004 clip=0.004 ev=+0.944 (11.9s+2.3s)
+  new best at iter 2: avg=503.89 worst=445.49
+iter   2 reward= 549.43 pi=-0.0008 v=0.0826 H=0.0928 kl=0.0004 bckl=0.0020 clip=0.003 ev=+0.948 (11.7s+0.4s)
+      train original=550.96 late=554.96 grim30=559.32 wide=568.94 train_v4=530.94 train_pattern_breaker=530.43 | val avg=503.89 worst=445.49 dev_param=541.18 dev_complex=445.49 dev_ood=525.01
+iter   3 reward= 555.78 pi=-0.0008 v=0.0846 H=0.0881 kl=0.0004 bckl=0.0033 clip=0.003 ev=+0.948 (11.6s+0.4s)
+iter   4 reward= 550.62 pi=-0.0002 v=0.0815 H=0.0846 kl=0.0001 bckl=0.0042 clip=0.000 ev=+0.950 (8.5s+0.4s)
+      train original=561.58 late=544.06 grim30=552.39 wide=567.85 train_v4=525.85 train_pattern_breaker=559.50 | val avg=503.25 worst=442.91 dev_param=541.23 dev_complex=442.91 dev_ood=525.61
+  saved checkpoint (best iter 2, val avg=503.8932291666667)
+best iteration 2 val={'by_dist': {'dev_param': 541.1796875, 'dev_complex': 445.48828125, 'dev_ood': 525.01171875}, 'avg': 503.8932291666667, 'worst': 445.48828125, 'selection': 489.2919921875}
+written results/retrain_matrix_20261029/fix_wide_balance_ac.json
+written results/retrain_matrix_20261029/fix_wide_balance_weights.json (890749 bytes)
+written results/retrain_matrix_20261029/fix_wide_balance_history.json
+vs AllC-until-90: C=92 D=8 score=548
+===== 2026-10-30T12:00:48+08:00 :: python3 -m ipd train expand --input results/retrain_matrix_20261029/fix_wide_balance_ckpts/iter_004.json --hidden 160 128 --out results/retrain_matrix_20261029/fix_wide160_ac.json --seed 20261039
+wrote results/retrain_matrix_20261029/fix_wide160_ac.json
+===== 2026-10-30T12:00:49+08:00 :: python3 -m ipd train rl --device auto --hidden 160 128 --iterations 2 --fields-per-dist 2 --n 128 --workers 20 --seed 20261040 --init-weights results/retrain_matrix_20261029/fix_wide160_ac.json --train-dists original,late,grim30,wide,train_v4,train_pattern_breaker --dist-weights 1,1,1,2,2,1 --dists dev_param,dev_complex,dev_ood --val-fields-per-dist 2 --val-n 256 --val-every 1 --select-metric balanced --save-all-checkpoints results/retrain_matrix_20261029/fix_wide160_ckpts --bc-kl-coef 0.1 --lr 3e-5 --ent-coef 0.01 --target-kl 0.02 --out results/retrain_matrix_20261029/fix_wide160_weights.json --checkpoint-out results/retrain_matrix_20261029/fix_wide160_ac_best.json --history-out results/retrain_matrix_20261029/fix_wide160_history.json
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,train_v4,train_pattern_breaker val_dists=dev_param,dev_complex,dev_ood fields/iter/dist=2 n=128 iterations=2 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from results/retrain_matrix_20261029/fix_wide160_ac.json
+using reference-policy KL penalty (coef=0.1)
+initial val avg=507.75 worst=444.56 dev_param=561.62 dev_complex=444.56 dev_ood=517.08
+  new best at iter 1: avg=507.99 worst=444.60
+iter   1 reward= 554.74 pi=-0.0007 v=0.0847 H=0.0879 kl=0.0004 bckl=0.0004 clip=0.004 ev=+0.949 (14.2s+2.4s)
+      train original=588.93 late=551.29 grim30=548.95 wide=575.25 train_v4=521.71 train_pattern_breaker=554.83 | val avg=507.99 worst=444.60 dev_param=560.72 dev_complex=444.60 dev_ood=518.66
+  new best at iter 2: avg=508.52 worst=445.37
+iter   2 reward= 553.18 pi=-0.0005 v=0.0831 H=0.0863 kl=0.0003 bckl=0.0012 clip=0.002 ev=+0.950 (13.3s+0.5s)
+      train original=558.71 late=559.76 grim30=557.36 wide=557.59 train_v4=531.39 train_pattern_breaker=571.67 | val avg=508.52 worst=445.37 dev_param=560.36 dev_complex=445.37 dev_ood=519.84
+  saved checkpoint (best iter 2, val avg=508.5240885416667)
+best iteration 2 val={'by_dist': {'dev_param': 560.36328125, 'dev_complex': 445.37109375, 'dev_ood': 519.837890625}, 'avg': 508.5240885416667, 'worst': 445.37109375, 'selection': 492.73583984375}
+written results/retrain_matrix_20261029/fix_wide160_ac_best.json
+written results/retrain_matrix_20261029/fix_wide160_weights.json (1111930 bytes)
+written results/retrain_matrix_20261029/fix_wide160_history.json
+vs AllC-until-90: C=92 D=8 score=548
+FIX_LINEAGE_DONE 2026-10-30T12:01:36+08:00

@@ -1,0 +1,92 @@
+workers 20 (requested=20, cpu=24, ram_available=23.0GB, chunks=2+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=8
+progress fields 0/150 tasks 1/300 tier=dev_param candidate=Triple-v4 elapsed=30.1s eta=8992.8s
+progress fields 1/150 tasks 11/300 tier=dev_param candidate=GRU-DAgger elapsed=46.5s eta=1220.6s
+progress fields 10/150 tasks 21/300 tier=dev_param candidate=Triple-v4 elapsed=59.4s eta=789.7s
+progress fields 10/150 tasks 26/300 tier=dev_param candidate=Triple-v4 elapsed=75.7s eta=797.8s
+progress fields 16/150 tasks 36/300 tier=dev_param candidate=GRU-DAgger elapsed=91.5s eta=671.2s
+progress fields 20/150 tasks 43/300 tier=dev_family candidate=Triple-v4 elapsed=100.3s eta=599.5s
+progress fields 20/150 tasks 45/300 tier=dev_param candidate=Triple-v4 elapsed=105.3s eta=596.8s
+progress fields 23/150 tasks 53/300 tier=dev_family candidate=Triple-v4 elapsed=110.8s eta=516.3s
+progress fields 23/150 tasks 56/300 tier=dev_family candidate=Triple-v4 elapsed=115.8s eta=504.6s
+progress fields 24/150 tasks 58/300 tier=dev_param candidate=GRU-DAgger elapsed=121.6s eta=507.4s
+progress fields 28/150 tasks 67/300 tier=dev_family candidate=Triple-v4 elapsed=126.7s eta=440.5s
+progress fields 29/150 tasks 73/300 tier=dev_family candidate=Triple-v4 elapsed=132.4s eta=411.9s
+progress fields 31/150 tasks 77/300 tier=dev_family candidate=GRU-DAgger elapsed=138.2s eta=400.4s
+progress fields 36/150 tasks 84/300 tier=dev_family candidate=Triple-v4 elapsed=143.4s eta=368.7s
+progress fields 37/150 tasks 89/300 tier=dev_family candidate=Triple-v4 elapsed=148.6s eta=352.3s
+progress fields 39/150 tasks 93/300 tier=dev_family candidate=Triple-v4 elapsed=154.2s eta=343.2s
+progress fields 43/150 tasks 99/300 tier=dev_family candidate=Triple-v4 elapsed=159.4s eta=323.7s
+progress fields 46/150 tasks 104/300 tier=dev_family candidate=GRU-DAgger elapsed=164.5s eta=310.1s
+progress fields 49/150 tasks 109/300 tier=dev_family candidate=GRU-DAgger elapsed=170.8s eta=299.3s
+progress fields 53/150 tasks 113/300 tier=dev_family candidate=GRU-DAgger elapsed=176.8s eta=292.6s
+progress fields 55/150 tasks 115/300 tier=dev_family candidate=GRU-DAgger elapsed=182.0s eta=292.8s
+progress fields 57/150 tasks 117/300 tier=dev_family candidate=GRU-DAgger elapsed=187.9s eta=293.9s
+progress fields 60/150 tasks 121/300 tier=dev_family candidate=GRU-DAgger elapsed=193.3s eta=285.9s
+progress fields 60/150 tasks 124/300 tier=dev_complex candidate=Triple-v4 elapsed=199.6s eta=283.3s
+progress fields 61/150 tasks 126/300 tier=dev_complex candidate=GRU-DAgger elapsed=206.2s eta=284.8s
+progress fields 62/150 tasks 129/300 tier=dev_complex candidate=Triple-v4 elapsed=211.3s eta=280.0s
+progress fields 65/150 tasks 133/300 tier=dev_complex candidate=GRU-DAgger elapsed=216.4s eta=271.7s
+progress fields 66/150 tasks 135/300 tier=dev_complex candidate=GRU-DAgger elapsed=222.0s eta=271.4s
+progress fields 67/150 tasks 138/300 tier=dev_complex candidate=Triple-v4 elapsed=227.4s eta=266.9s
+progress fields 69/150 tasks 141/300 tier=dev_complex candidate=GRU-DAgger elapsed=234.7s eta=264.6s
+progress fields 70/150 tasks 144/300 tier=dev_complex candidate=Triple-v4 elapsed=239.7s eta=259.7s
+progress fields 72/150 tasks 148/300 tier=dev_complex candidate=Triple-v4 elapsed=246.8s eta=253.5s
+progress fields 74/150 tasks 151/300 tier=dev_complex candidate=GRU-DAgger elapsed=252.4s eta=249.1s
+progress fields 75/150 tasks 153/300 tier=dev_complex candidate=GRU-DAgger elapsed=257.4s eta=247.3s
+progress fields 77/150 tasks 157/300 tier=dev_complex candidate=Triple-v4 elapsed=263.4s eta=239.9s
+progress fields 78/150 tasks 159/300 tier=dev_complex candidate=GRU-DAgger elapsed=269.4s eta=238.9s
+progress fields 80/150 tasks 163/300 tier=dev_complex candidate=GRU-DAgger elapsed=276.5s eta=232.4s
+progress fields 81/150 tasks 165/300 tier=dev_complex candidate=GRU-DAgger elapsed=282.0s eta=230.7s
+progress fields 83/150 tasks 169/300 tier=dev_complex candidate=GRU-DAgger elapsed=287.8s eta=223.1s
+progress fields 84/150 tasks 172/300 tier=dev_complex candidate=Triple-v4 elapsed=293.0s eta=218.0s
+progress fields 85/150 tasks 174/300 tier=dev_complex candidate=Triple-v4 elapsed=298.7s eta=216.3s
+progress fields 87/150 tasks 178/300 tier=dev_complex candidate=GRU-DAgger elapsed=303.9s eta=208.3s
+progress fields 88/150 tasks 180/300 tier=dev_axelrod candidate=Triple-v4 elapsed=309.9s eta=206.6s
+progress fields 90/150 tasks 184/300 tier=dev_complex candidate=GRU-DAgger elapsed=316.4s eta=199.5s
+progress fields 90/150 tasks 186/300 tier=dev_axelrod candidate=Triple-v4 elapsed=323.4s eta=198.2s
+progress fields 92/150 tasks 189/300 tier=dev_axelrod candidate=Triple-v4 elapsed=329.0s eta=193.2s
+progress fields 94/150 tasks 193/300 tier=dev_axelrod candidate=Triple-v4 elapsed=334.6s eta=185.5s
+progress fields 96/150 tasks 195/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=341.8s eta=184.1s
+progress fields 97/150 tasks 199/300 tier=dev_axelrod candidate=Triple-v4 elapsed=348.7s eta=177.0s
+progress fields 100/150 tasks 203/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=357.9s eta=171.0s
+progress fields 101/150 tasks 207/300 tier=dev_axelrod candidate=Triple-v4 elapsed=364.2s eta=163.6s
+progress fields 102/150 tasks 209/300 tier=dev_axelrod candidate=Triple-v4 elapsed=370.4s eta=161.3s
+progress fields 104/150 tasks 213/300 tier=dev_axelrod candidate=Triple-v4 elapsed=376.1s eta=153.6s
+progress fields 105/150 tasks 216/300 tier=dev_axelrod candidate=Triple-v4 elapsed=382.6s eta=148.8s
+progress fields 107/150 tasks 219/300 tier=dev_axelrod candidate=Triple-v4 elapsed=388.7s eta=143.8s
+progress fields 109/150 tasks 221/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=394.3s eta=141.0s
+progress fields 110/150 tasks 225/300 tier=dev_axelrod candidate=Triple-v4 elapsed=402.5s eta=134.2s
+progress fields 112/150 tasks 228/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=408.8s eta=129.1s
+progress fields 113/150 tasks 231/300 tier=dev_axelrod candidate=Triple-v4 elapsed=414.5s eta=123.8s
+progress fields 115/150 tasks 234/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=421.8s eta=119.0s
+progress fields 118/150 tasks 240/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=429.7s eta=107.4s
+progress fields 119/150 tasks 242/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=436.0s eta=104.5s
+progress fields 121/150 tasks 246/300 tier=dev_axelrod candidate=GRU-DAgger elapsed=441.4s eta=96.9s
+progress fields 123/150 tasks 249/300 tier=dev_ood candidate=GRU-DAgger elapsed=449.7s eta=92.1s
+progress fields 125/150 tasks 253/300 tier=dev_ood candidate=GRU-DAgger elapsed=455.2s eta=84.6s
+progress fields 126/150 tasks 256/300 tier=dev_ood candidate=GRU-DAgger elapsed=460.8s eta=79.2s
+progress fields 127/150 tasks 259/300 tier=dev_ood candidate=Triple-v4 elapsed=467.3s eta=74.0s
+progress fields 129/150 tasks 263/300 tier=dev_ood candidate=GRU-DAgger elapsed=472.8s eta=66.5s
+progress fields 131/150 tasks 267/300 tier=dev_ood candidate=Triple-v4 elapsed=482.6s eta=59.6s
+progress fields 133/150 tasks 270/300 tier=dev_ood candidate=GRU-DAgger elapsed=487.9s eta=54.2s
+progress fields 134/150 tasks 273/300 tier=dev_ood candidate=Triple-v4 elapsed=495.0s eta=49.0s
+progress fields 136/150 tasks 276/300 tier=dev_ood candidate=GRU-DAgger elapsed=501.2s eta=43.6s
+progress fields 139/150 tasks 281/300 tier=dev_ood candidate=GRU-DAgger elapsed=509.1s eta=34.4s
+progress fields 140/150 tasks 284/300 tier=dev_ood candidate=GRU-DAgger elapsed=514.5s eta=29.0s
+progress fields 142/150 tasks 288/300 tier=dev_ood candidate=GRU-DAgger elapsed=519.7s eta=21.7s
+progress fields 143/150 tasks 290/300 tier=dev_ood candidate=Triple-v4 elapsed=526.8s eta=18.2s
+progress fields 147/150 tasks 297/300 tier=dev_ood candidate=GRU-DAgger elapsed=536.9s eta=5.4s
+progress fields 150/150 tasks 300/300 tier=dev_ood candidate=GRU-DAgger elapsed=543.0s eta=0.0s
+
+Protocol v4 evaluation (30 fields, n=2048, workers=20)
+  RL-PPO               dev_param=541.17  dev_family=582.55  dev_complex=439.86  dev_axelrod=579.20  dev_ood=513.87
+  RL-Repair            dev_param=547.99  dev_family=582.78  dev_complex=434.06  dev_axelrod=583.39  dev_ood=515.33
+  RL-Pattern           dev_param=548.75  dev_family=583.09  dev_complex=447.56  dev_axelrod=584.02  dev_ood=519.71
+  RL-Wide              dev_param=548.65  dev_family=583.09  dev_complex=452.47  dev_axelrod=584.28  dev_ood=521.17
+  RL-Wide160           dev_param=548.55  dev_family=583.08  dev_complex=454.41  dev_axelrod=584.50  dev_ood=521.79
+  RL-Switch            dev_param=548.97  dev_family=582.91  dev_complex=454.24  dev_axelrod=584.66  dev_ood=521.57
+  GRU-DAgger           dev_param=549.00  dev_family=582.93  dev_complex=454.93  dev_axelrod=584.33  dev_ood=521.96
+  Triple-v4            dev_param=538.58  dev_family=583.07  dev_complex=447.08  dev_axelrod=568.55  dev_ood=514.14
+
+written results/retrain_matrix_20261029/baseline_dev.json

@@ -1,0 +1,593 @@
+{
+  "protocol": "protocol-v4",
+  "wrapper": "results/retrain_matrix_20261029/eval_weights.py",
+  "created": "2026-10-30T12:27:36",
+  "seconds": 53.39,
+  "seed": 20261027,
+  "fields": 5,
+  "n": 1024,
+  "rounds": 100,
+  "tiers": [
+    "dev_param",
+    "dev_complex",
+    "dev_axelrod"
+  ],
+  "seeds": [
+    20261027,
+    20268946,
+    20276865,
+    20284784,
+    20292703
+  ],
+  "no_consume": true,
+  "selection_eligible": false,
+  "test_consumption_locked": true,
+  "baseline": "RL-PPO",
+  "candidates": [
+    {
+      "kind": "rl",
+      "name": "RL-PPO",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-wide160",
+      "name": "Fix4-iter1",
+      "params": {
+        "mode": "sample",
+        "weights": "/home/frti64/pri_dile/results/retrain_matrix_20261029/fix4_pb_ckpts/iter_001.json"
+      }
+    },
+    {
+      "kind": "rl-wide160",
+      "name": "Fix4-iter2",
+      "params": {
+        "mode": "sample",
+        "weights": "/home/frti64/pri_dile/results/retrain_matrix_20261029/fix4_pb_ckpts/iter_002.json"
+      }
+    },
+    {
+      "kind": "rl-wide160",
+      "name": "Fix4-iter3",
+      "params": {
+        "mode": "sample",
+        "weights": "/home/frti64/pri_dile/results/retrain_matrix_20261029/fix4_pb_ckpts/iter_003.json"
+      }
+    }
+  ],
+  "results": {
+    "RL-PPO": {
+      "dev_param": {
+        "fields": 5,
+        "mean": 537.5404296875,
+        "min": 534.0166015625,
+        "p05": 534.629296875,
+        "max": 539.9501953125,
+        "std": 2.094146108024206,
+        "worst_family": 326.5886524822695,
+        "min_norm": 1.0,
+        "families": {
+          "AxelrodMix": 596.62660944206,
+          "adaptive": 554.3424317617867,
+          "anchor": 448.8122448979592,
+          "axelrod": 550.2123287671233,
+          "axelrod_extra": 649.5574468085107,
+          "defect": 680.8098360655738,
+          "extort": 471.4972972972973,
+          "forgiving": 595.0,
+          "late": 326.5886524822695,
+          "nice": 599.6702702702703,
+          "noisy": 445.21844660194176,
+          "punitive": 604.0,
+          "random": 643.7206896551725,
+          "temporal": 505.2704545454545,
+          "wild": 512.344512195122
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0,
+          "adaptive": 1.0,
+          "anchor": 1.0,
+          "axelrod": 1.0,
+          "axelrod_extra": 1.0,
+          "defect": 1.0,
+          "extort": 1.0,
+          "forgiving": 1.0,
+          "late": 1.0,
+          "nice": 1.0,
+          "noisy": 1.0,
+          "punitive": 1.0,
+          "random": 1.0,
+          "temporal": 1.0,
+          "wild": 1.0
+        },
+        "values": [
+          537.080078125,
+          539.9501953125,
+          534.0166015625,
+          537.2666015625,
+          539.388671875
+        ]
+      },
+      "dev_complex": {
+        "fields": 5,
+        "mean": 440.2919921875,
+        "min": 429.30859375,
+        "p05": 431.50488281250006,
+        "max": 446.5302734375,
+        "std": 5.920918297297841,
+        "worst_family": 233.69333333333333,
+        "min_norm": 1.0,
+        "families": {
+          "adaptive_mix": 244.69845360824743,
+          "anchor": 494.8225806451613,
+          "conditional_extort": 252.47471910112358,
+          "contrition_cycle": 595.0,
+          "delayed_extort": 326.4834834834835,
+          "endgame_hunter": 392.4890710382514,
+          "lookahead": 371.30281690140845,
+          "memory_two": 595.0,
+          "meta_mix": 484.4849498327759,
+          "noise_adaptive": 595.0,
+          "pattern_breaker": 512.6697819314642,
+          "phase_switch": 477.37532808398953,
+          "portfolio": 466.5845272206304,
+          "probe_exploit": 233.69333333333333,
+          "reputation_grim": 595.0
+        },
+        "family_norm": {
+          "adaptive_mix": 1.0,
+          "anchor": 1.0,
+          "conditional_extort": 1.0,
+          "contrition_cycle": 1.0,
+          "delayed_extort": 1.0,
+          "endgame_hunter": 1.0,
+          "lookahead": 1.0,
+          "memory_two": 1.0,
+          "meta_mix": 1.0,
+          "noise_adaptive": 1.0,
+          "pattern_breaker": 1.0,
+          "phase_switch": 1.0,
+          "portfolio": 1.0,
+          "probe_exploit": 1.0,
+          "reputation_grim": 1.0
+        },
+        "values": [
+          441.1708984375,
+          446.5302734375,
+          440.2900390625,
+          429.30859375,
+          444.16015625
+        ]
+      },
+      "dev_axelrod": {
+        "fields": 5,
+        "mean": 580.4478515625,
+        "min": 575.7109375,
+        "p05": 576.3919921875,
+        "max": 585.6806640625,
+        "std": 3.2393176422252026,
+        "worst_family": 494.5383064516129,
+        "min_norm": 1.0,
+        "families": {
+          "AxelrodMix": 598.0927977839335,
+          "anchor": 494.5383064516129,
+          "axelrod": 558.1238888888889,
+          "axelrod_extra": 621.9804347826087
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0,
+          "anchor": 1.0,
+          "axelrod": 1.0,
+          "axelrod_extra": 1.0
+        },
+        "values": [
+          585.6806640625,
+          579.1162109375,
+          580.3544921875,
+          575.7109375,
+          581.376953125
+        ]
+      }
+    },
+    "Fix4-iter1": {
+      "dev_param": {
+        "fields": 5,
+        "mean": 544.80390625,
+        "min": 543.6123046875,
+        "p05": 543.6267578125,
+        "max": 547.078125,
+        "std": 1.291339637621483,
+        "worst_family": 325.8132387706856,
+        "min_norm": 0.9975038485332413,
+        "families": {
+          "AxelrodMix": 595.137339055794,
+          "adaptive": 586.6947890818858,
+          "anchor": 450.869387755102,
+          "axelrod": 564.1404109589041,
+          "axelrod_extra": 653.8510638297872,
+          "defect": 682.3016393442623,
+          "extort": 488.0243243243243,
+          "forgiving": 595.0,
+          "late": 325.8132387706856,
+          "nice": 599.6702702702703,
+          "noisy": 453.7839805825243,
+          "punitive": 604.0,
+          "random": 655.7344827586207,
+          "temporal": 516.7477272727273,
+          "wild": 514.2134146341464
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9975038485332413,
+          "adaptive": 1.0583616830796776,
+          "anchor": 1.0045835265871823,
+          "axelrod": 1.025314013270095,
+          "axelrod_extra": 1.0066100651179852,
+          "defect": 1.0021912187510535,
+          "extort": 1.0350522200694738,
+          "forgiving": 1.0,
+          "late": 0.9976257175327732,
+          "nice": 1.0,
+          "noisy": 1.019238946737175,
+          "punitive": 1.0,
+          "random": 1.0186630526197376,
+          "temporal": 1.022715107570653,
+          "wild": 1.0036477455980102
+        },
+        "values": [
+          543.6845703125,
+          547.078125,
+          543.6123046875,
+          545.318359375,
+          544.326171875
+        ]
+      },
+      "dev_complex": {
+        "fields": 5,
+        "mean": 454.287109375,
+        "min": 447.6572265625,
+        "p05": 448.73750000000007,
+        "max": 458.8515625,
+        "std": 3.944903724568974,
+        "worst_family": 268.50333333333333,
+        "min_norm": 0.9987840676009285,
+        "families": {
+          "adaptive_mix": 296.74484536082474,
+          "anchor": 497.9153225806452,
+          "conditional_extort": 292.9325842696629,
+          "contrition_cycle": 595.0,
+          "delayed_extort": 353.5135135135135,
+          "endgame_hunter": 392.8497267759563,
+          "lookahead": 377.4119718309859,
+          "memory_two": 595.0,
+          "meta_mix": 504.6321070234114,
+          "noise_adaptive": 595.0,
+          "pattern_breaker": 525.5140186915888,
+          "phase_switch": 488.56692913385825,
+          "portfolio": 466.01719197707735,
+          "probe_exploit": 268.50333333333333,
+          "reputation_grim": 595.0
+        },
+        "family_norm": {
+          "adaptive_mix": 1.212696038675837,
+          "anchor": 1.0062502037224161,
+          "conditional_extort": 1.1602452131151189,
+          "contrition_cycle": 1.0,
+          "delayed_extort": 1.0827914164037564,
+          "endgame_hunter": 1.0009188937076665,
+          "lookahead": 1.0164532954006638,
+          "memory_two": 1.0,
+          "meta_mix": 1.0415846915318823,
+          "noise_adaptive": 1.0,
+          "pattern_breaker": 1.0250536255749938,
+          "phase_switch": 1.0234440290301297,
+          "portfolio": 0.9987840676009285,
+          "probe_exploit": 1.1489558966166487,
+          "reputation_grim": 1.0
+        },
+        "values": [
+          454.189453125,
+          458.8515625,
+          453.05859375,
+          447.6572265625,
+          457.6787109375
+        ]
+      },
+      "dev_axelrod": {
+        "fields": 5,
+        "mean": 585.3337890625,
+        "min": 579.1298828125,
+        "p05": 580.1859375,
+        "max": 590.875,
+        "std": 3.8720410967923655,
+        "worst_family": 497.8407258064516,
+        "min_norm": 0.9956394170759779,
+        "families": {
+          "AxelrodMix": 595.4847645429363,
+          "anchor": 497.8407258064516,
+          "axelrod": 567.1644444444445,
+          "axelrod_extra": 629.8579710144927
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9956394170759779,
+          "anchor": 1.0066777827152238,
+          "axelrod": 1.016198116109227,
+          "axelrod_extra": 1.0126652476369893
+        },
+        "values": [
+          590.875,
+          584.7744140625,
+          587.4794921875,
+          579.1298828125,
+          584.41015625
+        ]
+      }
+    },
+    "Fix4-iter2": {
+      "dev_param": {
+        "fields": 5,
+        "mean": 544.548828125,
+        "min": 543.36328125,
+        "p05": 543.3939453125,
+        "max": 546.423828125,
+        "std": 1.1463068498098135,
+        "worst_family": 326.09929078014187,
+        "min_norm": 0.9972089142100796,
+        "families": {
+          "AxelrodMix": 594.9613733905579,
+          "adaptive": 585.8014888337469,
+          "anchor": 450.9142857142857,
+          "axelrod": 564.1130136986301,
+          "axelrod_extra": 653.3404255319149,
+          "defect": 682.327868852459,
+          "extort": 487.6054054054054,
+          "forgiving": 595.0,
+          "late": 326.09929078014187,
+          "nice": 599.6702702702703,
+          "noisy": 453.82766990291265,
+          "punitive": 604.0,
+          "random": 655.8068965517241,
+          "temporal": 515.1545454545454,
+          "wild": 513.9085365853658
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9972089142100796,
+          "adaptive": 1.056750223813787,
+          "anchor": 1.0046835638738074,
+          "axelrod": 1.0252642192926764,
+          "axelrod_extra": 1.0058239324974123,
+          "defect": 1.002229745674149,
+          "extort": 1.0341637337063065,
+          "forgiving": 1.0,
+          "late": 0.9985015961258661,
+          "nice": 1.0,
+          "noisy": 1.0193370768140435,
+          "punitive": 1.0,
+          "random": 1.018775545187193,
+          "temporal": 1.0195619807573801,
+          "wild": 1.0030526810632612
+        },
+        "values": [
+          543.36328125,
+          546.423828125,
+          543.5166015625,
+          545.232421875,
+          544.2080078125
+        ]
+      },
+      "dev_complex": {
+        "fields": 5,
+        "mean": 455.675390625,
+        "min": 449.3701171875,
+        "p05": 450.226171875,
+        "max": 460.1337890625,
+        "std": 3.9856399072132325,
+        "worst_family": 266.24,
+        "min_norm": 0.9890279753437647,
+        "families": {
+          "adaptive_mix": 292.090206185567,
+          "anchor": 497.8266129032258,
+          "conditional_extort": 291.2331460674157,
+          "contrition_cycle": 595.0,
+          "delayed_extort": 350.6096096096096,
+          "endgame_hunter": 393.10928961748635,
+          "lookahead": 367.2288732394366,
+          "memory_two": 595.0,
+          "meta_mix": 503.47157190635454,
+          "noise_adaptive": 595.0,
+          "pattern_breaker": 570.4766355140187,
+          "phase_switch": 488.15748031496065,
+          "portfolio": 466.2349570200573,
+          "probe_exploit": 266.24,
+          "reputation_grim": 595.0
+        },
+        "family_norm": {
+          "adaptive_mix": 1.19367409919636,
+          "anchor": 1.0060709279963493,
+          "conditional_extort": 1.1535140908534618,
+          "contrition_cycle": 1.0,
+          "delayed_extort": 1.0738969269400933,
+          "endgame_hunter": 1.0015802187245477,
+          "lookahead": 0.9890279753437647,
+          "memory_two": 1.0,
+          "meta_mix": 1.0391892918038672,
+          "noise_adaptive": 1.0,
+          "pattern_breaker": 1.11275650646849,
+          "phase_switch": 1.0225863206509787,
+          "portfolio": 0.9992507891278449,
+          "probe_exploit": 1.139270839276545,
+          "reputation_grim": 1.0
+        },
+        "values": [
+          455.5869140625,
+          460.1337890625,
+          453.650390625,
+          449.3701171875,
+          459.6357421875
+        ]
+      },
+      "dev_axelrod": {
+        "fields": 5,
+        "mean": 585.30859375,
+        "min": 579.240234375,
+        "p05": 580.2490234375,
+        "max": 590.748046875,
+        "std": 3.8086021133722276,
+        "worst_family": 497.8467741935484,
+        "min_norm": 0.995654469539603,
+        "families": {
+          "AxelrodMix": 595.4937673130194,
+          "anchor": 497.8467741935484,
+          "axelrod": 567.085,
+          "axelrod_extra": 629.8565217391305
+        },
+        "family_norm": {
+          "AxelrodMix": 0.995654469539603,
+          "anchor": 1.0066900130864973,
+          "axelrod": 1.0160557741560765,
+          "axelrod_extra": 1.0126629175389972
+        },
+        "values": [
+          590.748046875,
+          584.775390625,
+          587.4951171875,
+          579.240234375,
+          584.2841796875
+        ]
+      }
+    },
+    "Fix4-iter3": {
+      "dev_param": {
+        "fields": 5,
+        "mean": 544.4486328125,
+        "min": 543.3095703125,
+        "p05": 543.3619140625,
+        "max": 545.9443359375,
+        "std": 1.012574407410138,
+        "worst_family": 326.274231678487,
+        "min_norm": 0.997230494770311,
+        "families": {
+          "AxelrodMix": 594.9742489270386,
+          "adaptive": 585.2059553349876,
+          "anchor": 450.9591836734694,
+          "axelrod": 564.0513698630137,
+          "axelrod_extra": 653.263829787234,
+          "defect": 682.327868852459,
+          "extort": 486.4189189189189,
+          "forgiving": 595.0,
+          "late": 326.274231678487,
+          "nice": 599.6702702702703,
+          "noisy": 453.8543689320388,
+          "punitive": 604.0,
+          "random": 656.6137931034483,
+          "temporal": 514.6909090909091,
+          "wild": 514.1310975609756
+        },
+        "family_norm": {
+          "AxelrodMix": 0.997230494770311,
+          "adaptive": 1.0556759176365262,
+          "anchor": 1.0047836011604325,
+          "axelrod": 1.0251521828434853,
+          "axelrod_extra": 1.0057060126043262,
+          "defect": 1.002229745674149,
+          "extort": 1.0316473110390132,
+          "forgiving": 1.0,
+          "late": 0.9990372574142038,
+          "nice": 1.0,
+          "noisy": 1.019397045194352,
+          "punitive": 1.0,
+          "random": 1.0200290337959812,
+          "temporal": 1.018644380372348,
+          "wild": 1.0034870781736278
+        },
+        "values": [
+          543.3095703125,
+          545.9443359375,
+          543.5712890625,
+          545.294921875,
+          544.123046875
+        ]
+      },
+      "dev_complex": {
+        "fields": 5,
+        "mean": 456.57578125,
+        "min": 449.662109375,
+        "p05": 450.54082031250005,
+        "max": 461.541015625,
+        "std": 4.448837822874999,
+        "worst_family": 264.14,
+        "min_norm": 0.9764817449027975,
+        "families": {
+          "adaptive_mix": 289.2396907216495,
+          "anchor": 498.0907258064516,
+          "conditional_extort": 289.39044943820227,
+          "contrition_cycle": 595.0,
+          "delayed_extort": 348.31531531531533,
+          "endgame_hunter": 393.2103825136612,
+          "lookahead": 362.57042253521126,
+          "memory_two": 595.0,
+          "meta_mix": 501.6488294314381,
+          "noise_adaptive": 595.0,
+          "pattern_breaker": 599.8535825545172,
+          "phase_switch": 488.1496062992126,
+          "portfolio": 466.3467048710602,
+          "probe_exploit": 264.14,
+          "reputation_grim": 595.0
+        },
+        "family_norm": {
+          "adaptive_mix": 1.18202500447637,
+          "anchor": 1.0066046807262297,
+          "conditional_extort": 1.1462155516738801,
+          "contrition_cycle": 1.0,
+          "delayed_extort": 1.0668696364021009,
+          "endgame_hunter": 1.001837787415333,
+          "lookahead": 0.9764817449027975,
+          "memory_two": 1.0,
+          "meta_mix": 1.035427064565342,
+          "noise_adaptive": 1.0,
+          "pattern_breaker": 1.1700583956686335,
+          "phase_switch": 1.022569826259072,
+          "portfolio": 0.9994902909640256,
+          "probe_exploit": 1.1302847036001598,
+          "reputation_grim": 1.0
+        },
+        "values": [
+          456.5546875,
+          461.0654296875,
+          454.0556640625,
+          449.662109375,
+          461.541015625
+        ]
+      },
+      "dev_axelrod": {
+        "fields": 5,
+        "mean": 585.2603515625,
+        "min": 579.2060546875,
+        "p05": 580.1619140625,
+        "max": 590.791015625,
+        "std": 3.8431018115336832,
+        "worst_family": 497.929435483871,
+        "min_norm": 0.9955201552487941,
+        "families": {
+          "AxelrodMix": 595.4134349030471,
+          "anchor": 497.929435483871,
+          "axelrod": 566.88,
+          "axelrod_extra": 629.9992753623188
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9955201552487941,
+          "anchor": 1.006857161493899,
+          "axelrod": 1.0156884721930515,
+          "axelrod_extra": 1.0128924321912358
+        },
+        "values": [
+          590.791015625,
+          584.86328125,
+          587.4560546875,
+          579.2060546875,
+          583.9853515625
+        ]
+      }
+    }
+  }
+}

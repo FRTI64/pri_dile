@@ -1,0 +1,483 @@
+{
+  "schema": "ipd-retrain-matrix-v1",
+  "created": "2026-10-30T11:56:01",
+  "commit": "b0955cc1859c547fbb12837affd07330a34f839b",
+  "axelrod": "4.14.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "tests": "342 OK",
+  "audit": "OK",
+  "matrix_assert": "OK",
+  "experiment_dir": "results/retrain_matrix_20261029",
+  "weights_dir": "weights/retrain_matrix_20261029",
+  "verdict": "Go (promotion candidate, parity-level): Dagger-Fix4",
+  "reason": "Initial clean lineage regressed dev_complex. PB-heavy repair (3/13) reached min_norm>=0.99; GRU-DAgger distilled from Fix4-iter1 matches current GRU-DAgger on both eval seeds (complex +0.02/+0.14, all other tiers within 1).",
+  "baseline": {
+    "RL-PPO": {
+      "dev_param": 541.1658365885417,
+      "dev_family": 582.5519205729166,
+      "dev_complex": 439.85633138020836,
+      "dev_axelrod": 579.1994954427083,
+      "dev_ood": 513.8692708333333
+    },
+    "RL-Repair": {
+      "dev_param": 547.9869466145833,
+      "dev_family": 582.7760091145833,
+      "dev_complex": 434.056689453125,
+      "dev_axelrod": 583.39345703125,
+      "dev_ood": 515.329541015625
+    },
+    "RL-Pattern": {
+      "dev_param": 548.74580078125,
+      "dev_family": 583.0855794270833,
+      "dev_complex": 447.55861002604166,
+      "dev_axelrod": 584.0176920572917,
+      "dev_ood": 519.711376953125
+    },
+    "RL-Wide": {
+      "dev_param": 548.6501790364583,
+      "dev_family": 583.08935546875,
+      "dev_complex": 452.47154947916664,
+      "dev_axelrod": 584.2840657552083,
+      "dev_ood": 521.1711588541667
+    },
+    "RL-Wide160": {
+      "dev_param": 548.5456705729167,
+      "dev_family": 583.0781575520833,
+      "dev_complex": 454.4085286458333,
+      "dev_axelrod": 584.5031901041667,
+      "dev_ood": 521.7916666666666
+    },
+    "RL-Switch": {
+      "dev_param": 548.9709147135417,
+      "dev_family": 582.9100260416667,
+      "dev_complex": 454.2395833333333,
+      "dev_axelrod": 584.6578776041666,
+      "dev_ood": 521.5720377604167
+    },
+    "GRU-DAgger": {
+      "dev_param": 548.9978841145834,
+      "dev_family": 582.9342122395833,
+      "dev_complex": 454.926318359375,
+      "dev_axelrod": 584.3324055989583,
+      "dev_ood": 521.9578938802083
+    },
+    "Triple-v4": {
+      "dev_param": 538.58125,
+      "dev_family": 583.0720703125,
+      "dev_complex": 447.078515625,
+      "dev_axelrod": 568.5475423177083,
+      "dev_ood": 514.1394856770834
+    }
+  },
+  "retrained": {
+    "RL-PPO": {
+      "dev_param": 541.1658365885417,
+      "dev_family": 582.5519205729166,
+      "dev_complex": 439.85633138020836,
+      "dev_axelrod": 579.1994954427083,
+      "dev_ood": 513.8692708333333
+    },
+    "RL-Pattern": {
+      "dev_param": 548.74580078125,
+      "dev_family": 583.0855794270833,
+      "dev_complex": 447.55861002604166,
+      "dev_axelrod": 584.0176920572917,
+      "dev_ood": 519.711376953125
+    },
+    "RL-Wide160": {
+      "dev_param": 548.5456705729167,
+      "dev_family": 583.0781575520833,
+      "dev_complex": 454.4085286458333,
+      "dev_axelrod": 584.5031901041667,
+      "dev_ood": 521.7916666666666
+    },
+    "RL-Switch": {
+      "dev_param": 548.9709147135417,
+      "dev_family": 582.9100260416667,
+      "dev_complex": 454.2395833333333,
+      "dev_axelrod": 584.6578776041666,
+      "dev_ood": 521.5720377604167
+    },
+    "GRU-DAgger": {
+      "dev_param": 548.9978841145834,
+      "dev_family": 582.9342122395833,
+      "dev_complex": 454.926318359375,
+      "dev_axelrod": 584.3324055989583,
+      "dev_ood": 521.9578938802083
+    },
+    "RL-Pattern-RM": {
+      "dev_param": 548.97021484375,
+      "dev_family": 583.0320475260417,
+      "dev_complex": 448.23606770833334,
+      "dev_axelrod": 584.0726236979167,
+      "dev_ood": 519.9031412760417
+    },
+    "RL-Wide-RM": {
+      "dev_param": 548.756396484375,
+      "dev_family": 583.0243977864583,
+      "dev_complex": 451.257470703125,
+      "dev_axelrod": 583.926318359375,
+      "dev_ood": 520.8362630208334
+    },
+    "RL-Wide160-RM": {
+      "dev_param": 548.6044108072916,
+      "dev_family": 583.0155110677083,
+      "dev_complex": 452.7571614583333,
+      "dev_axelrod": 583.9152018229166,
+      "dev_ood": 521.193798828125
+    },
+    "RL-Wide160-RM-s2": {
+      "dev_param": 548.50849609375,
+      "dev_family": 583.0190266927083,
+      "dev_complex": 453.40732421875,
+      "dev_axelrod": 583.9135904947917,
+      "dev_ood": 521.4243489583333
+    },
+    "RL-Switch-RM": {
+      "dev_param": 548.8534993489583,
+      "dev_family": 582.8694010416667,
+      "dev_complex": 452.986669921875,
+      "dev_axelrod": 583.9205891927083,
+      "dev_ood": 521.1149251302083
+    },
+    "GRU-DAgger-RM": {
+      "dev_param": 548.8783528645833,
+      "dev_family": 582.892041015625,
+      "dev_complex": 453.54431966145836,
+      "dev_axelrod": 583.8711100260417,
+      "dev_ood": 521.4589518229167
+    },
+    "GRU-DAgger-RM-s2": {
+      "dev_param": 548.8444986979167,
+      "dev_family": 582.9006022135417,
+      "dev_complex": 453.48028971354165,
+      "dev_axelrod": 583.74443359375,
+      "dev_ood": 521.3633138020833
+    }
+  },
+  "diff_vs_predecessor": {
+    "RL-Pattern-RM": {
+      "dev_param": 0.22,
+      "dev_family": -0.05,
+      "dev_complex": 0.68,
+      "dev_axelrod": 0.05,
+      "dev_ood": 0.19
+    },
+    "RL-Wide-RM": {
+      "dev_param": 0.21,
+      "dev_family": -0.05,
+      "dev_complex": -3.15,
+      "dev_axelrod": -0.58,
+      "dev_ood": -0.96
+    },
+    "RL-Wide160-RM": {
+      "dev_param": 0.06,
+      "dev_family": -0.06,
+      "dev_complex": -1.65,
+      "dev_axelrod": -0.59,
+      "dev_ood": -0.6
+    },
+    "RL-Wide160-RM-s2": {
+      "dev_param": -0.04,
+      "dev_family": -0.06,
+      "dev_complex": -1.0,
+      "dev_axelrod": -0.59,
+      "dev_ood": -0.37
+    },
+    "RL-Switch-RM": {
+      "dev_param": -0.12,
+      "dev_family": -0.04,
+      "dev_complex": -1.25,
+      "dev_axelrod": -0.74,
+      "dev_ood": -0.46
+    },
+    "GRU-DAgger-RM": {
+      "dev_param": -0.12,
+      "dev_family": -0.04,
+      "dev_complex": -1.38,
+      "dev_axelrod": -0.46,
+      "dev_ood": -0.5
+    },
+    "GRU-DAgger-RM-s2": {
+      "dev_param": -0.15,
+      "dev_family": -0.03,
+      "dev_complex": -1.45,
+      "dev_axelrod": -0.59,
+      "dev_ood": -0.59
+    }
+  },
+  "seed2": {
+    "RL-PPO": {
+      "dev_param": 539.49560546875,
+      "dev_family": 582.3058430989583,
+      "dev_complex": 439.7718098958333,
+      "dev_axelrod": 578.2487141927083,
+      "dev_ood": 515.3131510416666
+    },
+    "RL-Pattern-RM": {
+      "dev_param": 547.3202962239583,
+      "dev_family": 582.7172037760416,
+      "dev_complex": 447.43525390625,
+      "dev_axelrod": 583.297119140625,
+      "dev_ood": 521.4071126302083
+    },
+    "RL-Wide-RM": {
+      "dev_param": 546.985107421875,
+      "dev_family": 582.7330078125,
+      "dev_complex": 451.01832682291666,
+      "dev_axelrod": 583.1464192708333,
+      "dev_ood": 522.3483235677083
+    },
+    "RL-Wide160-RM": {
+      "dev_param": 546.8442057291667,
+      "dev_family": 582.7107584635417,
+      "dev_complex": 452.69208984375,
+      "dev_axelrod": 583.1732421875,
+      "dev_ood": 522.6305826822917
+    },
+    "RL-Wide160-RM-s2": {
+      "dev_param": 546.736328125,
+      "dev_family": 582.7236328125,
+      "dev_complex": 453.18640950520836,
+      "dev_axelrod": 583.1772135416667,
+      "dev_ood": 522.5604166666667
+    },
+    "RL-Switch-RM": {
+      "dev_param": 547.1043782552083,
+      "dev_family": 582.595458984375,
+      "dev_complex": 452.80869140625,
+      "dev_axelrod": 583.2047688802083,
+      "dev_ood": 522.6856119791667
+    },
+    "GRU-DAgger-RM": {
+      "dev_param": 547.1423502604167,
+      "dev_family": 582.599560546875,
+      "dev_complex": 453.4771484375,
+      "dev_axelrod": 583.109765625,
+      "dev_ood": 522.7880859375
+    },
+    "GRU-DAgger-RM-s2": {
+      "dev_param": 547.1320963541667,
+      "dev_family": 582.6165201822917,
+      "dev_complex": 453.53611653645834,
+      "dev_axelrod": 583.0036946614583,
+      "dev_ood": 522.7694173177083
+    }
+  },
+  "seed2_current": {
+    "RL-PPO": {
+      "dev_param": 539.49560546875,
+      "dev_family": 582.3058430989583,
+      "dev_complex": 439.7718098958333,
+      "dev_axelrod": 578.2487141927083,
+      "dev_ood": 515.3131510416666
+    },
+    "RL-Pattern": {
+      "dev_param": 546.936279296875,
+      "dev_family": 582.7694010416667,
+      "dev_complex": 447.2921549479167,
+      "dev_axelrod": 583.2298502604167,
+      "dev_ood": 521.3904622395834
+    },
+    "RL-Wide160": {
+      "dev_param": 546.7258463541667,
+      "dev_family": 582.78447265625,
+      "dev_complex": 454.23846028645835,
+      "dev_axelrod": 583.6499837239584,
+      "dev_ood": 523.1213704427083
+    },
+    "RL-Switch": {
+      "dev_param": 547.2622395833333,
+      "dev_family": 582.6204264322917,
+      "dev_complex": 454.2720052083333,
+      "dev_axelrod": 583.6698404947916,
+      "dev_ood": 523.2505208333333
+    },
+    "GRU-DAgger": {
+      "dev_param": 547.1636393229167,
+      "dev_family": 582.6521321614583,
+      "dev_complex": 454.762744140625,
+      "dev_axelrod": 583.5096516927083,
+      "dev_ood": 523.166943359375
+    }
+  },
+  "seed2_diff_vs_predecessor": {
+    "RL-Pattern-RM": {
+      "dev_param": 0.38,
+      "dev_family": -0.05,
+      "dev_complex": 0.14,
+      "dev_axelrod": 0.07,
+      "dev_ood": 0.02
+    },
+    "RL-Wide-RM": {
+      "dev_param": 0.26,
+      "dev_family": -0.05,
+      "dev_complex": -3.22,
+      "dev_axelrod": -0.5,
+      "dev_ood": -0.77
+    },
+    "RL-Wide160-RM": {
+      "dev_param": 0.12,
+      "dev_family": -0.07,
+      "dev_complex": -1.55,
+      "dev_axelrod": -0.48,
+      "dev_ood": -0.49
+    },
+    "RL-Wide160-RM-s2": {
+      "dev_param": 0.01,
+      "dev_family": -0.06,
+      "dev_complex": -1.05,
+      "dev_axelrod": -0.47,
+      "dev_ood": -0.56
+    },
+    "RL-Switch-RM": {
+      "dev_param": -0.16,
+      "dev_family": -0.02,
+      "dev_complex": -1.46,
+      "dev_axelrod": -0.47,
+      "dev_ood": -0.56
+    },
+    "GRU-DAgger-RM": {
+      "dev_param": -0.02,
+      "dev_family": -0.05,
+      "dev_complex": -1.29,
+      "dev_axelrod": -0.4,
+      "dev_ood": -0.38
+    },
+    "GRU-DAgger-RM-s2": {
+      "dev_param": -0.03,
+      "dev_family": -0.04,
+      "dev_complex": -1.23,
+      "dev_axelrod": -0.51,
+      "dev_ood": -0.4
+    }
+  },
+  "test_v7_provisional": {
+    "GRU-DAgger-RM": {
+      "mean": 487.89798828125,
+      "min": 479.6748046875,
+      "p05": 482.2517333984375,
+      "worst_family": 130.3258026159334
+    },
+    "GRU-DAgger-RM-s2": {
+      "mean": 487.701220703125,
+      "min": 479.98095703125,
+      "p05": 482.229736328125,
+      "worst_family": 130.56212841854935
+    }
+  },
+  "matrix_control": {
+    "RL-PPO": {
+      "dev_param": 0.85,
+      "dev_axelrod": 5.14,
+      "dev_ood": 0.59
+    },
+    "RL-Pattern": {
+      "dev_param": 0.39,
+      "dev_axelrod": 1.69,
+      "dev_ood": 0.01
+    },
+    "RL-Wide160": {
+      "dev_param": 0.42,
+      "dev_axelrod": 2.09,
+      "dev_ood": 0.41
+    }
+  },
+  "axelrod_panel": {
+    "RL-PPO": {
+      "zd": 325.68,
+      "meta": 351.19,
+      "historical": 582.61
+    },
+    "RL-Pattern": {
+      "zd": 340.43,
+      "meta": 357.08,
+      "historical": 591.07
+    },
+    "RL-Wide160": {
+      "zd": 337.96,
+      "meta": 362.34,
+      "historical": 592.94
+    },
+    "RL-Switch": {
+      "zd": 342.34,
+      "meta": 363.66,
+      "historical": 592.94
+    },
+    "GRU-DAgger": {
+      "zd": 342.59,
+      "meta": 360.95,
+      "historical": 592.21
+    },
+    "RL-Pattern-RM": {
+      "zd": 342.5,
+      "meta": 360.19,
+      "historical": 592.29
+    },
+    "RL-Wide160-RM": {
+      "zd": 338.88,
+      "meta": 363.02,
+      "historical": 593.89
+    },
+    "GRU-DAgger-RM": {
+      "zd": 343.14,
+      "meta": 362.04,
+      "historical": 593.95
+    }
+  },
+  "weights_not_overwritten": true,
+  "initial_lineage_verdict": "No-Go",
+  "fix": {
+    "fix4_wide160": {
+      "checkpoint": "results/retrain_matrix_20261029/fix4_pb_ckpts/iter_001.json",
+      "dev": {
+        "dev_param": 548.55,
+        "dev_family": 582.99,
+        "dev_complex": 453.46,
+        "dev_axelrod": 584.18,
+        "dev_ood": 521.45,
+        "min_norm": 0.9972
+      },
+      "seed2": {
+        "dev_param": 546.87,
+        "dev_family": 582.69,
+        "dev_complex": 453.06,
+        "dev_axelrod": 583.42,
+        "dev_ood": 522.7
+      }
+    },
+    "dagger_fix4": {
+      "weights": "weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4.json",
+      "dev": {
+        "dev_param": 548.83,
+        "dev_family": 582.88,
+        "dev_complex": 454.95,
+        "dev_axelrod": 584.15,
+        "dev_ood": 521.82,
+        "min_norm": 0.9971
+      },
+      "seed2": {
+        "dev_param": 547.15,
+        "dev_family": 582.61,
+        "dev_complex": 454.9,
+        "dev_axelrod": 583.35,
+        "dev_ood": 523.12,
+        "min_norm": 0.997
+      },
+      "test_v7_provisional": 487.77,
+      "parity_max_abs_diff": 0.0,
+      "train_seed": 20261048,
+      "train_seed2": 20261049,
+      "dev_seed2_train_seed": {
+        "dev_param": 548.91,
+        "dev_family": 582.88,
+        "dev_complex": 454.71,
+        "dev_axelrod": 584.17,
+        "dev_ood": 521.77,
+        "min_norm": 0.9972
+      },
+      "weights_seed2": "weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4_seed20261049.json"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "candidates": [
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "mode": "sample"
+    },
+    {
+      "name": "GRU-DAgger",
+      "kind": "rl-dagger-gru",
+      "mode": "sample"
+    },
+    {
+      "name": "Dagger-Fix4",
+      "kind": "rl-dagger-gru",
+      "mode": "sample",
+      "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4.json"
+    }
+  ]
+}

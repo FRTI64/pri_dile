@@ -1,0 +1,730 @@
+test_adapter_play_and_reset (tests.test_axelrod_opponents.AxelrodBankTests.test_adapter_play_and_reset) ... ok
+test_adapter_uses_pri_dile_matrix (tests.test_axelrod_opponents.AxelrodBankTests.test_adapter_uses_pri_dile_matrix) ... ok
+test_all_fast_strategies_play (tests.test_axelrod_opponents.AxelrodBankTests.test_all_fast_strategies_play) ... ok
+test_all_long_running_players_initialize (tests.test_axelrod_opponents.AxelrodBankTests.test_all_long_running_players_initialize) ... ok
+test_bank_sizes_and_names (tests.test_axelrod_opponents.AxelrodBankTests.test_bank_sizes_and_names) ... ok
+test_benchmark_cli_axelrod_fast (tests.test_axelrod_opponents.AxelrodBankTests.test_benchmark_cli_axelrod_fast) ... progress 1/1 field tasks
+Final-tuned        axelrod-fast mean= 604.00 min= 604.00
+
+Summary (mean score per opponent):
+strategy            axelrod-fast       avg     worst       min
+Final-tuned             604.00    604.00    604.00    604.00
+
+written /tmp/tmps123u5lk/axelrod_bench.json
+progress 1/1 field tasks
+Final-tuned        axelrod-cheating mean= 604.00 min= 604.00
+ok
+test_build_dist_field (tests.test_axelrod_opponents.AxelrodBankTests.test_build_dist_field) ... ok
+test_cheating_adapter_plays (tests.test_axelrod_opponents.AxelrodBankTests.test_cheating_adapter_plays) ... ok
+test_default_interaction_scores_use_pri_dile_matrix (tests.test_axelrod_opponents.AxelrodBankTests.test_default_interaction_scores_use_pri_dile_matrix) ... ok
+test_long_running_meta_strategy_plays (tests.test_axelrod_opponents.AxelrodBankTests.test_long_running_meta_strategy_plays) ... ok
+test_matchup_selection (tests.test_axelrod_opponents.AxelrodBankTests.test_matchup_selection) ... ok
+test_matchup_worker_can_build_axelrod_opponent (tests.test_axelrod_opponents.AxelrodBankTests.test_matchup_worker_can_build_axelrod_opponent) ... ok
+test_meta_memory_one_team_uses_pri_dile_matrix (tests.test_axelrod_opponents.AxelrodBankTests.test_meta_memory_one_team_uses_pri_dile_matrix) ... ok
+test_rowsam_thresholds_follow_matrix (tests.test_axelrod_opponents.AxelrodBankTests.test_rowsam_thresholds_follow_matrix) ... ok
+test_sample_field_and_all_names (tests.test_axelrod_opponents.AxelrodBankTests.test_sample_field_and_all_names) ... ok
+test_set_rounds_propagates_to_player (tests.test_axelrod_opponents.AxelrodBankTests.test_set_rounds_propagates_to_player) ... ok
+test_specs_are_picklable (tests.test_axelrod_opponents.AxelrodBankTests.test_specs_are_picklable) ... ok
+test_stalker_thresholds_follow_matrix (tests.test_axelrod_opponents.AxelrodBankTests.test_stalker_thresholds_follow_matrix) ... ok
+test_stochastic_adapter_is_reproducible (tests.test_axelrod_opponents.AxelrodBankTests.test_stochastic_adapter_is_reproducible) ... ok
+test_threshold_helpers_follow_matrix_principles (tests.test_axelrod_opponents.AxelrodBankTests.test_threshold_helpers_follow_matrix_principles) ... ok
+test_zero_determinant_players_are_valid_for_pri_dile (tests.test_axelrod_opponents.AxelrodBankTests.test_zero_determinant_players_are_valid_for_pri_dile) ... ok
+test_curated_library_covers_key_families (tests.test_belief_planner.ModelLibraryTests.test_curated_library_covers_key_families) ... ok
+test_belief_concentrates_on_all_d (tests.test_belief_planner.PlannerContractTests.test_belief_concentrates_on_all_d) ... ok
+test_boundaries_and_reset (tests.test_belief_planner.PlannerContractTests.test_boundaries_and_reset) ... ok
+test_deterministic (tests.test_belief_planner.PlannerContractTests.test_deterministic) ... ok
+test_fallback_confidence_returns_base (tests.test_belief_planner.PlannerContractTests.test_fallback_confidence_returns_base) ... ok
+test_planner_exploits_all_d (tests.test_belief_planner.PlannerContractTests.test_planner_exploits_all_d) ... ok
+test_compare_and_evaluate (tests.test_belief_planner.PlannerEvalTests.test_compare_and_evaluate) ... ok
+test_adv_candidates_match_historical_wrapper (tests.test_candidates.CandidateEquivalenceTests.test_adv_candidates_match_historical_wrapper) ... ok
+test_rule_candidates_match_historical_classes (tests.test_candidates.CandidateEquivalenceTests.test_rule_candidates_match_historical_classes) ... ok
+test_triple_modes_match_historical_classes (tests.test_candidates.CandidateEquivalenceTests.test_triple_modes_match_historical_classes) ... ok
+test_no_candidate_imports_another_candidate (tests.test_candidates.CandidateIndependenceTests.test_no_candidate_imports_another_candidate) ... ok
+test_registry_loads_one_module_per_candidate (tests.test_candidates.CandidateIndependenceTests.test_registry_loads_one_module_per_candidate) ... ok
+test_embedded_tuned_values_match_tuned_configs (tests.test_candidates.CandidateParameterTests.test_embedded_tuned_values_match_tuned_configs) ... ok
+test_incremental_counts_match_full_rescan (tests.test_candidates.ExploitTrackerTests.test_incremental_counts_match_full_rescan) ... ok
+test_clean_opponents_match_triple_majority (tests.test_candidates.TripleV4Tests.test_clean_opponents_match_triple_majority) ... ok
+test_noisy_reciprocator_is_forgiven_more (tests.test_candidates.TripleV4Tests.test_noisy_reciprocator_is_forgiven_more) ... ok
+test_reset_restores_independent_state (tests.test_candidates.TripleV4Tests.test_reset_restores_independent_state) ... ok
+test_four_distributions_are_deterministic (tests.test_core.DistributionTests.test_four_distributions_are_deterministic) ... ok
+test_hard_training_distribution (tests.test_core.DistributionTests.test_hard_training_distribution) ... ok
+test_legacy_field_builder (tests.test_core.DistributionTests.test_legacy_field_builder) ... ok
+test_suite_names (tests.test_core.DistributionTests.test_suite_names) ... ok
+test_wide_and_blind_helpers (tests.test_core.DistributionTests.test_wide_and_blind_helpers) ... ok
+test_reactive_factory_parameters_are_order_independent (tests.test_core.OpponentFactoryTests.test_reactive_factory_parameters_are_order_independent) ... ok
+test_machine_boundaries (tests.test_core.SimulatorTests.test_machine_boundaries) ... ok
+test_opponent_bank (tests.test_core.SimulatorTests.test_opponent_bank) ... ok
+test_payoff_matrix (tests.test_core.SimulatorTests.test_payoff_matrix) ... ok
+test_play_match_is_symmetric (tests.test_core.SimulatorTests.test_play_match_is_symmetric) ... ok
+test_rule_feature_vector (tests.test_core.SimulatorTests.test_rule_feature_vector) ... ok
+test_action_sequences_match_python (tests.test_dagger_gru_cpp.DaggerGRUCppTests.test_action_sequences_match_python) ... ok
+test_benchmark_cli (tests.test_evaluation.CliIntegrationTests.test_benchmark_cli) ... 
+Summary (mean score per opponent):
+strategy            axelrod-cheating       avg     worst       min
+Final-tuned             604.00    604.00    604.00    604.00
+
+written /tmp/tmps123u5lk/axelrod_cheating_bench.json
+progress 1/4 field tasks
+progress 2/4 field tasks
+progress 3/4 field tasks
+progress 4/4 field tasks
+Final-tuned        original  mean= 573.62 min= 573.62
+Final-tuned        late      mean= 536.38 min= 536.38
+Final-tuned        grim30    mean= 500.25 min= 500.25
+Final-tuned        wide      mean= 573.00 min= 573.00
+ok
+test_blind_cli (tests.test_evaluation.CliIntegrationTests.test_blind_cli) ... 
+Summary (mean score per opponent):
+strategy              original      late    grim30      wide       avg     worst       min
+Final-tuned             573.62    536.38    500.25    573.00    545.81    500.25    500.25
+
+written /tmp/tmpa5q6gjyo/bench.json
+field 1/1 seed=20261025 Final-tuned:3
+ok
+test_split_config_and_cli (tests.test_evaluation.CliIntegrationTests.test_split_config_and_cli) ... 
+Blind test over 1 unseen 8-player fields:
+strategy                   score   mean rank   rank1   top10   worst
+Final-tuned               586.00        3.00    0/1     1/1        3
+
+written /tmp/tmp5ar1yqha/blind.json
+run: smoke -> /tmp/tmpq2gq3rej/out
+candidates: Final-tuned
+
+[benchmark] separate parameters per candidate
+- Final-tuned: 1 fields × 8, seed 1, workers 1
+  benchmark 1/4 field tasks
+  benchmark 2/4 field tasks
+  benchmark 3/4 field tasks
+  benchmark 4/4 field tasks
+
+[blind] grouped by identical blind parameters
+- 1 candidate(s): 1 fields × 8, seed 1, workers 1
+  blind field 1/1
+ok
+test_suite_cli (tests.test_evaluation.CliIntegrationTests.test_suite_cli) ... 
+written /tmp/tmpq2gq3rej/out
+ok
+test_eval_task (tests.test_evaluation.MatchTests.test_eval_task) ... ok
+test_eval_task_details (tests.test_evaluation.MatchTests.test_eval_task_details) ... ok
+test_evaluate_field (tests.test_evaluation.MatchTests.test_evaluate_field) ... ok
+test_evaluate_field_details (tests.test_evaluation.MatchTests.test_evaluate_field_details) ... ok
+test_matchup_protocol_selection (tests.test_evaluation.MatchTests.test_matchup_protocol_selection) ... ok
+test_matchup_spec_config_and_family_output (tests.test_evaluation.MatchTests.test_matchup_spec_config_and_family_output) ... suites ['original']
+strategy             original
+Final-tuned            530.25
+written /tmp/tmpjldiub5t/suite.json
+  matchup 8/85 opponent types
+  matchup 16/85 opponent types
+  matchup 24/85 opponent types
+  matchup 32/85 opponent types
+  matchup 40/85 opponent types
+  matchup 48/85 opponent types
+  matchup 56/85 opponent types
+  matchup 64/85 opponent types
+  matchup 72/85 opponent types
+  matchup 80/85 opponent types
+  matchup 85/85 opponent types
+ok
+test_matchup_suite_weighted_cli (tests.test_evaluation.MatchTests.test_matchup_suite_weighted_cli) ... Per-opponent mean
+Final-tuned               549.89
+Resp3-tuned               547.09
+
+Family means
+strategy                    adaptive      defect   forgiving        late        nice    punitive      random        wild
+Final-tuned                   531.18      573.71      562.67      458.38      598.69      602.44      486.92      585.33
+Resp3-tuned                   546.64      523.29      567.44      459.50      598.88      602.00      477.00      578.67
+
+Suite-weighted means
+strategy                   original       late       grim      noise    complex      smart   punitive     random       wide      avg    worst
+Final-tuned                  555.74     532.79     570.98     551.24     540.52     550.42     569.75     522.61     549.52   549.29   522.61
+Resp3-tuned                  552.91     531.61     566.03     550.95     537.87     550.64     564.47     516.72     547.43   546.51   516.72
+
+written /tmp/tmp9ymhos3r/matchup.csv
+written /tmp/tmp9ymhos3r/matchup_suite_weighted.csv
+written /tmp/tmp9ymhos3r/matchup_families.csv
+written /tmp/tmp9ymhos3r/matchup.json
+  matchup 8/85 opponent types
+  matchup 16/85 opponent types
+  matchup 24/85 opponent types
+  matchup 32/85 opponent types
+  matchup 40/85 opponent types
+  matchup 48/85 opponent types
+  matchup 56/85 opponent types
+  matchup 64/85 opponent types
+  matchup 72/85 opponent types
+  matchup 80/85 opponent types
+  matchup 85/85 opponent types
+ok
+test_matchup_worker (tests.test_evaluation.MatchTests.test_matchup_worker) ... ok
+test_pivot_matchup_tables (tests.test_evaluation.MatchTests.test_pivot_matchup_tables) ... ok
+test_reactive_opponent_is_candidate_order_independent (tests.test_evaluation.MatchTests.test_reactive_opponent_is_candidate_order_independent) ... ok
+test_run_match (tests.test_evaluation.MatchTests.test_run_match) ... ok
+test_actor_critic_expansion_shapes (tests.test_expand.ExpandTests.test_actor_critic_expansion_shapes) ... ok
+test_deployable_expansion_is_deterministic (tests.test_expand.ExpandTests.test_deployable_expansion_is_deterministic) ... ok
+test_deployable_expansion_shapes_and_function (tests.test_expand.ExpandTests.test_deployable_expansion_shapes_and_function) ... ok
+test_deployable_v2_policy_uses_v2_features (tests.test_expand.ExpandTests.test_deployable_v2_policy_uses_v2_features) ... ok
+test_input_feature_expansion_pads_first_layer (tests.test_expand.ExpandTests.test_input_feature_expansion_pads_first_layer) ... ok
+test_mapping_is_balanced (tests.test_expand.ExpandTests.test_mapping_is_balanced) ... ok
+test_float_literal_always_has_decimal_point (tests.test_expand.ExportCppTests.test_float_literal_always_has_decimal_point) ... ok
+test_v2_export_sets_feature_macro (tests.test_expand.ExportCppTests.test_v2_export_sets_feature_macro) ... ok
+test_irregular_objects_stay_on_python (tests.test_fast_opponents.FallbackTests.test_irregular_objects_stay_on_python) ... ok
+test_reset_restores_initial_rng (tests.test_fast_opponents.FallbackTests.test_reset_restores_initial_rng) ... ok
+test_auto_declines_mixed_field_and_accepts_rule_field (tests.test_fast_opponents.GpuAdapterTests.test_auto_declines_mixed_field_and_accepts_rule_field) ... ok
+test_every_catalog_config_matches_python (tests.test_fast_opponents.ParityTests.test_every_catalog_config_matches_python) ... ok
+test_mixed_batch_matches_python (tests.test_fast_opponents.ParityTests.test_mixed_batch_matches_python) ... ok
+test_stochastic_rows_match_exactly (tests.test_fast_opponents.ParityTests.test_stochastic_rows_match_exactly) ... ok
+test_voting_portfolio_is_reproducible (tests.test_fast_opponents.ParityTests.test_voting_portfolio_is_reproducible) ... ok
+test_all_rule_configs_encode (tests.test_fast_opponents.SpecEncodingTests.test_all_rule_configs_encode) ... ok
+test_type_count_matches_native (tests.test_fast_opponents.SpecEncodingTests.test_type_count_matches_native) ... ok
+test_unsupported_objects_have_no_spec (tests.test_fast_opponents.SpecEncodingTests.test_unsupported_objects_have_no_spec) ... ok
+test_small_batch_keeps_python_path (tests.test_fast_opponents.TrainingIntegrationTests.test_small_batch_keeps_python_path) ... ok
+test_vector_env_fast_matches_python (tests.test_fast_opponents.TrainingIntegrationTests.test_vector_env_fast_matches_python) ... ok
+test_cpp_v2_matches_python (tests.test_features_v2.FeaturesV2CppTests.test_cpp_v2_matches_python) ... ok
+test_functional_and_incremental_match_python (tests.test_features_v2.FeaturesV2GpuTests.test_functional_and_incremental_match_python) ... ok
+test_periodic_and_response_features (tests.test_features_v2.FeaturesV2PythonTests.test_periodic_and_response_features) ... ok
+test_v2_is_v1_prefix_plus_12_features (tests.test_features_v2.FeaturesV2PythonTests.test_v2_is_v1_prefix_plus_12_features) ... ok
+test_auto_reset_and_scores (tests.test_gpu_env.GPUEnvParityTests.test_auto_reset_and_scores) ... ok
+test_learned_policy_argmax_matches_reference (tests.test_gpu_env.GPUEnvParityTests.test_learned_policy_argmax_matches_reference) ... ok
+test_mixed_training_population_matches_reference (tests.test_gpu_env.GPUEnvParityTests.test_mixed_training_population_matches_reference) ... ok
+test_observations_are_incremental_21_features (tests.test_gpu_env.GPUEnvParityTests.test_observations_are_incremental_21_features) ... ok
+test_rules_match_reference (tests.test_gpu_env.GPUEnvParityTests.test_rules_match_reference) ... ok
+test_torch_snapshot_argmax_matches_reference (tests.test_gpu_env.GPUEnvParityTests.test_torch_snapshot_argmax_matches_reference) ... ok
+test_cuda_matches_cpu_env (tests.test_gpu_env.GPUSmokeTests.test_cuda_matches_cpu_env) ... ok
+test_red_rollout_with_gpu_env (tests.test_gpu_env.GPUSmokeTests.test_red_rollout_with_gpu_env) ... ok
+test_trainer_gpu_env_smoke (tests.test_gpu_env.GPUSmokeTests.test_trainer_gpu_env_smoke) ... ok
+test_concat_tensor_rollouts (tests.test_gpu_env.TensorRolloutTests.test_concat_tensor_rollouts) ... ok
+test_gae_matches_numpy (tests.test_gpu_env.TensorRolloutTests.test_gae_matches_numpy) ... ok
+test_update_accepts_tensor_rollout (tests.test_gpu_env.TensorRolloutTests.test_update_accepts_tensor_rollout) ... ok
+test_missing_micro_history_is_minus_one (tests.test_gpu_features.Feature21Tests.test_missing_micro_history_is_minus_one) ... ok
+test_v1_and_v2_functional_and_incremental (tests.test_gpu_features.Feature21Tests.test_v1_and_v2_functional_and_incremental) ... ok
+test_constant_and_alternating_histories (tests.test_gpu_features.Feature85Tests.test_constant_and_alternating_histories) ... ok
+test_float32_error_bound (tests.test_gpu_features.Feature85Tests.test_float32_error_bound) ... ok
+test_functional_and_incremental_match_reference (tests.test_gpu_features.Feature85Tests.test_functional_and_incremental_match_reference) ... ok
+test_sample_v5_routing (tests.test_gpu_parity.CandidateRoutingTests.test_sample_v5_routing) ... ok
+test_support_detection (tests.test_gpu_parity.CandidateRoutingTests.test_support_detection) ... ok
+test_cpu_and_gpu_result_values_are_identical (tests.test_gpu_parity.ProtocolCliGpuTests.test_cpu_and_gpu_result_values_are_identical) ... Per-opponent mean
+Final-tuned               549.89
+
+Family means
+strategy                    adaptive      defect   forgiving        late        nice    punitive      random        wild
+Final-tuned                   531.18      573.71      562.67      458.38      598.69      602.44      486.92      585.33
+
+Suite-weighted means
+strategy                   original       late       grim      noise    complex      smart   punitive     random       wide      avg    worst
+Final-tuned                  555.74     532.79     570.98     551.24     540.52     550.42     569.75     522.61     549.52   549.29   522.61
+
+written /tmp/tmpx21li0ny/matchup.csv
+written /tmp/tmpx21li0ny/matchup_suite_weighted.csv
+written /tmp/tmpx21li0ny/matchup_families.csv
+written /tmp/tmpx21li0ny/matchup.json
+written /tmp/tmp24x6kg5q/wide.csv (2 candidates × 2 opponents)
+written /tmp/tmp24x6kg5q/scores.csv (4 rows)
+written /tmp/tmpwi_7ov_u/weights.hpp (133413 bytes)
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+workers 1 (requested=1, cpu=24, ram_available=24.6GB, chunks=2+0x2, field_reuse=on)
+mode=argmax gpu=off enabled=False (disabled by --gpu off); gpu candidates=0, cpu candidates=3
+progress fields 0/2 tasks 1/4 tier=test_v7 candidate=Final-tuned elapsed=3.3s eta=9.8s
+progress fields 2/2 tasks 4/4 tier=test_v7 candidate=GRU elapsed=3.8s eta=0.0s
+
+Protocol v4 evaluation (2 fields, n=24, workers=1)
+  SelfPlay-GRU         test_v7=479.94
+  GRU                  test_v7=479.58
+  Final-tuned          test_v7=478.52
+
+written /tmp/tmpzg3z6afq/cpu.json
+test_v7 NOT consumed (locked by policy); results are provisional
+GPU routing: 2 candidate(s) batched, 1 candidate(s) on CPU
+fast rules: native C++ bank available for rule opponents (auto enables it only on rule-dominated fields)
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+workers 1 (requested=1, cpu=24, ram_available=24.6GB, chunks=1+1x2, field_reuse=on)
+mode=argmax gpu=on enabled=True (CUDA available); gpu candidates=2, cpu candidates=1
+split pools: cpu=1 gpu=1 (CUDA concurrency limited to 1)
+progress fields 0/2 tasks 1/3 tier=test_v7 candidate=Final-tuned elapsed=3.0s eta=6.1s
+progress fields 2/2 tasks 3/3 tier=test_v7 candidate=GRU elapsed=7.6s eta=0.0s
+ok
+test_sample_mode_stays_on_cpu (tests.test_gpu_parity.ProtocolCliGpuTests.test_sample_mode_stays_on_cpu) ... 
+Protocol v4 evaluation (2 fields, n=24, workers=1)
+  SelfPlay-GRU         test_v7=479.94
+  GRU                  test_v7=479.58
+  Final-tuned          test_v7=478.52
+
+written /tmp/tmpzg3z6afq/gpu.json
+test_v7 NOT consumed (locked by policy); results are provisional
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+workers 1 (requested=1, cpu=24, ram_available=24.6GB, chunks=2+0x2, field_reuse=on)
+mode=sample gpu=off enabled=False (disabled by --gpu off); gpu candidates=0, cpu candidates=3
+progress fields 0/1 tasks 1/2 tier=test_v7 candidate=Final-tuned elapsed=2.9s eta=2.9s
+progress fields 1/1 tasks 2/2 tier=test_v7 candidate=GRU elapsed=3.1s eta=0.0s
+
+Protocol v4 evaluation (1 fields, n=16, workers=1)
+  SelfPlay-GRU         test_v7=479.94
+  GRU                  test_v7=497.94
+  Final-tuned          test_v7=484.88
+
+written /tmp/tmp3g8ja_33/plain.json
+test_v7 NOT consumed (locked by policy); results are provisional
+WARNING: --gpu on only supports --mode argmax or --sample-rng per-match; sample mode stays on CPU (Protocol v4 RNG contract)
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+workers 1 (requested=1, cpu=24, ram_available=24.6GB, chunks=2+0x2, field_reuse=on)
+mode=sample gpu=on enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=3
+progress fields 0/1 tasks 1/2 tier=test_v7 candidate=Final-tuned elapsed=3.0s eta=3.0s
+progress fields 1/1 tasks 2/2 tier=test_v7 candidate=GRU elapsed=3.1s eta=0.0s
+ok
+test_sample_v5_enables_gpu (tests.test_gpu_parity.ProtocolCliGpuTests.test_sample_v5_enables_gpu) ... 
+Protocol v4 evaluation (1 fields, n=16, workers=1)
+  SelfPlay-GRU         test_v7=479.94
+  GRU                  test_v7=497.94
+  Final-tuned          test_v7=484.88
+
+written /tmp/tmp3g8ja_33/auto.json
+test_v7 NOT consumed (locked by policy); results are provisional
+GPU routing: 2 candidate(s) batched, 1 candidate(s) on CPU
+fast rules: native C++ bank available for rule opponents (auto enables it only on rule-dominated fields)
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+workers 1 (requested=1, cpu=24, ram_available=24.6GB, chunks=1+1x2, field_reuse=on)
+mode=sample gpu=on enabled=True (CUDA available; Protocol v5 per-match sample RNG); gpu candidates=2, cpu candidates=1
+split pools: cpu=1 gpu=1 (CUDA concurrency limited to 1)
+progress fields 0/1 tasks 1/2 tier=test_v7 candidate=Final-tuned elapsed=2.9s eta=2.9s
+progress fields 1/1 tasks 2/2 tier=test_v7 candidate=GRU elapsed=7.4s eta=0.0s
+ok
+test_cpu_gpu_sample_parity (tests.test_gpu_parity.SampleV5ParityTests.test_cpu_gpu_sample_parity) ... ok
+test_sample_policy_opponents_are_batched (tests.test_gpu_parity.SampleV5ParityTests.test_sample_policy_opponents_are_batched) ... ok
+test_batch_size_does_not_change_row_zero (tests.test_gpu_parity.SimulatorParityTests.test_batch_size_does_not_change_row_zero) ... ok
+test_learned_candidates_match_cpu_actions (tests.test_gpu_parity.SimulatorParityTests.test_learned_candidates_match_cpu_actions) ... ok
+test_multifield_batch_matches_single_field (tests.test_gpu_parity.SimulatorParityTests.test_multifield_batch_matches_single_field) ... ok
+test_neural_policy (tests.test_gpu_policies.MLPPolicyTests.test_neural_policy) ... ok
+test_rl_deployable_export (tests.test_gpu_policies.MLPPolicyTests.test_rl_deployable_export) ... ok
+test_rl_policy_checkpoint (tests.test_gpu_policies.MLPPolicyTests.test_rl_policy_checkpoint) ... ok
+test_gru_actions_and_logits (tests.test_gpu_policies.RecurrentPolicyTests.test_gru_actions_and_logits) ... ok
+test_selfplay_actions_and_logits (tests.test_gpu_policies.RecurrentPolicyTests.test_selfplay_actions_and_logits) ... ok
+test_package_layers_exist (tests.test_layout.LayoutTests.test_package_layers_exist) ... ok
+test_path_helpers_are_absolute (tests.test_layout.LayoutTests.test_path_helpers_are_absolute) ... ok
+test_pyproject_declares_package (tests.test_layout.LayoutTests.test_pyproject_declares_package) ... ok
+test_required_artifacts (tests.test_layout.LayoutTests.test_required_artifacts) ... ok
+test_top_level_directories (tests.test_layout.LayoutTests.test_top_level_directories) ... ok
+test_cli_smoke (tests.test_league.LeagueCliTests.test_cli_smoke) ... 
+Protocol v5 GPU sample (1 fields, n=16, workers=1)
+  SelfPlay-GRU         test_v7=482.50
+  GRU                  test_v7=504.06
+  Final-tuned          test_v7=484.88
+
+written /tmp/tmpruxzl3vu/v5.json
+test_v7 NOT consumed (locked by policy); results are provisional
+E0 league: candidates=['Final-tuned', 'Triple-majority'] suites=['heldout_v2'] workers=2
+  suite:heldout_v2 14/148 tasks (0.1s)
+  suite:heldout_v2 28/148 tasks (0.1s)
+  suite:heldout_v2 42/148 tasks (0.1s)
+  suite:heldout_v2 56/148 tasks (0.1s)
+  suite:heldout_v2 70/148 tasks (0.2s)
+  suite:heldout_v2 84/148 tasks (0.2s)
+  suite:heldout_v2 98/148 tasks (0.2s)
+  suite:heldout_v2 112/148 tasks (0.2s)
+  suite:heldout_v2 126/148 tasks (0.2s)
+  suite:heldout_v2 140/148 tasks (0.3s)
+  suite:heldout_v2 148/148 tasks (0.3s)
+  cross-play 1/4 tasks (0.1s)
+  cross-play 2/4 tasks (0.1s)
+  cross-play 3/4 tasks (0.1s)
+  cross-play 4/4 tasks (0.1s)
+ok
+test_config_loader (tests.test_league.LeaguePrimitiveTests.test_config_loader) ... ok
+test_cross_play_task_and_matrices (tests.test_league.LeaguePrimitiveTests.test_cross_play_task_and_matrices) ... ok
+test_red_report_normalizes_against_baseline (tests.test_league.LeaguePrimitiveTests.test_red_report_normalizes_against_baseline) ... ok
+test_red_task (tests.test_league.LeaguePrimitiveTests.test_red_task) ... ok
+test_summarize_rows_min_norm_and_cvar (tests.test_league.LeaguePrimitiveTests.test_summarize_rows_min_norm_and_cvar) ... ok
+test_factory_is_seed_deterministic (tests.test_league.OpponentSuiteTests.test_factory_is_seed_deterministic) ... ok
+test_heldout_v2_is_fresh_and_structured (tests.test_league.OpponentSuiteTests.test_heldout_v2_is_fresh_and_structured) ... ok
+test_heldout_v3_is_disjoint_from_v2 (tests.test_league.OpponentSuiteTests.test_heldout_v3_is_disjoint_from_v2) ... ok
+test_heldout_v4_is_disjoint_from_v3 (tests.test_league.OpponentSuiteTests.test_heldout_v4_is_disjoint_from_v3) ... ok
+test_known_suites_resolve (tests.test_league.OpponentSuiteTests.test_known_suites_resolve) ... ok
+test_fail_on_family_collapse (tests.test_league_meta.GateDTests.test_fail_on_family_collapse) ... ok
+test_fail_when_official_drops_too_much (tests.test_league_meta.GateDTests.test_fail_when_official_drops_too_much) ... ok
+test_pass_when_exploitability_drops (tests.test_league_meta.GateDTests.test_pass_when_exploitability_drops) ... ok
+test_missing_weight_raises (tests.test_league_meta.ManifestTests.test_missing_weight_raises) ... ok
+test_roundtrip_and_weights (tests.test_league_meta.ManifestTests.test_roundtrip_and_weights) ... ok
+test_builds_weighted_manifest_and_rejects_overlap (tests.test_league_meta.MetaCliTests.test_builds_weighted_manifest_and_rejects_overlap) ... ok
+test_deterministic (tests.test_league_meta.MetaWeightTests.test_deterministic) ... ok
+test_uniform_mix_regularises (tests.test_league_meta.MetaWeightTests.test_uniform_mix_regularises) ... ok
+test_weights_sum_to_one_and_prefer_strong_red (tests.test_league_meta.MetaWeightTests.test_weights_sum_to_one_and_prefer_strong_red) ... ok
+test_extracts_red_by_blue_matrix (tests.test_league_meta.PayoffMatrixTests.test_extracts_red_by_blue_matrix) ... ok
+test_missing_pair_raises (tests.test_league_meta.PayoffMatrixTests.test_missing_pair_raises) ... ok
+test_candidate_loads_and_decides (tests.test_meta.LearnedGateTests.test_candidate_loads_and_decides) ... ok
+test_gate_features_shape (tests.test_meta.LearnedGateTests.test_gate_features_shape) ... ok
+test_cooperative_start_does_not_switch (tests.test_meta.RLSwitchTests.test_cooperative_start_does_not_switch) ... ok
+test_reset_clears_switch (tests.test_meta.RLSwitchTests.test_reset_clears_switch) ... ok
+test_switch_requires_early_mutual_defection (tests.test_meta.RLSwitchTests.test_switch_requires_early_mutual_defection) ... ok
+test_antisymmetrize (tests.test_metagame.MatrixTests.test_antisymmetrize) ... ok
+test_elo_symmetric_is_equal (tests.test_metagame.MatrixTests.test_elo_symmetric_is_equal) ... ok
+test_elo_transitive_order (tests.test_metagame.MatrixTests.test_elo_transitive_order) ... ok
+test_exploitability_of_pure_strategy (tests.test_metagame.MatrixTests.test_exploitability_of_pure_strategy) ... ok
+test_maximin_deterministic_and_rectangular (tests.test_metagame.MatrixTests.test_maximin_deterministic_and_rectangular) ... ok
+test_maximin_dominated_row_gets_no_weight (tests.test_metagame.MatrixTests.test_maximin_dominated_row_gets_no_weight) ... ok
+test_maximin_rps_is_uniform (tests.test_metagame.MatrixTests.test_maximin_rps_is_uniform) ... ok
+test_nash_average_deterministic (tests.test_metagame.MatrixTests.test_nash_average_deterministic) ... ok
+test_rps_meta_strategy (tests.test_metagame.MatrixTests.test_rps_meta_strategy) ... ok
+test_defect_expert (tests.test_moe.MoETests.test_defect_expert) ... ok
+test_only_selected_expert_is_called (tests.test_moe.MoETests.test_only_selected_expert_is_called) ... ok
+test_reset_resets_experts_and_gate (tests.test_moe.MoETests.test_reset_resets_experts_and_gate) ... ok
+test_risky_and_unknown_fall_back (tests.test_moe.MoETests.test_risky_and_unknown_fall_back) ... ok
+test_response_veto_turns_safe_into_risky (tests.test_moe.ThreeWayGateTests.test_response_veto_turns_safe_into_risky) ... ok
+test_safe_and_risky_thresholds (tests.test_moe.ThreeWayGateTests.test_safe_and_risky_thresholds) ... ok
+test_warmup_is_unknown (tests.test_moe.ThreeWayGateTests.test_warmup_is_unknown) ... ok
+test_label_requires_excitation (tests.test_moe.ThreeWayLabelTests.test_label_requires_excitation) ... ok
+test_label_vector (tests.test_moe.ThreeWayLabelTests.test_label_vector) ... ok
+test_calibrated_three_way_labels (tests.test_opponent_model.CounterfactualDataTests.test_calibrated_three_way_labels) ... ok
+test_cooperator_and_defector_are_unresponsive (tests.test_opponent_model.CounterfactualDataTests.test_cooperator_and_defector_are_unresponsive) ... ok
+test_counterfactual_shapes_and_branch_count (tests.test_opponent_model.CounterfactualDataTests.test_counterfactual_shapes_and_branch_count) ... ok
+test_repeated_counterfactual_probabilities (tests.test_opponent_model.CounterfactualDataTests.test_repeated_counterfactual_probabilities) ... ok
+test_tft_is_responsive_to_counterfactual_action (tests.test_opponent_model.CounterfactualDataTests.test_tft_is_responsive_to_counterfactual_action) ... ok
+test_collect_dataset_shapes (tests.test_opponent_model.DatasetTests.test_collect_dataset_shapes) ... ok
+test_collect_dataset_with_stats (tests.test_opponent_model.DatasetTests.test_collect_dataset_with_stats) ... ok
+test_concat_datasets_preserves_rows (tests.test_opponent_model.ExploratoryDataTests.test_concat_datasets_preserves_rows) ... ok
+test_exploration_is_deterministic (tests.test_opponent_model.ExploratoryDataTests.test_exploration_is_deterministic) ... ok
+test_exploration_templates_are_valid_and_exciting (tests.test_opponent_model.ExploratoryDataTests.test_exploration_templates_are_valid_and_exciting) ... ok
+test_exploratory_dataset_has_response_excitation (tests.test_opponent_model.ExploratoryDataTests.test_exploratory_dataset_has_response_excitation) ... ok
+test_gate_allows_high_confidence_safe_class (tests.test_opponent_model.GateTests.test_gate_allows_high_confidence_safe_class) ... ok
+test_gate_rejects_forbidden_class (tests.test_opponent_model.GateTests.test_gate_rejects_forbidden_class) ... ok
+test_gate_rejects_low_confidence_and_warmup (tests.test_opponent_model.GateTests.test_gate_rejects_low_confidence_and_warmup) ... ok
+test_gate_response_model_veto (tests.test_opponent_model.GateTests.test_gate_response_model_veto) ... ok
+test_allow_label (tests.test_opponent_model.LabelTests.test_allow_label) ... ok
+test_coarse_class (tests.test_opponent_model.LabelTests.test_coarse_class) ... ok
+test_suite_class (tests.test_opponent_model.LabelTests.test_suite_class) ... ok
+test_type_split_is_disjoint_and_stratified (tests.test_opponent_model.LabelTests.test_type_split_is_disjoint_and_stratified) ... ok
+test_mlp_binary_gate_scores (tests.test_opponent_model.ModelTests.test_mlp_binary_gate_scores) ... ok
+test_mlp_learns_separable_data_and_roundtrips (tests.test_opponent_model.ModelTests.test_mlp_learns_separable_data_and_roundtrips) ... ok
+test_next_action_binary_model (tests.test_opponent_model.ModelTests.test_next_action_binary_model) ... ok
+test_save_load_roundtrip (tests.test_opponent_model.ModelTests.test_save_load_roundtrip) ... ok
+test_softmax_learns_separable_data (tests.test_opponent_model.ModelTests.test_softmax_learns_separable_data) ... ok
+test_act_only_is_normalised (tests.test_policies.PolicyInterfaceTests.test_act_only_is_normalised) ... ok
+test_ensure_policy_is_idempotent (tests.test_policies.PolicyInterfaceTests.test_ensure_policy_is_idempotent) ... ok
+test_invalid_action_is_rejected (tests.test_policies.PolicyInterfaceTests.test_invalid_action_is_rejected) ... ok
+test_move_only_is_normalised (tests.test_policies.PolicyInterfaceTests.test_move_only_is_normalised) ... ok
+test_aliases (tests.test_policies.RegistryTests.test_aliases) ... ok
+test_all_candidates_build_and_act (tests.test_policies.RegistryTests.test_all_candidates_build_and_act) ... ok
+test_rl_export_matches_actor_critic (tests.test_policies.RegistryTests.test_rl_export_matches_actor_critic) ... ok
+test_sets_and_resolution (tests.test_policies.RegistryTests.test_sets_and_resolution) ... ok
+test_stateful_gru_reset (tests.test_policies.RegistryTests.test_stateful_gru_reset) ... ok
+test_submission_boundaries (tests.test_policies.RegistryTests.test_submission_boundaries) ... ok
+test_tuned_defaults_are_available (tests.test_policies.RegistryTests.test_tuned_defaults_are_available) ... ok
+test_gru_step_and_hidden_match_python (tests.test_policy_native.NativePolicyParityTests.test_gru_step_and_hidden_match_python) ... ok
+test_mlp_logits_match_python (tests.test_policy_native.NativePolicyParityTests.test_mlp_logits_match_python) ... ok
+test_sample_actions_and_rng_match_python (tests.test_policy_native.NativePolicyParityTests.test_sample_actions_and_rng_match_python) ... ok
+test_selfplay_forward_matches_python (tests.test_policy_native.NativePolicyParityTests.test_selfplay_forward_matches_python) ... ok
+test_candidate_spec_entries (tests.test_policy_pool.PolicyPoolTests.test_candidate_spec_entries) ... ok
+test_empty_and_unknown (tests.test_policy_pool.PolicyPoolTests.test_empty_and_unknown) ... ok
+test_field_is_deterministic (tests.test_policy_pool.PolicyPoolTests.test_field_is_deterministic) ... ok
+test_field_uses_requested_count (tests.test_policy_pool.PolicyPoolTests.test_field_uses_requested_count) ... ok
+test_loads_supported_formats (tests.test_policy_pool.PolicyPoolTests.test_loads_supported_formats) ... ok
+test_weight_length_must_match (tests.test_policy_pool.PolicyPoolTests.test_weight_length_must_match) ... ok
+test_weighted_sampling_is_deterministic (tests.test_policy_pool.PolicyPoolTests.test_weighted_sampling_is_deterministic) ... ok
+test_zero_weight_entry_is_never_sampled (tests.test_policy_pool.PolicyPoolTests.test_zero_weight_entry_is_never_sampled) ... ok
+test_audit_has_no_errors (tests.test_protocol.ProtocolCatalogTests.test_audit_has_no_errors) ... ok
+test_axelrod_families_are_split (tests.test_protocol.ProtocolCatalogTests.test_axelrod_families_are_split) ... ok
+test_catalog_is_deterministic (tests.test_protocol.ProtocolCatalogTests.test_catalog_is_deterministic) ... ok
+test_catalog_keys_are_unique (tests.test_protocol.ProtocolCatalogTests.test_catalog_keys_are_unique) ... ok
+test_complex_families_are_split (tests.test_protocol.ProtocolCatalogTests.test_complex_families_are_split) ... ok
+test_dev_family_is_held_out (tests.test_protocol.ProtocolCatalogTests.test_dev_family_is_held_out) ... ok
+test_every_tier_has_entries (tests.test_protocol.ProtocolCatalogTests.test_every_tier_has_entries) ... ok
+test_no_concrete_config_overlap (tests.test_protocol.ProtocolCatalogTests.test_no_concrete_config_overlap) ... ok
+test_test_only_families_are_held_out (tests.test_protocol.ProtocolCatalogTests.test_test_only_families_are_held_out) ... ok
+test_eval_cli_writes_dev_result (tests.test_protocol.ProtocolCliTests.test_eval_cli_writes_dev_result) ... written /tmp/tmpnuao5dw8/report.json
+written /tmp/tmpnuao5dw8/README.md
+fingerprint 29a80722a4f9f9fe2d63d2113b1ae8b83583ec831a86e8bc152f372c22cc68d3
+Final-tuned          mean=  486.03 min_norm=  1.0000 red_blue=       -
+Triple-majority      mean=  480.28 min_norm=  0.9553 red_blue=       -
+gate: PASS
+train reds: Red-A=1.000
+held-out reds (excluded): Red-B
+worst-case diff 400.00 vs Final-tuned
+written /tmp/tmp1jkwck83/pool.json (1 entries)
+written /tmp/tmp1jkwck83/summary.json
+workers 1 (requested=1, cpu=24, ram_available=24.4GB, chunks=1+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=1
+progress fields 1/1 tasks 1/1 tier=dev_param candidate=Final-tuned elapsed=2.9s eta=0.0s
+ok
+test_acknowledge_once_cannot_unlock_locked_test (tests.test_protocol.ProtocolConsumptionLockCliTests.test_acknowledge_once_cannot_unlock_locked_test) ... ok
+test_red_test_tier_is_provisional_with_no_consume (tests.test_protocol.ProtocolConsumptionLockCliTests.test_red_test_tier_is_provisional_with_no_consume) ... 
+Protocol v4 evaluation (1 fields, n=8, workers=1)
+  Final-tuned          dev_param=533.62
+
+written /tmp/tmpfsvxpx_h/eval.json
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+WARNING: --acknowledge-once/--force cannot unlock test consumption and are ignored for this run
+workers 1 (requested=1)
+ok
+test_test_tier_is_provisional_with_no_consume (tests.test_protocol.ProtocolConsumptionLockCliTests.test_test_tier_is_provisional_with_no_consume) ... 
+test_red: 1 seeds
+  Final-tuned          blue= 358.00 red= 638.00 diff=-280.00 red_win=100.0%
+written /tmp/tmp3rv3l6r0/red.json
+test_red NOT consumed (locked by policy); results are provisional
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+WARNING: --acknowledge-once/--force cannot unlock test consumption and are ignored for this run
+workers 1 (requested=1, cpu=24, ram_available=24.4GB, chunks=1+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=1
+progress fields 1/1 tasks 1/1 tier=test_v7 candidate=Final-tuned elapsed=2.8s eta=0.0s
+ok
+test_test_tier_still_requires_explicit_flag (tests.test_protocol.ProtocolConsumptionLockCliTests.test_test_tier_still_requires_explicit_flag) ... ok
+test_unlocked_policy_can_consume (tests.test_protocol.ProtocolConsumptionLockCliTests.test_unlocked_policy_can_consume) ... 
+Protocol v4 evaluation (1 fields, n=8, workers=1)
+  Final-tuned          test_v7=474.75
+
+written /tmp/tmps3dg70s2/test.json
+test_v7 NOT consumed (locked by policy); results are provisional
+workers 1 (requested=1, cpu=24, ram_available=24.4GB, chunks=1+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=1
+progress fields 1/1 tasks 1/1 tier=test_v7 candidate=Final-tuned elapsed=2.8s eta=0.0s
+ok
+test_dev_complex_contains_complex_families (tests.test_protocol.ProtocolFieldTests.test_dev_complex_contains_complex_families) ... ok
+test_dev_family_contains_only_heldout_families (tests.test_protocol.ProtocolFieldTests.test_dev_family_contains_only_heldout_families) ... ok
+test_field_size_and_determinism (tests.test_protocol.ProtocolFieldTests.test_field_size_and_determinism) ... ok
+test_protocol_validation_distributions (tests.test_protocol.ProtocolFieldTests.test_protocol_validation_distributions) ... ok
+test_red_pools_are_separate (tests.test_protocol.ProtocolFieldTests.test_red_pools_are_separate) ... ok
+test_test_v7_contains_all_test_only_families (tests.test_protocol.ProtocolFieldTests.test_test_v7_contains_all_test_only_families) ... ok
+test_test_v7_mixture_weights (tests.test_protocol.ProtocolFieldTests.test_test_v7_mixture_weights) ... ok
+test_train_profiles_are_training_distributions (tests.test_protocol.ProtocolFieldTests.test_train_profiles_are_training_distributions) ... ok
+test_weak_complex_profile_uses_train_tier_only (tests.test_protocol.ProtocolFieldTests.test_weak_complex_profile_uses_train_tier_only) ... ok
+test_manifest_roundtrip (tests.test_protocol.ProtocolManifestTests.test_manifest_roundtrip) ... ok
+test_test_tier_no_consume_is_provisional (tests.test_protocol.ProtocolNoConsumeCliTests.test_test_tier_no_consume_is_provisional) ... 
+Protocol v4 evaluation (1 fields, n=8, workers=1)
+  Final-tuned          test_v7=474.75
+
+written /tmp/tmp95k98ow2/test.json
+test_v7 usage recorded
+WARNING: test consumption is locked by /home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json; running provisionally (selection_eligible=false)
+workers 1 (requested=1, cpu=24, ram_available=23.7GB, chunks=1+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=1
+progress fields 1/1 tasks 1/1 tier=test_v7 candidate=Final-tuned elapsed=2.8s eta=0.0s
+ok
+test_red_cli_writes_result (tests.test_protocol.ProtocolRedCliTests.test_red_cli_writes_result) ... 
+Protocol v4 evaluation (1 fields, n=8, workers=1)
+  Final-tuned          test_v7=474.75
+
+written /tmp/tmpau_j5ns2/test.json
+test_v7 NOT consumed (locked by policy); results are provisional
+workers 1 (requested=1)
+ok
+test_missing_policy_fails_closed (tests.test_protocol.ProtocolTestPolicyTests.test_missing_policy_fails_closed) ... ok
+test_only_policy_can_unlock_consumption (tests.test_protocol.ProtocolTestPolicyTests.test_only_policy_can_unlock_consumption) ... ok
+test_repository_policy_locks_consumption (tests.test_protocol.ProtocolTestPolicyTests.test_repository_policy_locks_consumption) ... ok
+test_different_candidate_is_allowed (tests.test_protocol.ProtocolUsageTests.test_different_candidate_is_allowed) ... ok
+test_record_usage_allowed_when_unlocked (tests.test_protocol.ProtocolUsageTests.test_record_usage_allowed_when_unlocked) ... ok
+test_record_usage_refuses_when_locked (tests.test_protocol.ProtocolUsageTests.test_record_usage_refuses_when_locked) ... ok
+test_usage_guard_and_force (tests.test_protocol.ProtocolUsageTests.test_usage_guard_and_force) ... ok
+test_candidate_order_does_not_leak_rng (tests.test_protocol_scheduler.FieldRngTests.test_candidate_order_does_not_leak_rng) ... ok
+test_field_snapshot_restores_opponent_streams (tests.test_protocol_scheduler.FieldRngTests.test_field_snapshot_restores_opponent_streams) ... ok
+test_snapshot_covers_learned_policy_opponents (tests.test_protocol_scheduler.FieldRngTests.test_snapshot_covers_learned_policy_opponents) ... ok
+test_unsafe_field_types_disable_reuse (tests.test_protocol_scheduler.FieldRngTests.test_unsafe_field_types_disable_reuse) ... ok
+test_chunked_field_task_matches_rebuild_per_candidate (tests.test_protocol_scheduler.FieldSchedulingTests.test_chunked_field_task_matches_rebuild_per_candidate) ... ok
+test_field_reuse_off_rebuilds_and_matches (tests.test_protocol_scheduler.FieldSchedulingTests.test_field_reuse_off_rebuilds_and_matches) ... ok
+test_test_v7_policy_opponents_match_rebuild (tests.test_protocol_scheduler.FieldSchedulingTests.test_test_v7_policy_opponents_match_rebuild) ... ok
+test_sampler_records_process_tree (tests.test_protocol_scheduler.MemorySamplerTests.test_sampler_records_process_tree) ... ok
+test_profile_accumulator_reports_family_cost (tests.test_protocol_scheduler.ProtocolCliSchedulerTests.test_profile_accumulator_reports_family_cost) ... ok
+test_profile_is_written (tests.test_protocol_scheduler.ProtocolCliSchedulerTests.test_profile_is_written) ... 
+dev_red: 1 seeds
+  Final-tuned          blue= 380.00 red= 710.00 diff=-330.00 red_win=100.0%
+written /tmp/tmpwzf3_sjr/red.json
+workers 1 (requested=1, cpu=24, ram_available=23.7GB, chunks=2+0x2, field_reuse=on)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=3
+progress fields 0/2 tasks 1/4 tier=dev_param candidate=Triple-majority elapsed=3.6s eta=10.7s
+progress fields 2/2 tasks 4/4 tier=dev_param candidate=Resp3-tuned elapsed=4.6s eta=0.0s
+ok
+test_worker_count_and_candidate_order_are_equivalent (tests.test_protocol_scheduler.ProtocolCliSchedulerTests.test_worker_count_and_candidate_order_are_equivalent) ... 
+Protocol v4 evaluation (2 fields, n=256, workers=1)
+  Final-tuned          dev_param=537.53
+  Resp3-tuned          dev_param=550.28
+  Triple-majority      dev_param=544.51
+
+written /tmp/tmpoz4pvrg8/eval.json
+profile /tmp/tmpoz4pvrg8/profile_eval.json
+workers 1 (requested=1, cpu=24, ram_available=23.7GB, chunks=2+0x2, field_reuse=on)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=3
+progress fields 0/2 tasks 1/4 tier=dev_param candidate=Triple-majority elapsed=3.5s eta=10.6s
+progress fields 2/2 tasks 4/4 tier=dev_param candidate=Resp3-tuned elapsed=4.5s eta=0.0s
+
+Protocol v4 evaluation (2 fields, n=256, workers=1)
+  Final-tuned          dev_param=537.53
+  Resp3-tuned          dev_param=550.28
+  Triple-majority      dev_param=544.51
+
+written /tmp/tmp5265dl15/single.json
+workers 4 (requested=4, cpu=24, ram_available=23.8GB, chunks=2+0x2, field_reuse=on)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=3
+progress fields 0/2 tasks 1/4 tier=dev_param candidate=Resp3-tuned elapsed=3.1s eta=9.4s
+progress fields 2/2 tasks 4/4 tier=dev_param candidate=Triple-majority elapsed=3.8s eta=0.0s
+ok
+test_auto_respects_cpu_ram_and_cap (tests.test_protocol_scheduler.WorkerBudgetTests.test_auto_respects_cpu_ram_and_cap) ... ok
+test_auto_uses_cpu_budget (tests.test_protocol_scheduler.WorkerBudgetTests.test_auto_uses_cpu_budget) ... ok
+test_auto_uses_ram_budget (tests.test_protocol_scheduler.WorkerBudgetTests.test_auto_uses_ram_budget) ... ok
+test_chunks_are_balanced_and_lossless (tests.test_protocol_scheduler.WorkerBudgetTests.test_chunks_are_balanced_and_lossless) ... ok
+test_explicit_workers_are_not_capped (tests.test_protocol_scheduler.WorkerBudgetTests.test_explicit_workers_are_not_capped) ... ok
+test_chooses_deployable_blue (tests.test_psro.BlueRedMetaGameTests.test_chooses_deployable_blue) ... ok
+test_rejects_missing_side (tests.test_psro.BlueRedMetaGameTests.test_rejects_missing_side) ... ok
+test_report_contains_both_meta_strategies (tests.test_psro.BlueRedMetaGameTests.test_report_contains_both_meta_strategies) ... ok
+test_split_roles_and_rectangular_solution (tests.test_psro.BlueRedMetaGameTests.test_split_roles_and_rectangular_solution) ... ok
+test_uniform_mix_only_changes_training_weights (tests.test_psro.BlueRedMetaGameTests.test_uniform_mix_only_changes_training_weights) ... ok
+test_loads_paths_and_overrides (tests.test_psro.ConfigTests.test_loads_paths_and_overrides) ... ok
+test_oracle_command_contains_pool_and_reward_flags (tests.test_psro.ConfigTests.test_oracle_command_contains_pool_and_reward_flags) ... ok
+test_add_evaluates_new_row_and_column (tests.test_psro.MetaGameTests.test_add_evaluates_new_row_and_column) ... ok
+test_best_init_uses_deployable_blue_policy (tests.test_psro.MetaGameTests.test_best_init_uses_deployable_blue_policy) ... ok
+test_matrix_is_antisymmetric_and_payoff_is_recorded (tests.test_psro.MetaGameTests.test_matrix_is_antisymmetric_and_payoff_is_recorded) ... ok
+test_uniform_nash_has_zero_exploitability (tests.test_psro.MetaGameTests.test_uniform_nash_has_zero_exploitability) ... ok
+test_dominant_strategy_gets_weight_and_zero_exploitability (tests.test_psro.MetaSolveTests.test_dominant_strategy_gets_weight_and_zero_exploitability) ... ok
+test_accepts_spec_path_and_nested_entry (tests.test_psro.PopulationEntryTests.test_accepts_spec_path_and_nested_entry) ... ok
+test_population_roundtrip_and_duplicate_check (tests.test_psro.PopulationEntryTests.test_population_roundtrip_and_duplicate_check) ... ok
+test_rejects_missing_name_or_policy (tests.test_psro.PopulationEntryTests.test_rejects_missing_name_or_policy) ... ok
+test_serialised_paths_are_repo_relative (tests.test_psro.PopulationEntryTests.test_serialised_paths_are_repo_relative) ... ok
+test_dry_run_does_not_train_or_deploy (tests.test_psro.RunPSROTests.test_dry_run_does_not_train_or_deploy) ... 
+Protocol v4 evaluation (2 fields, n=256, workers=4)
+  Final-tuned          dev_param=537.53
+  Resp3-tuned          dev_param=550.28
+  Triple-majority      dev_param=544.51
+
+written /tmp/tmp5265dl15/parallel.json
+PSRO smoke: blue=2 red=1 seeds=2 rounds=1 workers=1
+  initial blue worst-case=0.000 exploitability=0.000 best_red=Red
+final blue worst-case=0.000 exploitability=0.000 best_red=Red
+ok
+test_fake_oracle_roundtrip_and_manifest (tests.test_psro.RunPSROTests.test_fake_oracle_roundtrip_and_manifest) ... PSRO smoke: blue=2 red=1 seeds=2 rounds=1 workers=1
+  initial blue worst-case=0.000 exploitability=0.000 best_red=Red
+  round 1: added PSRO-BR-01; exploitability 0.000 -> 0.000
+final blue worst-case=0.000 exploitability=0.000 best_red=Red
+ok
+test_loads_real_default_meta_strategy (tests.test_psro_policy.PSROMetaPolicyTests.test_loads_real_default_meta_strategy) ... ok
+test_samples_only_weighted_members_and_resets (tests.test_psro_policy.PSROMetaPolicyTests.test_samples_only_weighted_members_and_resets) ... ok
+test_uniform_fallback_and_reuse (tests.test_psro_policy.PSROMetaPolicyTests.test_uniform_fallback_and_reuse) ... ok
+test_deterministic_for_seed (tests.test_psro_policy.ScratchPolicyTests.test_deterministic_for_seed) ... ok
+test_random_policy_is_loadable_and_bounded (tests.test_psro_policy.ScratchPolicyTests.test_random_policy_is_loadable_and_bounded) ... ok
+test_empty_and_single (tests.test_risk.CVaRWeightTests.test_empty_and_single) ... ok
+test_equal_returns_are_uniform (tests.test_risk.CVaRWeightTests.test_equal_returns_are_uniform) ... ok
+test_worst_quantile_gets_extra_weight (tests.test_risk.CVaRWeightTests.test_worst_quantile_gets_extra_weight) ... ok
+test_zero_coef_is_uniform (tests.test_risk.CVaRWeightTests.test_zero_coef_is_uniform) ... ok
+test_penalty_subtracts_opponent_payoff (tests.test_risk.CompetitiveRewardTests.test_penalty_subtracts_opponent_payoff) ... ok
+test_zero_penalty_is_own_payoff (tests.test_risk.CompetitiveRewardTests.test_zero_penalty_is_own_payoff) ... ok
+test_empty_and_single (tests.test_risk.DROWeightTests.test_empty_and_single) ... ok
+test_floor_prevents_zero_weight (tests.test_risk.DROWeightTests.test_floor_prevents_zero_weight) ... ok
+test_upweights_worst_distribution (tests.test_risk.DROWeightTests.test_upweights_worst_distribution) ... ok
+test_zero_update_is_base (tests.test_risk.DROWeightTests.test_zero_update_is_base) ... ok
+test_high_concentration_is_near_base (tests.test_risk.DirichletTests.test_high_concentration_is_near_base) ... ok
+test_weights_sum_to_one_and_are_deterministic (tests.test_risk.DirichletTests.test_weights_sum_to_one_and_are_deterministic) ... ok
+test_zero_concentration_returns_base (tests.test_risk.DirichletTests.test_zero_concentration_returns_base) ... ok
+test_includes_strong_extortion_and_anchors (tests.test_robust.ExtortHardTests.test_includes_strong_extortion_and_anchors) ... ok
+test_registered_and_deterministic (tests.test_robust.ExtortHardTests.test_registered_and_deterministic) ... ok
+test_includes_periodic_and_anchors (tests.test_robust.PeriodicHardTests.test_includes_periodic_and_anchors) ... ok
+test_registered_and_deterministic (tests.test_robust.PeriodicHardTests.test_registered_and_deterministic) ... ok
+test_anchors_keep_cooperative_and_defecting_types (tests.test_robust.RobustDistributionTests.test_anchors_keep_cooperative_and_defecting_types) ... ok
+test_field_is_deterministic (tests.test_robust.RobustDistributionTests.test_field_is_deterministic) ... ok
+test_parameter_ranges_are_domain_randomized (tests.test_robust.RobustDistributionTests.test_parameter_ranges_are_domain_randomized) ... ok
+test_registered_as_training_distribution (tests.test_robust.RobustDistributionTests.test_registered_as_training_distribution) ... ok
+test_repair_distribution_is_registered_and_balanced (tests.test_robust.RobustDistributionTests.test_repair_distribution_is_registered_and_balanced) ... ok
+test_repair_field_is_deterministic (tests.test_robust.RobustDistributionTests.test_repair_field_is_deterministic) ... ok
+test_bc_collect_and_train (tests.test_selfplay.BCTests.test_bc_collect_and_train) ... epoch 1/1 loss=0.7349 acc=0.0000
+ok
+test_determinism (tests.test_selfplay.EnvironmentTests.test_determinism) ... ok
+test_simultaneous_decisions (tests.test_selfplay.EnvironmentTests.test_simultaneous_decisions) ... ok
+test_vector_matches_single (tests.test_selfplay.EnvironmentTests.test_vector_matches_single) ... ok
+test_export_inference_matches_torch (tests.test_selfplay.ModelTests.test_export_inference_matches_torch) ... ok
+test_gradient_isolation (tests.test_selfplay.ModelTests.test_gradient_isolation) ... ok
+test_step_matches_sequence (tests.test_selfplay.ModelTests.test_step_matches_sequence) ... ok
+test_endgame_flag (tests.test_selfplay.ObservationContractTests.test_endgame_flag) ... ok
+test_response_gap_separates_reciprocal_and_autonomous (tests.test_selfplay.ObservationContractTests.test_response_gap_separates_reciprocal_and_autonomous) ... ok
+test_shape_and_padding (tests.test_selfplay.ObservationContractTests.test_shape_and_padding) ... ok
+test_training_and_inference_contract_match (tests.test_selfplay.ObservationContractTests.test_training_and_inference_contract_match) ... ok
+test_family_mixture_mean (tests.test_selfplay.PopulationTests.test_family_mixture_mean) ... ok
+test_labels_cover_all_families (tests.test_selfplay.PopulationTests.test_labels_cover_all_families) ... ok
+test_validation_suite_is_held_out (tests.test_selfplay.PopulationTests.test_validation_suite_is_held_out) ... ok
+test_absolute_field_target (tests.test_selfplay.RedConstraintTests.test_absolute_field_target) ... ok
+test_no_penalty_before_window (tests.test_selfplay.RedConstraintTests.test_no_penalty_before_window) ... ok
+test_penalty_formula (tests.test_selfplay.RedConstraintTests.test_penalty_formula) ... ok
+test_concat_different_batch_sizes (tests.test_selfplay.RolloutConcatTests.test_concat_different_batch_sizes) ... ok
+test_gae_reference (tests.test_selfplay.RolloutTests.test_gae_reference) ... ok
+test_smoke_and_resume (tests.test_selfplay.SmokeRunTests.test_smoke_and_resume) ... ok
+test_action_sequences_match_python (tests.test_switch_cpp.SwitchCppTests.test_action_sequences_match_python) ... ok
+test_adversarial_supports_rl_base (tests.test_training.TrainingInterfaceTests.test_adversarial_supports_rl_base) ... ok
+test_all_training_modules_expose_main (tests.test_training.TrainingInterfaceTests.test_all_training_modules_expose_main) ... ok
+test_common_json_roundtrip (tests.test_training.TrainingInterfaceTests.test_common_json_roundtrip) ... ok
+test_direct_script_execution (tests.test_training.TrainingInterfaceTests.test_direct_script_execution) ... ok
+test_standard_flags_are_visible (tests.test_training.TrainingInterfaceTests.test_standard_flags_are_visible) ... ok
+test_training_list (tests.test_training.TrainingInterfaceTests.test_training_list) ... ok
+test_unknown_task (tests.test_training.TrainingInterfaceTests.test_unknown_task) ... unknown training task: 'does-not-exist'
+
+ok
+
+----------------------------------------------------------------------
+Ran 342 tests in 100.873s
+
+OK
+Training tasks:
+  neural       MLP behaviour cloning + DAgger
+  gru          GRU-Net behaviour cloning + DAgger
+  rl           PPO reinforcement learning
+  expand       expand MLP hidden width (net2wider)
+  psro         policy-space response oracles
+  opponent-model offline opponent classifier / gate
+  selfplay     asymmetric self-play PPO (blue/red GRU)
+  selfplay-bc  optional BC warm start for self-play GRU
+  selfplay-compare fair held-out comparison of self-play/BC/RL
+  selfplay-red-eval evaluate a frozen red best response
+  adversarial  constrained adversarial exploitation search
+  multiobj     four-distribution rule parameter search
+  bayes        BayesPlus prior-scale search
+  joint        Final + Responsive3 hybrid search
+  wide         wide-bank continuous parameter search
+  triple       Triple voting-mode validation
+  p1           P1 threshold search
+  p1-grim      P1 high-Grim threshold search
+  p2-gp        P2 genetic-programming trees
+  p2-robust    P2 robust GP
+  p2-fsm       P2 finite-state machines
+  p2-skeleton  P2 skeleton search
+
+Aliases: mlp->neural, bc->neural, adv->adversarial, rules->multiobj, bayes-priors->bayes, final-resp->joint
+Training tasks:
+  neural       MLP behaviour cloning + DAgger
+  gru          GRU-Net behaviour cloning + DAgger
+  rl           PPO reinforcement learning
+  expand       expand MLP hidden width (net2wider)
+  psro         policy-space response oracles
+  opponent-model offline opponent classifier / gate
+  selfplay     asymmetric self-play PPO (blue/red GRU)
+  selfplay-bc  optional BC warm start for self-play GRU
+  selfplay-compare fair held-out comparison of self-play/BC/RL
+  selfplay-red-eval evaluate a frozen red best response
+  adversarial  constrained adversarial exploitation search
+  multiobj     four-distribution rule parameter search
+  bayes        BayesPlus prior-scale search
+  joint        Final + Responsive3 hybrid search
+  wide         wide-bank continuous parameter search
+  triple       Triple voting-mode validation
+  p1           P1 threshold search
+  p1-grim      P1 high-Grim threshold search
+  p2-gp        P2 genetic-programming trees
+  p2-robust    P2 robust GP
+  p2-fsm       P2 finite-state machines
+  p2-skeleton  P2 skeleton search
+
+Aliases: mlp->neural, bc->neural, adv->adversarial, rules->multiobj, bayes-priors->bayes, final-resp->joint
+Training tasks:
+  neural       MLP behaviour cloning + DAgger
+  gru          GRU-Net behaviour cloning + DAgger
+  rl           PPO reinforcement learning
+  expand       expand MLP hidden width (net2wider)
+  psro         policy-space response oracles
+  opponent-model offline opponent classifier / gate
+  selfplay     asymmetric self-play PPO (blue/red GRU)
+  selfplay-bc  optional BC warm start for self-play GRU
+  selfplay-compare fair held-out comparison of self-play/BC/RL
+  selfplay-red-eval evaluate a frozen red best response
+  adversarial  constrained adversarial exploitation search
+  multiobj     four-distribution rule parameter search
+  bayes        BayesPlus prior-scale search
+  joint        Final + Responsive3 hybrid search
+  wide         wide-bank continuous parameter search
+  triple       Triple voting-mode validation
+  p1           P1 threshold search
+  p1-grim      P1 high-Grim threshold search
+  p2-gp        P2 genetic-programming trees
+  p2-robust    P2 robust GP
+  p2-fsm       P2 finite-state machines
+  p2-skeleton  P2 skeleton search
+
+Aliases: mlp->neural, bc->neural, adv->adversarial, rules->multiobj, bayes-priors->bayes, final-resp->joint

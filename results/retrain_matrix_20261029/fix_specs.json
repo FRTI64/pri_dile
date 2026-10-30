@@ -1,0 +1,5 @@
+{"candidates":[
+ {"name":"RL-PPO","kind":"rl","mode":"sample"},
+ {"name":"RL-Wide160","kind":"rl-wide160","mode":"sample"},
+ {"name":"RL-Wide160-Fix","kind":"rl-wide160","mode":"sample","weights":"/home/frti64/pri_dile/results/retrain_matrix_20261029/fix_wide160_ckpts/iter_001.json"}
+]}

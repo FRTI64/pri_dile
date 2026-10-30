@@ -1,0 +1,29 @@
+{
+  "candidates": [
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Pattern",
+      "kind": "rl-pattern",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Wide160",
+      "kind": "rl-wide160",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Switch",
+      "kind": "rl-switch",
+      "mode": "sample"
+    },
+    {
+      "name": "GRU-DAgger",
+      "kind": "rl-dagger-gru",
+      "mode": "sample"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+workers 20 (requested=20, cpu=24, ram_available=28.5GB, chunks=2+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=8
+progress fields 0/150 tasks 1/300 tier=dev_param candidate=Triple-v4 elapsed=43.3s eta=12938.2s
+progress fields 0/150 tasks 2/300 tier=dev_param candidate=GRU-DAgger elapsed=95.3s eta=14196.8s
+progress fields 1/150 tasks 3/300 tier=dev_param candidate=Triple-v4 elapsed=128.4s eta=12714.3s
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/opencode/pri_dile_head/ipd/__main__.py", line 4, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/tmp/opencode/pri_dile_head/ipd/cli.py", line 123, in main
+    return int(run(rest) or 0)
+               ~~~^^^^^^
+  File "/tmp/opencode/pri_dile_head/ipd/evaluation/protocol_cli.py", line 1151, in main
+    return _eval(rest)
+  File "/tmp/opencode/pri_dile_head/ipd/evaluation/protocol_cli.py", line 831, in _eval
+    run_pool(cpu_tasks or tasks, workers, _eval_field_task)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/opencode/pri_dile_head/ipd/evaluation/protocol_cli.py", line 810, in run_pool
+    handle(future.result())
+           ~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 447, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+concurrent.futures.process.BrokenProcessPool: A process in the process pool was terminated abruptly while the future was running or pending.

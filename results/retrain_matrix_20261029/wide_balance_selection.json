@@ -1,0 +1,9 @@
+{
+  "history_best_iteration": 4,
+  "chosen_checkpoint": "results/retrain_matrix_20261029/wide_balance_ckpts/iter_004.json",
+  "selection_by_iter": {
+    "0": 483.833984375,
+    "2": 487.259765625,
+    "4": 489.58203125
+  }
+}

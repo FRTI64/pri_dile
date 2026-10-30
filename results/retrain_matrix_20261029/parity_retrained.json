@@ -1,0 +1,52 @@
+{
+  "rl_policy_weights_pattern_rm.json": {
+    "kind": "mlp",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_policy_weights_wide_rm.json": {
+    "kind": "mlp",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_policy_weights_wide160_rm.json": {
+    "kind": "mlp",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_policy_weights_wide160_rm_s2.json": {
+    "kind": "mlp",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_policy_weights_wide160_fix4.json": {
+    "kind": "mlp",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_dagger_gru_weights.json": {
+    "kind": "gru",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_dagger_gru_weights_seed20261044.json": {
+    "kind": "gru",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_dagger_gru_weights_fix4.json": {
+    "kind": "gru",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_dagger_gru_weights_fix4_seed20261049.json": {
+    "kind": "gru",
+    "max_abs_diff": 0.0,
+    "pass": true
+  },
+  "rl_switch_rm": {
+    "kind": "switch",
+    "max_abs_diff": 0.0,
+    "pass": true
+  }
+}

@@ -1,0 +1,22 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,train_v4,train_pattern_breaker val_dists=dev_param,dev_complex,dev_axelrod,dev_ood fields/iter/dist=2 n=128 iterations=4 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from results/retrain_matrix_20261029/fix_wide160_ckpts/iter_001.json
+using reference-policy KL penalty (coef=0.05)
+initial val avg=532.00 worst=455.41 dev_param=554.46 dev_complex=455.41 dev_axelrod=595.02 dev_ood=523.10
+  new best at iter 1: avg=532.18 worst=456.22
+iter   1 reward= 553.24 pi=-0.0015 v=0.1097 H=0.0980 kl=0.0009 bckl=0.0009 clip=0.012 ev=+0.938 (18.9s+2.6s)
+      train original=543.18 late=549.23 grim30=544.53 wide=564.76 train_v4=523.29 train_pattern_breaker=568.14 | val avg=532.18 worst=456.22 dev_param=553.94 dev_complex=456.22 dev_axelrod=594.80 dev_ood=523.74
+  new best at iter 2: avg=532.27 worst=456.85
+iter   2 reward= 565.61 pi=-0.0013 v=0.1118 H=0.0897 kl=0.0008 bckl=0.0038 clip=0.009 ev=+0.939 (19.3s+0.7s)
+      train original=573.52 late=555.96 grim30=554.04 wide=562.40 train_v4=525.98 train_pattern_breaker=590.36 | val avg=532.27 worst=456.85 dev_param=553.42 dev_complex=456.85 dev_axelrod=594.63 dev_ood=524.19
+  new best at iter 3: avg=532.69 worst=458.93
+iter   3 reward= 566.78 pi=-0.0014 v=0.1210 H=0.0823 kl=0.0006 bckl=0.0077 clip=0.007 ev=+0.937 (19.0s+0.6s)
+      train original=548.91 late=556.86 grim30=549.94 wide=546.03 train_v4=515.52 train_pattern_breaker=613.93 | val avg=532.69 worst=458.93 dev_param=552.74 dev_complex=458.93 dev_axelrod=594.65 dev_ood=524.42
+iter   4 reward= 572.67 pi=-0.0009 v=0.1247 H=0.0760 kl=0.0003 bckl=0.0107 clip=0.004 ev=+0.936 (18.4s+0.7s)
+      train original=557.66 late=555.59 grim30=533.68 wide=548.47 train_v4=525.65 train_pattern_breaker=626.05 | val avg=532.35 worst=458.00 dev_param=552.56 dev_complex=458.00 dev_axelrod=594.43 dev_ood=524.39
+  saved checkpoint (best iter 3, val avg=532.685546875)
+best iteration 3 val={'by_dist': {'dev_param': 552.73828125, 'dev_complex': 458.93359375, 'dev_axelrod': 594.650390625, 'dev_ood': 524.419921875}, 'avg': 532.685546875, 'worst': 458.93359375, 'selection': 514.24755859375}
+written results/retrain_matrix_20261029/fix2_pb_ac.json
+written results/retrain_matrix_20261029/fix2_pb_weights.json (1111840 bytes)
+written results/retrain_matrix_20261029/fix2_pb_history.json
+vs AllC-until-90: C=92 D=8 score=548

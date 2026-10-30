@@ -1,0 +1,16 @@
+{
+  "candidates": [
+    {
+      "name": "GRU-DAgger-RM",
+      "kind": "rl-dagger-gru",
+      "mode": "sample",
+      "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_dagger_gru_weights.json"
+    },
+    {
+      "name": "GRU-DAgger-RM-s2",
+      "kind": "rl-dagger-gru",
+      "mode": "sample",
+      "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_dagger_gru_weights_seed20261044.json"
+    }
+  ]
+}

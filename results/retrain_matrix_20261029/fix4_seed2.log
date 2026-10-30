@@ -1,0 +1,196 @@
+===== 2026-10-30T12:36:35+08:00 tier=dev_param
+candidates=['RL-PPO', 'RL-Wide160', 'Fix4-iter1'] tiers=['dev_param'] fields=30 n=2048 seed=20261029 tasks=30
+progress 1/30 elapsed=37s
+progress 2/30 elapsed=37s
+progress 3/30 elapsed=38s
+progress 4/30 elapsed=38s
+progress 5/30 elapsed=38s
+progress 6/30 elapsed=38s
+progress 7/30 elapsed=38s
+progress 8/30 elapsed=38s
+progress 9/30 elapsed=38s
+progress 10/30 elapsed=38s
+progress 11/30 elapsed=38s
+progress 12/30 elapsed=38s
+progress 13/30 elapsed=38s
+progress 14/30 elapsed=39s
+progress 15/30 elapsed=39s
+progress 16/30 elapsed=39s
+progress 17/30 elapsed=39s
+progress 18/30 elapsed=39s
+progress 19/30 elapsed=39s
+progress 20/30 elapsed=39s
+progress 21/30 elapsed=66s
+progress 22/30 elapsed=66s
+progress 23/30 elapsed=67s
+progress 24/30 elapsed=67s
+progress 25/30 elapsed=67s
+progress 26/30 elapsed=67s
+progress 27/30 elapsed=67s
+progress 28/30 elapsed=67s
+progress 29/30 elapsed=67s
+progress 30/30 elapsed=67s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_param=539.50
+  RL-Wide160               dev_param=546.73
+  Fix4-iter1               dev_param=546.87
+
+written results/retrain_matrix_20261029/fix4_seed2_dev_param.json
+===== 2026-10-30T12:37:42+08:00 tier=dev_family
+candidates=['RL-PPO', 'RL-Wide160', 'Fix4-iter1'] tiers=['dev_family'] fields=30 n=2048 seed=20261029 tasks=30
+progress 1/30 elapsed=28s
+progress 2/30 elapsed=28s
+progress 3/30 elapsed=28s
+progress 4/30 elapsed=28s
+progress 5/30 elapsed=28s
+progress 6/30 elapsed=28s
+progress 7/30 elapsed=28s
+progress 8/30 elapsed=28s
+progress 9/30 elapsed=28s
+progress 10/30 elapsed=28s
+progress 11/30 elapsed=28s
+progress 12/30 elapsed=28s
+progress 13/30 elapsed=28s
+progress 14/30 elapsed=28s
+progress 15/30 elapsed=28s
+progress 16/30 elapsed=28s
+progress 17/30 elapsed=28s
+progress 18/30 elapsed=28s
+progress 19/30 elapsed=29s
+progress 20/30 elapsed=29s
+progress 21/30 elapsed=50s
+progress 22/30 elapsed=50s
+progress 23/30 elapsed=50s
+progress 24/30 elapsed=51s
+progress 25/30 elapsed=51s
+progress 26/30 elapsed=51s
+progress 27/30 elapsed=51s
+progress 28/30 elapsed=51s
+progress 29/30 elapsed=51s
+progress 30/30 elapsed=51s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_family=582.31
+  RL-Wide160               dev_family=582.78
+  Fix4-iter1               dev_family=582.69
+
+written results/retrain_matrix_20261029/fix4_seed2_dev_family.json
+===== 2026-10-30T12:38:34+08:00 tier=dev_complex
+candidates=['RL-PPO', 'RL-Wide160', 'Fix4-iter1'] tiers=['dev_complex'] fields=30 n=2048 seed=20261029 tasks=30
+progress 1/30 elapsed=35s
+progress 2/30 elapsed=35s
+progress 3/30 elapsed=36s
+progress 4/30 elapsed=36s
+progress 5/30 elapsed=36s
+progress 6/30 elapsed=36s
+progress 7/30 elapsed=36s
+progress 8/30 elapsed=36s
+progress 9/30 elapsed=36s
+progress 10/30 elapsed=36s
+progress 11/30 elapsed=36s
+progress 12/30 elapsed=36s
+progress 13/30 elapsed=36s
+progress 14/30 elapsed=36s
+progress 15/30 elapsed=36s
+progress 16/30 elapsed=36s
+progress 17/30 elapsed=36s
+progress 18/30 elapsed=36s
+progress 19/30 elapsed=36s
+progress 20/30 elapsed=36s
+progress 21/30 elapsed=64s
+progress 22/30 elapsed=64s
+progress 23/30 elapsed=65s
+progress 24/30 elapsed=65s
+progress 25/30 elapsed=65s
+progress 26/30 elapsed=65s
+progress 27/30 elapsed=65s
+progress 28/30 elapsed=65s
+progress 29/30 elapsed=65s
+progress 30/30 elapsed=65s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_complex=439.77
+  RL-Wide160               dev_complex=454.24
+  Fix4-iter1               dev_complex=453.06
+
+written results/retrain_matrix_20261029/fix4_seed2_dev_complex.json
+===== 2026-10-30T12:39:39+08:00 tier=dev_axelrod
+candidates=['RL-PPO', 'RL-Wide160', 'Fix4-iter1'] tiers=['dev_axelrod'] fields=30 n=2048 seed=20261029 tasks=30
+progress 1/30 elapsed=43s
+progress 2/30 elapsed=43s
+progress 3/30 elapsed=43s
+progress 4/30 elapsed=43s
+progress 5/30 elapsed=43s
+progress 6/30 elapsed=43s
+progress 7/30 elapsed=43s
+progress 8/30 elapsed=43s
+progress 9/30 elapsed=44s
+progress 10/30 elapsed=44s
+progress 11/30 elapsed=44s
+progress 12/30 elapsed=44s
+progress 13/30 elapsed=44s
+progress 14/30 elapsed=45s
+progress 15/30 elapsed=45s
+progress 16/30 elapsed=45s
+progress 17/30 elapsed=45s
+progress 18/30 elapsed=45s
+progress 19/30 elapsed=45s
+progress 20/30 elapsed=45s
+progress 21/30 elapsed=75s
+progress 22/30 elapsed=75s
+progress 23/30 elapsed=75s
+progress 24/30 elapsed=75s
+progress 25/30 elapsed=75s
+progress 26/30 elapsed=75s
+progress 27/30 elapsed=75s
+progress 28/30 elapsed=75s
+progress 29/30 elapsed=76s
+progress 30/30 elapsed=76s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_axelrod=578.25
+  RL-Wide160               dev_axelrod=583.65
+  Fix4-iter1               dev_axelrod=583.42
+
+written results/retrain_matrix_20261029/fix4_seed2_dev_axelrod.json
+===== 2026-10-30T12:40:55+08:00 tier=dev_ood
+candidates=['RL-PPO', 'RL-Wide160', 'Fix4-iter1'] tiers=['dev_ood'] fields=30 n=2048 seed=20261029 tasks=30
+progress 1/30 elapsed=38s
+progress 2/30 elapsed=38s
+progress 3/30 elapsed=38s
+progress 4/30 elapsed=38s
+progress 5/30 elapsed=38s
+progress 6/30 elapsed=38s
+progress 7/30 elapsed=39s
+progress 8/30 elapsed=39s
+progress 9/30 elapsed=40s
+progress 10/30 elapsed=40s
+progress 11/30 elapsed=40s
+progress 12/30 elapsed=40s
+progress 13/30 elapsed=40s
+progress 14/30 elapsed=40s
+progress 15/30 elapsed=40s
+progress 16/30 elapsed=40s
+progress 17/30 elapsed=40s
+progress 18/30 elapsed=40s
+progress 19/30 elapsed=40s
+progress 20/30 elapsed=40s
+progress 21/30 elapsed=67s
+progress 22/30 elapsed=68s
+progress 23/30 elapsed=68s
+progress 24/30 elapsed=68s
+progress 25/30 elapsed=68s
+progress 26/30 elapsed=68s
+progress 27/30 elapsed=68s
+progress 28/30 elapsed=68s
+progress 29/30 elapsed=69s
+progress 30/30 elapsed=70s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_ood=515.31
+  RL-Wide160               dev_ood=523.12
+  Fix4-iter1               dev_ood=522.70
+
+written results/retrain_matrix_20261029/fix4_seed2_dev_ood.json
+FIX4_SEED2_DONE 2026-10-30T12:42:05+08:00

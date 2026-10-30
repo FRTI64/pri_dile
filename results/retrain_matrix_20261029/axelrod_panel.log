@@ -1,0 +1,9 @@
+RL-PPO             zd=325.68  meta=351.19  historical=582.61
+RL-Pattern         zd=340.43  meta=357.08  historical=591.07
+RL-Wide160         zd=337.96  meta=362.34  historical=592.94
+RL-Switch          zd=342.34  meta=363.66  historical=592.94
+GRU-DAgger         zd=342.59  meta=360.95  historical=592.21
+RL-Pattern-RM      zd=342.50  meta=360.19  historical=592.29
+RL-Wide160-RM      zd=338.88  meta=363.02  historical=593.89
+GRU-DAgger-RM      zd=343.14  meta=362.04  historical=593.95
+written results/retrain_matrix_20261029/axelrod_panel.json

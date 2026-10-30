@@ -1,0 +1,42 @@
+{
+  "candidates": [
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Wide160",
+      "kind": "rl-wide160",
+      "mode": "sample"
+    },
+    {
+      "name": "GRU-DAgger",
+      "kind": "rl-dagger-gru",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Switch",
+      "kind": "rl-switch",
+      "mode": "sample"
+    },
+    {
+      "name": "Fix4-Wide160",
+      "kind": "rl-wide160",
+      "mode": "sample",
+      "weights": "/home/frti64/pri_dile/results/retrain_matrix_20261029/fix4_pb_ckpts/iter_001.json"
+    },
+    {
+      "name": "Dagger-Fix4",
+      "kind": "rl-dagger-gru",
+      "mode": "sample",
+      "weights": "/home/frti64/pri_dile/weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4.json"
+    },
+    {
+      "name": "Switch-Fix4",
+      "kind": "rl-switch",
+      "mode": "sample",
+      "weights": "/home/frti64/pri_dile/results/retrain_matrix_20261029/fix4_pb_ckpts/iter_001.json"
+    }
+  ]
+}

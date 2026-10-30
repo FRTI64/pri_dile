@@ -1,0 +1,33 @@
+WARNING: test_v7 is provisional; this wrapper never writes the usage ledger and never enables selection
+candidates=['GRU-DAgger-RM', 'GRU-DAgger-RM-s2'] tiers=['test_v7'] fields=50 n=2048 seed=20261027 tasks=50
+progress 2/50 elapsed=50s
+progress 4/50 elapsed=51s
+progress 6/50 elapsed=51s
+progress 8/50 elapsed=51s
+progress 10/50 elapsed=51s
+progress 12/50 elapsed=51s
+progress 14/50 elapsed=51s
+progress 16/50 elapsed=52s
+progress 18/50 elapsed=52s
+progress 20/50 elapsed=52s
+progress 22/50 elapsed=96s
+progress 24/50 elapsed=97s
+progress 26/50 elapsed=97s
+progress 28/50 elapsed=98s
+progress 30/50 elapsed=98s
+progress 32/50 elapsed=99s
+progress 34/50 elapsed=99s
+progress 36/50 elapsed=99s
+progress 38/50 elapsed=99s
+progress 40/50 elapsed=99s
+progress 42/50 elapsed=135s
+progress 44/50 elapsed=136s
+progress 46/50 elapsed=136s
+progress 48/50 elapsed=137s
+progress 50/50 elapsed=137s
+
+Protocol v4 evaluation (50 fields, n=2048)
+  GRU-DAgger-RM            test_v7=487.90
+  GRU-DAgger-RM-s2         test_v7=487.70
+
+written results/retrain_matrix_20261029/test_v7_provisional.json

@@ -1,0 +1,18 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=original,late,grim30,wide,train_v4,train_pattern_breaker val_dists=dev_param,dev_complex,dev_axelrod,dev_ood fields/iter/dist=2 n=128 iterations=3 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from results/retrain_matrix_20261029/fix_wide160_ckpts/iter_001.json
+using reference-policy KL penalty (coef=0.05)
+initial val avg=528.61 worst=455.07 dev_param=553.98 dev_complex=455.07 dev_axelrod=585.69 dev_ood=519.71
+iter   1 reward= 557.41 pi=-0.0014 v=0.1044 H=0.0950 kl=0.0008 bckl=0.0008 clip=0.011 ev=+0.942 (13.8s+2.4s)
+      train original=565.60 late=558.53 grim30=539.65 wide=574.47 train_v4=517.45 train_pattern_breaker=575.48 | val avg=528.18 worst=454.64 dev_param=552.99 dev_complex=454.64 dev_axelrod=585.62 dev_ood=519.46
+iter   2 reward= 562.59 pi=-0.0016 v=0.0997 H=0.0876 kl=0.0007 bckl=0.0027 clip=0.010 ev=+0.944 (10.2s+0.6s)
+      train original=576.48 late=561.21 grim30=548.05 wide=563.47 train_v4=533.92 train_pattern_breaker=581.81 | val avg=528.52 worst=454.64 dev_param=553.37 dev_complex=454.64 dev_axelrod=585.81 dev_ood=520.27
+  new best at iter 3: avg=529.19 worst=457.06
+iter   3 reward= 563.46 pi=-0.0004 v=0.1133 H=0.0840 kl=0.0004 bckl=0.0048 clip=0.003 ev=+0.939 (14.2s+0.6s)
+      train original=553.21 late=555.21 grim30=548.03 wide=567.20 train_v4=522.76 train_pattern_breaker=599.42 | val avg=529.19 worst=457.06 dev_param=553.15 dev_complex=457.06 dev_axelrod=585.40 dev_ood=521.16
+  saved checkpoint (best iter 3, val avg=529.19189453125)
+best iteration 3 val={'by_dist': {'dev_param': 553.1484375, 'dev_complex': 457.056640625, 'dev_axelrod': 585.400390625, 'dev_ood': 521.162109375}, 'avg': 529.19189453125, 'worst': 457.056640625, 'selection': 511.1580810546875}
+written results/retrain_matrix_20261029/fix4_pb_ac.json
+written results/retrain_matrix_20261029/fix4_pb_weights.json (1111918 bytes)
+written results/retrain_matrix_20261029/fix4_pb_history.json
+vs AllC-until-90: C=92 D=8 score=548

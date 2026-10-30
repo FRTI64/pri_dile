@@ -1,0 +1,8 @@
+date=2026-10-29T23:12:07+08:00
+commit=b0955cc1859c547fbb12837affd07330a34f839b
+git_status_dirty=yes
+python=Python 3.14.8
+axelrod=4.14.0
+torch=2.11.0+cu128
+gpu=NVIDIA GeForce RTX 5090 Laptop GPU
+tests_exit=0

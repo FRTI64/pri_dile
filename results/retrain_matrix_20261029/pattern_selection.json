@@ -1,0 +1,12 @@
+{
+  "fixed_choice": "iter_006",
+  "reason": "prescribed rl-pattern recipe",
+  "validation_selection_by_iter": {
+    "0": 488.67236328125,
+    "2": 489.08447265625,
+    "4": 492.93408203125,
+    "6": 493.6748046875,
+    "8": 495.03466796875
+  },
+  "history_best_iteration": 8
+}

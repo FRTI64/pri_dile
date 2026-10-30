@@ -1,0 +1,16 @@
+workers 20 (requested=20, cpu=24, ram_available=27.3GB, chunks=1+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=3
+progress fields 1/45 tasks 1/45 tier=dev_param candidate=RL-Wide160 elapsed=28.8s eta=1267.9s
+progress fields 12/45 tasks 12/45 tier=dev_ood candidate=RL-Wide160 elapsed=55.2s eta=151.8s
+progress fields 23/45 tasks 23/45 tier=dev_ood candidate=RL-Wide160 elapsed=77.7s eta=74.4s
+progress fields 34/45 tasks 34/45 tier=dev_ood candidate=RL-Wide160 elapsed=98.6s eta=31.9s
+progress fields 37/45 tasks 37/45 tier=dev_param candidate=RL-Wide160 elapsed=138.0s eta=29.8s
+progress fields 44/45 tasks 44/45 tier=dev_param candidate=RL-Wide160 elapsed=143.6s eta=3.3s
+progress fields 45/45 tasks 45/45 tier=dev_param candidate=RL-Wide160 elapsed=146.7s eta=0.0s
+
+Protocol v4 evaluation (15 fields, n=2048, workers=20)
+  RL-PPO               dev_param=540.49  dev_axelrod=575.09  dev_ood=513.99
+  RL-Pattern           dev_param=548.46  dev_axelrod=583.21  dev_ood=520.43
+  RL-Wide160           dev_param=548.28  dev_axelrod=583.38  dev_ood=522.30
+
+written /home/frti64/pri_dile/results/retrain_matrix_20261029/old_matrix_control_small.json

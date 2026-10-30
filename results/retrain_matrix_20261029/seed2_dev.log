@@ -1,0 +1,171 @@
+===== 2026-10-30T11:19:24+08:00 tier=dev_param
+candidates=['RL-PPO', 'RL-Pattern-RM', 'RL-Wide-RM', 'RL-Wide160-RM', 'RL-Wide160-RM-s2', 'RL-Switch-RM', 'GRU-DAgger-RM', 'GRU-DAgger-RM-s2'] tiers=['dev_param'] fields=30 n=2048 seed=20261029 tasks=60
+progress 3/60 elapsed=83s
+progress 6/60 elapsed=86s
+progress 9/60 elapsed=87s
+progress 12/60 elapsed=87s
+progress 15/60 elapsed=89s
+progress 18/60 elapsed=89s
+progress 21/60 elapsed=153s
+progress 24/60 elapsed=156s
+progress 27/60 elapsed=158s
+progress 30/60 elapsed=162s
+progress 33/60 elapsed=168s
+progress 36/60 elapsed=170s
+progress 39/60 elapsed=172s
+progress 42/60 elapsed=225s
+progress 45/60 elapsed=226s
+progress 48/60 elapsed=230s
+progress 51/60 elapsed=239s
+progress 54/60 elapsed=241s
+progress 57/60 elapsed=243s
+progress 60/60 elapsed=244s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_param=539.50
+  RL-Pattern-RM            dev_param=547.32
+  RL-Wide-RM               dev_param=546.99
+  RL-Wide160-RM            dev_param=546.84
+  RL-Wide160-RM-s2         dev_param=546.74
+  RL-Switch-RM             dev_param=547.10
+  GRU-DAgger-RM            dev_param=547.14
+  GRU-DAgger-RM-s2         dev_param=547.13
+
+written results/retrain_matrix_20261029/seed2_dev_dev_param.json
+===== 2026-10-30T11:23:28+08:00 tier=dev_family
+candidates=['RL-PPO', 'RL-Pattern-RM', 'RL-Wide-RM', 'RL-Wide160-RM', 'RL-Wide160-RM-s2', 'RL-Switch-RM', 'GRU-DAgger-RM', 'GRU-DAgger-RM-s2'] tiers=['dev_family'] fields=30 n=2048 seed=20261029 tasks=60
+progress 3/60 elapsed=70s
+progress 6/60 elapsed=72s
+progress 9/60 elapsed=72s
+progress 12/60 elapsed=74s
+progress 15/60 elapsed=75s
+progress 18/60 elapsed=75s
+progress 21/60 elapsed=139s
+progress 24/60 elapsed=141s
+progress 27/60 elapsed=143s
+progress 30/60 elapsed=145s
+progress 33/60 elapsed=146s
+progress 36/60 elapsed=148s
+progress 39/60 elapsed=149s
+progress 42/60 elapsed=209s
+progress 45/60 elapsed=211s
+progress 48/60 elapsed=215s
+progress 51/60 elapsed=217s
+progress 54/60 elapsed=218s
+progress 57/60 elapsed=219s
+progress 60/60 elapsed=220s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_family=582.31
+  RL-Pattern-RM            dev_family=582.72
+  RL-Wide-RM               dev_family=582.73
+  RL-Wide160-RM            dev_family=582.71
+  RL-Wide160-RM-s2         dev_family=582.72
+  RL-Switch-RM             dev_family=582.60
+  GRU-DAgger-RM            dev_family=582.60
+  GRU-DAgger-RM-s2         dev_family=582.62
+
+written results/retrain_matrix_20261029/seed2_dev_dev_family.json
+===== 2026-10-30T11:27:09+08:00 tier=dev_complex
+candidates=['RL-PPO', 'RL-Pattern-RM', 'RL-Wide-RM', 'RL-Wide160-RM', 'RL-Wide160-RM-s2', 'RL-Switch-RM', 'GRU-DAgger-RM', 'GRU-DAgger-RM-s2'] tiers=['dev_complex'] fields=30 n=2048 seed=20261029 tasks=60
+progress 3/60 elapsed=66s
+progress 6/60 elapsed=66s
+progress 9/60 elapsed=76s
+progress 12/60 elapsed=76s
+progress 15/60 elapsed=77s
+progress 18/60 elapsed=77s
+progress 21/60 elapsed=130s
+progress 24/60 elapsed=131s
+progress 27/60 elapsed=132s
+progress 30/60 elapsed=152s
+progress 33/60 elapsed=152s
+progress 36/60 elapsed=153s
+progress 39/60 elapsed=153s
+progress 42/60 elapsed=196s
+progress 45/60 elapsed=197s
+progress 48/60 elapsed=222s
+progress 51/60 elapsed=223s
+progress 54/60 elapsed=223s
+progress 57/60 elapsed=224s
+progress 60/60 elapsed=225s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_complex=439.77
+  RL-Pattern-RM            dev_complex=447.44
+  RL-Wide-RM               dev_complex=451.02
+  RL-Wide160-RM            dev_complex=452.69
+  RL-Wide160-RM-s2         dev_complex=453.19
+  RL-Switch-RM             dev_complex=452.81
+  GRU-DAgger-RM            dev_complex=453.48
+  GRU-DAgger-RM-s2         dev_complex=453.54
+
+written results/retrain_matrix_20261029/seed2_dev_dev_complex.json
+===== 2026-10-30T11:30:54+08:00 tier=dev_axelrod
+candidates=['RL-PPO', 'RL-Pattern-RM', 'RL-Wide-RM', 'RL-Wide160-RM', 'RL-Wide160-RM-s2', 'RL-Switch-RM', 'GRU-DAgger-RM', 'GRU-DAgger-RM-s2'] tiers=['dev_axelrod'] fields=30 n=2048 seed=20261029 tasks=60
+progress 3/60 elapsed=85s
+progress 6/60 elapsed=86s
+progress 9/60 elapsed=86s
+progress 12/60 elapsed=87s
+progress 15/60 elapsed=87s
+progress 18/60 elapsed=87s
+progress 21/60 elapsed=162s
+progress 24/60 elapsed=163s
+progress 27/60 elapsed=167s
+progress 30/60 elapsed=168s
+progress 33/60 elapsed=168s
+progress 36/60 elapsed=168s
+progress 39/60 elapsed=169s
+progress 42/60 elapsed=241s
+progress 45/60 elapsed=242s
+progress 48/60 elapsed=247s
+progress 51/60 elapsed=248s
+progress 54/60 elapsed=248s
+progress 57/60 elapsed=248s
+progress 60/60 elapsed=249s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_axelrod=578.25
+  RL-Pattern-RM            dev_axelrod=583.30
+  RL-Wide-RM               dev_axelrod=583.15
+  RL-Wide160-RM            dev_axelrod=583.17
+  RL-Wide160-RM-s2         dev_axelrod=583.18
+  RL-Switch-RM             dev_axelrod=583.20
+  GRU-DAgger-RM            dev_axelrod=583.11
+  GRU-DAgger-RM-s2         dev_axelrod=583.00
+
+written results/retrain_matrix_20261029/seed2_dev_dev_axelrod.json
+===== 2026-10-30T11:35:03+08:00 tier=dev_ood
+candidates=['RL-PPO', 'RL-Pattern-RM', 'RL-Wide-RM', 'RL-Wide160-RM', 'RL-Wide160-RM-s2', 'RL-Switch-RM', 'GRU-DAgger-RM', 'GRU-DAgger-RM-s2'] tiers=['dev_ood'] fields=30 n=2048 seed=20261029 tasks=60
+progress 3/60 elapsed=71s
+progress 6/60 elapsed=72s
+progress 9/60 elapsed=82s
+progress 12/60 elapsed=82s
+progress 15/60 elapsed=82s
+progress 18/60 elapsed=83s
+progress 21/60 elapsed=137s
+progress 24/60 elapsed=138s
+progress 27/60 elapsed=151s
+progress 30/60 elapsed=153s
+progress 33/60 elapsed=153s
+progress 36/60 elapsed=153s
+progress 39/60 elapsed=154s
+progress 42/60 elapsed=202s
+progress 45/60 elapsed=203s
+progress 48/60 elapsed=217s
+progress 51/60 elapsed=218s
+progress 54/60 elapsed=218s
+progress 57/60 elapsed=218s
+progress 60/60 elapsed=219s
+
+Protocol v4 evaluation (30 fields, n=2048)
+  RL-PPO                   dev_ood=515.31
+  RL-Pattern-RM            dev_ood=521.41
+  RL-Wide-RM               dev_ood=522.35
+  RL-Wide160-RM            dev_ood=522.63
+  RL-Wide160-RM-s2         dev_ood=522.56
+  RL-Switch-RM             dev_ood=522.69
+  GRU-DAgger-RM            dev_ood=522.79
+  GRU-DAgger-RM-s2         dev_ood=522.77
+
+written results/retrain_matrix_20261029/seed2_dev_dev_ood.json
+SEED2_EVAL_DONE 2026-10-30T11:38:43+08:00

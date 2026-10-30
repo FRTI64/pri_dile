@@ -1,0 +1,7 @@
+w6-m2-o2 {'dev_param': 545.13, 'dev_complex': 453.81, 'dev_axelrod': 585.13}
+w6-m2-o3 {'dev_param': 545.36, 'dev_complex': 453.16, 'dev_axelrod': 584.8}
+w6-m3-o3 {'dev_param': 545.36, 'dev_complex': 452.55, 'dev_axelrod': 584.76}
+w8-m2-o2 {'dev_param': 545.51, 'dev_complex': 452.95, 'dev_axelrod': 584.92}
+w8-m3-o3 {'dev_param': 545.76, 'dev_complex': 453.06, 'dev_axelrod': 584.82}
+w10-m2-o2 {'dev_param': 545.62, 'dev_complex': 435.01, 'dev_axelrod': 584.85}
+written /home/frti64/pri_dile/results/retrain_matrix_20261029/switch_thresholds.json

@@ -1,0 +1,37 @@
+protocol: protocol_v4
+catalog:  977 configs, sha256 beb594ab4a284067...
+manifest: ok
+test policy: locked (/home/frti64/pri_dile/configs/splits/protocol_v4/test_policy.json)
+
+counts by group/family:
+  anchor          5  anchor=5
+  dev            62  adaptive=6, defect=2, extort=6, forgiving=4, late=4, nice=2, noisy=6, punitive=4, random=6, temporal=17, wild=5
+  dev_axelrod    36  axelrod=10, axelrod_extra=24, axelrod_mix=2
+  dev_complex    39  adaptive_mix=3, conditional_extort=3, contrition_cycle=1, delayed_extort=3, endgame_hunter=2, lookahead=5, memory_two=2, meta_mix=2, noise_adaptive=5, pattern_breaker=1, phase_switch=5, portfolio=3, probe_exploit=2, reputation_grim=2
+  dev_family     14  delayed_grim=6, mirror_adaptive=8
+  test           61  adaptive=6, defect=2, extort=5, forgiving=5, late=5, nice=2, noisy=6, punitive=3, random=6, temporal=16, wild=5
+  test_axelrod   36  axelrod=10, axelrod_extra=23, axelrod_mix=3
+  test_complex   40  adaptive_mix=2, conditional_extort=2, contrition_cycle=2, delayed_extort=2, endgame_hunter=2, lookahead=6, memory_two=1, meta_mix=2, noise_adaptive=6, pattern_breaker=2, phase_switch=6, portfolio=3, probe_exploit=2, reputation_grim=2
+  test_only      36  adaptive_probe=6, early_harvest=6, early_probe=6, frequent_kamikaze=6, hyper_extort=6, probe_harvest=6
+  test_policy     6  policy=6
+  train         292  adaptive=29, defect=10, extort=27, forgiving=21, late=21, nice=10, noisy=28, punitive=17, random=28, temporal=78, wild=23
+  train_axelrod  167  axelrod=46, axelrod_extra=111, axelrod_mix=10
+  train_complex  179  adaptive_mix=13, conditional_extort=13, contrition_cycle=6, delayed_extort=13, endgame_hunter=8, lookahead=25, memory_two=7, meta_mix=8, noise_adaptive=25, pattern_breaker=6, phase_switch=25, portfolio=14, probe_exploit=8, reputation_grim=8
+  train_policy    4  policy=4
+
+family groups:
+  dev_param    : adaptive, defect, extort, forgiving, late, nice, noisy, punitive, random, temporal, wild
+  dev_family   : delayed_grim, mirror_adaptive
+  dev_complex  : adaptive_mix, conditional_extort, contrition_cycle, delayed_extort, endgame_hunter, lookahead, memory_two, meta_mix, noise_adaptive, pattern_breaker, phase_switch, portfolio, probe_exploit, reputation_grim
+  dev_axelrod  : axelrod, axelrod_extra, axelrod_mix
+  train_complex: adaptive_mix, conditional_extort, contrition_cycle, delayed_extort, endgame_hunter, lookahead, memory_two, meta_mix, noise_adaptive, pattern_breaker, phase_switch, portfolio, probe_exploit, reputation_grim
+  train_axelrod: axelrod, axelrod_extra, axelrod_mix
+  test_complex : adaptive_mix, conditional_extort, contrition_cycle, delayed_extort, endgame_hunter, lookahead, memory_two, meta_mix, noise_adaptive, pattern_breaker, phase_switch, portfolio, probe_exploit, reputation_grim
+  test_policy  : policy
+  test_axelrod : axelrod, axelrod_extra, axelrod_mix
+  test_only    : adaptive_probe, early_harvest, early_probe, frequent_kamikaze, hyper_extort, probe_harvest
+
+warnings:
+  - red pools are legacy P3 artifacts; retrain before final
+
+OK

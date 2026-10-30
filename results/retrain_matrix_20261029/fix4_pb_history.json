@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "algorithm": "ppo",
+    "seed": 20261047,
+    "dists": [
+      "dev_param",
+      "dev_complex",
+      "dev_axelrod",
+      "dev_ood"
+    ],
+    "train_dists": [
+      "original",
+      "late",
+      "grim30",
+      "wide",
+      "train_v4",
+      "train_pattern_breaker"
+    ],
+    "opponent_weights": [],
+    "opponent_pool": [],
+    "opponent_pool_path": null,
+    "opponent_penalty": 0.0,
+    "opponent_fraction": 1.0,
+    "fields_per_dist": 2,
+    "dist_weights": {
+      "original": 1.0,
+      "late": 1.0,
+      "grim30": 1.0,
+      "wide": 2.0,
+      "train_v4": 2.0,
+      "train_pattern_breaker": 3.0
+    },
+    "n": 128,
+    "val_fields_per_dist": 2,
+    "val_n": 256,
+    "hidden": [
+      160,
+      128
+    ],
+    "lr": 2e-05,
+    "clip": 0.2,
+    "vf_coef": 0.5,
+    "ent_coef": 0.01,
+    "bc_kl_coef": 0.05,
+    "risk_objective": "none",
+    "risk_coef": 0.0,
+    "risk_quantile": 0.2,
+    "dro_eta": 0.5,
+    "dro_quantile": 0.5,
+    "dro_blend": 0.5,
+    "dro_floor": 0.1,
+    "dirichlet_concentration": 0.0,
+    "freeze_policy_trunk": false,
+    "select_metric": "balanced",
+    "save_all_checkpoints": "results/retrain_matrix_20261029/fix4_pb_ckpts",
+    "gamma": 1.0,
+    "lam": 0.95,
+    "center_rewards": false,
+    "center_advantages": true,
+    "value_bias": 5.5,
+    "safe": true,
+    "init_weights": "results/retrain_matrix_20261029/fix_wide160_ckpts/iter_001.json",
+    "feature_version": "ipd-neural-features-v1",
+    "best_iteration": 3,
+    "best_val": {
+      "by_dist": {
+        "dev_param": 553.1484375,
+        "dev_complex": 457.056640625,
+        "dev_axelrod": 585.400390625,
+        "dev_ood": 521.162109375
+      },
+      "avg": 529.19189453125,
+      "worst": 457.056640625,
+      "selection": 511.1580810546875
+    }
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "val": {
+        "by_dist": {
+          "dev_param": 553.98046875,
+          "dev_complex": 455.072265625,
+          "dev_axelrod": 585.69140625,
+          "dev_ood": 519.7109375
+        },
+        "avg": 528.61376953125,
+        "worst": 455.072265625,
+        "selection": 510.2283935546875
+      },
+      "phase": "init"
+    },
+    {
+      "iteration": 1,
+      "reward_mean": 557.407421875,
+      "reward_by_dist": {
+        "original": 565.6015625,
+        "late": 558.53125,
+        "grim30": 539.6484375,
+        "wide": 574.47265625,
+        "train_v4": 517.44921875,
+        "train_pattern_breaker": 575.4830729166666
+      },
+      "reward_min": 98,
+      "reward_max": 973,
+      "rollout_s": 13.766961097717285,
+      "train_s": 2.39597749710083,
+      "lr": 1.5000000000000002e-05,
+      "mixture": {
+        "original": 0.1,
+        "late": 0.1,
+        "grim30": 0.1,
+        "wide": 0.2,
+        "train_v4": 0.2,
+        "train_pattern_breaker": 0.3,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0014105124520540357,
+      "value_loss": 0.10435291094472632,
+      "entropy": 0.09499006473924965,
+      "approx_kl": 0.0008232740724706108,
+      "clip_frac": 0.010951720815683075,
+      "bc_kl": 0.0008136646426804006,
+      "explained_var": 0.9415713133257309,
+      "n_steps": 256000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 552.986328125,
+          "dev_complex": 454.642578125,
+          "dev_axelrod": 585.625,
+          "dev_ood": 519.46484375
+        },
+        "avg": 528.1796875,
+        "worst": 454.642578125,
+        "selection": 509.79541015625
+      }
+    },
+    {
+      "iteration": 2,
+      "reward_mean": 562.59453125,
+      "reward_by_dist": {
+        "original": 576.48046875,
+        "late": 561.2109375,
+        "grim30": 548.0546875,
+        "wide": 563.466796875,
+        "train_v4": 533.919921875,
+        "train_pattern_breaker": 581.80859375
+      },
+      "reward_min": 96,
+      "reward_max": 977,
+      "rollout_s": 10.245712518692017,
+      "train_s": 0.6285769939422607,
+      "lr": 5.000000000000003e-06,
+      "mixture": {
+        "original": 0.1,
+        "late": 0.1,
+        "grim30": 0.1,
+        "wide": 0.2,
+        "train_v4": 0.2,
+        "train_pattern_breaker": 0.3,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.0016297103885491993,
+      "value_loss": 0.09971140004927292,
+      "entropy": 0.08763990370789543,
+      "approx_kl": 0.0007050801386900532,
+      "clip_frac": 0.009801248146686703,
+      "bc_kl": 0.0026969181321874203,
+      "explained_var": 0.9444224980024029,
+      "n_steps": 256000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 553.365234375,
+          "dev_complex": 454.64453125,
+          "dev_axelrod": 585.8125,
+          "dev_ood": 520.271484375
+        },
+        "avg": 528.5234375,
+        "worst": 454.64453125,
+        "selection": 510.0537109375
+      }
+    },
+    {
+      "iteration": 3,
+      "reward_mean": 563.462890625,
+      "reward_by_dist": {
+        "original": 553.2109375,
+        "late": 555.21484375,
+        "grim30": 548.03125,
+        "wide": 567.19921875,
+        "train_v4": 522.7578125,
+        "train_pattern_breaker": 599.4192708333334
+      },
+      "reward_min": 96,
+      "reward_max": 973,
+      "rollout_s": 14.163680791854858,
+      "train_s": 0.6428241729736328,
+      "lr": 0.0,
+      "mixture": {
+        "original": 0.1,
+        "late": 0.1,
+        "grim30": 0.1,
+        "wide": 0.2,
+        "train_v4": 0.2,
+        "train_pattern_breaker": 0.3,
+        "blue_pool": 0.0
+      },
+      "policy_loss": -0.00043553435503440596,
+      "value_loss": 0.11328445991966873,
+      "entropy": 0.08403178537264466,
+      "approx_kl": 0.0003913207708145547,
+      "clip_frac": 0.0031450877827410295,
+      "bc_kl": 0.004843380429520039,
+      "explained_var": 0.9387902988414975,
+      "n_steps": 256000,
+      "cvar_return": null,
+      "risk_weight_max": 1.0,
+      "risk_weight_min": 1.0,
+      "val": {
+        "by_dist": {
+          "dev_param": 553.1484375,
+          "dev_complex": 457.056640625,
+          "dev_axelrod": 585.400390625,
+          "dev_ood": 521.162109375
+        },
+        "avg": 529.19189453125,
+        "worst": 457.056640625,
+        "selection": 511.1580810546875
+      }
+    }
+  ]
+}

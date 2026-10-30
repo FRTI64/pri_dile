@@ -1,0 +1,33 @@
+WARNING: test_v7 is provisional; this wrapper never writes the usage ledger and never enables selection
+candidates=['Dagger-Fix4', 'Fix4-Wide160'] tiers=['test_v7'] fields=50 n=2048 seed=20261027 tasks=50
+progress 2/50 elapsed=50s
+progress 4/50 elapsed=50s
+progress 6/50 elapsed=51s
+progress 8/50 elapsed=51s
+progress 10/50 elapsed=51s
+progress 12/50 elapsed=51s
+progress 14/50 elapsed=51s
+progress 16/50 elapsed=52s
+progress 18/50 elapsed=52s
+progress 20/50 elapsed=52s
+progress 22/50 elapsed=93s
+progress 24/50 elapsed=94s
+progress 26/50 elapsed=94s
+progress 28/50 elapsed=95s
+progress 30/50 elapsed=95s
+progress 32/50 elapsed=96s
+progress 34/50 elapsed=96s
+progress 36/50 elapsed=96s
+progress 38/50 elapsed=96s
+progress 40/50 elapsed=97s
+progress 42/50 elapsed=130s
+progress 44/50 elapsed=130s
+progress 46/50 elapsed=130s
+progress 48/50 elapsed=130s
+progress 50/50 elapsed=131s
+
+Protocol v4 evaluation (50 fields, n=2048)
+  Dagger-Fix4              test_v7=487.77
+  Fix4-Wide160             test_v7=486.32
+
+written results/retrain_matrix_20261029/test_v7_fix4_provisional.json

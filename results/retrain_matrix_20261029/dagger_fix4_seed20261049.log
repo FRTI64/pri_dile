@@ -1,0 +1,96 @@
+student=gru device=cuda rounds=2 bc=12/src dagger=6/src val=3/src n=48
+collecting BC data...
+  BC: 3456 matches, mean score=523.28 (43.5s)
+collecting validation data...
+  val: 864 matches, mean score=488.41
+training bc (3456 matches, 345600 states)...
+  gru training on 3456 matches / 240033 masked steps
+  gru epoch  1 train=0.3032 val=0.1937 acc=0.938 sw=0.1757/0.940 *
+  gru epoch  2 train=0.1599 val=0.1496 acc=0.966 sw=0.1497/0.957 *
+  gru epoch  3 train=0.1342 val=0.1364 acc=0.975 sw=0.1420/0.962 *
+  gru epoch  4 train=0.1252 val=0.1310 acc=0.980 sw=0.1329/0.973 *
+  gru epoch  5 train=0.1218 val=0.1300 acc=0.980 sw=0.1302/0.976 *
+  gru epoch  6 train=0.1203 val=0.1280 acc=0.982 sw=0.1287/0.977 *
+  gru epoch  7 train=0.1188 val=0.1264 acc=0.984 sw=0.1284/0.977 *
+  gru epoch  8 train=0.1179 val=0.1258 acc=0.984 sw=0.1280/0.977 *
+  gru epoch  9 train=0.1173 val=0.1257 acc=0.984 sw=0.1285/0.977 *
+  gru epoch 10 train=0.1168 val=0.1253 acc=0.985 sw=0.1263/0.981 *
+  gru epoch 11 train=0.1165 val=0.1247 acc=0.987 sw=0.1258/0.983 *
+  gru epoch 12 train=0.1162 val=0.1243 acc=0.987 sw=0.1255/0.983 *
+  gru epoch 13 train=0.1159 val=0.1240 acc=0.987 sw=0.1250/0.984 *
+  gru epoch 14 train=0.1156 val=0.1237 acc=0.988 sw=0.1248/0.985 *
+  gru epoch 15 train=0.1155 val=0.1235 acc=0.988 sw=0.1247/0.985 *
+  gru epoch 17 train=0.1153 val=0.1235 acc=0.989 sw=0.1242/0.986 *
+  gru epoch 18 train=0.1151 val=0.1233 acc=0.988 sw=0.1249/0.984 *
+  gru epoch 19 train=0.1151 val=0.1232 acc=0.989 sw=0.1246/0.985 *
+  gru epoch 20 train=0.1149 val=0.1231 acc=0.989 sw=0.1239/0.986 *
+  gru epoch 22 train=0.1147 val=0.1229 acc=0.990 sw=0.1241/0.986 *
+  gru epoch 24 train=0.1146 val=0.1229 acc=0.990 sw=0.1237/0.987 *
+  gru epoch 25 train=0.1146 val=0.1228 acc=0.990 sw=0.1238/0.987 *
+  gru epoch 28 train=0.1146 val=0.1228 acc=0.990 sw=0.1237/0.987 *
+  gru epoch 29 train=0.1145 val=0.1228 acc=0.990 sw=0.1237/0.987 *
+  gru epoch 30 train=0.1145 val=0.1228 acc=0.990 sw=0.1237/0.987 *
+  wrote weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4_seed20261049.json (6.7s)
+collecting DAgger-1 data...
+  DAgger-1: 1728 matches, aggregate 5184 matches, mean score=482.08
+training dagger-1 (5184 matches, 518400 states)...
+  gru training on 5184 matches / 377677 masked steps
+  gru epoch  1 train=0.2572 val=0.1678 acc=0.953 sw=0.1574/0.954 *
+  gru epoch  2 train=0.1388 val=0.1353 acc=0.976 sw=0.1403/0.962 *
+  gru epoch  3 train=0.1236 val=0.1292 acc=0.981 sw=0.1320/0.972 *
+  gru epoch  4 train=0.1199 val=0.1287 acc=0.980 sw=0.1354/0.967 *
+  gru epoch  5 train=0.1181 val=0.1255 acc=0.985 sw=0.1287/0.978 *
+  gru epoch  6 train=0.1165 val=0.1246 acc=0.986 sw=0.1271/0.980 *
+  gru epoch  7 train=0.1159 val=0.1238 acc=0.987 sw=0.1262/0.981 *
+  gru epoch  8 train=0.1150 val=0.1233 acc=0.988 sw=0.1254/0.983 *
+  gru epoch  9 train=0.1146 val=0.1232 acc=0.988 sw=0.1250/0.984 *
+  gru epoch 10 train=0.1141 val=0.1230 acc=0.989 sw=0.1239/0.986 *
+  gru epoch 11 train=0.1138 val=0.1224 acc=0.990 sw=0.1240/0.986 *
+  gru epoch 12 train=0.1136 val=0.1223 acc=0.991 sw=0.1234/0.988 *
+  gru epoch 13 train=0.1133 val=0.1221 acc=0.991 sw=0.1233/0.989 *
+  gru epoch 15 train=0.1129 val=0.1220 acc=0.991 sw=0.1229/0.988 *
+  gru epoch 16 train=0.1128 val=0.1219 acc=0.992 sw=0.1224/0.990 *
+  gru epoch 17 train=0.1126 val=0.1216 acc=0.992 sw=0.1224/0.990 *
+  gru epoch 18 train=0.1125 val=0.1215 acc=0.992 sw=0.1230/0.988 *
+  gru epoch 19 train=0.1125 val=0.1214 acc=0.993 sw=0.1227/0.990 *
+  gru epoch 20 train=0.1124 val=0.1215 acc=0.992 sw=0.1221/0.991
+  gru epoch 22 train=0.1123 val=0.1213 acc=0.993 sw=0.1221/0.991 *
+  gru epoch 24 train=0.1122 val=0.1213 acc=0.993 sw=0.1221/0.992 *
+  gru epoch 25 train=0.1121 val=0.1213 acc=0.993 sw=0.1221/0.991 *
+  gru epoch 27 train=0.1121 val=0.1213 acc=0.993 sw=0.1223/0.990 *
+  gru epoch 28 train=0.1121 val=0.1212 acc=0.993 sw=0.1220/0.991 *
+  gru epoch 29 train=0.1121 val=0.1212 acc=0.993 sw=0.1220/0.991 *
+  gru epoch 30 train=0.1121 val=0.1212 acc=0.993 sw=0.1220/0.991
+  wrote weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4_seed20261049.json (5.9s)
+collecting DAgger-2 data...
+  DAgger-2: 1728 matches, aggregate 6912 matches, mean score=462.39
+training dagger-2 (6912 matches, 691200 states)...
+  gru training on 6912 matches / 520632 masked steps
+  gru epoch  1 train=0.2407 val=0.1528 acc=0.964 sw=0.1537/0.951 *
+  gru epoch  2 train=0.1325 val=0.1321 acc=0.978 sw=0.1329/0.972 *
+  gru epoch  3 train=0.1229 val=0.1265 acc=0.984 sw=0.1279/0.979 *
+  gru epoch  4 train=0.1195 val=0.1247 acc=0.986 sw=0.1271/0.980 *
+  gru epoch  5 train=0.1178 val=0.1236 acc=0.988 sw=0.1253/0.983 *
+  gru epoch  6 train=0.1169 val=0.1232 acc=0.988 sw=0.1261/0.982 *
+  gru epoch  7 train=0.1164 val=0.1232 acc=0.987 sw=0.1263/0.980 *
+  gru epoch  9 train=0.1155 val=0.1221 acc=0.990 sw=0.1240/0.985 *
+  gru epoch 10 train=0.1152 val=0.1218 acc=0.992 sw=0.1229/0.989 *
+  gru epoch 11 train=0.1150 val=0.1217 acc=0.992 sw=0.1225/0.989 *
+  gru epoch 12 train=0.1147 val=0.1215 acc=0.993 sw=0.1222/0.990 *
+  gru epoch 13 train=0.1145 val=0.1212 acc=0.993 sw=0.1220/0.990 *
+  gru epoch 15 train=0.1142 val=0.1210 acc=0.994 sw=0.1217/0.991 *
+  gru epoch 16 train=0.1140 val=0.1209 acc=0.993 sw=0.1216/0.991 *
+  gru epoch 18 train=0.1139 val=0.1208 acc=0.994 sw=0.1213/0.992 *
+  gru epoch 19 train=0.1137 val=0.1208 acc=0.994 sw=0.1214/0.991 *
+  gru epoch 20 train=0.1137 val=0.1209 acc=0.994 sw=0.1214/0.992
+  gru epoch 21 train=0.1136 val=0.1207 acc=0.994 sw=0.1215/0.991 *
+  gru epoch 22 train=0.1136 val=0.1206 acc=0.994 sw=0.1213/0.991 *
+  gru epoch 25 train=0.1134 val=0.1206 acc=0.994 sw=0.1212/0.992 *
+  gru epoch 26 train=0.1134 val=0.1206 acc=0.994 sw=0.1210/0.992 *
+  gru epoch 27 train=0.1134 val=0.1206 acc=0.994 sw=0.1211/0.992 *
+  gru epoch 28 train=0.1134 val=0.1206 acc=0.994 sw=0.1211/0.992 *
+  gru epoch 29 train=0.1134 val=0.1206 acc=0.994 sw=0.1210/0.993 *
+  gru epoch 30 train=0.1134 val=0.1206 acc=0.994 sw=0.1210/0.992
+  wrote weights/retrain_matrix_20261029/rl_dagger_gru_weights_fix4_seed20261049.json (7.6s)
+wrote results/retrain_matrix_20261029/dagger_fix4_seed20261049_history.json
+total 123.9s
