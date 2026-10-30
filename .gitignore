@@ -6,3 +6,5 @@ neural_demo
 ipd_demo
 demo
 *.pt
+results/cross_repo_977_20261031/matchups.json.gz
+results/cross_repo_977_20261031/raw_reps.csv.gz

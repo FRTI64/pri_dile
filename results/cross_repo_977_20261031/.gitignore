@@ -1,0 +1,4 @@
+# Large uncompressed artifacts are kept locally; commit the .gz copies.
+raw_reps.csv
+matchups.json
+shards/

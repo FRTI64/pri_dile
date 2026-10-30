@@ -1,0 +1,30 @@
+{
+  "a_count": 30,
+  "a_root": "/home/frti64/frti64_ipd",
+  "b_count": 977,
+  "base_seed": 20261024,
+  "catalog_sha256": "c7aab4da622413460f8906a2846398d3e9466ed429ceab25dad197129eacf158",
+  "created": "2026-10-31T00:42:58+0800",
+  "excluded": [
+    "19 long-run Axelrod",
+    "Darwin",
+    "Red-v5",
+    "Red-v6"
+  ],
+  "expected_matches": 586200,
+  "expected_raw_rows": 586200,
+  "expected_summary_rows": 29310,
+  "git_commit": "e1d98eab76f05448c4e063135a549bf194ab3940",
+  "payoff": {
+    "P": 1,
+    "R": 6,
+    "S": 0,
+    "T": 10
+  },
+  "reps": 20,
+  "rounds": 100,
+  "schema": "cross-repo-977-v1",
+  "seed_derivation": "crc32(base_seed|role|candidate|opponent|rep)",
+  "weight_source": "v4 manifest entry.weight; v5 catalog entry.weight",
+  "workers": 20
+}

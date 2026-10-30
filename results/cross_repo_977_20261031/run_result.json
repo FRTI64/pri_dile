@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "elapsed": 989.4849617149994,
+  "expected_raw_rows": 586200,
+  "expected_summary_rows": 29310,
+  "failures": [],
+  "missing_shards": [],
+  "raw_rows": 586200,
+  "summary_rows": 29310
+}
