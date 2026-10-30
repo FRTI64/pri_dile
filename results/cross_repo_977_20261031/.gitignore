@@ -1,4 +1,3 @@
-# Large uncompressed artifacts are kept locally; commit the .gz copies.
+# Combined raw CSV is local-only; per-candidate raw files are under raw_reps/.
 raw_reps.csv
-matchups.json
 shards/

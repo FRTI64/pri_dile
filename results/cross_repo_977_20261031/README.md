@@ -19,25 +19,26 @@ Every match uses fresh A/B instances.  Seeds are derived as
 
 | file | content |
 |---|---|
-| `raw_reps.csv` | local-only (122 MB, ignored): one row per candidate × opponent × rep |
+| `raw_reps/<candidate>.csv` | committed raw data, 30 files × 19,540 rows = 586,200 rows |
+| `raw_reps/merge_raw_reps.py` | rebuild the combined `raw_reps.csv` |
+| `raw_reps.csv` | local-only (122 MB, ignored): combined raw table |
 | `matchups.csv` | committed: one row per candidate × opponent, 20-rep mean/std/min/max |
-| `matchups.json` | local-only (23 MB, ignored): same as `matchups.csv`, JSON records |
+| `matchups.json` | committed: same as `matchups.csv`, JSON records |
+| `ANALYSIS.md` | ranking, family difficulty, extreme pairings, caveats |
 | `weighted_summary.csv` | per-candidate equal / protocol-v4 / protocol-v5 weighted scores |
 | `candidates.csv` | A-side metadata |
 | `opponents.csv` | B-side metadata, v4/v5 tier and entry weights |
 | `run_config.json` | run parameters and checksums |
 | `shards/` | resumable per-opponent shards (local, ignored by git) |
 
-The full `raw_reps.csv` (122 MB) and `matchups.json` (23 MB) remain on disk
-for local use but are ignored by git.  The repository's pre-commit hook
-rejects binary blobs, so their `.gz` copies are ignored as well.  The
-committed text artifacts are `matchups.csv` and the summary/metadata files;
-regenerate the ignored files with `run_cross_repo.py --resume` or use the
-local copies.
+The combined `raw_reps.csv` is 122 MB and is kept local-only.  The committed
+raw data is split by candidate under `raw_reps/`; rebuild the combined file
+with `python raw_reps/merge_raw_reps.py`.  The repository's pre-commit hook
+rejects binary blobs, so `.gz` copies are local-only as well.
 
 ## Column notes
 
-`raw_reps.csv` / `matchups.csv`:
+`raw_reps.csv` / `raw_reps/*.csv` / `matchups.csv`:
 
 - `candidate`, `candidate_class`, `registry_name`: A-side identity.
 - `opponent_key`, `family`, `type`: B-side identity.
