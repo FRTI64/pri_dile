@@ -1,7 +1,8 @@
 # Axelrod 对手库与 cheating 测试集
 
-状态：可选功能。已接入 benchmark/matchup/eval-split；Protocol v4 另外使用
-50 个精选策略 + 15 个 `AxelrodMix` 组合。默认四分布和 85/158 对手集合不变。
+状态：可选功能。已接入 benchmark/matchup/eval-split；Protocol v5 另外使用
+224 个 Axelrod 策略 + 15 个 `AxelrodMix` 组合。默认四分布和 85/158 对手
+集合不变。
 
 依赖：`axelrod==4.14.0`（`requirements-axelrod.txt` 或
 `pip install -e '.[axelrod]'`）。Axelrod 会带入 torch/scipy/pandas/dask，

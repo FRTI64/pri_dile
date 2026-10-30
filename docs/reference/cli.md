@@ -12,7 +12,7 @@ python3 -m ipd <command> --help
 
 | 命令 | 用途 |
 |---|---|
-| `protocol` | **Protocol v4**：Axelrod + train/dev/test split 审计与评估 |
+| `protocol` | **Protocol v5**：Axelrod + train/dev/test split 审计与评估 |
 | `benchmark` | legacy 四分布基准；也支持 Axelrod 分布 |
 | `blind` | legacy blind 排名（只换 seed） |
 | `suite` | 9 个家族加权测试集 |
@@ -39,16 +39,19 @@ python3 -m ipd protocol manifest
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
-  --out results/protocol_v4/protocol_v4_dev.json
+  --out results/protocol_v5/protocol_v5_dev.json
+python3 -m ipd protocol eval --candidates <final> \
+  --tiers test_v8 --fields 50 --n 2048 --acknowledge-once \
+  --out results/protocol_v5/protocol_v5_test_final.json
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --no-consume \
-  --out results/protocol_v4/protocol_v4_test_provisional.json
+  --tiers test_v8 --fields 50 --n 2048 --no-consume \
+  --out results/protocol_v5/protocol_v5_test_provisional.json
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_complexity4 --fields 30 --n 2048
-# GPU sample（opt-in Protocol v5，per-match RNG；不能与 v4 sample 表混用）
-python3 -m ipd protocol eval --candidates all --tiers test_v7 \
+# GPU sample（opt-in per-match sample RNG；不能与顺序 sample 表混用）
+python3 -m ipd protocol eval --candidates all --tiers test_v8 \
   --fields 50 --n 2048 --workers 20 --gpu-workers 4 \
   --gpu-field-batch 4 \
   --mode sample --sample-rng per-match --gpu on --gpu-dtype float32 \
@@ -60,7 +63,7 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 
 参数：`--candidates`、`--tiers`（`dev_param` / `dev_family` /
 `dev_complex` / `dev_axelrod` / `dev_ood` / `dev_level0..4` /
-`dev_complexity0..4` / `test_v7`）、`--fields`、`--n`、
+`dev_complexity0..4` / `test_v8`）、`--fields`、`--n`、
 `--rounds`、`--workers`（整数或 `auto`）、`--candidate-chunk`、
 `--field-reuse auto|on|off`、`--mode sample|argmax`、
 `--sample-rng v4|per-match`、`--gpu on|auto|off`、`--gpu-workers`、
@@ -68,20 +71,22 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 `--fast-rules-threshold`、`--profile`、`--profile-out`、`--seed`、
 `--baseline`、`--acknowledge-once`、`--force`、`--no-consume`、`--out`。
 默认 `n=2048`、dev 30 fields、test 50 fields、20 workers、6 candidates/field。
-`--sample-rng per-match` 是 opt-in Protocol v5 GPU sample；默认 `v4`
-保持历史 CPU sample 语义。`--gpu-workers auto`（默认）在混合 sample
-用 4、混合 argmax 用 8、GPU-only 用完整 worker budget。v5 的 GPU 蓝方
-覆盖普通学习策略；`Adv-*`、`Final` / `Triple` / PSRO meta 仍在 CPU，
+`--sample-rng per-match` 是 opt-in 的 per-match sample RNG；默认 `v4`
+保持历史顺序 CPU sample 语义。`--gpu-workers auto`（默认）在混合 sample
+用 4、混合 argmax 用 8、GPU-only 用完整 worker budget。GPU 蓝方覆盖
+普通学习策略；`Adv-*`、`Final` / `Triple` / PSRO meta 仍在 CPU，
 以保证分数逐位一致。详见
 [plan5](../research/plan5-gpu-sample.md) 与
 [plan6](../research/plan6-python-bottleneck.md)。
 调度、RNG 契约和剖析说明见
-[protocol-v4.md 5.1](protocol-v4.md#51-调度rng-与剖析plan-1)。`test_v7` / `test_red` 由
-`configs/splits/protocol_v4/test_policy.json` 永久锁定
-（`consume_test=false`），CLI 没有覆盖开关；test 运行必须显式传
-`--no-consume`，且一律 provisional、不写 usage ledger，
-`--acknowledge-once` / `--force` 不能解锁。详见
-[protocol-v4.md](protocol-v4.md)。
+[protocol-v5.md 5.1](protocol-v5.md#51-调度rng-与剖析plan-1)。
+`configs/splits/protocol_v5/test_policy.json` 初始把 `test_v8` 和
+`test_red` 都锁定；final 前需显式改 policy，再用
+`--acknowledge-once` 消费并写入 `results/protocol_v5/usage.json`。
+`--no-consume` 生成 provisional 结果且不写 ledger。`--force` 只用于对
+已消费候选重跑并标记 `contaminated=true`，不能绕过锁定。详见
+[protocol-v5.md](protocol-v5.md) 与
+[ADR 0013](../decisions/0013-protocol-v5-resplit.md)。
 
 ### benchmark（legacy）
 

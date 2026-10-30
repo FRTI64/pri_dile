@@ -1,0 +1,11 @@
+{
+  "schema": "ipd-protocol-test-policy-v1",
+  "protocol": "protocol_v5",
+  "consume_test": false,
+  "consume_tiers": {
+    "test_v8": false,
+    "test_red": false
+  },
+  "reason": "Protocol v5 is a fresh split; test_v8 and test_red stay held out until an explicit final unlock",
+  "updated": "2026-10-30"
+}

@@ -1,0 +1,487 @@
+{
+  "schema": "ipd-protocol-profile-v1",
+  "workers": 20,
+  "workers_requested": "20",
+  "candidate_chunk": 6,
+  "field_reuse": "auto",
+  "field_tasks": 180,
+  "field_tasks_reused": 180,
+  "field_build_seconds": 212.214082,
+  "wall_seconds": 401.666777,
+  "peak_rss_mb": 15866.49,
+  "by_candidate": {
+    "Adv-GRU": {
+      "fields": 30,
+      "eval_seconds": 522.154769,
+      "candidate_build_seconds": 0.148568,
+      "field_build_seconds_shared": 6.464912,
+      "family_seconds": {
+        "AxelrodMix": 150.98157,
+        "anchor": 44.328292,
+        "axelrod": 177.126848,
+        "axelrod_extra": 149.500054
+      }
+    },
+    "Adv-MLP": {
+      "fields": 30,
+      "eval_seconds": 164.478497,
+      "candidate_build_seconds": 0.116542,
+      "field_build_seconds_shared": 6.72579,
+      "family_seconds": {
+        "AxelrodMix": 43.394058,
+        "anchor": 12.064459,
+        "axelrod": 59.445582,
+        "axelrod_extra": 49.423282
+      }
+    },
+    "Adv-RL": {
+      "fields": 30,
+      "eval_seconds": 162.375573,
+      "candidate_build_seconds": 0.171187,
+      "field_build_seconds_shared": 6.474954,
+      "family_seconds": {
+        "AxelrodMix": 43.654052,
+        "anchor": 12.326709,
+        "axelrod": 57.915417,
+        "axelrod_extra": 48.332676
+      }
+    },
+    "Bayes-base": {
+      "fields": 30,
+      "eval_seconds": 207.847434,
+      "candidate_build_seconds": 0.020099,
+      "field_build_seconds_shared": 6.772249,
+      "family_seconds": {
+        "AxelrodMix": 53.029462,
+        "anchor": 16.387519,
+        "axelrod": 73.243892,
+        "axelrod_extra": 65.042057
+      }
+    },
+    "Bayes-tuned": {
+      "fields": 30,
+      "eval_seconds": 208.723978,
+      "candidate_build_seconds": 0.023891,
+      "field_build_seconds_shared": 6.72579,
+      "family_seconds": {
+        "AxelrodMix": 53.362905,
+        "anchor": 16.67627,
+        "axelrod": 73.213236,
+        "axelrod_extra": 65.323837
+      }
+    },
+    "Final+Resp3": {
+      "fields": 30,
+      "eval_seconds": 85.201803,
+      "candidate_build_seconds": 0.009676,
+      "field_build_seconds_shared": 6.464912,
+      "family_seconds": {
+        "AxelrodMix": 27.341382,
+        "anchor": 3.820089,
+        "axelrod": 27.114291,
+        "axelrod_extra": 26.797908
+      }
+    },
+    "Final-base": {
+      "fields": 30,
+      "eval_seconds": 65.712252,
+      "candidate_build_seconds": 0.009783,
+      "field_build_seconds_shared": 6.464912,
+      "family_seconds": {
+        "AxelrodMix": 21.731067,
+        "anchor": 2.052109,
+        "axelrod": 20.339488,
+        "axelrod_extra": 21.473488
+      }
+    },
+    "Final-tuned": {
+      "fields": 30,
+      "eval_seconds": 64.565852,
+      "candidate_build_seconds": 0.015704,
+      "field_build_seconds_shared": 6.474954,
+      "family_seconds": {
+        "AxelrodMix": 21.326185,
+        "anchor": 2.031384,
+        "axelrod": 20.011138,
+        "axelrod_extra": 21.083556
+      }
+    },
+    "GRU": {
+      "fields": 30,
+      "eval_seconds": 507.129536,
+      "candidate_build_seconds": 0.175157,
+      "field_build_seconds_shared": 6.474954,
+      "family_seconds": {
+        "AxelrodMix": 146.023779,
+        "anchor": 42.918748,
+        "axelrod": 172.727192,
+        "axelrod_extra": 145.246159
+      }
+    },
+    "GRU-DAgger": {
+      "fields": 30,
+      "eval_seconds": 800.212612,
+      "candidate_build_seconds": 0.390464,
+      "field_build_seconds_shared": 6.800476,
+      "family_seconds": {
+        "AxelrodMix": 228.853185,
+        "anchor": 71.787865,
+        "axelrod": 272.834817,
+        "axelrod_extra": 226.509299
+      }
+    },
+    "GapStart": {
+      "fields": 30,
+      "eval_seconds": 91.512678,
+      "candidate_build_seconds": 0.023506,
+      "field_build_seconds_shared": 6.72579,
+      "family_seconds": {
+        "AxelrodMix": 29.461453,
+        "anchor": 4.098811,
+        "axelrod": 29.169672,
+        "axelrod_extra": 28.65227
+      }
+    },
+    "Harvest-tuned": {
+      "fields": 30,
+      "eval_seconds": 66.400364,
+      "candidate_build_seconds": 0.010181,
+      "field_build_seconds_shared": 6.772249,
+      "family_seconds": {
+        "AxelrodMix": 21.849169,
+        "anchor": 1.976078,
+        "axelrod": 20.700487,
+        "axelrod_extra": 21.758805
+      }
+    },
+    "Harvest45": {
+      "fields": 30,
+      "eval_seconds": 64.675451,
+      "candidate_build_seconds": 0.008861,
+      "field_build_seconds_shared": 6.474954,
+      "family_seconds": {
+        "AxelrodMix": 21.373732,
+        "anchor": 1.840944,
+        "axelrod": 20.352967,
+        "axelrod_extra": 20.998792
+      }
+    },
+    "Neural": {
+      "fields": 30,
+      "eval_seconds": 163.459672,
+      "candidate_build_seconds": 0.138558,
+      "field_build_seconds_shared": 6.464912,
+      "family_seconds": {
+        "AxelrodMix": 43.060129,
+        "anchor": 12.276067,
+        "axelrod": 56.802882,
+        "axelrod_extra": 51.169599
+      }
+    },
+    "PSRO-BR": {
+      "fields": 30,
+      "eval_seconds": 164.504229,
+      "candidate_build_seconds": 0.176897,
+      "field_build_seconds_shared": 6.464912,
+      "family_seconds": {
+        "AxelrodMix": 43.193368,
+        "anchor": 12.324997,
+        "axelrod": 57.380758,
+        "axelrod_extra": 51.453268
+      }
+    },
+    "PSRO-Meta": {
+      "fields": 30,
+      "eval_seconds": 121.599585,
+      "candidate_build_seconds": 0.02573,
+      "field_build_seconds_shared": 6.72579,
+      "family_seconds": {
+        "AxelrodMix": 35.285489,
+        "anchor": 7.803129,
+        "axelrod": 40.679996,
+        "axelrod_extra": 37.698998
+      }
+    },
+    "PSRO-Scratch": {
+      "fields": 30,
+      "eval_seconds": 166.745137,
+      "candidate_build_seconds": 0.038927,
+      "field_build_seconds_shared": 6.474954,
+      "family_seconds": {
+        "AxelrodMix": 43.916428,
+        "anchor": 12.52939,
+        "axelrod": 58.511969,
+        "axelrod_extra": 51.639767
+      }
+    },
+    "PSRO-Scratch-BR": {
+      "fields": 30,
+      "eval_seconds": 163.971449,
+      "candidate_build_seconds": 0.222546,
+      "field_build_seconds_shared": 5.513719,
+      "family_seconds": {
+        "AxelrodMix": 43.143939,
+        "anchor": 12.242681,
+        "axelrod": 57.211023,
+        "axelrod_extra": 51.223272
+      }
+    },
+    "PSRO-V4-BR": {
+      "fields": 30,
+      "eval_seconds": 164.302456,
+      "candidate_build_seconds": 0.17863,
+      "field_build_seconds_shared": 6.772249,
+      "family_seconds": {
+        "AxelrodMix": 43.736502,
+        "anchor": 12.214853,
+        "axelrod": 57.206806,
+        "axelrod_extra": 50.990621
+      }
+    },
+    "PSRO-V4-Meta": {
+      "fields": 30,
+      "eval_seconds": 164.449911,
+      "candidate_build_seconds": 0.040521,
+      "field_build_seconds_shared": 6.800476,
+      "family_seconds": {
+        "AxelrodMix": 43.297497,
+        "anchor": 12.342858,
+        "axelrod": 57.422905,
+        "axelrod_extra": 51.238127
+      }
+    },
+    "RL-Gate": {
+      "fields": 30,
+      "eval_seconds": 232.093489,
+      "candidate_build_seconds": 0.794875,
+      "field_build_seconds_shared": 6.772249,
+      "family_seconds": {
+        "AxelrodMix": 58.161081,
+        "anchor": 20.241883,
+        "axelrod": 79.471431,
+        "axelrod_extra": 74.057186
+      }
+    },
+    "RL-PPO": {
+      "fields": 30,
+      "eval_seconds": 384.829809,
+      "candidate_build_seconds": 0.33601,
+      "field_build_seconds_shared": 5.513719,
+      "family_seconds": {
+        "AxelrodMix": 112.059852,
+        "anchor": 31.196249,
+        "axelrod": 130.276601,
+        "axelrod_extra": 111.080688
+      }
+    },
+    "RL-PPO-Hard60": {
+      "fields": 30,
+      "eval_seconds": 164.771784,
+      "candidate_build_seconds": 0.163414,
+      "field_build_seconds_shared": 6.800476,
+      "family_seconds": {
+        "AxelrodMix": 43.30629,
+        "anchor": 12.350783,
+        "axelrod": 57.278845,
+        "axelrod_extra": 51.686845
+      }
+    },
+    "RL-Pattern": {
+      "fields": 30,
+      "eval_seconds": 165.725794,
+      "candidate_build_seconds": 0.197414,
+      "field_build_seconds_shared": 6.72579,
+      "family_seconds": {
+        "AxelrodMix": 43.608883,
+        "anchor": 12.355885,
+        "axelrod": 57.621286,
+        "axelrod_extra": 51.987496
+      }
+    },
+    "RL-Repair": {
+      "fields": 30,
+      "eval_seconds": 166.500035,
+      "candidate_build_seconds": 0.197953,
+      "field_build_seconds_shared": 6.772249,
+      "family_seconds": {
+        "AxelrodMix": 43.822561,
+        "anchor": 12.520492,
+        "axelrod": 58.072535,
+        "axelrod_extra": 51.927489
+      }
+    },
+    "RL-Switch": {
+      "fields": 30,
+      "eval_seconds": 214.477785,
+      "candidate_build_seconds": 0.800126,
+      "field_build_seconds_shared": 5.513719,
+      "family_seconds": {
+        "AxelrodMix": 56.238395,
+        "anchor": 18.310953,
+        "axelrod": 72.718603,
+        "axelrod_extra": 67.050726
+      }
+    },
+    "RL-Wide": {
+      "fields": 30,
+      "eval_seconds": 231.942982,
+      "candidate_build_seconds": 0.609092,
+      "field_build_seconds_shared": 6.464912,
+      "family_seconds": {
+        "AxelrodMix": 58.148149,
+        "anchor": 19.623665,
+        "axelrod": 82.240409,
+        "axelrod_extra": 71.772804
+      }
+    },
+    "RL-Wide160": {
+      "fields": 30,
+      "eval_seconds": 249.531696,
+      "candidate_build_seconds": 0.614915,
+      "field_build_seconds_shared": 6.474954,
+      "family_seconds": {
+        "AxelrodMix": 61.871372,
+        "anchor": 21.635619,
+        "axelrod": 88.52064,
+        "axelrod_extra": 77.345468
+      }
+    },
+    "Resp3-base": {
+      "fields": 30,
+      "eval_seconds": 63.733695,
+      "candidate_build_seconds": 0.009323,
+      "field_build_seconds_shared": 5.513719,
+      "family_seconds": {
+        "AxelrodMix": 21.151237,
+        "anchor": 1.985261,
+        "axelrod": 19.667413,
+        "axelrod_extra": 20.817374
+      }
+    },
+    "Resp3-tuned": {
+      "fields": 30,
+      "eval_seconds": 63.703377,
+      "candidate_build_seconds": 0.010148,
+      "field_build_seconds_shared": 6.800476,
+      "family_seconds": {
+        "AxelrodMix": 21.248011,
+        "anchor": 1.970023,
+        "axelrod": 19.591694,
+        "axelrod_extra": 20.782044
+      }
+    },
+    "SelfPlay-GRU": {
+      "fields": 30,
+      "eval_seconds": 695.784187,
+      "candidate_build_seconds": 0.727541,
+      "field_build_seconds_shared": 5.513719,
+      "family_seconds": {
+        "AxelrodMix": 197.08631,
+        "anchor": 63.303915,
+        "axelrod": 237.418513,
+        "axelrod_extra": 197.745813
+      }
+    },
+    "Triple-majority": {
+      "fields": 30,
+      "eval_seconds": 258.945829,
+      "candidate_build_seconds": 0.077102,
+      "field_build_seconds_shared": 5.513719,
+      "family_seconds": {
+        "AxelrodMix": 66.851238,
+        "anchor": 21.104212,
+        "axelrod": 91.107942,
+        "axelrod_extra": 79.722665
+      }
+    },
+    "Triple-v4": {
+      "fields": 30,
+      "eval_seconds": 276.238599,
+      "candidate_build_seconds": 0.040993,
+      "field_build_seconds_shared": 6.800476,
+      "family_seconds": {
+        "AxelrodMix": 71.463682,
+        "anchor": 22.716419,
+        "axelrod": 97.407141,
+        "axelrod_extra": 84.489889
+      }
+    }
+  },
+  "by_tier": {
+    "dev_axelrod": {
+      "fields": 30,
+      "candidate_fields": 990,
+      "tasks": 180,
+      "eval_seconds": 7288.302302,
+      "candidate_build_seconds": 6.524333,
+      "field_build_seconds": 212.214082,
+      "peak_rss_mb": 794.5
+    }
+  },
+  "by_family": {
+    "AxelrodMix": {
+      "seconds": 2013.032415,
+      "matches": 564300,
+      "seconds_per_match": 0.003567
+    },
+    "anchor": {
+      "seconds": 573.358612,
+      "matches": 202092,
+      "seconds_per_match": 0.002837
+    },
+    "axelrod": {
+      "seconds": 2500.804419,
+      "matches": 700722,
+      "seconds_per_match": 0.003569
+    },
+    "axelrod_extra": {
+      "seconds": 2196.022322,
+      "matches": 560406,
+      "seconds_per_match": 0.003919
+    }
+  },
+  "protocol": "protocol_v5",
+  "created": "2026-10-30T14:47:54",
+  "tiers": [
+    "dev_axelrod"
+  ],
+  "fields": 30,
+  "n": 2048,
+  "seed": 20261027,
+  "candidates": [
+    "Final-base",
+    "Final-tuned",
+    "Resp3-base",
+    "Resp3-tuned",
+    "Bayes-base",
+    "Bayes-tuned",
+    "Final+Resp3",
+    "Harvest45",
+    "Triple-majority",
+    "Triple-v4",
+    "Harvest-tuned",
+    "GapStart",
+    "Neural",
+    "GRU",
+    "RL-PPO",
+    "RL-PPO-Hard60",
+    "RL-Repair",
+    "RL-Pattern",
+    "RL-Wide",
+    "RL-Wide160",
+    "RL-Switch",
+    "GRU-DAgger",
+    "RL-Gate",
+    "PSRO-Meta",
+    "PSRO-BR",
+    "PSRO-Scratch",
+    "PSRO-Scratch-BR",
+    "PSRO-V4-Meta",
+    "PSRO-V4-BR",
+    "Adv-MLP",
+    "Adv-GRU",
+    "Adv-RL",
+    "SelfPlay-GRU"
+  ],
+  "out": "results/protocol_v5/protocol_v5_dev_axelrod.json"
+}

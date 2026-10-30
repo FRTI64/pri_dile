@@ -1,4 +1,4 @@
-"""Tests for Protocol v3 split catalog, audit and usage ledger."""
+"""Tests for Protocol v5 split catalog, audit and usage ledger."""
 from __future__ import annotations
 
 import json
@@ -100,13 +100,13 @@ class ProtocolFieldTests(unittest.TestCase):
         self.assertEqual(len(first), 64)
         self.assertEqual([b.name for b in first], [b.name for b in second])
 
-    def test_test_v7_contains_all_test_only_families(self) -> None:
+    def test_test_tier_contains_all_test_only_families(self) -> None:
         field = build_protocol_field(TEST_TIER, 777, 8000)
         names = Counter(bot.name.split(":", 1)[0] for bot in field)
         for family in TEST_ONLY_FAMILIES:
             self.assertGreater(names[family], 0, family)
 
-    def test_test_v7_mixture_weights(self) -> None:
+    def test_test_tier_mixture_weights(self) -> None:
         field = build_protocol_field(TEST_TIER, 20261027, 8000)
         names = Counter(bot.name.split(":", 1)[0] for bot in field)
         total = sum(names.values())
@@ -152,6 +152,30 @@ class ProtocolFieldTests(unittest.TestCase):
             self.assertIn(tiers[(family, key)],
                           ("train_complex", "train_policy"),
                           (family, key))
+
+    def test_probe_pattern_profile_uses_train_tier_only(self) -> None:
+        field = build_training_field("train_probe_pattern", 12345, 400)
+        families = {bot.name.split(":", 1)[0] for bot in field}
+        self.assertEqual(families, {"probe_exploit", "pattern_breaker"})
+        tiers = {(entry.family, entry.key): entry.tier
+                 for entry in build_catalog()}
+        for bot in field:
+            family, key = bot.name.split(":", 1)
+            self.assertIn(tiers[(family, key)], ("train_complex",),
+                          (family, key))
+
+    def test_probe_only_profile_uses_train_tier_only(self) -> None:
+        field = build_training_field("train_probe_only", 12345, 400)
+        families = {bot.name.split(":", 1)[0] for bot in field}
+        self.assertEqual(families, {"probe_exploit"})
+        tiers = {(entry.family, entry.key): entry.tier
+                 for entry in build_catalog()}
+        for bot in field:
+            family, key = bot.name.split(":", 1)
+            self.assertIn(tiers[(family, key)], ("train_complex",),
+                          (family, key))
+
+
 
     def test_protocol_validation_distributions(self) -> None:
         for dist in ("dev_param", "dev_family", "dev_complex",
@@ -227,9 +251,38 @@ class ProtocolTestPolicyTests(unittest.TestCase):
             path.write_text("{not json", encoding="utf-8")
             self.assertFalse(test_consumption_allowed(path))
 
-    def test_repository_policy_locks_consumption(self) -> None:
-        self.assertFalse(load_test_policy()["consume_test"])
+    def test_repository_policy_locks_test_v8_and_red(self) -> None:
+        policy = load_test_policy()
+        self.assertFalse(policy["consume_test"])
+        self.assertFalse(policy["consume_tiers"][TEST_TIER])
+        self.assertFalse(policy["consume_tiers"]["test_red"])
         self.assertFalse(test_consumption_allowed())
+        self.assertFalse(test_consumption_allowed(tier=TEST_TIER))
+        self.assertFalse(test_consumption_allowed(tier="test_red"))
+
+    def test_tier_policy_overrides_global_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "test_policy.json"
+            path.write_text(json.dumps({
+                "consume_test": False,
+                "consume_tiers": {TEST_TIER: True, "test_red": False},
+            }), encoding="utf-8")
+            self.assertTrue(test_consumption_allowed(path, tier=TEST_TIER))
+            self.assertFalse(test_consumption_allowed(path, tier="test_red"))
+
+    @patch("ipd.evaluation.protocol_cli.test_consumption_allowed",
+           return_value=True)
+    def test_unlocked_test_tier_still_requires_acknowledge(
+            self, _allowed) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "test.json"
+            with self.assertRaises(SystemExit):
+                protocol_main([
+                    "eval", "--candidates", "final-tuned",
+                    "--tiers", TEST_TIER, "--fields", "1", "--n", "8",
+                    "--workers", "1", "--seed", "123", "--out", str(out),
+                ])
+            self.assertFalse(out.exists())
 
 
 class ProtocolConsumptionLockCliTests(unittest.TestCase):
@@ -351,7 +404,7 @@ class ProtocolManifestTests(unittest.TestCase):
             path = Path(tmp) / "manifest.json"
             write_manifest(path)
             data = json.loads(path.read_text(encoding="utf-8"))
-            self.assertEqual(data["schema"], "ipd-protocol-v4")
+            self.assertEqual(data["schema"], "ipd-protocol-v5")
             self.assertEqual(data["catalog_sha256"], catalog_sha256())
             self.assertTrue(verify_manifest(path)["ok"])
             data["catalog_sha256"] = "broken"

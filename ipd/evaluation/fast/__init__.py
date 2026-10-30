@@ -1,6 +1,6 @@
 """Fast rule-opponent batch evaluation (Plan 3).
 
-The package contains a native C++ interpreter for Protocol v4 rule families,
+The package contains a native C++ interpreter for Protocol v5 rule families,
 a ctypes loader, and a mixed bank that keeps irregular opponents on their
 original Python implementation.  It is used by the GPU protocol simulator and
 by the self-play ``VectorEnv``.

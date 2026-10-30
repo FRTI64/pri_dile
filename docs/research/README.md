@@ -6,7 +6,7 @@
 
 ## 评估协议
 
-- **当前主口径：Protocol v4**，见 [../reference/protocol-v4.md](../reference/protocol-v4.md)；
+- **当前主口径：Protocol v5**，见 [../reference/protocol-v5.md](../reference/protocol-v5.md)；
 - legacy：`benchmark --fields 20` / `blind --fields 20` /
   `league --config configs/eval/e0_league.json`；
 - `heldout_v2/v3/v4` 与 `official/blind` 只保留为历史记录；
@@ -19,7 +19,8 @@
 
 | 阶段 | 文档 | 结论 |
 |---|---|---|
-| Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | **已定义**；977 configs + level/complexity + Axelrod；baseline 未运行 |
+| Protocol v5 | [../reference/protocol-v5.md](../reference/protocol-v5.md) | **当前主口径**；977 configs 重新划分 train/dev/test；新 final `test_v8` 初始锁定；dev baseline 已运行 |
+| Protocol v4 | [../reference/protocol-v4.md](../reference/protocol-v4.md) | Legacy；977 configs + level/complexity + Axelrod；test_v7 结果冻结 |
 | Plan 1 | [plan1-benchmark.md](plan1-benchmark.md) | 实现完成；test_v7 0.85h（2.97×），RNG parity 通过；0.5–0.6h 目标未达 |
 | Plan 2 | [plan2-gpu-policies.md](plan2-gpu-policies.md) | **Gate 2 PASS**；test_v7 4.27×（714.97s）；argmax/float64 parity |
 | Plan 3 | [plan3-fast-opponents.md](plan3-fast-opponents.md) | **Gate 3A C++**；规则实例 99.4% 覆盖；规则评估 7.55×、B=2048 训练 3.04×；小 batch/全 mix 回退 |

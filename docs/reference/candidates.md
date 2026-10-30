@@ -10,10 +10,9 @@ python3 -m ipd list-policies
 
 ## 1. 当前候选
 
-> 新候选比较使用 Protocol v4（977 configs + Axelrod，2048/30/50）。
-> top 7（RL-PPO / RL-Repair / RL-Pattern / RL-Wide / RL-Wide160 /
-> RL-Switch / GRU-DAgger）的 v4 dev 已运行；全候选 v4 baseline 尚未
-> 运行。未特别注明时，状态仍参考 legacy v3 baseline。
+> 新候选比较使用 Protocol v5（977 configs + Axelrod，2048/30/50，
+> train/dev/test 已重新划分）。v5 baseline 尚未运行；下表的 v4 top 7
+> 与 v3 数字只作 legacy，提交前必须在 v5 上重跑。
 
 | 注册名 | 显示名 | 类型 | 权重 / 配置 | 状态 |
 |---|---|---|---|---|

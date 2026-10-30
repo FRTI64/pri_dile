@@ -11,7 +11,7 @@
 | 了解项目和当前结论 | [根 README](../README.md) |
 | 安装、跑测试、提交改动 | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | 评估当前候选 | [docs/guides/evaluation.md](guides/evaluation.md) |
-| 新 split / 审计 / test 规则 | [docs/reference/protocol-v4.md](reference/protocol-v4.md) |
+| 新 split / 审计 / test 规则 | [docs/reference/protocol-v5.md](reference/protocol-v5.md) |
 | 训练模型 / 复现实验 | [docs/guides/training.md](guides/training.md) |
 | 部署 Python / C++ | [docs/guides/deployment.md](guides/deployment.md) |
 | 查 CLI / 候选 / 配置 / 指标 | [docs/reference/](reference/) |
@@ -19,21 +19,22 @@
 | 看实验与 Go/No-Go | [docs/research/](research/) |
 | 交接 / 下一 session | [docs/operations/handover.md](operations/handover.md) |
 
-## 2. 当前状态（2026-10-29）
+## 2. 当前状态（2026-10-30）
 
 | 项 | 值 |
 |---|---|
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
-| v4 dev/test 最佳（top 7） | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python + C++）；单模型替代 `rl-dagger-gru`（GRU-DAgger） |
+| v4 legacy dev/test 最佳 | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python + C++）；单模型替代 `rl-dagger-gru`（GRU-DAgger）；v5 需重跑 |
 | 前最佳 / fallback | `rl-wide160` / `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
-| 最佳纯规则 | `triple-v4`（dev_param 538.66 / dev_complex 447.08 / dev_ood 514.41；未 promotion） |
-| 测试 | **334 tests OK**（本轮全量运行） |
+| 最佳纯规则（v4 legacy） | `triple-v4`（dev_param 538.66 / dev_complex 447.08 / dev_ood 514.41；未 promotion；v5 需重跑） |
+| 测试 | **346 tests OK**（本轮全量运行） |
 | 注册候选 | 33 个（`all` 集合，`python3 -m ipd list-policies`） |
-| 默认评估 | **Protocol v4**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional |
+| 默认评估 | **Protocol v5**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；`test_v8` held-out final |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
-| Protocol v4 baseline | **top 7 dev 已运行**；全候选未运行；v3 的 484.32/476.54/471.44 只作 legacy |
-| held-out | test 消费永久锁定（provisional only）；v2/v3 已进入 legacy |
+| Protocol v5 baseline | **已运行**（33 candidates，1662.15s）；RL-Gate dev_param 第一但 min_norm 0.899；旧门槛下无 candidate 通过；v4/v3 数字为 legacy |
+| probe_exploit / pattern_breaker | 分级诊断确认 `probe_exploit` 是共同瓶颈；PB 可提到约 762，probe-only specialist / v2 特征 / 精确规则均无净收益；probe 专项暂停，不采用 unsafe / `--allow-probe` / 预判 gate |
+| held-out | `test_v8` 初始锁定（ADR 0013）；`test_red` 继续锁定；v2/v3/v4 已进入 legacy |
 | PSRO | 完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro` / `psro-br` 实验候选，未 promotion |
 | PSRO from scratch | blue 仅 random/scratch/BR，现有模型只做 red；`psro-scratch` / `psro-scratch-br`；red_win 0.0，但 dev 480.43；未 promotion |
 | PSRO v4 | 3 轮 × 30 iter 更强 oracle；`psro-v4` / `psro-v4-br`；BR_01 入 support（exploitability 0），red_win 0.0，但 dev 486.93 / min_norm 0.56；未 promotion |
@@ -69,7 +70,8 @@
 | [reference/candidates.md](reference/candidates.md) | 33 个候选、别名、集合、权重、状态 |
 | [reference/configuration.md](reference/configuration.md) | `configs/`、`weights/`、`results/`、路径与配置格式 |
 | [reference/metrics.md](reference/metrics.md) | 四分布、blind、suite、league、CVaR、min_norm 的定义与口径 |
-| [reference/protocol-v4.md](reference/protocol-v4.md) | Protocol v4 的 train/dev/test 划分、manifest、usage ledger |
+| [reference/protocol-v5.md](reference/protocol-v5.md) | Protocol v5 的 train/dev/test 划分、manifest、usage ledger |
+| [reference/protocol-v4.md](reference/protocol-v4.md) | Protocol v4 legacy 记录 |
 
 ### 策略方法
 

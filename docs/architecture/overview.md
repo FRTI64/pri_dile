@@ -197,11 +197,11 @@ action = policy.act(t, mine, theirs)
 ## 4. 评估接口
 
 ```bash
-# Protocol v4（当前主口径）
+# Protocol v5（当前主口径）
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
-  --tiers dev_param,dev_family,dev_complex,dev_ood \
-  --fields 20 --baseline RL-PPO
+  --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
+  --fields 30 --n 2048 --baseline RL-PPO
 
 # 四分布（legacy；默认 8 fields；正式比较建议 20）
 python3 -m ipd benchmark --candidates core --fields 20

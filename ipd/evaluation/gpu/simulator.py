@@ -9,7 +9,7 @@ concatenated) using a single tensor batch.  Per round it:
 3. records both actions and scores.
 
 Field order, per-match scores and opponent names are preserved, so callers can
-reuse the existing Protocol v4 aggregation schema unchanged.
+reuse the existing Protocol v5 aggregation schema unchanged.
 """
 from __future__ import annotations
 

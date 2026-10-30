@@ -1,6 +1,6 @@
 # ADR 0002: 未独立复现不得替换主权重
 
-- **Status:** Accepted（test 消费部分由 ADR 0010 补充）
+- **Status:** Accepted（test 消费部分现由 ADR 0012 定义）
 - **Date:** 2026-10-27
 - **Deciders:** IPD project
 
@@ -19,7 +19,7 @@ A60（`rl-hard60`）和 E1c（`rl-repair`）在多个指标上超过当前主权
 新候选只有满足以下条件才允许替换主权重：
 
 1. 用独立 seeds 复现 Protocol v4 的 `dev_param` / `dev_family` /
-   `dev_complex` / `dev_ood`；test 消费已由 ADR 0010 永久锁定，
+   `dev_complex` / `dev_ood`；`test_v7` 已由 ADR 0012 解禁一次性 final，
    provisional test 不能作为独立 final；
 2. 确认 C++ 导出、第 1/100 天行为、安全规则和权重 checksum；
 3. 不出现 family 崩塌或 anti-exploitation 明显退化；

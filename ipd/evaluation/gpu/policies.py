@@ -13,7 +13,7 @@ classes, so no parameters are duplicated:
 
 Only the policy/actor heads are loaded; training-only critic/value heads are
 ignored.  ``argmax`` is the only supported action mode.  Sample-mode evaluation
-deliberately stays on the CPU path (Protocol v4 RNG contract).
+deliberately stays on the CPU path (legacy v4 RNG contract).
 """
 from __future__ import annotations
 

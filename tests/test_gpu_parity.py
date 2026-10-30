@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover - optional dependency
 
 from ipd.evaluation.common import evaluate_field_details, run_match
 from ipd.evaluation.protocol import (
-    build_protocol_field, protocol_match_seed, restore_field_rng,
+    TEST_TIER, build_protocol_field, protocol_match_seed, restore_field_rng,
     sample_uniforms, snapshot_field_rng,
 )
 from ipd.evaluation.protocol_cli import main as protocol_main
@@ -49,7 +49,7 @@ def _spec(name: str):
 @unittest.skipUnless(_CUDA, "CUDA is not available")
 class SimulatorParityTests(unittest.TestCase):
     def test_learned_candidates_match_cpu_actions(self) -> None:
-        field = _argmax_field("test_v7", 20261027, 32)
+        field = _argmax_field(TEST_TIER, 20261027, 32)
         snapshot = snapshot_field_rng(field)
         for name in ("rl-repair", "gru", "selfplay", "adv-mlp",
                      "psro-scratch"):
@@ -94,7 +94,7 @@ class SimulatorParityTests(unittest.TestCase):
         spec = _spec("selfplay")
         fields = []
         for index in range(2):
-            field = _argmax_field("test_v7", 20261027 + index * 7919, 24)
+            field = _argmax_field(TEST_TIER, 20261027 + index * 7919, 24)
             fields.append([opponent for opponent in field
                            if type(opponent).__name__ in _LEARNED])
         from ipd.evaluation.gpu.simulator import evaluate_fields_gpu
@@ -123,8 +123,8 @@ class SampleV5ParityTests(unittest.TestCase):
         for name in names:
             with self.subTest(candidate=name):
                 cpu_spec = candidate_specs([name], mode="sample")[0]
-                cpu_field = build_protocol_field("test_v7", field_seed, n)
-                gpu_field = build_protocol_field("test_v7", field_seed, n)
+                cpu_field = build_protocol_field(TEST_TIER, field_seed, n)
+                gpu_field = build_protocol_field(TEST_TIER, field_seed, n)
                 uniforms = []
                 cpu_rows = []
                 for index, opponent in enumerate(cpu_field):
@@ -155,7 +155,7 @@ class SampleV5ParityTests(unittest.TestCase):
     def test_sample_policy_opponents_are_batched(self) -> None:
         from ipd.evaluation.gpu.policy_opponents import BatchOpponentField
 
-        field = build_protocol_field("test_v7", 20261027, 64)
+        field = build_protocol_field(TEST_TIER, 20261027, 64)
         for opponent in field:
             if type(opponent).__name__ in _LEARNED:
                 opponent.mode = "sample"
@@ -206,7 +206,7 @@ class ProtocolCliGpuTests(unittest.TestCase):
     def _run(out: Path, *extra: str, fields: int = 2, n: int = 24) -> dict:
         code = protocol_main([
             "eval", "--candidates", "selfplay,gru,final-tuned",
-            "--tiers", "test_v7", "--fields", str(fields), "--n", str(n),
+            "--tiers", TEST_TIER, "--fields", str(fields), "--n", str(n),
             "--workers", "1", "--candidate-chunk", "2",
             "--field-reuse", "on", "--seed", "321",
             "--no-consume", "--out", str(out), *extra,
@@ -227,8 +227,8 @@ class ProtocolCliGpuTests(unittest.TestCase):
         self.assertFalse(cpu["gpu"]["enabled"])
         self.assertTrue(gpu["gpu"]["enabled"])
         for name in cpu["results"]:
-            self.assertEqual(cpu["results"][name]["test_v7"]["values"],
-                             gpu["results"][name]["test_v7"]["values"],
+            self.assertEqual(cpu["results"][name][TEST_TIER]["values"],
+                             gpu["results"][name][TEST_TIER]["values"],
                              name)
 
     def test_sample_mode_stays_on_cpu(self) -> None:
@@ -239,8 +239,8 @@ class ProtocolCliGpuTests(unittest.TestCase):
                              fields=1, n=16)
         self.assertFalse(auto["gpu"]["enabled"])
         for name in plain["results"]:
-            self.assertEqual(plain["results"][name]["test_v7"]["values"],
-                             auto["results"][name]["test_v7"]["values"],
+            self.assertEqual(plain["results"][name][TEST_TIER]["values"],
+                             auto["results"][name][TEST_TIER]["values"],
                              name)
 
     def test_sample_v5_enables_gpu(self) -> None:

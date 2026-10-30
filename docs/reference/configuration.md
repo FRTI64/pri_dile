@@ -24,8 +24,9 @@ configs/
 ├── adversarial_gru_policy_config*.json      GRU 保守/激进
 ├── adversarial_rl_policy_config*.json       RL 保守/激进
 ├── eval/                                    eval-split / league / sweep 配置
-├── splits/protocol_v4/manifest.json         Protocol v4 catalog manifest
-├── splits/protocol_v4/test_policy.json      test 消费锁定策略（consume_test=false）
+├── splits/protocol_v5/manifest.json         Protocol v5 catalog manifest
+├── splits/protocol_v5/test_policy.json      test 消费策略（test_v8=false；test_red=false）
+├── splits/protocol_v4/                      Protocol v4 legacy manifest / policy
 ├── league/                                  P3 red pool blue manifests
 ├── psro/                                    PSRO population / oracle / red check
 ├── selfplay/                                full / smoke / BC / E4 red
@@ -155,7 +156,8 @@ seed、元博弈 solver、PPO oracle 和输出路径：
 results/
 ├── benchmark.json / blind_results.json / suite_results.json
 ├── split_<name>/                 eval-split 输出
-├── protocol_v4/                  Protocol v4 dev / provisional test 结果
+├── protocol_v5/                  Protocol v5 dev / test 结果
+├── protocol_v4/                  Protocol v4 legacy 结果
 ├── e0_league_<date>/             E0
 ├── robust_<date>/                E1
 ├── risk_<date>/                  E2

@@ -5,8 +5,58 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **Protocol v5：重划 train/dev/test，新 final `test_v8`（ADR 0013）**：
+  catalog 保持 977 configs，用 `SPLIT_SALT=protocol_v5` 改变
+  family-local shuffle；405/977 个 config 的 tier 与 v4 不同。
+  `test_v8` 取代 v4 `test_v7` 成为 held-out final，初始锁定；
+  `test_v7` / v4 baseline / v3 结果全部进入 legacy。新增
+  `configs/splits/protocol_v5/`、`train_v5` profile，CLI 结果路径改为
+  `results/protocol_v5/`。v5 必须重新跑 baseline；v4/v5 共用 catalog，
+  旧 v4 候选在 v5 test 上不构成 held-out。
+- **Protocol v4 legacy：解禁 `test_v7` 一次性 final（ADR 0012）**：
+  `configs/splits/protocol_v4/test_policy.json` 增加按 tier 的
+  `consume_tiers`，`test_v7=true`、`test_red=false`；`consume_test`
+  继续作为 fail-closed 的全局 fallback。`protocol eval --tiers test_v7`
+  现在必须显式传 `--acknowledge-once` 才会消费并写
+  `results/protocol_v4/usage.json`；`--no-consume` 仍生成 provisional
+  结果。`--force` 只用于重跑已消费候选并标记 contaminated，不能绕过
+  锁定；`test_red` 继续锁定。文档、CLI 帮助和测试同步更新。
+
 ### Added
 
+- **Protocol v5 dev baseline（33 candidates）**：5 tiers × 30 fields ×
+  2048，默认顺序 sample RNG；总 wall **1662.15s**。结果
+  `results/protocol_v5/protocol_v5_dev.json`。`dev_param` 第一
+  RL-Gate 532.82，但 `dev_ood` min_norm 0.899；RL-Switch / GRU-DAgger /
+  RL-Wide / RL-Wide160 约 532 / 477 / 522，共同弱项 `probe_exploit`
+  （min_norm ~0.934）。旧 `min_norm ≥ 0.99` 门槛下无 candidate 通过，
+  **不 promotion**。`dev_axelrod` 全候选正常，Axelrod 6/0/10/1 矩阵
+  迁移后的行为在 v5 split 上可运行。
+- **v5 分级诊断 + `train_probe_pattern` profile**：`dev_level0..4` /
+  `dev_complexity0..4` 9 candidates，总 wall 1605.51s。结果显示
+  `probe_exploit` 是共同瓶颈（头部学习策略约 116，RL-PPO 124）；
+  `pattern_breaker` 对 RL-Wide160 / RL-Switch / GRU-DAgger 已高于
+  RL-PPO（632–639 vs 449–452），RL-Repair 的 PB 才明显偏低（357）。
+  新增只含 `probe_exploit` + `pattern_breaker` 的
+  `train_probe_pattern` profile，用于 RL-Wide160 定向 fine-tune。
+  两轮结果：ProbePattern-v2-iter4（1:2 probe 权重）把
+  `dev_complex` 477.77 → **481.81**、`dev_ood` 522.24 → **523.14**、
+  `pattern_breaker` 632 → **762**；但 `dev_param` -0.55、
+  `probe_exploit` 仍约 118（RL-PPO 124）、min_norm ~0.951。
+  结论：PB 可通过定向训练改善，probe_exploit 需要新特征 / 显式反
+  probe / specialist + gate；实验产物未注册、未 promotion。
+  目录 `results/protocol_v5/probe_pattern_20261030/` 与
+  `results/protocol_v5/probe_pattern_v2_20261030/`。
+- **probe 专项 3→1→2 实验**：新增 `train_probe_only`，训练 probe-only
+  specialist；尝试 v2 特征和精确反 probe 规则。三者均未取得净收益：
+  specialist / v2 特征无提升；规则可把 probe 拉到 123–129，但
+  `dev_param` -1.9～-4.5、`dev_axelrod` -1.1～-2.7。曾试验
+  980-config probe 覆盖修复和 `--allow-probe` unsafe specialist
+  （probe 280.7），但会破坏现有 baseline / safety，**已回滚**；
+  v5 保持 977 configs，不采用这类破坏性更新。实验记录保留在
+  `results/protocol_v5/`。
 - **Triple-v4（`triple-v4` / `Triple-v4`）**：规则策略定向优化。
   在 Triple-majority 的 Final 组件加入窄噪声互惠分支
   （`p_d >= 0.70`、`0.20 <= p_c <= 0.62`、`p_d - p_c >= 0.30`、

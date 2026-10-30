@@ -1,0 +1,23 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=train_v5,train_probe_pattern val_dists=dev_param,dev_complex,dev_ood fields/iter/dist=2 n=128 iterations=6 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from results/protocol_v5/probe_pattern_20261030/ckpts/iter_003.json
+using reference-policy KL penalty (coef=0.05)
+initial val avg=515.38 worst=494.43 dev_param=531.14 dev_complex=494.43 dev_ood=520.58
+iter   1 reward= 455.39 pi=-0.0018 v=0.2099 H=0.1327 kl=0.0008 bckl=0.0008 clip=0.010 ev=+0.876 (13.2s+2.2s)
+      train train_v5=533.49 train_probe_pattern=416.34 | val avg=515.30 worst=493.91 dev_param=531.64 dev_complex=493.91 dev_ood=520.35
+iter   2 reward= 470.61 pi=-0.0009 v=0.2058 H=0.1186 kl=0.0006 bckl=0.0026 clip=0.007 ev=+0.881 (10.0s+0.3s)
+      train train_v5=536.77 train_probe_pattern=437.53 | val avg=515.35 worst=493.58 dev_param=532.04 dev_complex=493.58 dev_ood=520.45
+iter   3 reward= 466.20 pi=-0.0012 v=0.2049 H=0.1168 kl=0.0007 bckl=0.0051 clip=0.008 ev=+0.884 (10.0s+0.2s)
+      train train_v5=515.73 train_probe_pattern=441.44 | val avg=515.14 worst=493.41 dev_param=531.43 dev_complex=493.41 dev_ood=520.58
+iter   4 reward= 492.75 pi=-0.0012 v=0.2140 H=0.1022 kl=0.0003 bckl=0.0079 clip=0.004 ev=+0.889 (9.9s+0.2s)
+      train train_v5=548.63 train_probe_pattern=464.81 | val avg=515.13 worst=493.69 dev_param=531.57 dev_complex=493.69 dev_ood=520.14
+iter   5 reward= 500.00 pi=-0.0009 v=0.2250 H=0.0997 kl=0.0004 bckl=0.0121 clip=0.005 ev=+0.890 (10.2s+0.2s)
+      train train_v5=532.56 train_probe_pattern=483.72 | val avg=515.14 worst=493.63 dev_param=530.85 dev_complex=493.63 dev_ood=520.93
+iter   6 reward= 496.98 pi=-0.0016 v=0.2351 H=0.0945 kl=0.0000 bckl=0.0122 clip=0.000 ev=+0.891 (10.4s+0.2s)
+      train train_v5=515.56 train_probe_pattern=487.70 | val avg=515.01 worst=493.46 dev_param=530.95 dev_complex=493.46 dev_ood=520.61
+  saved checkpoint (best iter 0, val avg=515.3834635416666)
+best iteration 0 val={'by_dist': {'dev_param': 531.140625, 'dev_complex': 494.42578125, 'dev_ood': 520.583984375}, 'avg': 515.3834635416666, 'worst': 494.42578125, 'selection': 510.14404296875}
+written results/protocol_v5/probe_pattern_v2_20261030/probe_pattern_v2_ac.json
+written results/protocol_v5/probe_pattern_v2_20261030/probe_pattern_v2_weights.json (1111662 bytes)
+written results/protocol_v5/probe_pattern_v2_20261030/probe_pattern_v2_history.json
+vs AllC-until-90: C=92 D=8 score=548

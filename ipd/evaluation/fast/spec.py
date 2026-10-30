@@ -1,7 +1,7 @@
 """Metadata and parameter encoding for the fast rule bank.
 
 The fast path is a native C++ interpreter for the *rule* opponents used by
-Protocol v4 and by the self-play trainer.  Learned policies, Axelrod
+Protocol v5 and by the self-play trainer.  Learned policies, Axelrod
 strategies, and the two deliberately irregular rule families
 (``RandomFSM`` / ``VotingPortfolio``) stay on their original Python objects.
 

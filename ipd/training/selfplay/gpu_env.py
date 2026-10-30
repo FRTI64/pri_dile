@@ -23,7 +23,7 @@ Rule opponents inherit the Plan 3 contract: the native bank captures each
 CPython MT19937 state at construction, so deterministic and random rules are
 bit-identical to the CPU path.  Learned opponents and frozen snapshots sample
 from a torch generator, and the Python fallbacks keep their own RNG streams.
-This is a training-only change; Protocol v4 evaluation remains on the Plan 2
+This is a training-only change; Protocol v5 evaluation remains on the Plan 2
 argmax contract.
 """
 from __future__ import annotations

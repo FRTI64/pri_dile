@@ -1,7 +1,10 @@
-# Protocol v4：Axelrod + 更大规模
+# Protocol v4：Axelrod + 更大规模（Legacy）
 
-状态：**当前主口径**（2026-10-27 起）。v2 / v3 均进入 legacy；实现入口：
-`ipd/evaluation/protocol.py`。
+状态：**Legacy**（2026-10-30 起由 [Protocol v5](protocol-v5.md) 取代）。
+v4 的 manifest、`test_v7` 和全部结果冻结为历史记录；当前实现入口
+`ipd/evaluation/protocol.py` 已切到 v5。本文只用于复现 v4 历史结果，
+不能与 v5 数字混表。v4 split 由旧代码生成，当前 CLI 默认无法直接重建
+v4 的 tier 分配；需要旧数字时请使用已冻结的结果文件。
 
 ## 1. 为什么从 v3 升级
 
@@ -19,7 +22,8 @@ v4 增加：
 - **15 个 AxelrodMix 组合**（每场从 2–4 个 Axelrod 策略中抽一个）；
 - `dev_axelrod` / `train_axelrod`；
 - 默认赛场扩大到 **2048 人（2000+）**，dev **30 fields**，test **50 fields**；
-- final 改为 `test_v7`；v4 起 test 消费永久锁定，只做 provisional 诊断。
+- final 改为 `test_v7`；2026-10-30 起 `test_v7` 解禁一次性消费，
+  `test_red` 继续锁定（ADR 0012）。
 
 catalog 从 532 扩到 **977 个 config**，并新增 8 个复杂/高阶 family 和一批
 旧 family 的新对手；另外按 **thinking level 0–4** 和 **complexity 0–4**
@@ -35,7 +39,7 @@ catalog 从 532 扩到 **977 个 config**，并新增 8 个复杂/高阶 family 
 | `dev_complex` | 选模：复杂 family | 14 个 complex family | 39 + 5 |
 | `dev_axelrod` | 选模：Axelrod | Axelrod 策略 + 组合 | 36 + 5 |
 | `dev_ood` | 选模：偏移混合 | dev / complex / family / Axelrod | - |
-| `test_v7` | 永久 held-out（provisional only） | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 40 + 6 + 36 + 5 |
+| `test_v7` | held-out final（一次性消费；`--no-consume` 可做 provisional） | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 61 + 36 + 40 + 6 + 36 + 5 |
 
 固定 anchor：`AllC`、`AllD`、`TFT`、`Grim`、`Random.50`。
 
@@ -190,7 +194,13 @@ python3 -m ipd protocol eval --candidates all \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
   --out results/protocol_v4/protocol_v4_dev.json
 
-# test_v7：默认 2048 人 × 50 fields；永久 provisional，不会消费
+# test_v7 final：默认 2048 人 × 50 fields；会一次性消费并写 usage ledger
+python3 -m ipd protocol eval --candidates <final> \
+  --tiers test_v7 --fields 50 --n 2048 --workers 20 \
+  --acknowledge-once \
+  --out results/protocol_v4/protocol_v4_test_final.json
+
+# provisional 诊断：不消费 test_v7
 python3 -m ipd protocol eval --candidates <top3> \
   --tiers test_v7 --fields 50 --n 2048 --workers 20 \
   --no-consume \
@@ -269,13 +279,18 @@ python3 -m ipd protocol eval --candidates all --tiers test_v7 \
 3. `dev_axelrod` 看 Axelrod 泛化；
 4. `dev_ood` 看混合/偏移稳定性；
 5. 以 `dev_param` 为主排序，结合 `min_norm` / `worst_family`；
-6. `test_v7` / `test_red` 只做 provisional 诊断；test 结果不参与选模或调参。
+6. `test_v7` 只用于 final 报告，不参与调参或模型排序；`test_red` 仍只做
+   provisional 诊断（blue-red 已停用，ADR 0011）。
 
-`configs/splits/protocol_v4/test_policy.json` 将 `consume_test` 固定为
-`false`，CLI 没有覆盖开关。test 运行必须显式传 `--no-consume`，结果会标记
-`usage_consumed=false`、`selection_eligible=false`，并写入
-`*_test_provisional.json` / `*_provisional.json`。`--acknowledge-once` /
-`--force` 不能解锁；policy 缺失或损坏时也按锁定处理。
+`configs/splits/protocol_v4/test_policy.json` 用
+`consume_tiers` 按 tier 控制消费：`test_v7=true`、`test_red=false`；
+`consume_test` 是全局 fallback，仓库内固定为 `false`。消费 `test_v7` 必须
+显式传 `--acknowledge-once`，结果写入 `results/protocol_v4/usage.json`，
+标记 `usage_consumed=true`、`selection_eligible=true`。`--no-consume` 仍可
+生成 `*_test_provisional.json` / `*_provisional.json`（不写 ledger），
+`--force` 只允许对已消费候选重跑并标记 `contaminated=true`，不能绕过锁定；
+policy 缺失或损坏时按 fail closed 处理。`test_v7` 消费后，新候选需要
+`test_v8` 或重新审计扩充分层。
 
 ## 7. 当前限制
 
@@ -289,5 +304,6 @@ python3 -m ipd protocol eval --candidates all --tiers test_v7 \
   299/20/40 结果只作 legacy。当前不要把它当作 v4 排名。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
   只在定向分析时使用。
-- test 消费已永久锁定；`test_v7` / `test_red` 只作 provisional 诊断。
+- `test_v7` 已解禁一次性 final 消费（ADR 0012），消费后需要 `test_v8`；
+  `test_red` 继续锁定，只作 provisional 诊断。
 - Red-v5 / Red-v6 仍是 P3 legacy artifact；anti-exploitation 未解决。

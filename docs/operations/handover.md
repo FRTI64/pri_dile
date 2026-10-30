@@ -1,28 +1,33 @@
 # 100 天囚徒困境项目交接文档
 
-> **交接状态（2026-10-29）**
+> **交接状态（2026-10-30）**
 >
 > - 主权重未替换：`weights/rl_policy_weights.json`，sha256
 >   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-> - **RL-Switch（`rl-switch`）是 Protocol v4 dev/test 最佳（top 7
+> - **Protocol v5 已启用**：977 configs 重新划分 train/dev/test；
+>   `test_v8` 为新的 held-out final（初始锁定），v4 `test_v7` 及全部
+>   v4 结果进入 legacy（ADR 0013）。
+> - **RL-Switch（`rl-switch`）是 v4 legacy dev/test 最佳（top 7
 >   对比）**，但只注册、不 promotion；Python + C++ 双权重实现已通过 action parity：
 >   默认 RL-Wide160；第 6 回合前双方各 D≥2 且对手最新 C 时切换
 >   RL-Repair。dev_param 548.58 / dev_complex 454.24 / dev_axelrod
->   582.86；test_v7 provisional 488.26（seed 27）/ 487.51（seed 29）。
+>   582.86；v4 `test_v7` provisional 488.26（seed 27）/ 487.51（seed 29）。
+>   v5 需重新跑 baseline。
 > - **GRU-DAgger（`rl-dagger-gru`）是单模型替代**：1 层 GRU（64
 >   hidden）用 2 轮 DAgger 蒸馏 RL-Switch；dev_param 548.58 /
->   dev_complex **455.13**；两个 seed 与 RL-Switch 持平；test_v7
+>   dev_complex **455.13**；两个 seed 与 RL-Switch 持平；v4 `test_v7`
 >   provisional 487.89（seed 27）/ 487.02（seed 29）；Python + C++
 >   已通过 action parity；未 promotion。详见
 >   `docs/research/dagger-gru.md`。
 > - **前最佳 / fallback：RL-Wide160（`rl-wide160`）、RL-Wide
 >   （`rl-wide`）、RL-Pattern（`rl-pattern`）与 RL-Repair
 >   （`rl-repair`）**；均未 promotion。
-> - **最佳纯规则：Triple-v4（`triple-v4`）**：Triple-majority + Final
->   噪声互惠分支；dev_param 538.66 / dev_complex 447.08 / dev_ood
->   514.41；独立 seed 20261029 复现；test_v7 provisional 473.68；
->   无权重、无 probe；仍低于 RL-Repair / RL-PPO，**未 promotion**。
-> - 最近完整测试：**334 tests OK**（本轮全量运行）。
+> - **最佳纯规则（v4 legacy）：Triple-v4（`triple-v4`）**：
+>   Triple-majority + Final 噪声互惠分支；dev_param 538.66 /
+>   dev_complex 447.08 / dev_ood 514.41；独立 seed 20261029 复现；
+>   v4 `test_v7` provisional 473.68；无权重、无 probe；仍低于
+>   RL-Repair / RL-PPO，**未 promotion**；v5 需重跑。
+> - 最近完整测试：**346 tests OK**（本轮全量运行）。
 >   `python3 -m ipd list-policies`：**33 个注册候选（all 集合）**。
 > - `rl-gate` 是学习型上层 gate 实验：阈值 0.9 基本退化为
 >   RL-Wide160（test 485.84），阈值 0.5 会过度切换；**No-Go**，
@@ -31,21 +36,44 @@
 >   `psro-br` / `psro-scratch` / `psro-scratch-br` / `psro-v4` /
 >   `psro-v4-br` 仍注册为历史实验候选；dev/red 结果只用于复现，
 >   **不再作为当前评估或 promotion 门槛**。
-> - **Protocol v4 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
+> - **Protocol v5 已定义**：977 configs；14 complex 风格 + 224 Axelrod + 15 组合；
 >   2048 人 / dev 30 fields / test 50 fields；`dev_param` / `dev_family` /
->   `dev_complex` / `dev_axelrod` / `dev_ood` 选模。
-> - **v4 top 7 dev 已运行**；全候选 baseline 尚未运行；v3 的
->   RL-Repair 484.32 / A60 476.54 / Adv-RL 471.44 只作 legacy。
->   test 消费已永久锁定（provisional only）。
+>   `dev_complex` / `dev_axelrod` / `dev_ood` 选模；`SPLIT_SALT=protocol_v5`
+>   重新分配 train/dev/test。
+> - **v5 dev baseline 已运行**（33 candidates，5 tiers × 30 fields ×
+>   2048，1662.15s）：dev_param 第一是 RL-Gate 532.82，但 `dev_ood`
+>   min_norm 0.899；RL-Switch / GRU-DAgger / RL-Wide / RL-Wide160
+>   约 532 / 477 / 522，共同弱项 `probe_exploit`（min_norm ~0.934）。
+>   旧 `min_norm ≥ 0.99` 门槛下无 top candidate 通过，**不 promotion**。
+> - **v5 分级诊断**（`protocol_v5_dev_levels.json`，1605.51s）：
+>   `probe_exploit` 是共同瓶颈（头部学习策略约 116，RL-PPO 124）；
+>   `pattern_breaker` 对 RL-Wide160 / RL-Switch / GRU-DAgger 已高于
+>   RL-PPO（632–639 vs 449–452），RL-Repair 的 PB 才偏低（357）。
+>   已新增 `train_probe_pattern`，以 RL-Wide160 做定向 fine-tune。
+> - **定向 fine-tune 结果**：ProbePattern-v2-iter4 把 `dev_complex`
+>   477.77 → **481.81**、`dev_ood` 522.24 → **523.14**、
+>   `pattern_breaker` 632 → **762**；但 `dev_param` -0.55、
+>   `probe_exploit` 仍只有 **118.1**（RL-PPO 124.0）、min_norm 约
+>   0.951。结论：PB 可训，probe_exploit 不是简单加权重能解决；需要
+>   新特征 / 显式反 probe 规则 / specialist + gate。未注册、未 promotion。
+> - **probe 专项按 3→1→2 试过**：probe-only specialist 与 v2 特征都
+>   没有增益；精确规则（首次 D=5/7 切 AllD）能把 probe 拉到
+>   123–129，但 `dev_param` -1.9～-4.5、`dev_axelrod` -1.1～-2.7，
+>   净收益为负。probe 专项暂停：**不采用 unsafe specialist /
+>   `--allow-probe` / 预判 gate**，也不为 probe 修改 protocol 或
+>   safety 规则；v5 保持 977 configs。
+> - v4 的 top 7 dev、`test_v7`、v3 的 RL-Repair 484.32 / A60 476.54 /
+>   Adv-RL 471.44 只作 legacy。`test_v8` / `test_red` 初始锁定；
+>   final 前需显式解禁（ADR 0013）。
 > - **blue-red 对战已停用**（ADR 0011）：以后不再用 red /
 >   exploitability 作为评估或 promotion 门槛；不新增 red 任务。
 > - 最近提交：`git log -1`（GRU-DAgger 单模型蒸馏 + C++）。
 
 > **2026-10-28 更新**
 >
-> - Protocol v5 GPU sample 已 opt-in（`--sample-rng per-match`）；
+> - per-match sample RNG 已 opt-in（`--sample-rng per-match`）；
 >   Plan 6 把 sample policy 对手搬到 GPU、Axelrod adapter 改为增量历史，
->   并加入严格同序 C++ CPU policy 前向。`test_v7` v5 exact 降到
+>   并加入严格同序 C++ CPU policy 前向。v4 `test_v7` 的 exact 运行降到
 >   **272.77s**；`Adv-*` / PSRO meta 保持 CPU，确保 **24/24 候选分数与
 >   CPU baseline 逐位一致**。dev argmax 只在本轮迁移中做过一次性加速
 >   诊断，不进入长期 gate。
@@ -57,10 +85,11 @@
 
 ---
 
-## 0. Protocol v4（2026-10-27 起的当前主口径）
+## 0. Protocol v5（2026-10-30 起的当前主口径）
 
-旧的 `official` / `blind` / `heldout_v2` / Protocol v2 表进入 legacy，不再作为
-泛化证据。新候选按以下流程评估：
+v5 保留 977-config catalog，但用 `SPLIT_SALT=protocol_v5` 重新划分
+train/dev/test；`test_v8` 是新的 held-out final。v4 的 `test_v7`、v4
+baseline 与 v3 结果全部进入 legacy，不能与 v5 混表。新候选按以下流程：
 
 ```bash
 # 1. 审计 split（必须 OK）
@@ -70,26 +99,30 @@ python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --seed 20261027 --baseline RL-PPO \
-  --out results/protocol_v4/protocol_v4_dev.json
+  --out results/protocol_v5/protocol_v5_dev.json
 
-# 3. test_v7：永久 provisional，不会消费
+# 3. test_v8 final：一次性消费（写 usage ledger）
+python3 -m ipd protocol eval --candidates <final> \
+  --tiers test_v8 --fields 50 --n 2048 --workers 20 \
+  --seed 20261027 --acknowledge-once \
+  --out results/protocol_v5/protocol_v5_test_final.json
+
+# 3.1 provisional 诊断 / pipeline 烟测：不消费 test_v8
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --workers 20 \
+  --tiers test_v8 --fields 50 --n 2048 --workers 20 \
   --seed 20261027 --no-consume \
-  --out results/protocol_v4/protocol_v4_test_provisional.json
-
-# 3.1 只验证 pipeline，同样不会消费 test_v7
+  --out results/protocol_v5/protocol_v5_test_provisional.json
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 1 --n 256 --workers 4 \
-  --no-consume --out /tmp/test_v7_smoke.json
+  --tiers test_v8 --fields 1 --n 256 --workers 4 \
+  --no-consume --out /tmp/test_v8_smoke.json
 
 # 4. 按思考等级 / 复杂度分级
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048 \
-  --out results/protocol_v4/protocol_v4_dev_level3.json
+  --out results/protocol_v5/protocol_v5_dev_level3.json
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_complexity4 --fields 30 --n 2048 \
-  --out results/protocol_v4/protocol_v4_dev_complexity4.json
+  --out results/protocol_v5/protocol_v5_dev_complexity4.json
 
 # 5. red（diagnostic / final）
 python3 -m ipd protocol red --candidates <top3> --tier dev_red --seeds 30
@@ -102,20 +135,25 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 - `dev_param` 是主排序；`dev_family` / `dev_complex` / `dev_axelrod` /
   `dev_ood` 是门禁；`dev_level0..4` / `dev_complexity0..4` 用于分级诊断；
 - 必须同时看 per-family、`min_norm`、`worst_family`；
-- `test_v7` / `test_red` 由
-  `configs/splits/protocol_v4/test_policy.json` 永久锁定
-  （`consume_test=false`）；所有 test 运行都是 provisional，
-  `selection_eligible=false`，CLI 没有覆盖开关；
-- `--acknowledge-once` / `--force` 不能解锁 test 消费；
-- usage ledger：`results/protocol_v4/usage.json`（test 锁定后不会新增）；
-- manifest：`configs/splits/protocol_v4/manifest.json`；
-- 旧 `official` / `blind` / v2 只能作为 legacy 对照，不能与新表混用。
+- `configs/splits/protocol_v5/test_policy.json` 初始把 `test_v8` /
+  `test_red` 都锁定；final 前显式解禁 `test_v8`，再用
+  `--acknowledge-once` 消费。`--no-consume` 运行标记
+  `selection_eligible=false`，不写 ledger；
+- `--force` 只允许对已消费候选重跑并标记 `contaminated=true`，不能绕过锁定；
+- usage ledger：`results/protocol_v5/usage.json`（首次 `test_v8` final 后创建）；
+- manifest：`configs/splits/protocol_v5/manifest.json`；
+- 旧 `official` / `blind` / v2 / v3 / v4 只能作为 legacy 对照，不能与
+  新表混用。
 
-详见 [../reference/protocol-v4.md](../reference/protocol-v4.md)。
+详见 [../reference/protocol-v5.md](../reference/protocol-v5.md)。
 
 ---
 
 ## 1. 当前建议
+
+> 下表依据仍是 **v4 legacy** 数字；v5 dev baseline 已跑（见 §2.0），
+> 但旧 `min_norm ≥ 0.99` 门槛下没有 candidate 通过，暂不改变提交建议。
+> v5 final 仍需要在解禁 `test_v8` 后单独跑。
 
 | 场景 | 建议 | 依据 |
 |---|---|---|
@@ -134,26 +172,27 @@ python3 -m ipd protocol red --candidates <top3> --tier test_red \
 | 纯规则、无权重 | **Triple-v4**（`triple-v4`） | v4 dev_param 538.66、dev_complex 447.08、dev_ood 514.41；独立 seed 复现；未 promotion |
 | PSRO / red 历史对照 | `psro` / `psro-scratch` / `psro-v4` 等 | 仅历史复现；**不再作为评估或 promotion 门槛**（ADR 0011） |
 
-**Promotion 条件：** 先在 v4 的 `dev_param` / `dev_family` / `dev_complex` /
+**Promotion 条件：** 先在 v5 的 `dev_param` / `dev_family` / `dev_complex` /
 `dev_axelrod` / `dev_ood` 上用独立 seed 复现 RL-Switch / GRU-DAgger；
 C++ 实现已完成并通过固定序列 action parity，但还需要第 1/100 天行为、
-权重 checksum 和真实比赛接口验证。RL-Switch 和 GRU-DAgger 的 test_v7
-都只做了两个 seed 的 provisional 诊断；blue-red 已停用（ADR 0011），
-不再作为 promotion 证据。test 消费已在 policy 层永久关闭，provisional
-test 不能当作独立 final。得到确认后才把 `weights/rl_policy_weights.json`
-替换为 RL-Switch、GRU-DAgger 或 RL-Wide160。当前文档不假设已经替换。
+权重 checksum 和真实比赛接口验证。RL-Switch 和 GRU-DAgger 的 v4
+`test_v7` 只做了两个 seed 的 provisional 诊断，不能迁移为 v5 final；
+blue-red 已停用（ADR 0011），不再作为 promotion 证据。promotion 前应在
+v5 上重跑 dev，解禁 `test_v8` 后用 `--acknowledge-once` 跑一次 final 并
+写 usage ledger。得到确认后才把 `weights/rl_policy_weights.json` 替换为
+RL-Switch、GRU-DAgger 或 RL-Wide160。当前文档不假设已经替换。
 
 ---
 
 ## 2. 评估口径（先看这一节）
 
-**当前主口径是 Protocol v4**；下面 2.1 / 2.2 的 official/blind/league 仅用于
-复现历史结果，不能作为新候选的 held-out 证据。Protocol v4 的定义和命令见
-[../reference/protocol-v4.md](../reference/protocol-v4.md)。
+**当前主口径是 Protocol v5**；下面 2.1 / 2.2 的 official/blind/league 仅用于
+复现历史结果，不能作为新候选的 held-out 证据。Protocol v5 的定义和命令见
+[../reference/protocol-v5.md](../reference/protocol-v5.md)。
 
 项目里同时存在几种协议，数字略有差异是正常的，**不能混表**。
 
-### 2.0 Protocol v4
+### 2.0 Protocol v5
 
 | 层 | 用途 | 规模 |
 |---|---|---|
@@ -164,15 +203,40 @@ test 不能当作独立 final。得到确认后才把 `weights/rl_policy_weights
 | `dev_ood` | 选模（偏移混合） | 30 fields × 2048 |
 | `dev_level0..4` | 思考等级分级诊断 | 30 fields × 2048 |
 | `dev_complexity0..4` | 策略复杂度分级诊断 | 30 fields × 2048 |
-| `test_v7` | 永久 held-out（provisional only） | 50 fields × 2048 |
+| `test_v8` | held-out final（初始锁定；解禁后一次性消费） | 50 fields × 2048 |
 | `dev_red` / `test_red` | exploitability | 30 seeds |
 
-`test_v7` / `test_red` **永久锁定**：所有运行都是 provisional，不写 usage
-ledger，不能用于排名或 final。**`dev_red` / `test_red` 是历史口径**；
+`test_v8` / `test_red` 初始都锁定；final 前显式解禁 `test_v8`，再传
+`--acknowledge-once`，结果写 `results/protocol_v5/usage.json` 并标记
+`selection_eligible=true`；消费后新候选需要 `test_v9`。`--no-consume`
+仍只生成 provisional 结果。**`dev_red` / `test_red` 是历史口径**；
 blue-red 对战已停用（ADR 0011），不再参与当前选模或 promotion。
 
-v4 **top 7 dev 已运行**（30 fields × 2048，sample，v5 GPU/CPU）；
-全候选 baseline 尚未运行。test_v7 为 provisional，不参与选模：
+v5 **dev baseline 已运行**（33 candidates，5 tiers × 30 fields × 2048，
+默认顺序 sample RNG；总 wall 1662.15s）。按 `dev_param` 前 7：
+
+| 候选 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | ood min_norm |
+|---|---:|---:|---:|---:|---:|---:|
+| **RL-Gate** | **532.82** | 582.95 | 477.00 | 567.78 | 522.11 | 0.899 |
+| **RL-Repair** | 532.53 | 582.78 | 456.41 | 565.46 | 515.80 | 0.790 |
+| **RL-Switch** | 532.37 | 582.91 | 477.57 | 566.53 | 521.73 | 0.934 |
+| RL-Pattern | 532.30 | 583.09 | 476.06 | 568.00 | 521.94 | 0.932 |
+| GRU-DAgger | 532.30 | 582.93 | 477.29 | 567.17 | 522.09 | 0.934 |
+| RL-Wide | 531.89 | 583.09 | 476.94 | 568.01 | 522.07 | 0.932 |
+| RL-Wide160 | 531.66 | 583.08 | **477.77** | 567.77 | **522.24** | 0.934 |
+| RL-PPO（baseline） | 525.99 | 582.55 | 457.26 | 563.43 | 513.30 | 1.000 |
+
+- v5 的共同弱项是 `probe_exploit`；RL-Switch / GRU-DAgger / RL-Wide /
+  RL-Wide160 的 ood min_norm 约 0.932–0.934。RL-Gate 的 dev_param 第一，
+  但 ood min_norm 0.899；RL-Repair 的 `pattern_breaker` min_norm 0.790。
+- **旧 `min_norm ≥ 0.99` 门槛下没有 top candidate 通过**；本表只作
+  v5 诊断，**不 promotion**。完整结果见
+  `results/protocol_v5/protocol_v5_dev.json` 与
+  `results/protocol_v5/README.md`。
+- 该 baseline 在 977-config catalog 上运行，与当前 manifest 一致。
+
+下表是 v4 legacy 的 top 7 dev 与 `test_v7` provisional，只用于理解候选，
+不参与 v5 选模：
 
 | 候选 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 provisional |
 |---|---:|---:|---:|---:|---:|---:|
@@ -205,7 +269,8 @@ v4 **top 7 dev 已运行**（30 fields × 2048，sample，v5 GPU/CPU）；
 | RL-PPO | 524.37 | 582.72 | 397.90 | 478.61 | - |
 | Final-tuned | 523.39 | 583.13 | 413.64 | 484.57 | - |
 
-- 以上是 v3 数字，不能作为 v4 排名；v4 加入 Axelrod 并扩大规模后必须重跑。
+- 以上是 v3 数字，不能作为 v4/v5 排名；v4 加入 Axelrod 并扩大规模、
+  v5 重新划分后都必须重跑。
 - Red-v5 / Red-v6 对 top 3 仍 100% 胜率，anti-exploitation 未解决；
 - 完整 v3 表：`results/protocol_v3/README.md`。
 
@@ -238,7 +303,7 @@ python3 -m ipd league --config configs/eval/e0_league.json \
 
 ### 2.3 结果表（legacy）
 
-以下 E0/E1c 冻结协议数字只用于历史复现；新候选比较用 Protocol v4。
+以下 E0/E1c 冻结协议数字只用于历史复现；新候选比较用 Protocol v5。
 
 | 候选 | 注册名 | official | blind 20 | heldout_v2 | heldout_v3 | min_norm | CVaR10 | E4 red blue |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -408,15 +473,22 @@ BC/RL/Adv。**改进实验 No-Go，不替换主权重。**
 > **历史说明：** 以下 E4 / P3 / PSRO / red 相关结论只用于复现。
 > blue-red 对战已停用（ADR 0011），不再作为当前评估或 promotion 门槛。
 
-### Protocol v4（2026-10-27）
+### Protocol v5（2026-10-30；当前主口径）
 
-- 新 catalog 977 configs，manifest `beb594ab...`；
+- catalog 仍为 977 configs，manifest `c7aab4da...`；
+- `SPLIT_SALT=protocol_v5` 重新划分 train/dev/test，405/977 个 config 的 tier 与 v4 不同；
+- 新 final 为 `test_v8`；初始锁定，`test_red` 继续锁定；
+- **v5 dev baseline 已运行**（33 candidates，1662.15s）；top 见 §2.0；
+  旧 min_norm 门槛下无 candidate 通过；v4 top 7 / test_v7 只作 legacy；
+- 文档：`docs/reference/protocol-v5.md`，ADR 0013。
+
+### Protocol v4（legacy，2026-10-27）
+
+- 977 configs，manifest `beb594ab...`；
 - 224 个 Axelrod 策略 + 15 个 AxelrodMix；14 个 complex family、10 个 policy
   opponent；每个 entry 带 `thinking_level` / `complexity` 0–4；
-- 新增 `dev_axelrod` / `train_axelrod`；默认 2048 人 / dev 30 / test 50；
-- **top 7 dev 已运行**（2026-10-31）；全候选 baseline 尚未运行；
-  test 消费永久锁定；
-- blue-red 已停用（ADR 0011）；旧 Red-v5/v6 结果只作历史；
+- 默认 2048 人 / dev 30 / test 50；`test_v7` 已解禁但只作历史；
+- v4 结果全部冻结，不能与 v5 混表；
 - 文档：`docs/reference/protocol-v4.md`，ADR 0007 / 0008。
 
 ### RL-Pattern（2026-10-29；实验候选，未 promotion）
@@ -821,16 +893,18 @@ python3 -m ipd self-test --candidates all
 
 ### 5.2 当前头部候选
 
-Protocol v4（当前主口径）：
+Protocol v5（当前主口径）：
 
 ```bash
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO
+# 初始 test_v8 锁定；provisional 诊断用 --no-consume
 python3 -m ipd protocol eval \
   --candidates RL-Switch,GRU-DAgger,RL-Wide160,RL-Pattern,RL-Repair,RL-PPO-Hard60,Adv-RL \
-  --tiers test_v7 --fields 50 --n 2048 --no-consume
+  --tiers test_v8 --fields 50 --n 2048 --no-consume
+# final 前先解禁 test_v8，再用 --acknowledge-once 消费
 # red / blue-red 命令仅作历史复现，当前流程不再执行（ADR 0011）
 ```
 
@@ -1025,11 +1099,13 @@ mine/theirs = 到此日之前的动作
    P3 的 red pool / league-lite / expansion 都没有过 Gate D。
 4. **RL 有尾部风险**：最终从零 RL 在 `Rand3->TFT` 上约 347（BC 约 554），
    `Extort3`、`Random.50/70` 也可能回退；`ProbeBot` 已修复到约 603。
-5. **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 默认
-   2048 人、dev 30 fields、test 50 fields。
+5. **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4/v5
+   默认 2048 人、dev 30 fields、test 50 fields。
 6. **split 已重划**：`heldout_v2` 已泄漏，`heldout_v3` 已被 E1c 使用，
-   `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v4。
-   v4 test 消费已永久锁定；v3 的 `test_v6` 已消费。
+   `heldout_v4` 未用但只覆盖单套 family；新候选统一用 Protocol v5。
+   `test_v8` / `test_red` 初始锁定（ADR 0013）；v4 `test_v7`、v3
+   `test_v6` 都只作历史。v5 与 v4 共用 catalog，旧 v4 候选在 v5 test
+   上不是 held-out。
 7. **SelfPlay 不是 anti-exploitation 证据**：final test 中的 held-out red
    是 RL-BC 互惠型对照，不能证明能防针对性 red。
 8. **GRU / SelfPlay-GRU 有状态**：每场必须 `reset()`；同一时间步不要重复
@@ -1087,8 +1163,8 @@ mine/theirs = 到此日之前的动作
 - [ ] 运行 `python3 -m ipd protocol audit`，确认 manifest / family / config
       无泄漏。
 - [ ] 对学习策略跑 `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood`
-      （2048 人 / 30 fields）；`test_v7` 只做 provisional 诊断，不会写
-      usage ledger，也不能用于选模。
+      （2048 人 / 30 fields）；`test_v8` 初始锁定，provisional 诊断用
+      `--no-consume`，final 前先解禁再传 `--acknowledge-once`。
 - [ ] 检查第 1 天、第 100 天和“对手未 D 时 C”的安全规则。
 - [ ] 确认 GRU / SelfPlay 每场 `reset()`，同一时间步只调用一次。
 - [ ] 若提交 C++，刷新权重头文件并重新编译；Triple 需要自行移植。
@@ -1107,7 +1183,7 @@ mine/theirs = 到此日之前的动作
 | `ipd/policies/candidates/` | 每个候选一个独立文件 |
 | `ipd/evaluation/league.py` | E0 冻结评估 harness |
 | `ipd/evaluation/opponent_suite.py` | legacy validation / heldout_v2 / v3 / v4 |
-| `ipd/evaluation/protocol.py` | Protocol v4 catalog / audit / manifest / ledger |
+| `ipd/evaluation/protocol.py` | Protocol v5 catalog / audit / manifest / ledger |
 | `ipd/evaluation/protocol_cli.py` | `python -m ipd protocol` |
 | `ipd/evaluation/policy_pool.py` | P3 frozen blue/red pool |
 | `ipd/training/rl.py` | PPO 训练、rollout、验证、导出 |

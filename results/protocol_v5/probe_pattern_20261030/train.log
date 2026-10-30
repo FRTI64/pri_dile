@@ -1,0 +1,20 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=train_v5,train_probe_pattern val_dists=dev_param,dev_complex,dev_ood fields/iter/dist=2 n=128 iterations=4 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from weights/rl_policy_checkpoint_wide160.json
+using reference-policy KL penalty (coef=0.1)
+initial val avg=515.18 worst=475.25 dev_param=546.33 dev_complex=475.25 dev_ood=523.96
+  new best at iter 1: avg=515.67 worst=476.69
+iter   1 reward= 483.09 pi=-0.0007 v=0.1860 H=0.1258 kl=0.0003 bckl=0.0003 clip=0.002 ev=+0.896 (13.4s+3.2s)
+      train train_v5=533.50 train_probe_pattern=382.27 | val avg=515.67 worst=476.69 dev_param=546.38 dev_complex=476.69 dev_ood=523.94
+iter   2 reward= 491.33 pi=+0.0007 v=0.1899 H=0.1204 kl=0.0002 bckl=0.0009 clip=0.001 ev=+0.891 (9.9s+0.2s)
+      train train_v5=520.14 train_probe_pattern=433.70 | val avg=514.57 worst=475.04 dev_param=545.55 dev_complex=475.04 dev_ood=523.10
+iter   3 reward= 490.43 pi=-0.0006 v=0.1601 H=0.1199 kl=0.0003 bckl=0.0017 clip=0.002 ev=+0.901 (9.9s+0.2s)
+      train train_v5=525.30 train_probe_pattern=420.71 | val avg=514.69 worst=475.98 dev_param=545.05 dev_complex=475.98 dev_ood=523.02
+iter   4 reward= 476.06 pi=-0.0007 v=0.1582 H=0.1193 kl=0.0000 bckl=0.0018 clip=0.000 ev=+0.897 (10.2s+0.3s)
+      train train_v5=511.92 train_probe_pattern=404.35 | val avg=514.68 worst=475.02 dev_param=545.74 dev_complex=475.02 dev_ood=523.28
+  saved checkpoint (best iter 1, val avg=515.6692708333334)
+best iteration 1 val={'by_dist': {'dev_param': 546.384765625, 'dev_complex': 476.6875, 'dev_ood': 523.935546875}, 'avg': 515.6692708333334, 'worst': 476.6875, 'selection': 505.923828125}
+written results/protocol_v5/probe_pattern_20261030/probe_pattern_ac.json
+written results/protocol_v5/probe_pattern_20261030/probe_pattern_weights.json (1111566 bytes)
+written results/protocol_v5/probe_pattern_20261030/probe_pattern_history.json
+vs AllC-until-90: C=92 D=8 score=548

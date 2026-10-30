@@ -1,0 +1,2623 @@
+{
+  "schema": "ipd-protocol-eval-v1",
+  "protocol": "protocol_v5",
+  "protocol_version": "5",
+  "split_version": "5",
+  "sample_rng_version": "4",
+  "catalog_sha256": "c7aab4da622413460f8906a2846398d3e9466ed429ceab25dad197129eacf158",
+  "created": "2026-10-30T14:47:54",
+  "seconds": 401.67,
+  "tiers": [
+    "dev_axelrod"
+  ],
+  "fields": 30,
+  "n": 2048,
+  "rounds": 100,
+  "seed": 20261027,
+  "baseline": "RL-PPO",
+  "workers": 20,
+  "worker_budget": {
+    "requested": "20",
+    "resolved": 20,
+    "cpu_count": 24,
+    "cpu_limit": 22,
+    "ram_available_gb": 26.07,
+    "ram_limit": 24,
+    "max_workers": 20,
+    "ram_per_worker_gb": 1.0,
+    "parent_reserve_gb": 2.0
+  },
+  "candidate_chunk": 6,
+  "field_reuse": "auto",
+  "mode": "sample",
+  "sample_rng": "v4",
+  "gpu_sample": false,
+  "opponent_mode": "sample",
+  "gpu": {
+    "enabled": false,
+    "requested": "auto",
+    "reason": "sample mode stays on CPU",
+    "device": null,
+    "dtype": null,
+    "max_batch": null,
+    "min_batch": 2048,
+    "workers": 0,
+    "field_batch": 1,
+    "mode": "sample",
+    "sample_rng": "v4",
+    "candidates": [],
+    "cpu_candidates": [
+      "Final-base",
+      "Final-tuned",
+      "Resp3-base",
+      "Resp3-tuned",
+      "Bayes-base",
+      "Bayes-tuned",
+      "Final+Resp3",
+      "Harvest45",
+      "Triple-majority",
+      "Triple-v4",
+      "Harvest-tuned",
+      "GapStart",
+      "Neural",
+      "GRU",
+      "RL-PPO",
+      "RL-PPO-Hard60",
+      "RL-Repair",
+      "RL-Pattern",
+      "RL-Wide",
+      "RL-Wide160",
+      "RL-Switch",
+      "GRU-DAgger",
+      "RL-Gate",
+      "PSRO-Meta",
+      "PSRO-BR",
+      "PSRO-Scratch",
+      "PSRO-Scratch-BR",
+      "PSRO-V4-Meta",
+      "PSRO-V4-BR",
+      "Adv-MLP",
+      "Adv-GRU",
+      "Adv-RL",
+      "SelfPlay-GRU"
+    ]
+  },
+  "fast_rules": {
+    "available": true,
+    "requested": "auto",
+    "reason": "native C++ rules available",
+    "auto_threshold": 0.9
+  },
+  "field_tasks": 180,
+  "peak_rss_mb": 15866.49,
+  "peak_pss_mb": 10306.83,
+  "peak_anon_mb": 10032.48,
+  "memory": {
+    "samples": 367,
+    "processes_peak": 23,
+    "peak_rss_mb": 16530.2,
+    "peak_pss_mb": 10306.83,
+    "peak_anon_mb": 10032.48
+  },
+  "workers_rss_mb": 15866.49,
+  "workers_peak_rss_mb": {
+    "84514": 793.85,
+    "84517": 793.93,
+    "84518": 793.04,
+    "84519": 792.75,
+    "84520": 794.02,
+    "84521": 792.13,
+    "84522": 793.84,
+    "84523": 793.66,
+    "84524": 793.54,
+    "84525": 791.51,
+    "84526": 793.44,
+    "84527": 794.1,
+    "84528": 793.65,
+    "84529": 793.76,
+    "84530": 793.43,
+    "84531": 793.54,
+    "84532": 793.72,
+    "84533": 794.5,
+    "84534": 792.64,
+    "84535": 791.44
+  },
+  "profile": {
+    "schema": "ipd-protocol-profile-v1",
+    "workers": 20,
+    "workers_requested": "20",
+    "candidate_chunk": 6,
+    "field_reuse": "auto",
+    "field_tasks": 180,
+    "field_tasks_reused": 180,
+    "field_build_seconds": 212.214082,
+    "wall_seconds": 401.666777,
+    "peak_rss_mb": 15866.49,
+    "by_candidate": {
+      "Adv-GRU": {
+        "fields": 30,
+        "eval_seconds": 522.154769,
+        "candidate_build_seconds": 0.148568,
+        "field_build_seconds_shared": 6.464912,
+        "family_seconds": {
+          "AxelrodMix": 150.98157,
+          "anchor": 44.328292,
+          "axelrod": 177.126848,
+          "axelrod_extra": 149.500054
+        }
+      },
+      "Adv-MLP": {
+        "fields": 30,
+        "eval_seconds": 164.478497,
+        "candidate_build_seconds": 0.116542,
+        "field_build_seconds_shared": 6.72579,
+        "family_seconds": {
+          "AxelrodMix": 43.394058,
+          "anchor": 12.064459,
+          "axelrod": 59.445582,
+          "axelrod_extra": 49.423282
+        }
+      },
+      "Adv-RL": {
+        "fields": 30,
+        "eval_seconds": 162.375573,
+        "candidate_build_seconds": 0.171187,
+        "field_build_seconds_shared": 6.474954,
+        "family_seconds": {
+          "AxelrodMix": 43.654052,
+          "anchor": 12.326709,
+          "axelrod": 57.915417,
+          "axelrod_extra": 48.332676
+        }
+      },
+      "Bayes-base": {
+        "fields": 30,
+        "eval_seconds": 207.847434,
+        "candidate_build_seconds": 0.020099,
+        "field_build_seconds_shared": 6.772249,
+        "family_seconds": {
+          "AxelrodMix": 53.029462,
+          "anchor": 16.387519,
+          "axelrod": 73.243892,
+          "axelrod_extra": 65.042057
+        }
+      },
+      "Bayes-tuned": {
+        "fields": 30,
+        "eval_seconds": 208.723978,
+        "candidate_build_seconds": 0.023891,
+        "field_build_seconds_shared": 6.72579,
+        "family_seconds": {
+          "AxelrodMix": 53.362905,
+          "anchor": 16.67627,
+          "axelrod": 73.213236,
+          "axelrod_extra": 65.323837
+        }
+      },
+      "Final+Resp3": {
+        "fields": 30,
+        "eval_seconds": 85.201803,
+        "candidate_build_seconds": 0.009676,
+        "field_build_seconds_shared": 6.464912,
+        "family_seconds": {
+          "AxelrodMix": 27.341382,
+          "anchor": 3.820089,
+          "axelrod": 27.114291,
+          "axelrod_extra": 26.797908
+        }
+      },
+      "Final-base": {
+        "fields": 30,
+        "eval_seconds": 65.712252,
+        "candidate_build_seconds": 0.009783,
+        "field_build_seconds_shared": 6.464912,
+        "family_seconds": {
+          "AxelrodMix": 21.731067,
+          "anchor": 2.052109,
+          "axelrod": 20.339488,
+          "axelrod_extra": 21.473488
+        }
+      },
+      "Final-tuned": {
+        "fields": 30,
+        "eval_seconds": 64.565852,
+        "candidate_build_seconds": 0.015704,
+        "field_build_seconds_shared": 6.474954,
+        "family_seconds": {
+          "AxelrodMix": 21.326185,
+          "anchor": 2.031384,
+          "axelrod": 20.011138,
+          "axelrod_extra": 21.083556
+        }
+      },
+      "GRU": {
+        "fields": 30,
+        "eval_seconds": 507.129536,
+        "candidate_build_seconds": 0.175157,
+        "field_build_seconds_shared": 6.474954,
+        "family_seconds": {
+          "AxelrodMix": 146.023779,
+          "anchor": 42.918748,
+          "axelrod": 172.727192,
+          "axelrod_extra": 145.246159
+        }
+      },
+      "GRU-DAgger": {
+        "fields": 30,
+        "eval_seconds": 800.212612,
+        "candidate_build_seconds": 0.390464,
+        "field_build_seconds_shared": 6.800476,
+        "family_seconds": {
+          "AxelrodMix": 228.853185,
+          "anchor": 71.787865,
+          "axelrod": 272.834817,
+          "axelrod_extra": 226.509299
+        }
+      },
+      "GapStart": {
+        "fields": 30,
+        "eval_seconds": 91.512678,
+        "candidate_build_seconds": 0.023506,
+        "field_build_seconds_shared": 6.72579,
+        "family_seconds": {
+          "AxelrodMix": 29.461453,
+          "anchor": 4.098811,
+          "axelrod": 29.169672,
+          "axelrod_extra": 28.65227
+        }
+      },
+      "Harvest-tuned": {
+        "fields": 30,
+        "eval_seconds": 66.400364,
+        "candidate_build_seconds": 0.010181,
+        "field_build_seconds_shared": 6.772249,
+        "family_seconds": {
+          "AxelrodMix": 21.849169,
+          "anchor": 1.976078,
+          "axelrod": 20.700487,
+          "axelrod_extra": 21.758805
+        }
+      },
+      "Harvest45": {
+        "fields": 30,
+        "eval_seconds": 64.675451,
+        "candidate_build_seconds": 0.008861,
+        "field_build_seconds_shared": 6.474954,
+        "family_seconds": {
+          "AxelrodMix": 21.373732,
+          "anchor": 1.840944,
+          "axelrod": 20.352967,
+          "axelrod_extra": 20.998792
+        }
+      },
+      "Neural": {
+        "fields": 30,
+        "eval_seconds": 163.459672,
+        "candidate_build_seconds": 0.138558,
+        "field_build_seconds_shared": 6.464912,
+        "family_seconds": {
+          "AxelrodMix": 43.060129,
+          "anchor": 12.276067,
+          "axelrod": 56.802882,
+          "axelrod_extra": 51.169599
+        }
+      },
+      "PSRO-BR": {
+        "fields": 30,
+        "eval_seconds": 164.504229,
+        "candidate_build_seconds": 0.176897,
+        "field_build_seconds_shared": 6.464912,
+        "family_seconds": {
+          "AxelrodMix": 43.193368,
+          "anchor": 12.324997,
+          "axelrod": 57.380758,
+          "axelrod_extra": 51.453268
+        }
+      },
+      "PSRO-Meta": {
+        "fields": 30,
+        "eval_seconds": 121.599585,
+        "candidate_build_seconds": 0.02573,
+        "field_build_seconds_shared": 6.72579,
+        "family_seconds": {
+          "AxelrodMix": 35.285489,
+          "anchor": 7.803129,
+          "axelrod": 40.679996,
+          "axelrod_extra": 37.698998
+        }
+      },
+      "PSRO-Scratch": {
+        "fields": 30,
+        "eval_seconds": 166.745137,
+        "candidate_build_seconds": 0.038927,
+        "field_build_seconds_shared": 6.474954,
+        "family_seconds": {
+          "AxelrodMix": 43.916428,
+          "anchor": 12.52939,
+          "axelrod": 58.511969,
+          "axelrod_extra": 51.639767
+        }
+      },
+      "PSRO-Scratch-BR": {
+        "fields": 30,
+        "eval_seconds": 163.971449,
+        "candidate_build_seconds": 0.222546,
+        "field_build_seconds_shared": 5.513719,
+        "family_seconds": {
+          "AxelrodMix": 43.143939,
+          "anchor": 12.242681,
+          "axelrod": 57.211023,
+          "axelrod_extra": 51.223272
+        }
+      },
+      "PSRO-V4-BR": {
+        "fields": 30,
+        "eval_seconds": 164.302456,
+        "candidate_build_seconds": 0.17863,
+        "field_build_seconds_shared": 6.772249,
+        "family_seconds": {
+          "AxelrodMix": 43.736502,
+          "anchor": 12.214853,
+          "axelrod": 57.206806,
+          "axelrod_extra": 50.990621
+        }
+      },
+      "PSRO-V4-Meta": {
+        "fields": 30,
+        "eval_seconds": 164.449911,
+        "candidate_build_seconds": 0.040521,
+        "field_build_seconds_shared": 6.800476,
+        "family_seconds": {
+          "AxelrodMix": 43.297497,
+          "anchor": 12.342858,
+          "axelrod": 57.422905,
+          "axelrod_extra": 51.238127
+        }
+      },
+      "RL-Gate": {
+        "fields": 30,
+        "eval_seconds": 232.093489,
+        "candidate_build_seconds": 0.794875,
+        "field_build_seconds_shared": 6.772249,
+        "family_seconds": {
+          "AxelrodMix": 58.161081,
+          "anchor": 20.241883,
+          "axelrod": 79.471431,
+          "axelrod_extra": 74.057186
+        }
+      },
+      "RL-PPO": {
+        "fields": 30,
+        "eval_seconds": 384.829809,
+        "candidate_build_seconds": 0.33601,
+        "field_build_seconds_shared": 5.513719,
+        "family_seconds": {
+          "AxelrodMix": 112.059852,
+          "anchor": 31.196249,
+          "axelrod": 130.276601,
+          "axelrod_extra": 111.080688
+        }
+      },
+      "RL-PPO-Hard60": {
+        "fields": 30,
+        "eval_seconds": 164.771784,
+        "candidate_build_seconds": 0.163414,
+        "field_build_seconds_shared": 6.800476,
+        "family_seconds": {
+          "AxelrodMix": 43.30629,
+          "anchor": 12.350783,
+          "axelrod": 57.278845,
+          "axelrod_extra": 51.686845
+        }
+      },
+      "RL-Pattern": {
+        "fields": 30,
+        "eval_seconds": 165.725794,
+        "candidate_build_seconds": 0.197414,
+        "field_build_seconds_shared": 6.72579,
+        "family_seconds": {
+          "AxelrodMix": 43.608883,
+          "anchor": 12.355885,
+          "axelrod": 57.621286,
+          "axelrod_extra": 51.987496
+        }
+      },
+      "RL-Repair": {
+        "fields": 30,
+        "eval_seconds": 166.500035,
+        "candidate_build_seconds": 0.197953,
+        "field_build_seconds_shared": 6.772249,
+        "family_seconds": {
+          "AxelrodMix": 43.822561,
+          "anchor": 12.520492,
+          "axelrod": 58.072535,
+          "axelrod_extra": 51.927489
+        }
+      },
+      "RL-Switch": {
+        "fields": 30,
+        "eval_seconds": 214.477785,
+        "candidate_build_seconds": 0.800126,
+        "field_build_seconds_shared": 5.513719,
+        "family_seconds": {
+          "AxelrodMix": 56.238395,
+          "anchor": 18.310953,
+          "axelrod": 72.718603,
+          "axelrod_extra": 67.050726
+        }
+      },
+      "RL-Wide": {
+        "fields": 30,
+        "eval_seconds": 231.942982,
+        "candidate_build_seconds": 0.609092,
+        "field_build_seconds_shared": 6.464912,
+        "family_seconds": {
+          "AxelrodMix": 58.148149,
+          "anchor": 19.623665,
+          "axelrod": 82.240409,
+          "axelrod_extra": 71.772804
+        }
+      },
+      "RL-Wide160": {
+        "fields": 30,
+        "eval_seconds": 249.531696,
+        "candidate_build_seconds": 0.614915,
+        "field_build_seconds_shared": 6.474954,
+        "family_seconds": {
+          "AxelrodMix": 61.871372,
+          "anchor": 21.635619,
+          "axelrod": 88.52064,
+          "axelrod_extra": 77.345468
+        }
+      },
+      "Resp3-base": {
+        "fields": 30,
+        "eval_seconds": 63.733695,
+        "candidate_build_seconds": 0.009323,
+        "field_build_seconds_shared": 5.513719,
+        "family_seconds": {
+          "AxelrodMix": 21.151237,
+          "anchor": 1.985261,
+          "axelrod": 19.667413,
+          "axelrod_extra": 20.817374
+        }
+      },
+      "Resp3-tuned": {
+        "fields": 30,
+        "eval_seconds": 63.703377,
+        "candidate_build_seconds": 0.010148,
+        "field_build_seconds_shared": 6.800476,
+        "family_seconds": {
+          "AxelrodMix": 21.248011,
+          "anchor": 1.970023,
+          "axelrod": 19.591694,
+          "axelrod_extra": 20.782044
+        }
+      },
+      "SelfPlay-GRU": {
+        "fields": 30,
+        "eval_seconds": 695.784187,
+        "candidate_build_seconds": 0.727541,
+        "field_build_seconds_shared": 5.513719,
+        "family_seconds": {
+          "AxelrodMix": 197.08631,
+          "anchor": 63.303915,
+          "axelrod": 237.418513,
+          "axelrod_extra": 197.745813
+        }
+      },
+      "Triple-majority": {
+        "fields": 30,
+        "eval_seconds": 258.945829,
+        "candidate_build_seconds": 0.077102,
+        "field_build_seconds_shared": 5.513719,
+        "family_seconds": {
+          "AxelrodMix": 66.851238,
+          "anchor": 21.104212,
+          "axelrod": 91.107942,
+          "axelrod_extra": 79.722665
+        }
+      },
+      "Triple-v4": {
+        "fields": 30,
+        "eval_seconds": 276.238599,
+        "candidate_build_seconds": 0.040993,
+        "field_build_seconds_shared": 6.800476,
+        "family_seconds": {
+          "AxelrodMix": 71.463682,
+          "anchor": 22.716419,
+          "axelrod": 97.407141,
+          "axelrod_extra": 84.489889
+        }
+      }
+    },
+    "by_tier": {
+      "dev_axelrod": {
+        "fields": 30,
+        "candidate_fields": 990,
+        "tasks": 180,
+        "eval_seconds": 7288.302302,
+        "candidate_build_seconds": 6.524333,
+        "field_build_seconds": 212.214082,
+        "peak_rss_mb": 794.5
+      }
+    },
+    "by_family": {
+      "AxelrodMix": {
+        "seconds": 2013.032415,
+        "matches": 564300,
+        "seconds_per_match": 0.003567
+      },
+      "anchor": {
+        "seconds": 573.358612,
+        "matches": 202092,
+        "seconds_per_match": 0.002837
+      },
+      "axelrod": {
+        "seconds": 2500.804419,
+        "matches": 700722,
+        "seconds_per_match": 0.003569
+      },
+      "axelrod_extra": {
+        "seconds": 2196.022322,
+        "matches": 560406,
+        "seconds_per_match": 0.003919
+      }
+    }
+  },
+  "usage_consumed": false,
+  "selection_eligible": true,
+  "no_consume": false,
+  "test_consumption_locked": false,
+  "candidates": [
+    {
+      "kind": "final-base",
+      "name": "Final-base",
+      "params": {}
+    },
+    {
+      "kind": "final-tuned",
+      "name": "Final-tuned",
+      "params": {}
+    },
+    {
+      "kind": "resp3-base",
+      "name": "Resp3-base",
+      "params": {}
+    },
+    {
+      "kind": "resp3-tuned",
+      "name": "Resp3-tuned",
+      "params": {}
+    },
+    {
+      "kind": "bayes-base",
+      "name": "Bayes-base",
+      "params": {}
+    },
+    {
+      "kind": "bayes-tuned",
+      "name": "Bayes-tuned",
+      "params": {}
+    },
+    {
+      "kind": "hybrid",
+      "name": "Final+Resp3",
+      "params": {}
+    },
+    {
+      "kind": "harvest45",
+      "name": "Harvest45",
+      "params": {}
+    },
+    {
+      "kind": "triple-majority",
+      "name": "Triple-majority",
+      "params": {}
+    },
+    {
+      "kind": "triple-v4",
+      "name": "Triple-v4",
+      "params": {}
+    },
+    {
+      "kind": "harvest-tuned",
+      "name": "Harvest-tuned",
+      "params": {}
+    },
+    {
+      "kind": "gap-start",
+      "name": "GapStart",
+      "params": {}
+    },
+    {
+      "kind": "neural",
+      "name": "Neural",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "gru",
+      "name": "GRU",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl",
+      "name": "RL-PPO",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-hard60",
+      "name": "RL-PPO-Hard60",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-repair",
+      "name": "RL-Repair",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-pattern",
+      "name": "RL-Pattern",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-wide",
+      "name": "RL-Wide",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-wide160",
+      "name": "RL-Wide160",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-switch",
+      "name": "RL-Switch",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-dagger-gru",
+      "name": "GRU-DAgger",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "rl-gate",
+      "name": "RL-Gate",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro",
+      "name": "PSRO-Meta",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-br",
+      "name": "PSRO-BR",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-scratch",
+      "name": "PSRO-Scratch",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-scratch-br",
+      "name": "PSRO-Scratch-BR",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "psro-v4",
+      "name": "PSRO-V4-Meta",
+      "params": {}
+    },
+    {
+      "kind": "psro-v4-br",
+      "name": "PSRO-V4-BR",
+      "params": {}
+    },
+    {
+      "kind": "adv-mlp",
+      "name": "Adv-MLP",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-gru",
+      "name": "Adv-GRU",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "adv-rl",
+      "name": "Adv-RL",
+      "params": {
+        "mode": "sample"
+      }
+    },
+    {
+      "kind": "selfplay",
+      "name": "SelfPlay-GRU",
+      "params": {
+        "mode": "sample"
+      }
+    }
+  ],
+  "results": {
+    "Final-base": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 553.6161295572916,
+        "min": 547.88427734375,
+        "p05": 548.380126953125,
+        "max": 561.197265625,
+        "std": 3.645624034323469,
+        "worst_family": 488.42553886348793,
+        "min_norm": 0.9502792970927256,
+        "families": {
+          "AxelrodMix": 572.0397660818713,
+          "anchor": 488.42553886348793,
+          "axelrod": 544.3769426391636,
+          "axelrod_extra": 570.1258391237781
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9909025681223482,
+          "anchor": 1.0049026969368644,
+          "axelrod": 0.9502792970927256,
+          "axelrod_extra": 1.0079997592930128
+        },
+        "values": [
+          555.912109375,
+          549.10498046875,
+          556.13623046875,
+          554.7314453125,
+          559.11669921875,
+          552.396484375,
+          550.3193359375,
+          555.076171875,
+          550.90185546875,
+          552.0146484375,
+          558.298828125,
+          550.86181640625,
+          561.197265625,
+          558.27734375,
+          554.11083984375,
+          552.42626953125,
+          548.5869140625,
+          552.12353515625,
+          559.859375,
+          554.34033203125,
+          550.439453125,
+          550.67724609375,
+          558.8251953125,
+          556.70654296875,
+          554.6298828125,
+          552.93701171875,
+          550.03173828125,
+          548.2109375,
+          547.88427734375,
+          552.34912109375
+        ]
+      }
+    },
+    "Final-tuned": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 551.2548990885417,
+        "min": 544.41015625,
+        "p05": 545.069189453125,
+        "max": 559.0556640625,
+        "std": 4.0712604875487735,
+        "worst_family": 488.7787393860222,
+        "min_norm": 0.9488671919058923,
+        "families": {
+          "AxelrodMix": 571.0500584795321,
+          "anchor": 488.7787393860222,
+          "axelrod": 543.5680041442969,
+          "axelrod_extra": 563.4637262984336
+        },
+        "family_norm": {
+          "AxelrodMix": 0.989188170167875,
+          "anchor": 1.005629383257322,
+          "axelrod": 0.9488671919058923,
+          "axelrod_extra": 0.9962209419451602
+        },
+        "values": [
+          553.06201171875,
+          544.41015625,
+          553.93505859375,
+          554.56884765625,
+          554.56494140625,
+          552.31103515625,
+          547.62841796875,
+          553.39501953125,
+          545.419921875,
+          553.28955078125,
+          557.7646484375,
+          549.95654296875,
+          558.75634765625,
+          559.0556640625,
+          552.93701171875,
+          550.77880859375,
+          545.6064453125,
+          548.40966796875,
+          555.2294921875,
+          550.62060546875,
+          544.7822265625,
+          547.37646484375,
+          557.595703125,
+          550.52880859375,
+          552.44677734375,
+          549.20849609375,
+          548.8828125,
+          550.28759765625,
+          546.6220703125,
+          548.2158203125
+        ]
+      }
+    },
+    "Resp3-base": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 556.32041015625,
+        "min": 549.71875,
+        "p05": 551.9272216796875,
+        "max": 564.1806640625,
+        "std": 3.1382284972727152,
+        "worst_family": 486.3793272370999,
+        "min_norm": 0.9639302785835895,
+        "families": {
+          "AxelrodMix": 556.4688888888888,
+          "anchor": 486.3793272370999,
+          "axelrod": 566.638080437035,
+          "axelrod_extra": 568.4918148627959
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9639302785835895,
+          "anchor": 1.0006927541344353,
+          "axelrod": 0.9891389487827633,
+          "axelrod_extra": 1.0051107548860552
+        },
+        "values": [
+          556.626953125,
+          553.45361328125,
+          558.36181640625,
+          556.14501953125,
+          560.21044921875,
+          556.27978515625,
+          551.916015625,
+          555.26708984375,
+          551.94091796875,
+          558.8994140625,
+          564.1806640625,
+          557.0380859375,
+          559.783203125,
+          561.5341796875,
+          555.7021484375,
+          556.64697265625,
+          555.259765625,
+          555.5966796875,
+          558.29052734375,
+          553.5771484375,
+          552.23583984375,
+          554.439453125,
+          561.1796875,
+          559.19580078125,
+          554.95654296875,
+          553.64208984375,
+          556.345703125,
+          555.01123046875,
+          549.71875,
+          556.1767578125
+        ]
+      }
+    },
+    "Resp3-tuned": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 555.3216471354167,
+        "min": 547.88525390625,
+        "p05": 550.60771484375,
+        "max": 562.49365234375,
+        "std": 3.6107781547874898,
+        "worst_family": 488.85254735467015,
+        "min_norm": 0.9592000498515798,
+        "families": {
+          "AxelrodMix": 570.1368421052632,
+          "anchor": 488.85254735467015,
+          "axelrod": 549.4872845436564,
+          "axelrod_extra": 571.6685902720527
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9876062723625658,
+          "anchor": 1.0057812381888276,
+          "axelrod": 0.9592000498515798,
+          "axelrod_extra": 1.0107273900709826
+        },
+        "values": [
+          555.80517578125,
+          553.23974609375,
+          557.7236328125,
+          557.0517578125,
+          559.0625,
+          553.32421875,
+          553.60546875,
+          556.6171875,
+          551.3857421875,
+          554.95166015625,
+          562.49365234375,
+          553.640625,
+          561.53564453125,
+          562.18408203125,
+          555.02685546875,
+          554.76318359375,
+          551.4404296875,
+          555.697265625,
+          560.41845703125,
+          553.8818359375,
+          550.37744140625,
+          550.88916015625,
+          561.11328125,
+          556.107421875,
+          556.44482421875,
+          554.5927734375,
+          551.86328125,
+          552.978515625,
+          547.88525390625,
+          553.54833984375
+        ]
+      }
+    },
+    "Bayes-base": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 550.3923502604167,
+        "min": 544.51708984375,
+        "p05": 545.1660888671875,
+        "max": 557.8203125,
+        "std": 3.958107436711191,
+        "worst_family": 491.9647289353364,
+        "min_norm": 0.9497772463052777,
+        "families": {
+          "AxelrodMix": 576.046783625731,
+          "anchor": 491.9647289353364,
+          "axelrod": 544.0893378543844,
+          "axelrod_extra": 553.5108350017666
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9978436309822222,
+          "anchor": 1.0121843424799053,
+          "axelrod": 0.9497772463052777,
+          "axelrod_extra": 0.9786239285441737
+        },
+        "values": [
+          552.99755859375,
+          547.0498046875,
+          552.05126953125,
+          553.8310546875,
+          555.908203125,
+          549.6083984375,
+          546.10693359375,
+          554.80419921875,
+          546.80810546875,
+          548.234375,
+          557.8203125,
+          548.443359375,
+          557.63232421875,
+          555.33203125,
+          549.67724609375,
+          548.5439453125,
+          544.51708984375,
+          548.7109375,
+          555.4296875,
+          547.1875,
+          544.62841796875,
+          545.974609375,
+          556.32373046875,
+          552.41015625,
+          551.935546875,
+          550.1201171875,
+          547.79443359375,
+          545.8232421875,
+          546.4248046875,
+          549.64111328125
+        ]
+      }
+    },
+    "Bayes-tuned": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 550.3153483072916,
+        "min": 544.34228515625,
+        "p05": 545.0207763671874,
+        "max": 557.498046875,
+        "std": 3.9273008873173447,
+        "worst_family": 492.2119529719138,
+        "min_norm": 0.9499479945426331,
+        "families": {
+          "AxelrodMix": 576.0994152046784,
+          "anchor": 492.2119529719138,
+          "axelrod": 544.1871526796647,
+          "axelrod_extra": 552.967789424096
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9979348008096286,
+          "anchor": 1.012692989308002,
+          "axelrod": 0.9499479945426331,
+          "axelrod_extra": 0.9776638075077051
+        },
+        "values": [
+          553.0751953125,
+          546.9853515625,
+          552.44970703125,
+          553.32958984375,
+          555.822265625,
+          549.578125,
+          546.0146484375,
+          554.71630859375,
+          546.787109375,
+          547.99267578125,
+          557.4873046875,
+          548.24267578125,
+          557.498046875,
+          555.44384765625,
+          549.3486328125,
+          548.662109375,
+          544.34228515625,
+          548.56005859375,
+          555.2080078125,
+          547.3662109375,
+          544.5859375,
+          545.55224609375,
+          556.00244140625,
+          552.4267578125,
+          551.888671875,
+          549.87353515625,
+          547.9736328125,
+          545.8603515625,
+          546.49365234375,
+          549.89306640625
+        ]
+      }
+    },
+    "Final+Resp3": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 551.2502278645833,
+        "min": 544.41064453125,
+        "p05": 546.492724609375,
+        "max": 558.1806640625,
+        "std": 3.620531840003243,
+        "worst_family": 489.2744937949053,
+        "min_norm": 0.9311589472898464,
+        "families": {
+          "AxelrodMix": 575.9419883040936,
+          "anchor": 489.2744937949053,
+          "axelrod": 533.4236601676556,
+          "axelrod_extra": 571.0264397597456
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9976621017258752,
+          "anchor": 1.0066493646114179,
+          "axelrod": 0.9311589472898464,
+          "axelrod_extra": 1.0095920485070389
+        },
+        "values": [
+          553.43408203125,
+          548.6611328125,
+          552.85400390625,
+          555.1552734375,
+          554.6015625,
+          550.796875,
+          547.60205078125,
+          552.28125,
+          546.5029296875,
+          547.341796875,
+          558.1806640625,
+          548.82373046875,
+          556.3818359375,
+          555.748046875,
+          554.78955078125,
+          550.72314453125,
+          544.41064453125,
+          550.47998046875,
+          557.56396484375,
+          550.75390625,
+          548.59423828125,
+          546.5341796875,
+          556.00927734375,
+          552.64013671875,
+          552.685546875,
+          550.32275390625,
+          547.287109375,
+          549.27294921875,
+          546.484375,
+          550.58984375
+        ]
+      }
+    },
+    "Harvest45": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 506.72766927083336,
+        "min": 493.92333984375,
+        "p05": 499.01735839843747,
+        "max": 518.32958984375,
+        "std": 5.34898920185873,
+        "worst_family": 459.73363473674294,
+        "min_norm": 0.8025236211319399,
+        "families": {
+          "AxelrodMix": 524.2366081871345,
+          "anchor": 475.58638145003266,
+          "axelrod": 459.73363473674294,
+          "axelrod_extra": 559.0876810740784
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9080966606822116,
+          "anchor": 0.9784869940618675,
+          "axelrod": 0.8025236211319399,
+          "axelrod_extra": 0.9884839613873511
+        },
+        "values": [
+          509.78662109375,
+          508.95947265625,
+          506.88623046875,
+          507.6025390625,
+          511.7890625,
+          505.46923828125,
+          504.46533203125,
+          508.8603515625,
+          502.21044921875,
+          510.39794921875,
+          511.98388671875,
+          503.8095703125,
+          517.40966796875,
+          514.94873046875,
+          506.265625,
+          505.7275390625,
+          507.36181640625,
+          506.7451171875,
+          518.32958984375,
+          493.92333984375,
+          499.455078125,
+          499.35009765625,
+          510.0107421875,
+          503.50830078125,
+          510.1630859375,
+          507.9599609375,
+          498.7451171875,
+          505.77099609375,
+          503.1357421875,
+          500.798828125
+        ]
+      }
+    },
+    "Triple-majority": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 550.66376953125,
+        "min": 544.35302734375,
+        "p05": 546.5110351562499,
+        "max": 558.22900390625,
+        "std": 3.530117302459414,
+        "worst_family": 489.4278249510124,
+        "min_norm": 0.9242642370488654,
+        "families": {
+          "AxelrodMix": 577.2954970760234,
+          "anchor": 489.4278249510124,
+          "axelrod": 529.473956861637,
+          "axelrod_extra": 572.4250971617006
+        },
+        "family_norm": {
+          "AxelrodMix": 1.000006685787343,
+          "anchor": 1.0069648331527536,
+          "axelrod": 0.9242642370488654,
+          "axelrod_extra": 1.0120649171752452
+        },
+        "values": [
+          550.8720703125,
+          546.84765625,
+          551.27490234375,
+          554.21630859375,
+          555.17138671875,
+          548.93896484375,
+          548.0869140625,
+          553.37646484375,
+          546.72607421875,
+          549.2900390625,
+          557.7685546875,
+          549.1171875,
+          558.22900390625,
+          555.98828125,
+          553.63427734375,
+          550.91845703125,
+          544.35302734375,
+          548.93994140625,
+          555.37939453125,
+          549.46044921875,
+          547.18994140625,
+          546.65283203125,
+          553.96728515625,
+          551.53125,
+          551.05517578125,
+          548.96044921875,
+          546.39501953125,
+          547.6640625,
+          548.00537109375,
+          549.90234375
+        ]
+      }
+    },
+    "Triple-v4": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 551.0926595052083,
+        "min": 545.59619140625,
+        "p05": 546.879736328125,
+        "max": 560.51171875,
+        "std": 3.4965043042373707,
+        "worst_family": 489.37622468974524,
+        "min_norm": 0.9245383220865846,
+        "families": {
+          "AxelrodMix": 576.801754385965,
+          "anchor": 489.37622468974524,
+          "axelrod": 529.6309692003391,
+          "axelrod_extra": 574.296254858085
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9991514115064629,
+          "anchor": 1.0068586690855947,
+          "axelrod": 0.9245383220865846,
+          "axelrod_extra": 1.0153731806815154
+        },
+        "values": [
+          550.33642578125,
+          547.037109375,
+          551.29541015625,
+          554.0576171875,
+          555.5361328125,
+          550.06201171875,
+          548.58056640625,
+          553.876953125,
+          546.7509765625,
+          549.7431640625,
+          558.36279296875,
+          548.89990234375,
+          560.51171875,
+          554.669921875,
+          551.181640625,
+          550.3466796875,
+          545.59619140625,
+          549.484375,
+          555.97900390625,
+          551.265625,
+          547.70849609375,
+          547.8935546875,
+          555.5185546875,
+          552.30322265625,
+          549.86669921875,
+          549.59375,
+          548.66650390625,
+          550.82470703125,
+          547.380859375,
+          549.44921875
+        ]
+      }
+    },
+    "Harvest-tuned": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 537.3831705729167,
+        "min": 529.13037109375,
+        "p05": 532.1491943359375,
+        "max": 545.0322265625,
+        "std": 4.2138176668021705,
+        "worst_family": 483.2062377531025,
+        "min_norm": 0.8886391011983781,
+        "families": {
+          "AxelrodMix": 567.0806432748539,
+          "anchor": 483.2062377531025,
+          "axelrod": 509.0657436187247,
+          "axelrod_extra": 562.4240961017548
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9823122430846927,
+          "anchor": 0.9941643359286416,
+          "axelrod": 0.8886391011983781,
+          "axelrod_extra": 0.9943828442549791
+        },
+        "values": [
+          539.90283203125,
+          536.64208984375,
+          538.93310546875,
+          542.63720703125,
+          542.953125,
+          537.283203125,
+          534.16845703125,
+          542.12109375,
+          532.58935546875,
+          536.47509765625,
+          545.0322265625,
+          534.9013671875,
+          543.0673828125,
+          544.9052734375,
+          537.2548828125,
+          536.052734375,
+          535.654296875,
+          534.1142578125,
+          543.7392578125,
+          532.3154296875,
+          529.13037109375,
+          532.01318359375,
+          541.23291015625,
+          535.17724609375,
+          540.0146484375,
+          535.41552734375,
+          532.96435546875,
+          536.072265625,
+          532.6083984375,
+          536.12353515625
+        ]
+      }
+    },
+    "GapStart": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 422.46783854166665,
+        "min": 405.22900390625,
+        "p05": 413.190771484375,
+        "max": 437.44287109375,
+        "std": 6.481326293904998,
+        "worst_family": 379.8102100405011,
+        "min_norm": 0.6630071025347687,
+        "families": {
+          "AxelrodMix": 413.99888888888887,
+          "anchor": 453.82887001959506,
+          "axelrod": 379.8102100405011,
+          "axelrod_extra": 473.0246731833706
+        },
+        "family_norm": {
+          "AxelrodMix": 0.7171399376823839,
+          "anchor": 0.9337223776047573,
+          "axelrod": 0.6630071025347687,
+          "axelrod_extra": 0.8363219555901856
+        },
+        "values": [
+          422.02880859375,
+          427.57080078125,
+          419.3095703125,
+          424.4326171875,
+          426.931640625,
+          424.94140625,
+          425.91162109375,
+          421.1591796875,
+          413.6904296875,
+          424.5478515625,
+          427.94775390625,
+          423.02392578125,
+          435.3828125,
+          427.70849609375,
+          422.880859375,
+          426.59912109375,
+          423.42822265625,
+          419.48095703125,
+          437.44287109375,
+          405.22900390625,
+          418.23486328125,
+          413.4931640625,
+          421.24853515625,
+          419.49609375,
+          418.8388671875,
+          428.2451171875,
+          413.8427734375,
+          423.39111328125,
+          424.6533203125,
+          412.943359375
+        ]
+      }
+    },
+    "Neural": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 551.9150065104167,
+        "min": 546.5947265625,
+        "p05": 547.135009765625,
+        "max": 559.3134765625,
+        "std": 3.5816287901319215,
+        "worst_family": 489.31580666231224,
+        "min_norm": 0.9247700694535101,
+        "families": {
+          "AxelrodMix": 577.2036842105263,
+          "anchor": 489.31580666231224,
+          "axelrod": 529.7637279834228,
+          "axelrod_extra": 576.722529737369
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9998476450884229,
+          "anchor": 1.0067343630575925,
+          "axelrod": 0.9247700694535101,
+          "axelrod_extra": 1.0196629081880877
+        },
+        "values": [
+          552.423828125,
+          546.5947265625,
+          551.8427734375,
+          554.693359375,
+          556.94921875,
+          550.56298828125,
+          550.84814453125,
+          555.09326171875,
+          548.59130859375,
+          549.8251953125,
+          559.3134765625,
+          549.435546875,
+          559.142578125,
+          556.1201171875,
+          553.49609375,
+          551.0048828125,
+          546.78564453125,
+          549.55908203125,
+          557.00146484375,
+          551.27392578125,
+          549.23095703125,
+          547.634765625,
+          555.68017578125,
+          554.4365234375,
+          554.390625,
+          550.150390625,
+          548.81884765625,
+          547.6376953125,
+          547.56201171875,
+          551.3505859375
+        ]
+      }
+    },
+    "GRU": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 552.7236165364583,
+        "min": 547.484375,
+        "p05": 547.9130615234375,
+        "max": 561.3037109375,
+        "std": 3.8330596186522987,
+        "worst_family": 489.35401698236444,
+        "min_norm": 0.9344737813903,
+        "families": {
+          "AxelrodMix": 577.389649122807,
+          "anchor": 489.35401698236444,
+          "axelrod": 535.3225958368654,
+          "axelrod_extra": 572.4962901896125
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0001697784785923,
+          "anchor": 1.0068129782212478,
+          "axelrod": 0.9344737813903,
+          "axelrod_extra": 1.0121907886058559
+        },
+        "values": [
+          552.724609375,
+          549.09423828125,
+          554.05224609375,
+          554.90087890625,
+          557.97216796875,
+          551.8583984375,
+          550.30419921875,
+          554.681640625,
+          547.93212890625,
+          550.603515625,
+          560.88916015625,
+          550.74462890625,
+          561.3037109375,
+          557.65478515625,
+          553.12158203125,
+          552.765625,
+          547.484375,
+          550.65380859375,
+          558.80908203125,
+          551.69189453125,
+          549.1630859375,
+          547.8974609375,
+          556.85595703125,
+          553.45556640625,
+          555.7490234375,
+          552.8994140625,
+          548.927734375,
+          548.55517578125,
+          548.59765625,
+          550.36474609375
+        ]
+      }
+    },
+    "RL-PPO": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 563.4335774739583,
+        "min": 557.009765625,
+        "p05": 558.1464599609375,
+        "max": 569.28173828125,
+        "std": 3.4622857182051847,
+        "worst_family": 486.0426192031352,
+        "min_norm": null,
+        "families": {
+          "AxelrodMix": 577.2916374269006,
+          "anchor": 486.0426192031352,
+          "axelrod": 572.8599416030894,
+          "axelrod_extra": 565.6011659404074
+        },
+        "family_norm": {},
+        "values": [
+          563.3388671875,
+          561.33251953125,
+          564.06591796875,
+          565.1142578125,
+          568.5458984375,
+          563.59228515625,
+          560.25,
+          562.79541015625,
+          558.58447265625,
+          561.755859375,
+          569.28173828125,
+          562.611328125,
+          569.22705078125,
+          568.908203125,
+          564.44677734375,
+          565.0390625,
+          560.45458984375,
+          564.6064453125,
+          569.21435546875,
+          561.1240234375,
+          557.7880859375,
+          558.74560546875,
+          569.0009765625,
+          564.51025390625,
+          563.58984375,
+          562.40771484375,
+          563.05078125,
+          560.86474609375,
+          557.009765625,
+          561.75048828125
+        ]
+      }
+    },
+    "RL-PPO-Hard60": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 564.78984375,
+        "min": 558.85888671875,
+        "p05": 559.5118896484375,
+        "max": 570.72265625,
+        "std": 3.4411195104550756,
+        "worst_family": 487.26485956890923,
+        "min_norm": 1.0006612897550728,
+        "families": {
+          "AxelrodMix": 578.1587134502925,
+          "anchor": 487.26485956890923,
+          "axelrod": 573.2387680135631,
+          "axelrod_extra": 568.7205276174773
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0015019722566163,
+          "anchor": 1.002514677350266,
+          "axelrod": 1.0006612897550728,
+          "axelrod_extra": 1.005515125966693
+        },
+        "values": [
+          564.7216796875,
+          562.62548828125,
+          565.32861328125,
+          566.501953125,
+          569.64013671875,
+          566.19873046875,
+          561.8662109375,
+          564.380859375,
+          559.49365234375,
+          562.552734375,
+          570.60009765625,
+          564.03271484375,
+          570.40185546875,
+          569.92822265625,
+          565.919921875,
+          566.6572265625,
+          561.6572265625,
+          566.154296875,
+          569.8359375,
+          562.98193359375,
+          559.53662109375,
+          559.5341796875,
+          570.72265625,
+          565.80810546875,
+          564.3759765625,
+          564.4814453125,
+          564.82177734375,
+          561.4873046875,
+          558.85888671875,
+          562.5888671875
+        ]
+      }
+    },
+    "RL-Repair": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 565.4577962239583,
+        "min": 559.1005859375,
+        "p05": 560.004638671875,
+        "max": 571.77490234375,
+        "std": 3.5185989362889627,
+        "worst_family": 487.4162312214239,
+        "min_norm": 0.9979238921588004,
+        "families": {
+          "AxelrodMix": 578.4704678362573,
+          "anchor": 487.4162312214239,
+          "axelrod": 571.6706225864181,
+          "axelrod_extra": 572.7294193852314
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0020420015342868,
+          "anchor": 1.0028261143447477,
+          "axelrod": 0.9979238921588004,
+          "axelrod_extra": 1.0126029680878963
+        },
+        "values": [
+          565.255859375,
+          563.07421875,
+          565.4326171875,
+          567.23095703125,
+          571.095703125,
+          566.53173828125,
+          562.353515625,
+          564.5595703125,
+          560.7119140625,
+          564.189453125,
+          570.2548828125,
+          564.927734375,
+          571.25927734375,
+          570.93310546875,
+          567.0400390625,
+          566.361328125,
+          561.3720703125,
+          567.4638671875,
+          570.8115234375,
+          563.5244140625,
+          559.734375,
+          560.3349609375,
+          571.77490234375,
+          565.935546875,
+          566.2431640625,
+          564.7275390625,
+          565.12451171875,
+          562.66455078125,
+          559.1005859375,
+          563.7099609375
+        ]
+      }
+    },
+    "RL-Pattern": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 567.9975748697917,
+        "min": 562.31591796875,
+        "p05": 562.6454345703125,
+        "max": 573.9619140625,
+        "std": 3.486290463046761,
+        "worst_family": 489.5432723709994,
+        "min_norm": 1.0045432963990857,
+        "families": {
+          "AxelrodMix": 579.9144444444445,
+          "anchor": 489.5432723709994,
+          "axelrod": 577.2814825280211,
+          "axelrod_extra": 572.681427393711
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0045432963990857,
+          "anchor": 1.0072023584549097,
+          "axelrod": 1.0077183629083202,
+          "axelrod_extra": 1.0125181167926545
+        },
+        "values": [
+          567.79150390625,
+          565.6376953125,
+          568.4033203125,
+          569.7421875,
+          573.8828125,
+          568.62158203125,
+          564.2548828125,
+          568.23828125,
+          563.04736328125,
+          566.7939453125,
+          572.83935546875,
+          567.84716796875,
+          573.76171875,
+          573.95654296875,
+          568.34423828125,
+          568.7578125,
+          564.22802734375,
+          569.85791015625,
+          573.41064453125,
+          565.8310546875,
+          562.31591796875,
+          563.0087890625,
+          573.9619140625,
+          568.57763671875,
+          567.79248046875,
+          567.48193359375,
+          567.85107421875,
+          565.5205078125,
+          562.34814453125,
+          565.82080078125
+        ]
+      }
+    },
+    "RL-Wide": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 568.0099934895833,
+        "min": 562.3388671875,
+        "p05": 562.80947265625,
+        "max": 574.5498046875,
+        "std": 3.484669627537773,
+        "worst_family": 489.6374918354017,
+        "min_norm": 1.0043196264225152,
+        "families": {
+          "AxelrodMix": 579.7853216374269,
+          "anchor": 489.6374918354017,
+          "axelrod": 576.924554959028,
+          "axelrod_extra": 573.2686962666353
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0043196264225152,
+          "anchor": 1.0073962086661459,
+          "axelrod": 1.0070953003705656,
+          "axelrod_extra": 1.0135564259551681
+        },
+        "values": [
+          567.9345703125,
+          565.27734375,
+          568.50537109375,
+          569.69921875,
+          573.3955078125,
+          568.20263671875,
+          564.431640625,
+          568.3291015625,
+          563.26171875,
+          567.25,
+          573.17919921875,
+          567.74853515625,
+          573.9228515625,
+          573.759765625,
+          568.59716796875,
+          568.76953125,
+          564.5302734375,
+          569.7236328125,
+          573.4326171875,
+          565.6767578125,
+          562.97705078125,
+          562.67236328125,
+          574.5498046875,
+          568.5400390625,
+          567.6953125,
+          567.5791015625,
+          567.47265625,
+          565.29443359375,
+          562.3388671875,
+          565.552734375
+        ]
+      }
+    },
+    "RL-Wide160": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 567.7666666666667,
+        "min": 562.26171875,
+        "p05": 562.736572265625,
+        "max": 573.90966796875,
+        "std": 3.444391658918568,
+        "worst_family": 489.53037230568253,
+        "min_norm": 1.0042119447263673,
+        "families": {
+          "AxelrodMix": 579.7231578947368,
+          "anchor": 489.53037230568253,
+          "axelrod": 576.5714420269379,
+          "axelrod_extra": 572.9311035213756
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0042119447263673,
+          "anchor": 1.00717581743812,
+          "axelrod": 1.0064788967674407,
+          "axelrod_extra": 1.0129595517519503
+        },
+        "values": [
+          567.65478515625,
+          565.091796875,
+          568.134765625,
+          569.63427734375,
+          573.27880859375,
+          568.48681640625,
+          564.39111328125,
+          568.1435546875,
+          563.01171875,
+          566.7734375,
+          572.97216796875,
+          567.2568359375,
+          573.556640625,
+          573.6025390625,
+          568.5,
+          568.6201171875,
+          564.30712890625,
+          569.48046875,
+          573.10986328125,
+          565.1767578125,
+          562.8359375,
+          562.6552734375,
+          573.90966796875,
+          568.1435546875,
+          567.29345703125,
+          567.14453125,
+          567.13818359375,
+          565.0009765625,
+          562.26171875,
+          565.43310546875
+        ]
+      }
+    },
+    "RL-Switch": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 566.5349934895834,
+        "min": 560.712890625,
+        "p05": 561.3962646484375,
+        "max": 572.65185546875,
+        "std": 3.3998395866375057,
+        "worst_family": 488.3912475506205,
+        "min_norm": 1.0004099766296057,
+        "families": {
+          "AxelrodMix": 579.0783625730994,
+          "anchor": 488.3912475506205,
+          "axelrod": 573.094800791184,
+          "axelrod_extra": 573.8821693557885
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0030950130408307,
+          "anchor": 1.004832144866917,
+          "axelrod": 1.0004099766296057,
+          "axelrod_extra": 1.0146410649660038
+        },
+        "values": [
+          566.09423828125,
+          564.45751953125,
+          566.51904296875,
+          568.94970703125,
+          571.5087890625,
+          566.72314453125,
+          563.0966796875,
+          566.576171875,
+          561.203125,
+          565.67578125,
+          572.3916015625,
+          565.53564453125,
+          572.279296875,
+          572.3623046875,
+          567.39453125,
+          566.943359375,
+          563.32421875,
+          568.55712890625,
+          571.720703125,
+          564.85498046875,
+          561.63232421875,
+          562.3408203125,
+          572.65185546875,
+          566.40576171875,
+          565.7646484375,
+          565.65576171875,
+          565.6708984375,
+          564.18603515625,
+          560.712890625,
+          564.86083984375
+        ]
+      }
+    },
+    "GRU-DAgger": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 567.1673014322917,
+        "min": 561.47216796875,
+        "p05": 562.2828857421875,
+        "max": 573.96826171875,
+        "std": 3.4572684800720124,
+        "worst_family": 488.28216851730895,
+        "min_norm": 1.0028975408636622,
+        "families": {
+          "AxelrodMix": 579.0392397660819,
+          "anchor": 488.28216851730895,
+          "axelrod": 574.5198266930395,
+          "axelrod_extra": 574.4667294782711
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0030272434691254,
+          "anchor": 1.0046077220920369,
+          "axelrod": 1.0028975408636622,
+          "axelrod_extra": 1.015674584975657
+        },
+        "values": [
+          566.99560546875,
+          564.58935546875,
+          567.5888671875,
+          568.77880859375,
+          572.6328125,
+          568.013671875,
+          563.3740234375,
+          567.4619140625,
+          562.10205078125,
+          565.69873046875,
+          572.345703125,
+          566.810546875,
+          572.80615234375,
+          572.88134765625,
+          568.17919921875,
+          568.35595703125,
+          563.41748046875,
+          568.341796875,
+          572.3095703125,
+          565.34130859375,
+          562.50390625,
+          562.5439453125,
+          573.96826171875,
+          567.552734375,
+          566.77734375,
+          566.77880859375,
+          566.42578125,
+          564.40087890625,
+          561.47216796875,
+          564.5703125
+        ]
+      }
+    },
+    "RL-Gate": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 567.7821614583333,
+        "min": 562.25537109375,
+        "p05": 562.676611328125,
+        "max": 574.904296875,
+        "std": 3.5601780261782716,
+        "worst_family": 488.54425212279557,
+        "min_norm": 1.0030276486683583,
+        "families": {
+          "AxelrodMix": 579.0394736842105,
+          "anchor": 488.54425212279557,
+          "axelrod": 576.6874352453613,
+          "axelrod_extra": 573.8861735955718
+        },
+        "family_norm": {
+          "AxelrodMix": 1.0030276486683583,
+          "anchor": 1.0051469414837773,
+          "axelrod": 1.0066813777056238,
+          "axelrod_extra": 1.0146481445832756
+        },
+        "values": [
+          567.81591796875,
+          565.2265625,
+          568.83642578125,
+          570.31787109375,
+          572.88232421875,
+          567.54248046875,
+          564.390625,
+          567.47021484375,
+          563.0205078125,
+          567.36376953125,
+          572.96240234375,
+          566.20068359375,
+          574.0263671875,
+          573.59423828125,
+          568.349609375,
+          568.37451171875,
+          564.5869140625,
+          569.4638671875,
+          573.515625,
+          565.03857421875,
+          562.65771484375,
+          562.69970703125,
+          574.904296875,
+          568.015625,
+          567.57861328125,
+          566.98095703125,
+          567.33056640625,
+          565.0283203125,
+          562.25537109375,
+          565.0341796875
+        ]
+      }
+    },
+    "PSRO-Meta": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 551.1767740885417,
+        "min": 544.48095703125,
+        "p05": 545.2762939453124,
+        "max": 559.74853515625,
+        "std": 3.9022820269888334,
+        "worst_family": 488.8414435009798,
+        "min_norm": 0.9435544307893353,
+        "families": {
+          "AxelrodMix": 572.894619883041,
+          "anchor": 488.8414435009798,
+          "axelrod": 540.5245361213149,
+          "axelrod_extra": 565.1065834412908
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9923833687190446,
+          "anchor": 1.0057583927566542,
+          "axelrod": 0.9435544307893353,
+          "axelrod_extra": 0.9991255631549233
+        },
+        "values": [
+          551.13671875,
+          546.158203125,
+          551.6806640625,
+          555.4482421875,
+          552.8271484375,
+          551.201171875,
+          548.73486328125,
+          554.95556640625,
+          549.55712890625,
+          550.646484375,
+          559.74853515625,
+          548.990234375,
+          558.0927734375,
+          556.43017578125,
+          553.7939453125,
+          550.53857421875,
+          544.48095703125,
+          550.26171875,
+          556.22265625,
+          550.400390625,
+          546.8642578125,
+          544.97900390625,
+          556.734375,
+          553.93359375,
+          549.640625,
+          550.2666015625,
+          548.400390625,
+          547.0439453125,
+          545.6396484375,
+          550.49462890625
+        ]
+      }
+    },
+    "PSRO-BR": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 563.0992513020833,
+        "min": 557.12646484375,
+        "p05": 557.8134765625,
+        "max": 570.30029296875,
+        "std": 3.3793871397256576,
+        "worst_family": 490.2385695623775,
+        "min_norm": 0.9878824021432917,
+        "families": {
+          "AxelrodMix": 579.6039766081872,
+          "anchor": 490.2385695623775,
+          "axelrod": 574.3015917867571,
+          "axelrod_extra": 558.7474384642562
+        },
+        "family_norm": {
+          "AxelrodMix": 1.004005495717196,
+          "anchor": 1.0086328856636513,
+          "axelrod": 1.0025165840355905,
+          "axelrod_extra": 0.9878824021432917
+        },
+        "values": [
+          563.46826171875,
+          560.07568359375,
+          563.7724609375,
+          565.28125,
+          567.4189453125,
+          564.501953125,
+          560.26416015625,
+          562.13525390625,
+          558.23779296875,
+          561.48681640625,
+          568.240234375,
+          561.92822265625,
+          568.576171875,
+          567.5546875,
+          563.23095703125,
+          564.2880859375,
+          559.86328125,
+          564.5595703125,
+          568.42333984375,
+          561.3955078125,
+          557.46630859375,
+          558.84033203125,
+          570.30029296875,
+          563.0234375,
+          564.11376953125,
+          561.81591796875,
+          563.45458984375,
+          560.400390625,
+          557.12646484375,
+          561.7333984375
+        ]
+      }
+    },
+    "PSRO-Scratch": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 523.8256184895833,
+        "min": 517.3173828125,
+        "p05": 518.5076904296875,
+        "max": 531.57666015625,
+        "std": 4.130026320767936,
+        "worst_family": 491.13994121489225,
+        "min_norm": 0.904677534365035,
+        "families": {
+          "AxelrodMix": 542.364269005848,
+          "anchor": 491.13994121489225,
+          "axelrod": 528.0311293209004,
+          "axelrod_extra": 511.6866682369568
+        },
+        "family_norm": {
+          "AxelrodMix": 0.939497879136565,
+          "anchor": 1.010487397216553,
+          "axelrod": 0.9217455977865371,
+          "axelrod_extra": 0.904677534365035
+        },
+        "values": [
+          526.0615234375,
+          518.80712890625,
+          521.19580078125,
+          525.71044921875,
+          528.8388671875,
+          522.52001953125,
+          522.51220703125,
+          529.09619140625,
+          521.54150390625,
+          523.03515625,
+          531.57666015625,
+          521.84375,
+          527.9638671875,
+          528.16552734375,
+          518.85595703125,
+          527.31884765625,
+          517.3173828125,
+          522.287109375,
+          531.0234375,
+          522.75341796875,
+          518.2626953125,
+          519.2041015625,
+          530.9716796875,
+          526.26220703125,
+          524.2783203125,
+          526.60986328125,
+          519.0810546875,
+          519.82470703125,
+          519.9990234375,
+          521.85009765625
+        ]
+      }
+    },
+    "PSRO-Scratch-BR": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 523.1140625,
+        "min": 516.05859375,
+        "p05": 517.4412353515625,
+        "max": 530.86669921875,
+        "std": 4.04492755432074,
+        "worst_family": 491.11920313520574,
+        "min_norm": 0.9027902958020265,
+        "families": {
+          "AxelrodMix": 541.1809356725146,
+          "anchor": 491.11920313520574,
+          "axelrod": 527.7848733163794,
+          "axelrod_extra": 510.6192439053115
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9374480775170444,
+          "anchor": 1.0104447300123467,
+          "axelrod": 0.921315726562112,
+          "axelrod_extra": 0.9027902958020265
+        },
+        "values": [
+          527.43017578125,
+          520.7724609375,
+          519.22509765625,
+          525.0537109375,
+          529.42431640625,
+          521.8623046875,
+          520.5126953125,
+          528.3642578125,
+          520.0224609375,
+          522.2783203125,
+          530.86669921875,
+          522.7744140625,
+          528.810546875,
+          524.955078125,
+          519.40673828125,
+          526.31640625,
+          516.05859375,
+          518.7294921875,
+          527.35302734375,
+          522.423828125,
+          516.38720703125,
+          520.00537109375,
+          530.28173828125,
+          525.31884765625,
+          522.236328125,
+          525.095703125,
+          522.3056640625,
+          519.2470703125,
+          518.74609375,
+          521.1572265625
+        ]
+      }
+    },
+    "PSRO-V4-Meta": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 520.21357421875,
+        "min": 514.1484375,
+        "p05": 514.5038818359375,
+        "max": 527.7568359375,
+        "std": 4.044265995190591,
+        "worst_family": 492.35254735467015,
+        "min_norm": 0.8872417904810174,
+        "families": {
+          "AxelrodMix": 530.803216374269,
+          "anchor": 492.35254735467015,
+          "axelrod": 534.4272393331449,
+          "axelrod_extra": 501.8249911671181
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9194715148484752,
+          "anchor": 1.0129822527947858,
+          "axelrod": 0.9329108225609308,
+          "axelrod_extra": 0.8872417904810174
+        },
+        "values": [
+          525.28466796875,
+          515.7685546875,
+          517.11474609375,
+          520.8115234375,
+          526.607421875,
+          518.69482421875,
+          519.439453125,
+          525.86328125,
+          516.87158203125,
+          520.31103515625,
+          526.9384765625,
+          519.85595703125,
+          526.08349609375,
+          522.4189453125,
+          514.1484375,
+          522.02685546875,
+          514.77001953125,
+          518.4140625,
+          524.08642578125,
+          519.5078125,
+          514.2861328125,
+          515.36328125,
+          527.7568359375,
+          521.67529296875,
+          519.89990234375,
+          523.7470703125,
+          517.201171875,
+          516.3251953125,
+          515.7275390625,
+          519.4072265625
+        ]
+      }
+    },
+    "PSRO-V4-BR": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 520.2204427083333,
+        "min": 513.89111328125,
+        "p05": 514.7200927734375,
+        "max": 527.95068359375,
+        "std": 3.8927622627277096,
+        "worst_family": 492.3347485303723,
+        "min_norm": 0.8868709434704013,
+        "families": {
+          "AxelrodMix": 531.0540350877193,
+          "anchor": 492.3347485303723,
+          "axelrod": 534.4180088537252,
+          "axelrod_extra": 501.6152396655282
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9199059897259708,
+          "anchor": 1.0129456329108608,
+          "axelrod": 0.9328947095833086,
+          "axelrod_extra": 0.8868709434704013
+        },
+        "values": [
+          524.390625,
+          517.22119140625,
+          516.42236328125,
+          520.14453125,
+          525.91552734375,
+          519.46142578125,
+          519.06494140625,
+          525.716796875,
+          518.01171875,
+          519.3330078125,
+          527.95068359375,
+          520.517578125,
+          524.12744140625,
+          521.87060546875,
+          514.75634765625,
+          522.88525390625,
+          513.89111328125,
+          515.2890625,
+          523.80859375,
+          520.6376953125,
+          514.6904296875,
+          516.83203125,
+          527.88232421875,
+          522.1953125,
+          521.13916015625,
+          523.18408203125,
+          518.322265625,
+          516.357421875,
+          516.44921875,
+          518.14453125
+        ]
+      }
+    },
+    "Adv-MLP": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 550.7018880208333,
+        "min": 544.8984375,
+        "p05": 545.4134521484375,
+        "max": 558.69482421875,
+        "std": 3.7223631752111266,
+        "worst_family": 489.342423252776,
+        "min_norm": 0.9258062325655115,
+        "families": {
+          "AxelrodMix": 577.3882456140351,
+          "anchor": 489.342423252776,
+          "axelrod": 530.3573043232551,
+          "axelrod_extra": 571.3958897656343
+        },
+        "family_norm": {
+          "AxelrodMix": 1.000167347283195,
+          "anchor": 1.006789124902361,
+          "axelrod": 0.9258062325655115,
+          "axelrod_extra": 1.0102452473123744
+        },
+        "values": [
+          552.2734375,
+          547.17041015625,
+          551.39404296875,
+          554.708984375,
+          556.81591796875,
+          551.5400390625,
+          546.7900390625,
+          554.05517578125,
+          547.724609375,
+          548.13818359375,
+          555.20751953125,
+          547.72265625,
+          558.69482421875,
+          555.2509765625,
+          552.22021484375,
+          551.69482421875,
+          544.96630859375,
+          549.27490234375,
+          554.00732421875,
+          550.08740234375,
+          546.455078125,
+          545.9599609375,
+          556.21728515625,
+          549.666015625,
+          553.73828125,
+          549.97412109375,
+          546.23193359375,
+          548.755859375,
+          544.8984375,
+          549.421875
+        ]
+      }
+    },
+    "Adv-GRU": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 552.4771158854167,
+        "min": 546.603515625,
+        "p05": 547.0321533203125,
+        "max": 560.53125,
+        "std": 3.9006433003928143,
+        "worst_family": 489.3420966688439,
+        "min_norm": 0.9356016898238655,
+        "families": {
+          "AxelrodMix": 577.2076023391813,
+          "anchor": 489.3420966688439,
+          "axelrod": 535.9687293962513,
+          "axelrod_extra": 570.9841596985043
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9998544321755746,
+          "anchor": 1.0067884529778854,
+          "axelrod": 0.9356016898238655,
+          "axelrod_extra": 1.009517296077611
+        },
+        "values": [
+          554.0654296875,
+          548.69482421875,
+          552.62744140625,
+          556.3271484375,
+          556.8544921875,
+          553.1650390625,
+          549.87744140625,
+          553.7421875,
+          547.76904296875,
+          552.4169921875,
+          560.53125,
+          550.724609375,
+          560.1201171875,
+          556.61767578125,
+          554.0791015625,
+          552.373046875,
+          547.0517578125,
+          551.45361328125,
+          559.7587890625,
+          552.23486328125,
+          547.01611328125,
+          546.603515625,
+          557.68505859375,
+          551.46142578125,
+          553.27734375,
+          551.5048828125,
+          548.9560546875,
+          548.00830078125,
+          548.50732421875,
+          550.80859375
+        ]
+      }
+    },
+    "Adv-RL": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 552.226220703125,
+        "min": 545.29296875,
+        "p05": 547.5670166015625,
+        "max": 560.3466796875,
+        "std": 3.8017640234583476,
+        "worst_family": 489.50620509470934,
+        "min_norm": 0.9248160243233617,
+        "families": {
+          "AxelrodMix": 579.4540350877193,
+          "anchor": 489.50620509470934,
+          "axelrod": 529.7900536874823,
+          "axelrod_extra": 575.4809209751502
+        },
+        "family_norm": {
+          "AxelrodMix": 1.003745763008896,
+          "anchor": 1.007126095026919,
+          "axelrod": 0.9248160243233617,
+          "axelrod_extra": 1.0174677062737592
+        },
+        "values": [
+          551.8876953125,
+          548.99560546875,
+          553.0859375,
+          555.89501953125,
+          557.4599609375,
+          550.408203125,
+          549.82275390625,
+          554.61865234375,
+          547.79931640625,
+          551.02685546875,
+          558.9091796875,
+          549.3994140625,
+          560.3466796875,
+          556.28271484375,
+          553.7216796875,
+          553.2705078125,
+          545.29296875,
+          550.98046875,
+          558.80029296875,
+          551.80078125,
+          548.18994140625,
+          548.16552734375,
+          557.9853515625,
+          552.14599609375,
+          553.1103515625,
+          551.20654296875,
+          548.4541015625,
+          550.54296875,
+          547.376953125,
+          549.80419921875
+        ]
+      }
+    },
+    "SelfPlay-GRU": {
+      "dev_axelrod": {
+        "fields": 30,
+        "mean": 550.4933268229166,
+        "min": 544.98681640625,
+        "p05": 546.263525390625,
+        "max": 559.84423828125,
+        "std": 3.343934617536257,
+        "worst_family": 484.286903984324,
+        "min_norm": 0.9619118673021526,
+        "families": {
+          "AxelrodMix": 577.2849707602339,
+          "anchor": 484.286903984324,
+          "axelrod": 553.1582838843365,
+          "axelrod_extra": 544.058473678012
+        },
+        "family_norm": {
+          "AxelrodMix": 0.9999884518218619,
+          "anchor": 0.9963877340186964,
+          "axelrod": 0.965608246819249,
+          "axelrod_extra": 0.9619118673021526
+        },
+        "values": [
+          550.37353515625,
+          547.416015625,
+          552.16455078125,
+          552.83251953125,
+          552.6826171875,
+          551.509765625,
+          547.17724609375,
+          549.98046875,
+          545.96337890625,
+          548.16845703125,
+          555.68115234375,
+          548.51953125,
+          554.92578125,
+          559.84423828125,
+          550.28955078125,
+          551.787109375,
+          547.54150390625,
+          551.033203125,
+          555.7607421875,
+          548.60693359375,
+          544.98681640625,
+          546.63037109375,
+          555.5849609375,
+          551.23193359375,
+          550.5419921875,
+          548.00927734375,
+          550.46484375,
+          548.62841796875,
+          546.970703125,
+          549.4921875
+        ]
+      }
+    }
+  },
+  "profile_path": "results/protocol_v5/profile_protocol_v5_dev_axelrod.json"
+}

@@ -103,26 +103,31 @@ python3 -m ipd train rl --device auto --seed 20261032 \
   --history-out results/robust_20261026/E1c_history.json
 ```
 
-### 3.4 Protocol v4 训练入口
+### 3.4 Protocol v5 训练入口
 
 新候选不再用 `original,late,grim30,wide` 作为训练分布，而是：
 
 ```bash
 python3 -m ipd train rl --device auto --iterations 40 \
-  --train-dists train_v4 --n 160 \
+  --train-dists train_v5 --n 160 \
   --dists dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --val-fields-per-dist 5 --val-n 160 --val-every 5 \
   --select-metric avg \
-  --out weights/my_protocol_v4_policy.json \
-  --checkpoint-out weights/my_protocol_v4_checkpoint.json
+  --out weights/my_protocol_v5_policy.json \
+  --checkpoint-out weights/my_protocol_v5_checkpoint.json
 ```
 
 训练 profile：
 
-- `train_v4`：标准 + complex + policy + Axelrod 的完整混合；
+- `train_v5`：标准 + complex + policy + Axelrod 的完整混合；
+  `train_v4` / `train_v3` 是历史别名，解析到当前 v5 train；
 - `train_easy` / `train_hard`：课程分段；
 - `train_complex`：complex families；
 - `train_pattern_breaker`：只含 `pattern_breaker` 的 `train_complex` 参数点；
+- `train_probe_pattern`：只含 `probe_exploit` / `pattern_breaker` 的
+  `train_complex` 参数点（v5 定向训练用）；
+- `train_probe_only`：只含 `probe_exploit` 的 `train_complex` 参数点
+  （probe specialist 实验用，含 anchors）；
 - `train_weak_complex`：`pattern_breaker` / `adaptive_mix` /
   `probe_exploit` / `conditional_extort` / `lookahead`；
 - `train_policy`：policy opponents only；
@@ -130,9 +135,9 @@ python3 -m ipd train rl --device auto --iterations 40 \
 
 `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood`
 只用于 validation。
-不要传 `test_v7`，训练代码会拒绝它。
+不要传 `test_v8`，训练代码会拒绝它。
 
-`train_v4` 和 `train_axelrod` 含 Axelrod 对手，需要先安装
+`train_v5` 和 `train_axelrod` 含 Axelrod 对手，需要先安装
 `requirements-axelrod.txt`；不用 Axelrod 时改用 `train_easy` /
 `train_hard` / `train_complex`。
 

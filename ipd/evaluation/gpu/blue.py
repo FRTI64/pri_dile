@@ -12,7 +12,7 @@ Supported candidates:
 Everything else (Final/Triple/rule candidates) is CPU-only.  Plain learned
 policies and ``psro-scratch`` support both ``argmax`` and the opt-in v5
 per-match ``sample`` contract.  ``Adv-*`` wrappers are argmax-only on GPU;
-v5 sample keeps them on the CPU so their sequential v4 RNG stream, and the
+per-match sample keeps them on the CPU so their sequential v4 RNG stream, and the
 candidate score, stays exactly the same as the pure-Python baseline.
 """
 from __future__ import annotations

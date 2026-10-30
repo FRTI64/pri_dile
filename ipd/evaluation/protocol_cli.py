@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI for Protocol v4: audit, freeze and evaluate train/dev/test splits."""
+"""CLI for Protocol v5: audit, freeze and evaluate train/dev/test splits."""
 from __future__ import annotations
 
 import argparse
@@ -21,9 +21,10 @@ from ..policies.registry import CandidateSpec, candidate_specs
 from .common import FieldStats, evaluate_field_details, quantile, run_match
 from .protocol import (
     COMPLEXITY_TIERS, DEV_FIELDS, DEV_TIERS, LEVEL_TIERS,
-    PROTOCOL_N_PLAYERS, PROTOCOL_NAME, SPLIT_TIERS, TEST_FIELDS,
-    TEST_POLICY_PATH, TEST_TIER, audit_protocol, build_protocol_field,
-    build_protocol_red_field, catalog_sha256, field_reuse_safe,
+    PROTOCOL_N_PLAYERS, PROTOCOL_NAME, PROTOCOL_VERSION, SPLIT_TIERS,
+    TEST_FIELDS, TEST_POLICY_PATH, TEST_TIER, TEST_TIERS, audit_protocol,
+    build_protocol_field, build_protocol_red_field, catalog_sha256,
+    field_reuse_safe,
     guard_test_usage, protocol_match_seed, record_usage, restore_field_rng,
     sample_uniforms, snapshot_field_rng, test_consumption_allowed,
     verify_manifest, write_manifest,
@@ -63,7 +64,7 @@ def _gpu_spec_supported(spec: CandidateSpec,
 
     PSRO meta-policies need a population inspection because their blue mixture
     may contain stochastic rule members; those stay on CPU to preserve the
-    Protocol v4 RNG stream.  The v5 sample path also keeps PSRO meta-policies
+    legacy v4 RNG stream.  The per-match sample path also keeps PSRO meta-policies
     on CPU because member selection is itself a per-match RNG draw.
     """
     kind = str(spec.kind)
@@ -106,10 +107,10 @@ def _resolve_gpu(requested: str, candidate_mode: str,
         if requested == "on" and not quiet:
             print("WARNING: --gpu on only supports --mode argmax or "
                   "--sample-rng per-match; sample mode stays on CPU "
-                  "(Protocol v4 RNG contract)", flush=True)
+                  "(legacy v4 RNG contract)", flush=True)
         return False, "sample mode stays on CPU"
     if candidate_mode == "sample" and sample_rng == "per-match":
-        return True, "CUDA available; Protocol v5 per-match sample RNG"
+        return True, "CUDA available; per-match sample RNG"
     return True, "CUDA available"
 
 
@@ -254,7 +255,7 @@ def _eval_field_batch_task(task: dict[str, Any]) -> dict[str, Any]:
     """Evaluate a candidate chunk on several fields with batched GPU rows.
 
     The task returns one result row per ``(candidate, field)`` so the existing
-    Protocol v4 aggregation and result schema are unchanged.
+    Protocol v5 aggregation and result schema are unchanged.
     """
     specs = [CandidateSpec.from_dict(item) for item in task["specs"]]
     tier = str(task["tier"])
@@ -436,7 +437,8 @@ def _aggregate(rows: Sequence[dict[str, Any]],
 
 
 def _audit(argv: Sequence[str]) -> int:
-    ap = argparse.ArgumentParser(description="Audit Protocol v4 splits.")
+    ap = argparse.ArgumentParser(
+        description=f"Audit Protocol v{PROTOCOL_VERSION} splits.")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
@@ -454,7 +456,9 @@ def _audit(argv: Sequence[str]) -> int:
         print(f"catalog:  {report['catalog_size']} configs, "
               f"sha256 {report['catalog_sha256'][:16]}...")
         print(f"manifest: {report['manifest']['reason']}")
-        policy = "locked" if not test_consumption_allowed() else "UNLOCKED"
+        policy = ", ".join(
+            f"{tier}={'UNLOCKED' if test_consumption_allowed(tier=tier) else 'locked'}"
+            for tier in TEST_TIERS)
         print(f"test policy: {policy} ({TEST_POLICY_PATH})")
         print("\ncounts by group/family:")
         for group, families in report["counts"].items():
@@ -481,7 +485,8 @@ def _audit(argv: Sequence[str]) -> int:
 
 
 def _manifest(argv: Sequence[str]) -> int:
-    ap = argparse.ArgumentParser(description="Write or verify Protocol v4 manifest.")
+    ap = argparse.ArgumentParser(
+        description=f"Write or verify Protocol v{PROTOCOL_VERSION} manifest.")
     ap.add_argument("--write", action="store_true", default=True)
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
@@ -495,7 +500,8 @@ def _manifest(argv: Sequence[str]) -> int:
 
 def _eval(argv: Sequence[str]) -> int:
     ap = argparse.ArgumentParser(
-        description="Evaluate candidates on Protocol v4 dev/test tiers.")
+        description=f"Evaluate candidates on Protocol v{PROTOCOL_VERSION} "
+                    "dev/test tiers.")
     ap.add_argument("--candidates", default="all",
                     help="comma-separated registry names or sets")
     ap.add_argument("--tiers", default=DEV_DEFAULT,
@@ -522,7 +528,7 @@ def _eval(argv: Sequence[str]) -> int:
                     default="v4",
                     help="sample RNG contract: v4 keeps the historical "
                          "sequential stream on CPU; per-match is the opt-in "
-                         "Protocol v5 contract that can run on GPU")
+                         "per-match contract that can run on GPU")
     ap.add_argument("--opponent-mode", choices=("sample", "argmax"),
                     default=None,
                     help="action mode for learned policy opponents; defaults "
@@ -558,7 +564,7 @@ def _eval(argv: Sequence[str]) -> int:
                          "on the GPU path (default: 0.90)")
     ap.add_argument("--profile", action="store_true",
                     help="write per-family/per-candidate timings to "
-                         "results/protocol_v4/profile_*.json")
+                         f"results/{PROTOCOL_NAME}/profile_*.json")
     ap.add_argument("--profile-out", default=None,
                     help="override the profile output path")
     ap.add_argument("--seed", type=int, default=20261027)
@@ -566,19 +572,21 @@ def _eval(argv: Sequence[str]) -> int:
     ap.add_argument("--baseline", default=None,
                     help="candidate name used for per-family min_norm")
     ap.add_argument("--acknowledge-once", action="store_true",
-                    help="cannot unlock test_v7 while test consumption is "
-                         "locked; ignored for provisional runs")
+                    help=f"required to consume {TEST_TIER} when the policy "
+                         "allows it; ignored for provisional runs")
     ap.add_argument("--no-consume", action="store_true",
-                    help="evaluate test tier without writing usage ledger; "
-                         "required while test consumption is locked")
+                    help="evaluate test tier without writing the usage ledger "
+                         "(always provisional)")
     ap.add_argument("--force", action="store_true",
-                    help="cannot override the test consumption lock; ignored "
-                         "for provisional runs")
+                    help="allow rerunning a candidate already in the usage "
+                         "ledger and mark the new entry contaminated; cannot "
+                         "override a locked policy")
     args = ap.parse_args(argv)
 
     tiers = _parse_tiers(args.tiers)
     test_run = TEST_TIER in tiers
-    consumption_locked = test_run and not test_consumption_allowed()
+    consumption_locked = test_run and not test_consumption_allowed(
+        tier=TEST_TIER)
     no_consume = args.no_consume or consumption_locked
     if test_run and consumption_locked and not args.no_consume:
         raise SystemExit(
@@ -860,22 +868,23 @@ def _eval(argv: Sequence[str]) -> int:
     if out is None:
         if TEST_TIER in tiers:
             suffix = "test_provisional" if no_consume else "test"
-            out = result_path(f"protocol_v4/{PROTOCOL_NAME}_{suffix}.json")
+            out = result_path(f"{PROTOCOL_NAME}/{PROTOCOL_NAME}_{suffix}.json")
         elif len(tiers) == 1 and tiers[0] in LEVEL_TIERS + COMPLEXITY_TIERS:
             out = result_path(
-                f"protocol_v4/{PROTOCOL_NAME}_{tiers[0]}.json")
+                f"{PROTOCOL_NAME}/{PROTOCOL_NAME}_{tiers[0]}.json")
         else:
-            out = result_path(f"protocol_v4/{PROTOCOL_NAME}_dev.json")
+            out = result_path(f"{PROTOCOL_NAME}/{PROTOCOL_NAME}_dev.json")
     out_path = Path(out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     payload = {
         "schema": "ipd-protocol-eval-v1",
         "protocol": PROTOCOL_NAME,
-        "protocol_version": ("5" if (gpu_enabled
-                                     and args.mode == "sample"
-                                     and args.sample_rng == "per-match")
-                             else "4"),
+        "protocol_version": PROTOCOL_VERSION,
+        "split_version": PROTOCOL_VERSION,
+        "sample_rng_version": (
+            "5" if (gpu_enabled and args.mode == "sample"
+                    and args.sample_rng == "per-match") else "4"),
         "catalog_sha256": catalog_sha256(),
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "seconds": round(wall_seconds, 2),
@@ -958,10 +967,12 @@ def _eval(argv: Sequence[str]) -> int:
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                         encoding="utf-8")
 
-    label = ("Protocol v5 GPU sample"
-             if (gpu_enabled and args.mode == "sample"
-                 and args.sample_rng == "per-match")
-             else "Protocol v4 evaluation")
+    label = f"Protocol v{PROTOCOL_VERSION}"
+    if (gpu_enabled and args.mode == "sample"
+            and args.sample_rng == "per-match"):
+        label += " GPU sample"
+    else:
+        label += " evaluation"
     print(f"\n{label} ({fields} fields, n={args.n}, "
           f"workers={workers})")
     for name in names:
@@ -1005,7 +1016,8 @@ def _red_task(task: dict[str, Any]) -> dict[str, Any]:
 
 def _red(argv: Sequence[str]) -> int:
     ap = argparse.ArgumentParser(
-        description="Evaluate candidates against Protocol v4 red pools.")
+        description=f"Evaluate candidates against Protocol v{PROTOCOL_VERSION} "
+                    "red pools.")
     ap.add_argument("--candidates", default="all")
     ap.add_argument("--tier", default="dev_red",
                     choices=("dev_red", "test_red"))
@@ -1017,18 +1029,20 @@ def _red(argv: Sequence[str]) -> int:
     ap.add_argument("--seed", type=int, default=20261027)
     ap.add_argument("--out", default=None)
     ap.add_argument("--acknowledge-once", action="store_true",
-                    help="cannot unlock test_red while test consumption is "
-                         "locked; ignored for provisional runs")
+                    help="required to consume test_red when the policy allows "
+                         "it; ignored for provisional runs")
     ap.add_argument("--no-consume", action="store_true",
-                    help="evaluate test_red without writing usage ledger; "
-                         "required while test consumption is locked")
+                    help="evaluate test_red without writing the usage ledger "
+                         "(always provisional)")
     ap.add_argument("--force", action="store_true",
-                    help="cannot override the test consumption lock; ignored "
-                         "for provisional runs")
+                    help="allow rerunning a candidate already in the usage "
+                         "ledger and mark the new entry contaminated; cannot "
+                         "override a locked policy")
     args = ap.parse_args(argv)
 
     test_run = args.tier == "test_red"
-    consumption_locked = test_run and not test_consumption_allowed()
+    consumption_locked = test_run and not test_consumption_allowed(
+        tier="test_red")
     no_consume = args.no_consume or consumption_locked
     if test_run and consumption_locked and not args.no_consume:
         raise SystemExit(
@@ -1095,7 +1109,7 @@ def _red(argv: Sequence[str]) -> int:
     if out is None:
         suffix = "_provisional" if no_consume else ""
         out = result_path(
-            f"protocol_v4/protocol_v4_{args.tier}{suffix}.json")
+            f"{PROTOCOL_NAME}/{PROTOCOL_NAME}_{args.tier}{suffix}.json")
     out_path = Path(out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {

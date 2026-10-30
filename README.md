@@ -2,33 +2,47 @@
 
 100 天迭代囚徒困境（IPD）策略工具包：规则状态机、贝叶斯推断、多数投票融合、
 MLP / GRU、约束剥削包装、PPO 强化学习和 21 维自博弈策略。评估以
-**Protocol v4**（977 configs / 新风格集 / Axelrod / 2048 人赛场）
+**Protocol v5**（977 configs / 新 train/dev/test 分配 / Axelrod / 2048 人赛场）
 为主，另保留 legacy 四分布、
 blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 
-> **当前状态（2026-10-29）**
+> **当前状态（2026-10-30）**
 >
 > - 主权重：`weights/rl_policy_weights.json`（RL-PPO，从零 + hard）；
-> - **Protocol v4 dev/test 最佳候选**：`rl-switch`（RL-Switch，窄 meta
+> - **v4 legacy dev/test 最佳候选**：`rl-switch`（RL-Switch，窄 meta
 >   RL-Wide160→RL-Repair），dev_param 548.58 / dev_complex 454.24 /
->   dev_axelrod 582.86；`test_v7` provisional **488.26**（seed 27）和
+>   dev_axelrod 582.86；v4 `test_v7` provisional **488.26**（seed 27）和
 >   **487.51**（seed 29）；但 **未 promotion**，Python + C++ 已移植；
+>   v5 需要重新跑 baseline；
 > - **单模型替代**：`rl-dagger-gru`（GRU-DAgger，64 hidden，1 层），
 >   用 DAgger 蒸馏 RL-Switch；dev 两个 seed 与 RL-Switch 持平，
->   dev_complex **455.13**；test provisional 487.89/487.02（低 0.4，
+>   dev_complex **455.13**；v4 test provisional 487.89/487.02（低 0.4，
 >   噪声内）；Python + C++；未 promotion；
 > - 前最佳候选 / fallback：`rl-wide160`（160/128）、`rl-wide`（128/128）、
 >   `rl-pattern`（64/32）、`rl-repair`；A60 仍为 `rl-hard60`；
-> - **最佳纯规则**：`triple-v4`（Triple-v4），在 Triple-majority 的
->   Final 组件加入窄噪声互惠分支；dev_param 538.66 / dev_complex
->   447.08 / dev_ood 514.41，独立 seed 复现；无权重、无 probe；
+> - **最佳纯规则（v4 legacy）**：`triple-v4`（Triple-v4），在
+>   Triple-majority 的 Final 组件加入窄噪声互惠分支；dev_param 538.66 /
+>   dev_complex 447.08 / dev_ood 514.41，独立 seed 复现；无权重、无 probe；
 >   **未 promotion**；
-> - **Protocol v4**：977 configs；14 个 complex 风格 + 224 个 Axelrod 策略 +
->   15 个 AxelrodMix；
+> - **Protocol v5**：977 configs；14 个 complex 风格 + 224 个 Axelrod 策略 +
+>   15 个 AxelrodMix；`SPLIT_SALT=protocol_v5` 重新划分 train/dev/test；
 >   默认 2048 人（2000+）/ dev 30 fields / test 50 fields；
-> - v4 全候选 baseline **尚未运行**；top 7 的 dev 已运行，v3 的
->   299/20/40 结果只作 legacy；
-> - **334 tests OK**（本轮全量运行）；注册候选 33 个（`all` 集合）；
+> - **v5 dev baseline 已运行**（33 candidates，5 tiers × 30 fields × 2048，
+>   1662.15s）：RL-Gate dev_param 532.82 第一，但 `dev_ood` min_norm 0.899；
+>   RL-Switch / GRU-DAgger / RL-Wide / RL-Wide160 约 532 / 477 / 522，
+>   共同弱项 `probe_exploit`（min_norm ~0.934）。旧 `min_norm ≥ 0.99`
+>   门槛下无 candidate 通过，**不 promotion**；
+> - **定向 fine-tune 已试**：ProbePattern-v2-iter4 把 `pattern_breaker`
+>   632 → **762**、`dev_complex` +4.04、`dev_ood` +0.90，但
+>   `probe_exploit` 仍约 **118**（RL-PPO 124）、min_norm ~0.951；
+>   probe-only specialist、v2 特征、精确规则三条线都未取得净收益；
+>   probe 专项暂停。**不采用 unsafe specialist / `--allow-probe` /
+>   预判 gate**，也不为 probe 修改 protocol 或 safety 规则；v5 保持
+>   977 configs；
+> - v4 的 top 7 dev、`test_v7` 和 v3 的 299/20/40 结果只作 legacy；
+> - **346 tests OK**（本轮全量运行）；注册候选 33 个（`all` 集合）；
+> - **`test_v8` 初始锁定**（ADR 0013）：final 前需显式解禁 policy 并传
+>   `--acknowledge-once`；`test_red` 继续锁定；
 > - **PSRO / red 历史存档**：以下 PSRO 结果只用于复现，不再作为
 >   当前评估或 promotion 门槛。
 > - **PSRO 已引入**：完整 blue-vs-red PSRO + 2 轮 PPO oracle；`psro`
@@ -59,28 +73,32 @@ python3 -m pip install -e .
 python3 -m ipd list-policies
 python3 -m ipd test
 
-# Protocol v4：审计 split，跑 dev 选模（默认 2048 人 × 30 fields）
+# Protocol v5：审计 split，跑 dev 选模（默认 2048 人 × 30 fields）
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --workers 20 --baseline RL-PPO
 
-# test_v7 永久锁定为 provisional（不会消费；默认 50 fields）
-python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --no-consume
+# test_v8 final：先在 test_policy.json 解禁，再一次性消费
+python3 -m ipd protocol eval --candidates <final> \
+  --tiers test_v8 --fields 50 --n 2048 --acknowledge-once
 
-# 只验证 pipeline，同样不会消费 test_v7
+# provisional 诊断：不消费 test_v8
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 1 --n 256 --workers 4 \
-  --no-consume --out /tmp/test_v7_smoke.json
+  --tiers test_v8 --fields 50 --n 2048 --no-consume
+
+# 只验证 pipeline，同样不会消费 test_v8
+python3 -m ipd protocol eval --candidates <top3> \
+  --tiers test_v8 --fields 1 --n 256 --workers 4 \
+  --no-consume --out /tmp/test_v8_smoke.json
 
 # 按对手思考等级 / 策略复杂度
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_level3 --fields 30 --n 2048 \
-  --out results/protocol_v4/protocol_v4_dev_level3.json
+  --out results/protocol_v5/protocol_v5_dev_level3.json
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_complexity4 --fields 30 --n 2048 \
-  --out results/protocol_v4/protocol_v4_dev_complexity4.json
+  --out results/protocol_v5/protocol_v5_dev_complexity4.json
 
 # PSRO（reference population；实验）
 python3 -m ipd train psro --config configs/psro/psro_20261027.json \
@@ -103,13 +121,31 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 训练需要 PyTorch（`requirements-train.txt`）；推理和 C++ 部署不需要。
 完整命令见 [docs/guides/](docs/guides/)，参考见 [docs/reference/](docs/reference/)。
 
-## 当前候选（Protocol v4）
+## 当前候选（Protocol v5）
 
-**Protocol v4 dev（30 fields × 2048，sample，2026-10-29）：**
+**Protocol v5 dev（30 fields × 2048，sample，2026-10-30）：**
+
+| 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | ood min_norm |
+|---|---|---:|---:|---:|---:|---:|---:|
+| **RL-Gate** | `rl-gate` | **532.82** | 582.95 | 477.00 | 567.78 | 522.11 | 0.899 |
+| **RL-Repair** | `rl-repair` | 532.53 | 582.78 | 456.41 | 565.46 | 515.80 | 0.790 |
+| **RL-Switch** | `rl-switch` | 532.37 | 582.91 | 477.57 | 566.53 | 521.73 | 0.934 |
+| RL-Pattern | `rl-pattern` | 532.30 | 583.09 | 476.06 | 568.00 | 521.94 | 0.932 |
+| GRU-DAgger | `rl-dagger-gru` | 532.30 | 582.93 | 477.29 | 567.17 | 522.09 | 0.934 |
+| RL-Wide | `rl-wide` | 531.89 | 583.09 | 476.94 | 568.01 | 522.07 | 0.932 |
+| RL-Wide160 | `rl-wide160` | 531.66 | 583.08 | **477.77** | 567.77 | **522.24** | 0.934 |
+| RL-PPO（baseline） | `rl` | 525.99 | 582.55 | 457.26 | 563.43 | 513.30 | 1.000 |
+
+- v5 共同弱项是 `probe_exploit`；旧 `min_norm ≥ 0.99` 门槛下没有 top
+  candidate 通过，本表只作诊断，**不 promotion**。完整结果见
+  [results/protocol_v5/README.md](results/protocol_v5/README.md)。
+- 该 baseline 在 977-config catalog 上运行，与当前 manifest 一致。
+
+**Protocol v4 dev（30 fields × 2048，sample，2026-10-29；legacy）：**
 
 | 候选 | 注册名 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | 状态 |
 |---|---|---:|---:|---:|---:|---:|---|
-| **RL-Switch** | `rl-switch` | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | v4 dev/test 最佳；Python + C++；未 promotion |
+| **RL-Switch** | `rl-switch` | **548.58** | 582.91 | 454.24 | **582.86** | **521.42** | v4 legacy 最佳；Python + C++；未 promotion |
 | **GRU-DAgger** | `rl-dagger-gru` | **548.58** | 582.90 | **455.13** | 582.49 | **521.54** | 单模型 RL-Switch 蒸馏；Python + C++；未 promotion |
 | RL-Wide160 | `rl-wide160` | 548.26 | **583.08** | **454.31** | 582.38 | 521.37 | 160/128；未 promotion |
 | RL-Wide | `rl-wide` | 548.24 | **583.08** | 452.79 | 582.30 | 520.71 | 128/128 前最佳；未 promotion |
@@ -118,20 +154,23 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
 | RL-PPO | `rl` | 540.35 | 582.53 | 440.31 | 574.64 | 513.48 | 当前主权重；baseline |
 | **Triple-v4** | `triple-v4` | 538.66 | **583.07** | 447.08 | 568.38 | 514.41 | 最佳纯规则；无权重；未 promotion |
 
-- `test_v7` 永久 locked；top provisional：RL-Switch **488.26**、
-  GRU-DAgger 487.89、RL-Repair 486.31、RL-Wide160 485.62、RL-Wide
-  485.50、RL-Pattern 485.43、RL-PPO 477.26（`--no-consume`，不参与
-  选模）。
+- 上表是 **v4 legacy**；v5 重新划分了 train/dev/test，必须重跑。v4
+  `test_v7` provisional：RL-Switch **488.26**、GRU-DAgger 487.89、
+  RL-Repair 486.31、RL-Wide160 485.62、RL-Wide 485.50、RL-Pattern 485.43、
+  RL-PPO 477.26（不参与 v5 选模）。
+- v5 初始 `test_v8` 锁定；v4 `test_v7` 与 v5 `test_v8` 不可混表，且
+  v5 与 v4 共用 catalog，旧 v4 候选在 v5 test 上不是 held-out。
 - RL-Wide160 把第一层扩到 160：`pattern_breaker` 420.3 → 511.6，
   complex `min_norm` 0.845 → 0.997；dev_param 与 RL-Pattern 基本持平。
 - **Triple-v4** 相对 Triple-majority：dev_param +1.79、dev_complex
   +5.91、dev_axelrod +1.45、dev_ood +2.79、dev_family +0.01；独立
-  seed 20261029 复现；test_v7 provisional +2.14。它是纯规则候选，
-  仍低于 RL-Repair / RL-PPO 的 `dev_param`，不替代学习策略。报告
+  seed 20261029 复现；v4 test_v7 provisional +2.14。它是纯规则候选，
+  仍低于 RL-Repair / RL-PPO 的 `dev_param`，不替代学习策略；v5 需重跑。报告
   [docs/research/triple-v4.md](docs/research/triple-v4.md)、
   [results/rule_v4_20261043/](results/rule_v4_20261043/)。
-- 全候选 v4 baseline 尚未运行；完整报告见
-  [docs/research/rl-pattern.md](docs/research/rl-pattern.md) 和
+- 全候选 v4 baseline 尚未运行；v5 dev baseline 已运行，完整结果见
+  [results/protocol_v5/README.md](results/protocol_v5/README.md)。v4 历史
+  报告见 [docs/research/rl-pattern.md](docs/research/rl-pattern.md) 和
   [results/rl_v4_20261028/](results/rl_v4_20261028/)。
 
 下表是 **Protocol v3** 的 299/20/40 baseline，仅作 legacy 对照；完整 v3
@@ -172,9 +211,9 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 
 | 阶段 | 结论 |
 |---|---|
-| Protocol v4 split | **启用**；977 configs + 新风格/Axelrod/complex/policy；test 消费永久锁定 |
-| Protocol v4 baseline | **top 7 dev 已运行**；全候选 baseline 未运行；v3 baseline 仅作 legacy |
-| **RL-Switch** | **窄 meta RL-Wide160→RL-Repair；test_v7 488.26/487.51；dev 基本不变**；未 promotion |
+| Protocol v5 split | **启用**；977 configs 重新划分 train/dev/test；test_v8 held-out 初始锁定，test_red 锁定 |
+| Protocol v5 baseline | **已运行**（33 candidates，1662.15s）；RL-Gate dev_param 第一但 min_norm 0.899；旧门槛下无 candidate 通过；v4/v3 为 legacy |
+| **RL-Switch** | **v4 legacy：窄 meta RL-Wide160→RL-Repair；test_v7 488.26/487.51**；未 promotion |
 | **GRU-DAgger** | **单模型 GRU 蒸馏 RL-Switch；dev 两 seed 持平（complex +0.89）；test provisional -0.4；未 promotion** |
 | **RL-Wide160** | **160/128；dev_complex 454.31、complex min_norm 0.997**；test provisional -0.69；未 promotion |
 | **RL-Wide** | **128/128；dev_complex 452.79、complex min_norm 0.973**；test provisional -0.81；未 promotion |
@@ -197,7 +236,7 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | **PSRO v4** | 3 轮 × 30 iter 更强 oracle；dev_param 486.93 / min_norm 0.56；未 promotion。red 指标仅历史 |
 | P2 C1 / C2 / C3 | 全部 offline No-Go |
 | SelfPlay 改进 | No-Go；保留 21 维部署备选 |
-| Axelrod | **已接入 Protocol v4**：224 策略 + 15 组合；可选依赖 |
+| Axelrod | **已接入 Protocol v5**：224 策略 + 15 组合；可选依赖 |
 
 完整记录见 [docs/research/](docs/research/) 和
 `results/sweep_20261026/README.md`（66 候选 × 158 类对手）。

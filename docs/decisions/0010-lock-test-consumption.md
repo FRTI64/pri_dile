@@ -1,6 +1,7 @@
 # ADR 0010：永久锁定 test 消费
 
-- 状态：Accepted（2026-10-27）
+- 状态：Superseded by [ADR 0012](0012-unlock-test-v7.md)（2026-10-30）
+- 历史状态：Accepted（2026-10-27）
 - 关联：`configs/splits/protocol_v4/test_policy.json`、
   `ipd/evaluation/protocol.py`、`ipd/evaluation/protocol_cli.py`
 

@@ -1,4 +1,4 @@
-"""Optional GPU/batched inference for Protocol v4 evaluation.
+"""Optional GPU/batched inference for Protocol v5 evaluation.
 
 The package is deliberately import-light: ``torch`` is imported by the modules
 that need it, and callers must treat :class:`ImportError` as "GPU unavailable".

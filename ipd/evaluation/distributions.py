@@ -31,10 +31,12 @@ AXELROD_DISTS = ("axelrod", "axelrod-fast", "axelrod-cheating")
 EVAL_DISTS = DISTS + AXELROD_DISTS
 PROTOCOL_LEVEL_TRAIN = tuple(f"train_level{i}" for i in range(5))
 PROTOCOL_COMPLEXITY_TRAIN = tuple(f"train_complexity{i}" for i in range(5))
-PROTOCOL_TRAIN_DISTS = ("train_v4", "train_v3", "train_easy",
+PROTOCOL_TRAIN_DISTS = ("train_v5", "train_v4", "train_v3", "train_easy",
                         "train_hard", "train_complex", "train_policy",
                         "train_axelrod", "train_pattern_breaker",
-                        "train_weak_complex") + PROTOCOL_LEVEL_TRAIN \
+                        "train_probe_only", "train_probe_pattern",
+                        "train_weak_complex") \
+    + PROTOCOL_LEVEL_TRAIN \
     + PROTOCOL_COMPLEXITY_TRAIN
 PROTOCOL_VAL_DISTS = ("dev_param", "dev_family", "dev_complex",
                       "dev_axelrod", "dev_ood")

@@ -45,7 +45,7 @@ SCHEMA = "ipd-matchup-v2"
 
 @functools.lru_cache(maxsize=1)
 def _protocol_specs() -> tuple[TypeSpec, ...]:
-    """Expose every frozen Protocol v4 catalog entry as an opponent type."""
+    """Expose every frozen Protocol v5 catalog entry as an opponent type."""
     from .protocol import build_catalog
 
     return tuple(
@@ -231,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
                              "axelrod-fast", "axelrod-cheating"),
                     default="core",
                     help="core = 85-type bank, all = 158-type full bank, "
-                         "protocol = full Protocol v4 catalog (977 configs), "
+                         "protocol = full Protocol v5 catalog (977 configs), "
                          "axelrod = 243 ordinary Axelrod strategies, "
                          "axelrod-fast = 224 excluding long-running ones, "
                          "axelrod-cheating = cheating strategies "

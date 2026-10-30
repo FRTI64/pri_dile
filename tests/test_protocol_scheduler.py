@@ -1,4 +1,4 @@
-"""Tests for Protocol v4 field-level scheduling and RNG reuse."""
+"""Tests for Protocol v5 field-level scheduling and RNG reuse."""
 from __future__ import annotations
 
 import json
@@ -11,7 +11,7 @@ from pathlib import Path
 from ipd.core.primitives import Strategy
 from ipd.evaluation.common import evaluate_field_details
 from ipd.evaluation.protocol import (
-    build_protocol_field, field_reuse_safe, restore_field_rng,
+    TEST_TIER, build_protocol_field, field_reuse_safe, restore_field_rng,
     snapshot_field_rng,
 )
 from ipd.evaluation.protocol_cli import _eval_field_task, _eval_task
@@ -116,7 +116,7 @@ class FieldRngTests(unittest.TestCase):
                              spec.name)
 
     def test_snapshot_covers_learned_policy_opponents(self) -> None:
-        field = build_protocol_field("test_v7", 777, 512)
+        field = build_protocol_field(TEST_TIER, 777, 512)
         snapshot = snapshot_field_rng(field)
         learned = [bot for bot in field
                    if type(bot).__name__ in
@@ -158,19 +158,19 @@ class FieldSchedulingTests(unittest.TestCase):
             self.assertEqual(by_name[spec.name]["family_sums"],
                              old["family_sums"])
 
-    def test_test_v7_policy_opponents_match_rebuild(self) -> None:
+    def test_test_tier_policy_opponents_match_rebuild(self) -> None:
         specs = [_spec("Final-tuned"), _spec("Harvest-tuned"),
                  _spec("GapStart"), _spec("Neural")]
         task = {
             "specs": [spec.to_dict() for spec in specs],
-            "tier": "test_v7", "seed": 20261027, "n": 32,
+            "tier": TEST_TIER, "seed": 20261027, "n": 32,
             "rounds": 100, "field_reuse": "on",
         }
         chunked = _eval_field_task(task)
         by_name = {row["candidate"]: row for row in chunked["results"]}
         for spec in specs:
             old = _eval_task({
-                "spec": spec.to_dict(), "tier": "test_v7",
+                "spec": spec.to_dict(), "tier": TEST_TIER,
                 "seed": 20261027, "n": 32, "rounds": 100,
             })
             self.assertEqual(by_name[spec.name]["scores"], old["scores"],

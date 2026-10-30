@@ -21,7 +21,7 @@ Deployment convention
 The final best response (or the meta-best blue policy, configurable) is copied
 to ``weights/psro/psro_policy.json``.  The population, the full payoff matrix
 and the meta-strategy are written next to the report for reproducibility.  A
-PSRO result is **experimental** until it passes the same Protocol v4 gates as
+PSRO result is **experimental** until it passes the same Protocol v5 gates as
 every other candidate; this module never promotes the main weights.
 
 Usage::
@@ -1283,7 +1283,7 @@ def build_markdown(report: Mapping[str, Any]) -> str:
         "- Blue exploitability is the red best-response gain against the maximin",
         "  blue mixture.  Lower is better; a positive delta means the new",
         "  best-response policy did not enter the maximin support.",
-        "- Red-v5 / Red-v6 and Protocol v4 `test_v7` remain held out.  A PSRO",
+        "- Red-v5 / Red-v6 and Protocol v5 `test_v8` remain held out.  A PSRO",
         "  candidate is only promotable after the normal dev/test and C++ checks.",
         "- The main weights (`weights/rl_policy_weights.json`) are unchanged.",
         "",

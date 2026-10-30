@@ -1,0 +1,3 @@
+{"candidates": [
+  {"name": "ProbePattern-iter3", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_pattern_20261030/ckpts/iter_003.json"}
+]}

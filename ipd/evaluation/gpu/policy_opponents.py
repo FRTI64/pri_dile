@@ -7,12 +7,12 @@ rows on their original CPU objects.  Routing is by row, so the field order and
 the score accounting stay unchanged.
 
 Argmax inference is batched for every learned policy.  Under the opt-in
-Protocol v5 sample contract, learned policies are batched too: each row's
+per-match sample contract, learned policies are batched too: each row's
 uniform stream is drawn from that opponent's own ``random.Random`` state before
 the match, and the kernel advances a per-row draw pointer only on rounds where
 a hard rule does not decide the action.  This reproduces the lazy CPU draws
 exactly.  ``PolicyFinal`` / ``PolicyTriple`` and every other stochastic rule
-remain on the CPU path: their Protocol v4 semantics are defined by a sequential
+remain on the CPU path: their legacy v4 semantics are defined by a sequential
 Mersenne Twister stream, which a GPU batch cannot reproduce without a protocol
 version bump.
 """
@@ -199,7 +199,7 @@ class BatchOpponentField:
         if rule_members:
             # ``auto`` declines a field where the fast rules are a small
             # minority; the Python fallback would dominate and the bank's
-            # setup overhead would be a net regression (test_v7 is ~70% rules
+            # setup overhead would be a net regression (test_v8 is ~70% rules
             # by row count but only ~4% by cost).
             enable = self.fast_rules_mode is True or self.fast_rules_mode == "on"
             if self.fast_rules_mode == "auto":

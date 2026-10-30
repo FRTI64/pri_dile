@@ -1,6 +1,9 @@
 # Protocol v4 test_v7（provisional）— 2026-10-27
 
-> **不是 v4 baseline，也不是 final。** `test_v7` 永久锁定；本次只做 provisional 诊断，不写 usage ledger，`selection_eligible=false`。
+> **Legacy：Protocol v4 已被 Protocol v5 取代（ADR 0013）。** 本文件
+> 记录的是 v4 的 provisional / benchmark 结果；`test_v7` 已解禁但只作
+> 历史，不能与 v5 `test_v8` 混表。当前口径见
+> `results/protocol_v5/README.md`。
 
 - 候选：24（20 个注册候选 + 4 个 PSRO，分批运行后合并）
 - 规模：50 fields × 2048，100 天

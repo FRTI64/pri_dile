@@ -1,4 +1,4 @@
-"""Protocol v4: versioned train / dev / test opponent splits.
+"""Protocol v5: versioned train / dev / test opponent splits.
 
 The old evaluation stack mixes training and reporting distributions: the four
 ``official`` distributions are also used by RL training, ``blind`` only changes
@@ -15,11 +15,15 @@ Design
 * ``dev_family`` and ``test_only`` families are held out by family, not just
   by parameter draw.  ``dev_complex`` validates the complex families and
   ``dev_ood`` is a deliberately shifted validation mixture.
-* ``test_v7`` is a weighted field: 30% seen-family test configs, 20%
+* ``test_v8`` is a weighted field: 30% seen-family test configs, 20%
   test-only adversarial families, 15% complex families, 10% policy opponents,
   15% Axelrod opponents and 10% anchors.  It is guarded by a usage ledger and
-  by ``test_policy.json``; Protocol v4 locks consumption, so CLI test runs are
-  provisional unless the policy is explicitly changed.
+  by ``test_policy.json``; the policy can unlock individual test tiers.  A
+  locked tier is provisional unless the policy is explicitly changed.
+* Protocol v5 keeps the same catalog as v4 but re-shuffles the family-local
+  train/dev/test assignment with a version salt, so v5 is a new split rather
+  than a relabelling.  v4's ``test_v7`` and all v4 result files are legacy and
+  must not be mixed with v5 scores.
 * Training profiles (``train_v3`` / ``train_easy`` / ``train_hard`` /
   ``train_complex`` / ``train_policy``) provide different curricula over the
   same frozen catalog.
@@ -61,9 +65,14 @@ from .opponent_suite import (
     DelayedPunisher, ProbabilisticGrim, ResetGrim, SpitefulGrim, WindowTFT,
 )
 
-PROTOCOL_NAME = "protocol_v4"
-PROTOCOL_VERSION = "4"
-TEST_TIER = "test_v7"
+PROTOCOL_NAME = "protocol_v5"
+PROTOCOL_VERSION = "5"
+TEST_TIER = "test_v8"
+LEGACY_TEST_TIERS = ("test_v7",)
+# The salt changes the family-local shuffle without changing the catalog.
+# Protocol v4 used the family name alone; v5 adds the protocol name so the
+# train/dev/test assignment is a genuinely new split.
+SPLIT_SALT = PROTOCOL_NAME
 TIER_NAMES = ("train", "dev_param", "dev_family", "dev_complex",
               "dev_axelrod", "dev_ood", TEST_TIER, "dev_red", "test_red",
               "legacy")
@@ -76,8 +85,9 @@ SPLIT_TIERS = ("train", "dev_param", "dev_family", "dev_complex",
                "dev_axelrod", "dev_ood", TEST_TIER) \
     + LEVEL_TIERS + COMPLEXITY_TIERS
 
-# Larger default match sizes for Protocol v4.  The old v3 baseline used
-# 299/20/40; these constants make the new scale explicit for CLI and docs.
+# Larger default match sizes introduced by Protocol v4 and retained in v5.
+# The old v3 baseline used 299/20/40; these constants make the scale explicit
+# for CLI and docs.
 # 2048 opponents per field gives a 2000+ capacity while keeping field sizes
 # close to a power of two for deterministic sampling.
 PROTOCOL_N_PLAYERS = 2048
@@ -85,8 +95,8 @@ DEV_FIELDS = 30
 TEST_FIELDS = 50
 
 # Group membership used by the field builder.  The values are mixture weights;
-# a group may contain several families.  Protocol v4 adds complex, policy and
-# Axelrod groups, and validation mixtures (dev_axelrod / dev_ood).
+# a group may contain several families.  Protocol v4 introduced complex,
+# policy and Axelrod groups plus validation mixtures; v5 retains them.
 TIER_GROUPS: dict[str, dict[str, float]] = {
     "train": {"train": 0.70, "train_complex": 0.12,
               "train_policy": 0.05, "train_axelrod": 0.10,
@@ -1884,8 +1894,9 @@ def _family_tiers(family: str, n: int) -> list[str]:
         names = ("train", "dev", "test")
     tiers = ([names[0]] * n_train + [names[1]] * n_dev
              + [names[2]] * n_test)
-    rng = random.Random(int(
-        hashlib.sha256(family.encode("utf-8")).hexdigest()[:16], 16))
+    seed = hashlib.sha256(
+        f"{SPLIT_SALT}:{family}".encode("utf-8")).hexdigest()
+    rng = random.Random(int(seed[:16], 16))
     rng.shuffle(tiers)
     return tiers
 
@@ -1991,7 +2002,7 @@ def catalog_counts(catalog: Sequence[OpponentConfig] | None = None
 def protocol_manifest() -> dict[str, Any]:
     catalog = build_catalog()
     return {
-        "schema": "ipd-protocol-v4",
+        "schema": "ipd-protocol-v5",
         "protocol": PROTOCOL_NAME,
         "version": PROTOCOL_VERSION,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -2156,7 +2167,7 @@ def audit_protocol(catalog: Sequence[OpponentConfig] | None = None
     except RuntimeError:
         warnings.append(
             "Axelrod missing: install requirements-axelrod.txt before "
-            "evaluating Protocol v4 tiers")
+            f"evaluating Protocol v{PROTOCOL_VERSION} tiers")
 
     # Red pool separation.  The P3 reds are frozen artifacts, so they are
     # accepted but flagged until a protocol-specific pair is trained.
@@ -2316,7 +2327,7 @@ def build_protocol_field(tier: str, seed: int,
     """Build one deterministic field for a protocol tier.
 
     ``tier`` is one of ``train``, ``dev_param``, ``dev_family``,
-    ``dev_complex``, ``dev_axelrod``, ``dev_ood`` or ``test_v7``.  Field
+    ``dev_complex``, ``dev_axelrod``, ``dev_ood`` or ``test_v8``.  Field
     membership is fixed
     by the catalog; ``seed`` only changes the mixture and the per-opponent
     behaviour RNG.
@@ -2414,12 +2425,13 @@ def restore_field_rng(field: Sequence[Any],
 
 def protocol_match_seed(base_seed: int, field_seed: int,
                         candidate: str, match_index: int) -> int:
-    """Deterministic per-match seed for the opt-in Protocol v5 RNG contract.
+    """Deterministic per-match seed for the opt-in per-match RNG contract.
 
-    Protocol v4 uses one sequential Mersenne Twister stream per candidate and
-    field.  That stream cannot be batched across matches.  The v5 contract
-    gives every match its own stream, derived from the run seed, field seed,
-    candidate name and match index, so CPU and GPU can reproduce it exactly.
+    The legacy v4 sample contract uses one sequential Mersenne Twister stream
+    per candidate and field.  That stream cannot be batched across matches.
+    The per-match contract gives every match its own stream, derived from the
+    run seed, field seed, candidate name and match index, so CPU and GPU can
+    reproduce it exactly.
     """
     payload = (f"{int(base_seed)}|{int(field_seed)}|{candidate}|"
                f"{int(match_index)}")
@@ -2454,7 +2466,8 @@ def field_reuse_safe(field: Sequence[Strategy]) -> bool:
 
 
 TRAIN_PROFILES: dict[str, tuple[str, ...] | None] = {
-    "train_v4": None,
+    "train_v5": None,
+    "train_v4": None,  # legacy alias; resolves to the current v5 split
     "train_v3": None,  # legacy alias for the same full mixture
     "train_easy": ("nice", "forgiving", "punitive", "defect", "late",
                    "anchor"),
@@ -2465,6 +2478,8 @@ TRAIN_PROFILES: dict[str, tuple[str, ...] | None] = {
     # a large gap.  They contain only training-tier entries, so dev/test
     # parameters stay held out.
     "train_pattern_breaker": ("pattern_breaker",),
+    "train_probe_only": ("probe_exploit",),
+    "train_probe_pattern": ("probe_exploit", "pattern_breaker"),
     "train_weak_complex": ("pattern_breaker", "adaptive_mix",
                            "probe_exploit", "conditional_extort", "lookahead"),
     "train_policy": ("policy",),
@@ -2503,7 +2518,7 @@ def build_training_field(profile: str, seed: int,
     if profile not in TRAIN_PROFILES:
         raise ValueError(f"unknown training profile {profile!r}; "
                          f"choose from {tuple(TRAIN_PROFILES)}")
-    if profile in ("train_v3", "train_v4"):
+    if profile in ("train_v3", "train_v4", "train_v5"):
         return build_protocol_field("train", seed, n)
     allowed = set(TRAIN_PROFILES[profile] or ())
     rows = [
@@ -2558,7 +2573,8 @@ def load_test_policy(path: str | Path | None = None) -> dict[str, Any]:
 
     The policy is deliberately separate from the CLI so a test run cannot
     consume a held-out tier just because a flag was forgotten.  Missing,
-    unreadable or malformed policy files all mean "locked".
+    unreadable or malformed policy files all mean "locked".  ``consume_tiers``
+    can override the global ``consume_test`` fallback per test tier.
     """
     target = Path(path) if path is not None else TEST_POLICY_PATH
     locked = {
@@ -2582,9 +2598,19 @@ def load_test_policy(path: str | Path | None = None) -> dict[str, Any]:
     return data
 
 
-def test_consumption_allowed(path: str | Path | None = None) -> bool:
-    """Return True only if the policy explicitly unlocks test consumption."""
-    return load_test_policy(path).get("consume_test") is True
+def test_consumption_allowed(path: str | Path | None = None,
+                             tier: str = TEST_TIER) -> bool:
+    """Return True only if the policy explicitly unlocks ``tier``.
+
+    ``consume_tiers`` takes precedence when it names the requested tier;
+    otherwise the global ``consume_test`` fallback applies.  An unknown tier
+    still uses the fallback, and malformed values are treated as locked.
+    """
+    policy = load_test_policy(path)
+    tiers = policy.get("consume_tiers")
+    if isinstance(tiers, dict) and tier in tiers:
+        return tiers[tier] is True
+    return policy.get("consume_test") is True
 
 
 def load_usage(path: str | Path | None = None) -> dict[str, Any]:
@@ -2628,10 +2654,10 @@ def record_usage(tier: str, candidate: str, result_path: str, *,
     cannot consume a held-out tier while the lock is active.  Low-level
     tooling/tests can pass ``allow_locked=True`` explicitly.
     """
-    if not allow_locked and not test_consumption_allowed():
+    if not allow_locked and not test_consumption_allowed(tier=tier):
         raise RuntimeError(
-            f"test consumption is locked by {TEST_POLICY_PATH}; refusing to "
-            "write the usage ledger")
+            f"test consumption for {tier} is locked by {TEST_POLICY_PATH}; "
+            "refusing to write the usage ledger")
     data = load_usage(path)
     contaminated = bool(force and any(
         e.get("tier") == tier and e.get("candidate") == candidate
@@ -2650,8 +2676,8 @@ def record_usage(tier: str, candidate: str, result_path: str, *,
 
 
 __all__ = [
-    "PROTOCOL_NAME", "PROTOCOL_VERSION", "TEST_TIER", "TIER_NAMES",
-    "DEV_TIERS", "TEST_TIERS", "SPLIT_TIERS", "LEVEL_TIERS",
+    "PROTOCOL_NAME", "PROTOCOL_VERSION", "TEST_TIER", "LEGACY_TEST_TIERS",
+    "TIER_NAMES", "DEV_TIERS", "TEST_TIERS", "SPLIT_TIERS", "LEVEL_TIERS",
     "COMPLEXITY_TIERS", "TIER_GROUPS", "FAMILY_WEIGHTS",
     "FAMILY_LEVELS", "FAMILY_COMPLEXITY", "AXELROD_LEVELS",
     "TRAIN_PROFILES", "ANCHORS", "COMPLEX_FAMILIES",

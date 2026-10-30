@@ -3,9 +3,9 @@
 本文定义分数、分布、指标和协议差异。跑命令见
 [../guides/evaluation.md](../guides/evaluation.md)。
 
-> **2026-10-27 起：Protocol v4 是当前主口径。** `official` / `blind` 只保留
+> **2026-10-30 起：Protocol v5 是当前主口径。** `official` / `blind` 只保留
 > 为 legacy 诊断，不再作为 held-out 证据；详细 split 见
-> [protocol-v4.md](protocol-v4.md)。
+> [protocol-v5.md](protocol-v5.md)。
 
 ## 1. 基础收益
 
@@ -41,7 +41,7 @@ CC = 6, CD = 0, DC = 10, DD = 1
 
 默认 10 fields；当前正式比较建议 20。**10-field 与 20-field 不可直接比较。**
 
-## 3.1 Protocol v4（当前主口径）
+## 3.1 Protocol v5（当前主口径）
 
 | 层 | 含义 | 用途 |
 |---|---|---|
@@ -53,10 +53,10 @@ CC = 6, CD = 0, DC = 10, DD = 1
 | `dev_ood` | dev / complex / family / Axelrod 的偏移混合 | 选模 / OOD |
 | `dev_level0..4` | 按思考等级划分的派生对手集 | 选模 / 分级诊断 |
 | `dev_complexity0..4` | 按策略复杂度划分的派生对手集 | 选模 / 复杂度诊断 |
-| `test_v7` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | 永久 held-out（provisional only） |
+| `test_v8` | 30% seen + 20% test-only + 15% complex + 10% policy + 15% Axelrod + 10% anchors | held-out final（一次性消费；`--no-consume` 为 provisional） |
 
 - 默认 2048 人，dev 30 fields，test 50 fields。
-- 具体 config 不跨层；`test_v7` 的 test-only family 不出现在 train/dev。
+- 具体 config 不跨层；`test_v8` 的 test-only family 不出现在 train/dev。
 - complex family：`phase_switch`、`adaptive_mix`、`probe_exploit`、
   `delayed_extort`、`memory_two`、`meta_mix`、`noise_adaptive`、
   `reputation_grim`、`contrition_cycle`、`endgame_hunter`、
@@ -83,7 +83,7 @@ CC = 6, CD = 0, DC = 10, DD = 1
 
 158 类对手、10 个家族：`nice`、`forgiving`、`punitive`、`defect`、`late`、
 `random`、`wild`、`adaptive`、`plus`、`smart`。`--opponent-set protocol`
-使用 Protocol v4 全 catalog（977 configs，38 个 family），用于逐 config
+使用 Protocol v5 全 catalog（977 configs，38 个 family），用于逐 config
 覆盖诊断，不与 158 类 legacy 表混用。
 
 输出：
@@ -128,20 +128,22 @@ M[i][j] = blue_i score - red_j score
 - `red_meta.expected`：每个 red 对 blue 混合的收益，用于检查是否有
   单一 exploiter 主导；
 - 元博弈 exploitability 只是有限 population 内的估计，**不能替代**
-  held-out Red-v5/v6 或 Protocol v4 red；报告时必须同时给出外部 red。
+  held-out Red-v5/v6 或 Protocol v5 red；报告时必须同时给出外部 red。
 - 符号约定：`protocol red` 的 `diff` 是 **blue - red**（正数 = blue
   优势）；league red report 的 `diff_mean` 是 **red - blue**（负数 = blue
   优势）。跨表比较前先确认符号，不要把两者直接相加或排名。
 
-旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2/v3 已进入 legacy。
-新候选使用 Protocol v4：`dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 选模；test 消费永久锁定，只能做 provisional 诊断。
+旧的 `heldout_v2/v3/v4`、`official/blind` 与 Protocol v2/v3/v4 已进入
+legacy。新候选使用 Protocol v5：`dev_param` / `dev_family` /
+`dev_complex` / `dev_axelrod` / `dev_ood` 选模；`test_v8` 初始锁定，
+final 前先解禁再显式传 `--acknowledge-once`；`test_red` 仍锁定，只做
+provisional 诊断。
 
 ## 7. 协议差异速查
 
 | 协议 | 评估集 | fields | policy seed | 用途 |
 |---|---|---|---|---|
-| **Protocol v4** | `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` / `test_v7` | 30 / 30 / 30 / 30 / 30 / 50 | 默认独立 seed | **当前主口径** |
+| **Protocol v5** | `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` / `test_v8` | 30 / 30 / 30 / 30 / 30 / 50 | 默认独立 seed | **当前主口径** |
 | 标准 CLI（legacy） | official 四分布 | 20 | 默认独立 seed | 历史复现 |
 | E0/E1c league（legacy） | official + blind + heldout | 20 | 固定 index-based seed | 历史比较 |
 | suite | 9 个家族加权 | 12 | 默认 | 场景诊断 |
@@ -149,14 +151,14 @@ M[i][j] = blue_i score - red_j score
 | eval-split | 每候选独立 | 可配置 | 可配置 | 多权重比较 |
 
 同一候选在标准 CLI 与 league 上可能差 0.0x～1 分，这是 policy RNG 不同，
-不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v4 与 legacy
+不是数据错误。**任何跨表比较都必须先确认协议。** Protocol v5 与 legacy
 official/blind 的第一位数字不同是 split 不同，不是实现差异。
 
 ## 8. 报告最低要求
 
-- 协议：`protocol_v4` / legacy，fields、n、seed、policy seed、suite；
-- Protocol v4：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
-  `dev_ood` / `test_v7`，manifest hash；
+- 协议：`protocol_v5` / legacy，fields、n、seed、policy seed、suite；
+- Protocol v5：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
+  `dev_ood` / `test_v8`，manifest hash；
 - per-family、`min_norm`、`worst_family`；
 - red：blue mean / red win / diff；
 - 权重 checksum 和配置路径；

@@ -8,22 +8,26 @@
 
 ## 1. 先选协议
 
-**新候选默认走 Protocol v4**：`dev_param` / `dev_family` / `dev_complex` /
-`dev_axelrod` / `dev_ood` 选模；test 消费永久锁定，只能做 provisional 诊断。
+**新候选默认走 Protocol v5**：`dev_param` / `dev_family` / `dev_complex` /
+`dev_axelrod` / `dev_ood` 选模；`test_v8` 用于一次性 final，`test_red`
+仍锁定，只做 provisional 诊断。
 
 ```bash
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates all \
   --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
   --fields 30 --n 2048 --baseline RL-PPO
+python3 -m ipd protocol eval --candidates <final> \
+  --tiers test_v8 --fields 50 --n 2048 --acknowledge-once
 python3 -m ipd protocol eval --candidates <top3> \
-  --tiers test_v7 --fields 50 --n 2048 --no-consume
+  --tiers test_v8 --fields 50 --n 2048 --no-consume
 ```
 
 | 目标 | 协议 | 命令 |
 |---|---|---|
-| 正式选模 | Protocol v4 dev | `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood` |
-| test 诊断（永久 provisional） | Protocol v4 test | `protocol eval --tiers test_v7 --no-consume` |
+| 正式选模 | Protocol v5 dev | `protocol eval --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood` |
+| test_v8 final（一次性消费） | Protocol v5 test | `protocol eval --tiers test_v8 --acknowledge-once` |
+| test 诊断（provisional） | Protocol v5 test | `protocol eval --tiers test_v8 --no-consume` |
 | 快速烟测 | 四分布（legacy），少 fields | `benchmark --fields 1..8` |
 | 历史四分布 | 20 fields × 299（legacy） | `benchmark --fields 20` |
 | 历史盲测 | 20 个未见 seed（legacy） | `blind --fields 20` |
@@ -32,16 +36,21 @@ python3 -m ipd protocol eval --candidates <top3> \
 | 候选冻结对比 | E0/E1c league | `league --config ...` |
 | 每个候选独立参数 | eval-split | `eval-split --config ...` |
 
-Protocol v4 的 manifest 在 `configs/splits/protocol_v4/manifest.json`，
-test 策略在 `configs/splits/protocol_v4/test_policy.json`（`consume_test=false`）。
+Protocol v5 的 manifest 在 `configs/splits/protocol_v5/manifest.json`，
+test 策略在 `configs/splits/protocol_v5/test_policy.json`
+（初始 `consume_tiers.test_v8=false`、`consume_tiers.test_red=false`）。
 审计失败（family 泄漏、config 重叠、manifest hash 不匹配）时不要继续跑 test。
-test 消费永久锁定：所有 test 运行都标记 `selection_eligible=false`，不写
-`results/protocol_v4/usage.json`；`test_v6` 已作为 v3 legacy 消费。详见
-[../reference/protocol-v4.md](../reference/protocol-v4.md)。
+`test_v8` 需要 final 时先在 policy 中解禁，再显式传
+`--acknowledge-once`，消费记录写入 `results/protocol_v5/usage.json`；
+`--no-consume` 仍生成 `selection_eligible=false` 的 provisional 结果。
+已消费的 `test_v8` 不能再作为新候选的独立 final；`test_red` 继续锁定。
+`test_v6` 已作为 v3 legacy 消费。详见
+[../reference/protocol-v5.md](../reference/protocol-v5.md) 与
+[ADR 0013](../decisions/0013-protocol-v5-resplit.md)。
 
 **不要混表：**
 
-- Protocol v4 与 v2 / v3 / 旧 `official` / `blind` 不可直接比较；
+- Protocol v5 与 v2 / v3 / v4 / 旧 `official` / `blind` 不可直接比较；
 - 10-field 与 20-field blind 不可直接比较；
 - 标准 CLI（独立 policy seed）与 E0/E1c 冻结 league（固定 policy seed）会有
   0.0x～1 分差异；
@@ -151,9 +160,10 @@ Red-v5/v6，不跑 suite/cross-play），见 `results/psro_20261027/run_eval.sh`
 以及 `min_norm_family`、CVaR、Nash/Elo/exploitability。详见
 [../research/e0-league.md](../research/e0-league.md)。
 
-以上 league 输出是 legacy 口径。新候选使用 Protocol v4：test 消费已永久
-锁定，`test_v7` / `test_red` 只用于 provisional 诊断，不能作为 final 或选模
-依据。
+以上 league 输出是 legacy 口径。新候选使用 Protocol v5：`test_v8` 初始
+锁定，选定最终候选后先在 test policy 中解禁，再用 `--acknowledge-once`
+跑一次性 final；它不能参与调参或模型排序。`test_red` 仍只用于
+provisional 诊断。
 
 ## 7. 拆分评估
 

@@ -1,0 +1,235 @@
+workers 20 (requested=20, cpu=24, ram_available=25.4GB, chunks=6+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=33
+progress fields 0/120 tasks 1/720 tier=dev_param candidate=Adv-MLP elapsed=27.9s eta=20054.4s
+progress fields 0/120 tasks 4/720 tier=dev_param candidate=PSRO-V4-BR elapsed=33.6s eta=6019.4s
+progress fields 0/120 tasks 7/720 tier=dev_param candidate=Adv-RL elapsed=42.1s eta=4288.1s
+progress fields 0/120 tasks 15/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=52.3s eta=2456.2s
+progress fields 0/120 tasks 18/720 tier=dev_param candidate=Adv-MLP elapsed=58.9s eta=2295.3s
+progress fields 3/120 tasks 22/720 tier=dev_param candidate=SelfPlay-GRU elapsed=64.1s eta=2033.4s
+progress fields 3/120 tasks 24/720 tier=dev_param candidate=PSRO-V4-BR elapsed=72.9s eta=2114.4s
+progress fields 3/120 tasks 29/720 tier=dev_param candidate=PSRO-V4-BR elapsed=81.6s eta=1944.6s
+progress fields 4/120 tasks 33/720 tier=dev_param candidate=Adv-MLP elapsed=88.1s eta=1835.1s
+progress fields 4/120 tasks 37/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=93.4s eta=1723.3s
+progress fields 5/120 tasks 39/720 tier=dev_param candidate=SelfPlay-GRU elapsed=99.6s eta=1739.7s
+progress fields 6/120 tasks 42/720 tier=dev_param candidate=PSRO-V4-BR elapsed=105.8s eta=1708.6s
+progress fields 6/120 tasks 45/720 tier=dev_param candidate=Adv-RL elapsed=111.8s eta=1676.8s
+progress fields 7/120 tasks 47/720 tier=dev_param candidate=SelfPlay-GRU elapsed=117.6s eta=1684.5s
+progress fields 7/120 tasks 52/720 tier=dev_param candidate=Adv-MLP elapsed=126.5s eta=1624.9s
+progress fields 8/120 tasks 56/720 tier=dev_param candidate=SelfPlay-GRU elapsed=131.5s eta=1559.6s
+progress fields 8/120 tasks 58/720 tier=dev_param candidate=Adv-MLP elapsed=138.4s eta=1579.5s
+progress fields 9/120 tasks 62/720 tier=dev_param candidate=Adv-RL elapsed=145.0s eta=1539.2s
+progress fields 9/120 tasks 64/720 tier=dev_param candidate=Adv-MLP elapsed=151.4s eta=1551.7s
+progress fields 10/120 tasks 67/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=156.4s eta=1524.7s
+progress fields 10/120 tasks 70/720 tier=dev_param candidate=Adv-MLP elapsed=163.7s eta=1519.7s
+progress fields 11/120 tasks 73/720 tier=dev_param candidate=Adv-GRU elapsed=169.4s eta=1501.1s
+progress fields 11/120 tasks 76/720 tier=dev_param candidate=PSRO-V4-BR elapsed=176.2s eta=1493.3s
+progress fields 12/120 tasks 80/720 tier=dev_param candidate=Adv-GRU elapsed=182.1s eta=1456.8s
+progress fields 12/120 tasks 82/720 tier=dev_param candidate=PSRO-V4-BR elapsed=187.7s eta=1460.5s
+progress fields 13/120 tasks 87/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=193.9s eta=1410.7s
+progress fields 13/120 tasks 88/720 tier=dev_param candidate=Adv-MLP elapsed=201.2s eta=1444.9s
+progress fields 14/120 tasks 94/720 tier=dev_param candidate=Adv-MLP elapsed=212.8s eta=1417.3s
+progress fields 15/120 tasks 99/720 tier=dev_param candidate=Adv-RL elapsed=218.5s eta=1370.8s
+progress fields 15/120 tasks 101/720 tier=dev_param candidate=Adv-MLP elapsed=226.1s eta=1385.6s
+progress fields 16/120 tasks 106/720 tier=dev_param candidate=PSRO-V4-BR elapsed=236.9s eta=1372.0s
+progress fields 17/120 tasks 110/720 tier=dev_param candidate=Adv-GRU elapsed=241.9s eta=1341.4s
+progress fields 17/120 tasks 112/720 tier=dev_param candidate=Adv-MLP elapsed=247.3s eta=1342.7s
+progress fields 18/120 tasks 115/720 tier=dev_param candidate=Adv-GRU elapsed=252.7s eta=1329.4s
+progress fields 18/120 tasks 118/720 tier=dev_param candidate=PSRO-V4-BR elapsed=261.7s eta=1335.2s
+progress fields 19/120 tasks 123/720 tier=dev_param candidate=Adv-RL elapsed=267.7s eta=1299.3s
+progress fields 19/120 tasks 125/720 tier=dev_param candidate=PSRO-V4-BR elapsed=273.7s eta=1302.6s
+progress fields 20/120 tasks 128/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=279.4s eta=1292.2s
+progress fields 20/120 tasks 131/720 tier=dev_param candidate=Adv-MLP elapsed=286.4s eta=1287.9s
+progress fields 21/120 tasks 136/720 tier=dev_param candidate=Adv-MLP elapsed=296.5s eta=1273.2s
+progress fields 22/120 tasks 140/720 tier=dev_param candidate=Adv-GRU elapsed=302.0s eta=1251.3s
+progress fields 22/120 tasks 142/720 tier=dev_param candidate=Adv-MLP elapsed=308.7s eta=1256.6s
+progress fields 23/120 tasks 146/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=314.8s eta=1237.6s
+progress fields 23/120 tasks 148/720 tier=dev_param candidate=PSRO-V4-BR elapsed=320.4s eta=1238.5s
+progress fields 24/120 tasks 151/720 tier=dev_param candidate=Adv-RL elapsed=326.4s eta=1229.8s
+progress fields 24/120 tasks 154/720 tier=dev_param candidate=PSRO-V4-BR elapsed=331.4s eta=1218.1s
+progress fields 24/120 tasks 156/720 tier=dev_param candidate=Adv-GRU elapsed=336.5s eta=1216.5s
+progress fields 25/120 tasks 160/720 tier=dev_param candidate=PSRO-V4-BR elapsed=346.4s eta=1212.3s
+progress fields 26/120 tasks 165/720 tier=dev_param candidate=Adv-RL elapsed=352.3s eta=1185.1s
+progress fields 26/120 tasks 168/720 tier=dev_param candidate=PSRO-V4-BR elapsed=359.0s eta=1179.6s
+progress fields 27/120 tasks 172/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=364.6s eta=1161.7s
+progress fields 27/120 tasks 177/720 tier=dev_family candidate=Adv-MLP elapsed=370.4s eta=1136.3s
+progress fields 28/120 tasks 183/720 tier=dev_param candidate=Adv-RL elapsed=375.9s eta=1103.0s
+progress fields 28/120 tasks 190/720 tier=dev_family candidate=Adv-MLP elapsed=381.6s eta=1064.4s
+progress fields 29/120 tasks 195/720 tier=dev_param candidate=PSRO-V4-Meta elapsed=387.0s eta=1041.9s
+progress fields 30/120 tasks 201/720 tier=dev_family candidate=Adv-RL elapsed=392.3s eta=1013.1s
+progress fields 32/120 tasks 207/720 tier=dev_family candidate=PSRO-V4-Meta elapsed=397.7s eta=985.5s
+progress fields 32/120 tasks 210/720 tier=dev_family candidate=PSRO-V4-BR elapsed=402.9s eta=978.4s
+progress fields 33/120 tasks 216/720 tier=dev_family candidate=Adv-GRU elapsed=408.4s eta=953.0s
+progress fields 34/120 tasks 222/720 tier=dev_family candidate=PSRO-V4-BR elapsed=415.4s eta=931.9s
+progress fields 35/120 tasks 229/720 tier=dev_family candidate=PSRO-V4-BR elapsed=421.5s eta=903.7s
+progress fields 36/120 tasks 235/720 tier=dev_family candidate=PSRO-V4-Meta elapsed=427.5s eta=882.3s
+progress fields 37/120 tasks 241/720 tier=dev_family candidate=PSRO-V4-BR elapsed=432.6s eta=859.8s
+progress fields 38/120 tasks 247/720 tier=dev_family candidate=PSRO-V4-BR elapsed=438.6s eta=839.9s
+progress fields 39/120 tasks 253/720 tier=dev_family candidate=PSRO-V4-BR elapsed=444.2s eta=819.9s
+progress fields 40/120 tasks 259/720 tier=dev_family candidate=PSRO-V4-BR elapsed=450.6s eta=802.1s
+progress fields 41/120 tasks 265/720 tier=dev_family candidate=Adv-RL elapsed=456.7s eta=784.1s
+progress fields 42/120 tasks 271/720 tier=dev_family candidate=Adv-RL elapsed=462.2s eta=765.7s
+progress fields 43/120 tasks 277/720 tier=dev_family candidate=PSRO-V4-BR elapsed=468.2s eta=748.8s
+progress fields 44/120 tasks 283/720 tier=dev_family candidate=PSRO-V4-BR elapsed=474.6s eta=732.8s
+progress fields 45/120 tasks 289/720 tier=dev_family candidate=PSRO-V4-BR elapsed=479.8s eta=715.5s
+progress fields 46/120 tasks 295/720 tier=dev_family candidate=PSRO-V4-BR elapsed=485.6s eta=699.6s
+progress fields 47/120 tasks 301/720 tier=dev_family candidate=PSRO-V4-BR elapsed=491.7s eta=684.5s
+progress fields 48/120 tasks 307/720 tier=dev_family candidate=PSRO-V4-BR elapsed=497.9s eta=669.8s
+progress fields 49/120 tasks 313/720 tier=dev_family candidate=PSRO-V4-BR elapsed=503.1s eta=654.2s
+progress fields 50/120 tasks 318/720 tier=dev_family candidate=Adv-GRU elapsed=508.3s eta=642.6s
+progress fields 51/120 tasks 324/720 tier=dev_family candidate=Adv-GRU elapsed=513.9s eta=628.1s
+progress fields 52/120 tasks 330/720 tier=dev_family candidate=Adv-GRU elapsed=519.2s eta=613.6s
+progress fields 53/120 tasks 336/720 tier=dev_family candidate=Adv-GRU elapsed=525.4s eta=600.5s
+progress fields 54/120 tasks 342/720 tier=dev_family candidate=Adv-GRU elapsed=531.6s eta=587.5s
+progress fields 55/120 tasks 349/720 tier=dev_family candidate=Adv-RL elapsed=538.9s eta=572.9s
+progress fields 56/120 tasks 353/720 tier=dev_family candidate=PSRO-V4-Meta elapsed=545.4s eta=567.0s
+progress fields 58/120 tasks 356/720 tier=dev_family candidate=SelfPlay-GRU elapsed=551.5s eta=563.9s
+progress fields 59/120 tasks 358/720 tier=dev_family candidate=SelfPlay-GRU elapsed=557.2s eta=563.5s
+progress fields 60/120 tasks 361/720 tier=dev_family candidate=SelfPlay-GRU elapsed=564.0s eta=560.9s
+progress fields 60/120 tasks 365/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=569.8s eta=554.2s
+progress fields 60/120 tasks 369/720 tier=dev_complex candidate=Adv-MLP elapsed=581.4s eta=553.1s
+progress fields 60/120 tasks 374/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=587.9s eta=543.9s
+progress fields 61/120 tasks 377/720 tier=dev_complex candidate=Adv-RL elapsed=597.2s eta=543.3s
+progress fields 63/120 tasks 382/720 tier=dev_complex candidate=SelfPlay-GRU elapsed=605.2s eta=535.5s
+progress fields 63/120 tasks 386/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=610.3s eta=528.1s
+progress fields 63/120 tasks 388/720 tier=dev_complex candidate=Adv-MLP elapsed=617.5s eta=528.4s
+progress fields 63/120 tasks 392/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=622.7s eta=521.0s
+progress fields 64/120 tasks 394/720 tier=dev_complex candidate=Adv-MLP elapsed=628.8s eta=520.3s
+progress fields 65/120 tasks 397/720 tier=dev_complex candidate=Adv-RL elapsed=634.3s eta=516.1s
+progress fields 65/120 tasks 400/720 tier=dev_complex candidate=Adv-MLP elapsed=641.8s eta=513.5s
+progress fields 66/120 tasks 405/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=647.2s eta=503.4s
+progress fields 66/120 tasks 406/720 tier=dev_complex candidate=Adv-MLP elapsed=652.7s eta=504.8s
+progress fields 67/120 tasks 409/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=658.5s eta=500.7s
+progress fields 67/120 tasks 412/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=666.5s eta=498.2s
+progress fields 68/120 tasks 417/720 tier=dev_complex candidate=Adv-RL elapsed=671.6s eta=488.0s
+progress fields 68/120 tasks 418/720 tier=dev_complex candidate=Adv-MLP elapsed=677.3s eta=489.3s
+progress fields 69/120 tasks 422/720 tier=dev_complex candidate=Adv-RL elapsed=683.3s eta=482.5s
+progress fields 69/120 tasks 424/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=689.6s eta=481.4s
+progress fields 70/120 tasks 428/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=694.8s eta=474.0s
+progress fields 70/120 tasks 430/720 tier=dev_complex candidate=Adv-MLP elapsed=701.1s eta=472.8s
+progress fields 71/120 tasks 435/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=708.2s eta=464.0s
+progress fields 71/120 tasks 436/720 tier=dev_complex candidate=Adv-MLP elapsed=713.7s eta=464.9s
+progress fields 72/120 tasks 440/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=719.1s eta=457.6s
+progress fields 72/120 tasks 442/720 tier=dev_complex candidate=Adv-MLP elapsed=725.2s eta=456.1s
+progress fields 73/120 tasks 447/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=732.2s eta=447.2s
+progress fields 73/120 tasks 448/720 tier=dev_complex candidate=Adv-MLP elapsed=737.3s eta=447.7s
+progress fields 74/120 tasks 452/720 tier=dev_complex candidate=Adv-RL elapsed=742.3s eta=440.1s
+progress fields 74/120 tasks 454/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=748.8s eta=438.7s
+progress fields 75/120 tasks 457/720 tier=dev_complex candidate=Adv-GRU elapsed=753.9s eta=433.8s
+progress fields 75/120 tasks 460/720 tier=dev_complex candidate=Adv-MLP elapsed=761.3s eta=430.3s
+progress fields 76/120 tasks 464/720 tier=dev_complex candidate=Adv-RL elapsed=766.8s eta=423.1s
+progress fields 76/120 tasks 466/720 tier=dev_complex candidate=Adv-MLP elapsed=772.9s eta=421.3s
+progress fields 77/120 tasks 470/720 tier=dev_complex candidate=Adv-RL elapsed=778.1s eta=413.9s
+progress fields 77/120 tasks 472/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=784.9s eta=412.4s
+progress fields 78/120 tasks 476/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=790.7s eta=405.3s
+progress fields 78/120 tasks 478/720 tier=dev_complex candidate=Adv-MLP elapsed=797.3s eta=403.7s
+progress fields 79/120 tasks 482/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=802.9s eta=396.4s
+progress fields 79/120 tasks 484/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=808.0s eta=394.0s
+progress fields 79/120 tasks 486/720 tier=dev_complex candidate=Adv-GRU elapsed=813.3s eta=391.6s
+progress fields 80/120 tasks 490/720 tier=dev_complex candidate=Adv-MLP elapsed=821.7s eta=385.7s
+progress fields 81/120 tasks 495/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=827.4s eta=376.1s
+progress fields 81/120 tasks 496/720 tier=dev_complex candidate=Adv-MLP elapsed=832.7s eta=376.1s
+progress fields 82/120 tasks 500/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=839.6s eta=369.4s
+progress fields 82/120 tasks 502/720 tier=dev_complex candidate=Adv-MLP elapsed=846.6s eta=367.6s
+progress fields 83/120 tasks 506/720 tier=dev_complex candidate=Adv-RL elapsed=852.1s eta=360.4s
+progress fields 83/120 tasks 508/720 tier=dev_complex candidate=Adv-MLP elapsed=857.2s eta=357.7s
+progress fields 84/120 tasks 511/720 tier=dev_complex candidate=SelfPlay-GRU elapsed=862.8s eta=352.9s
+progress fields 84/120 tasks 514/720 tier=dev_complex candidate=PSRO-V4-BR elapsed=870.1s eta=348.7s
+progress fields 85/120 tasks 518/720 tier=dev_complex candidate=PSRO-V4-Meta elapsed=875.4s eta=341.4s
+progress fields 85/120 tasks 520/720 tier=dev_complex candidate=Adv-MLP elapsed=881.8s eta=339.2s
+progress fields 86/120 tasks 523/720 tier=dev_complex candidate=Adv-GRU elapsed=887.2s eta=334.2s
+progress fields 86/120 tasks 526/720 tier=dev_complex candidate=Adv-MLP elapsed=895.4s eta=330.2s
+progress fields 87/120 tasks 530/720 tier=dev_complex candidate=Adv-RL elapsed=900.9s eta=323.0s
+progress fields 87/120 tasks 533/720 tier=dev_complex candidate=Adv-MLP elapsed=906.1s eta=317.9s
+progress fields 88/120 tasks 536/720 tier=dev_complex candidate=Adv-RL elapsed=912.2s eta=313.1s
+progress fields 88/120 tasks 539/720 tier=dev_ood candidate=Adv-MLP elapsed=917.6s eta=308.1s
+progress fields 88/120 tasks 541/720 tier=dev_ood candidate=Adv-RL elapsed=923.5s eta=305.6s
+progress fields 89/120 tasks 546/720 tier=dev_ood candidate=Adv-GRU elapsed=933.0s eta=297.3s
+progress fields 90/120 tasks 551/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=938.1s eta=287.7s
+progress fields 91/120 tasks 553/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=944.4s eta=285.2s
+progress fields 91/120 tasks 557/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=950.1s eta=278.0s
+progress fields 92/120 tasks 560/720 tier=dev_ood candidate=Adv-RL elapsed=956.4s eta=273.3s
+progress fields 92/120 tasks 564/720 tier=dev_ood candidate=Adv-GRU elapsed=964.6s eta=266.8s
+progress fields 93/120 tasks 567/720 tier=dev_ood candidate=Adv-MLP elapsed=969.8s eta=261.7s
+progress fields 93/120 tasks 571/720 tier=dev_ood candidate=Adv-RL elapsed=979.0s eta=255.5s
+progress fields 94/120 tasks 576/720 tier=dev_ood candidate=Adv-GRU elapsed=986.6s eta=246.7s
+progress fields 95/120 tasks 579/720 tier=dev_ood candidate=PSRO-V4-Meta elapsed=992.4s eta=241.7s
+progress fields 95/120 tasks 582/720 tier=dev_ood candidate=Adv-GRU elapsed=997.6s eta=236.5s
+progress fields 96/120 tasks 587/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1005.8s eta=227.9s
+progress fields 97/120 tasks 590/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1010.8s eta=222.7s
+progress fields 97/120 tasks 593/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1018.6s eta=218.1s
+progress fields 98/120 tasks 596/720 tier=dev_ood candidate=Adv-RL elapsed=1023.8s eta=213.0s
+progress fields 98/120 tasks 600/720 tier=dev_ood candidate=Adv-GRU elapsed=1032.8s eta=206.6s
+progress fields 99/120 tasks 605/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1040.6s eta=197.8s
+progress fields 100/120 tasks 608/720 tier=dev_ood candidate=Adv-RL elapsed=1046.5s eta=192.8s
+progress fields 100/120 tasks 611/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1051.6s eta=187.6s
+progress fields 100/120 tasks 612/720 tier=dev_ood candidate=Adv-RL elapsed=1057.5s eta=186.6s
+progress fields 101/120 tasks 617/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1063.9s eta=177.6s
+progress fields 102/120 tasks 620/720 tier=dev_ood candidate=Adv-RL elapsed=1070.3s eta=172.6s
+progress fields 102/120 tasks 624/720 tier=dev_ood candidate=Adv-GRU elapsed=1078.0s eta=165.8s
+progress fields 103/120 tasks 629/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1084.1s eta=156.8s
+progress fields 104/120 tasks 631/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1092.2s eta=154.1s
+progress fields 104/120 tasks 636/720 tier=dev_ood candidate=Adv-GRU elapsed=1100.5s eta=145.4s
+progress fields 105/120 tasks 641/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1108.4s eta=136.6s
+progress fields 106/120 tasks 643/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1113.9s eta=133.4s
+progress fields 106/120 tasks 647/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1120.3s eta=126.4s
+progress fields 107/120 tasks 650/720 tier=dev_ood candidate=Adv-RL elapsed=1126.0s eta=121.3s
+progress fields 107/120 tasks 653/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1131.4s eta=116.1s
+progress fields 108/120 tasks 655/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1137.0s eta=112.8s
+progress fields 108/120 tasks 660/720 tier=dev_ood candidate=Adv-GRU elapsed=1144.7s eta=104.1s
+progress fields 109/120 tasks 664/720 tier=dev_ood candidate=Adv-MLP elapsed=1150.0s eta=97.0s
+progress fields 110/120 tasks 666/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1158.1s eta=93.9s
+progress fields 110/120 tasks 671/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1165.2s eta=85.1s
+progress fields 111/120 tasks 673/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1170.2s eta=81.7s
+progress fields 111/120 tasks 677/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1175.8s eta=74.7s
+progress fields 112/120 tasks 680/720 tier=dev_ood candidate=Adv-RL elapsed=1180.8s eta=69.5s
+progress fields 112/120 tasks 683/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1188.0s eta=64.4s
+progress fields 112/120 tasks 685/720 tier=dev_ood candidate=Adv-RL elapsed=1193.4s eta=61.0s
+progress fields 113/120 tasks 689/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1200.0s eta=54.0s
+progress fields 114/120 tasks 691/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1205.9s eta=50.6s
+progress fields 114/120 tasks 696/720 tier=dev_ood candidate=Adv-GRU elapsed=1212.8s eta=41.8s
+progress fields 115/120 tasks 699/720 tier=dev_ood candidate=PSRO-V4-Meta elapsed=1219.1s eta=36.6s
+progress fields 115/120 tasks 702/720 tier=dev_ood candidate=Adv-RL elapsed=1224.5s eta=31.4s
+progress fields 116/120 tasks 706/720 tier=dev_ood candidate=Adv-MLP elapsed=1229.6s eta=24.4s
+progress fields 117/120 tasks 708/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1235.0s eta=20.9s
+progress fields 117/120 tasks 713/720 tier=dev_ood candidate=PSRO-V4-BR elapsed=1242.3s eta=12.2s
+progress fields 118/120 tasks 717/720 tier=dev_ood candidate=PSRO-V4-Meta elapsed=1248.6s eta=5.2s
+progress fields 118/120 tasks 718/720 tier=dev_ood candidate=PSRO-V4-Meta elapsed=1254.9s eta=3.5s
+progress fields 120/120 tasks 720/720 tier=dev_ood candidate=SelfPlay-GRU elapsed=1260.4s eta=0.0s
+
+Protocol v5 evaluation (30 fields, n=2048, workers=20)
+  Final-base           dev_param=507.21  dev_family=582.93  dev_complex=461.63  dev_ood=506.78
+  Final-tuned          dev_param=509.03  dev_family=583.01  dev_complex=466.96  dev_ood=508.85
+  Resp3-base           dev_param=509.26  dev_family=582.59  dev_complex=465.18  dev_ood=508.51
+  Resp3-tuned          dev_param=512.97  dev_family=583.00  dev_complex=473.57  dev_ood=512.95
+  Bayes-base           dev_param=520.48  dev_family=583.48  dev_complex=471.19  dev_ood=515.03
+  Bayes-tuned          dev_param=519.42  dev_family=583.51  dev_complex=471.28  dev_ood=514.69
+  Final+Resp3          dev_param=513.76  dev_family=583.08  dev_complex=484.06  dev_ood=515.61
+  Harvest45            dev_param=478.82  dev_family=463.01  dev_complex=455.82  dev_ood=473.31
+  Triple-majority      dev_param=517.59  dev_family=583.06  dev_complex=488.64  dev_ood=518.12
+  Triple-v4            dev_param=518.88  dev_family=583.07  dev_complex=488.37  dev_ood=518.90
+  Harvest-tuned        dev_param=494.72  dev_family=536.86  dev_complex=444.75  dev_ood=489.10
+  GapStart             dev_param=451.56  dev_family=198.80  dev_complex=391.82  dev_ood=402.45
+  Neural               dev_param=517.10  dev_family=583.08  dev_complex=475.04  dev_ood=514.40
+  GRU                  dev_param=518.27  dev_family=583.07  dev_complex=473.77  dev_ood=514.79
+  RL-PPO               dev_param=525.99  dev_family=582.55  dev_complex=457.26  dev_ood=513.30
+  RL-PPO-Hard60        dev_param=528.55  dev_family=582.72  dev_complex=457.81  dev_ood=514.68
+  RL-Repair            dev_param=532.53  dev_family=582.78  dev_complex=456.41  dev_ood=515.80
+  RL-Pattern           dev_param=532.30  dev_family=583.09  dev_complex=476.06  dev_ood=521.94
+  RL-Wide              dev_param=531.89  dev_family=583.09  dev_complex=476.94  dev_ood=522.07
+  RL-Wide160           dev_param=531.66  dev_family=583.08  dev_complex=477.77  dev_ood=522.24
+  RL-Switch            dev_param=532.37  dev_family=582.91  dev_complex=477.57  dev_ood=521.73
+  GRU-DAgger           dev_param=532.30  dev_family=582.93  dev_complex=477.29  dev_ood=522.09
+  RL-Gate              dev_param=532.82  dev_family=582.95  dev_complex=477.00  dev_ood=522.11
+  PSRO-Meta            dev_param=511.73  dev_family=583.00  dev_complex=472.94  dev_ood=511.80
+  PSRO-BR              dev_param=525.94  dev_family=583.19  dev_complex=459.72  dev_ood=514.24
+  PSRO-Scratch         dev_param=488.40  dev_family=583.36  dev_complex=452.20  dev_ood=494.70
+  PSRO-Scratch-BR      dev_param=488.13  dev_family=583.35  dev_complex=452.35  dev_ood=494.47
+  PSRO-V4-Meta         dev_param=488.44  dev_family=583.53  dev_complex=454.49  dev_ood=495.16
+  PSRO-V4-BR           dev_param=488.61  dev_family=583.53  dev_complex=454.59  dev_ood=495.10
+  Adv-MLP              dev_param=516.94  dev_family=583.09  dev_complex=474.49  dev_ood=514.24
+  Adv-GRU              dev_param=518.38  dev_family=583.07  dev_complex=474.86  dev_ood=514.86
+  Adv-RL               dev_param=524.05  dev_family=583.10  dev_complex=474.96  dev_ood=516.99
+  SelfPlay-GRU         dev_param=519.30  dev_family=582.25  dev_complex=453.85  dev_ood=508.05
+
+written results/protocol_v5/protocol_v5_dev_rest.json
+profile results/protocol_v5/profile_protocol_v5_dev_rest.json

@@ -19,43 +19,70 @@
 - `docs/research/p2-c1-belief-planner.md`、`docs/research/p2-c2c3-*.md`、`docs/research/p2-c3-*.md`
 - `docs/guides/axelrod.md`
 - `docs/reference/protocol-v4.md`（**新主口径**）
-- `results/protocol_v4/README.md`
+- `results/protocol_v5/README.md`
 
 ## 当前状态
 
 - 最近提交：`git log -1`（GRU-DAgger 单模型蒸馏 + C++）。
-- 最近完整测试：**334 tests OK**；`python3 -m ipd list-policies` 为
+- 最近完整测试：**346 tests OK**；`python3 -m ipd list-policies` 为
   **33 个注册候选（all 集合）**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
-- **RL-Switch（`rl-switch`）是 v4 dev/test 最佳（top 7）**，但未
-  promotion；Python + C++ 双权重实现：默认 RL-Wide160，早期
-  mutual-D 后切换 RL-Repair；test_v7 488.26/487.51。
+- **v5 dev baseline 已运行**（33 candidates，5 tiers × 30 fields × 2048，
+  1662.15s）：RL-Gate dev_param 532.82 第一，但 ood min_norm 0.899；
+  RL-Switch / GRU-DAgger / RL-Wide / RL-Wide160 约 532 / 477 / 522，
+  共同弱项 `probe_exploit`（min_norm ~0.934）。旧 `min_norm ≥ 0.99`
+  门槛下无 candidate 通过，**不 promotion**。
+- **v5 分级诊断已完成**（`protocol_v5_dev_levels.json`，1605.51s）：
+  `probe_exploit` 是共同瓶颈（头部学习策略约 116，RL-PPO 124）；
+  `pattern_breaker` 对 RL-Wide160 / RL-Switch / GRU-DAgger 已高于
+  RL-PPO（632–639 vs 449–452），RL-Repair 的 PB 才偏低（357）。
+  已新增 `train_probe_pattern`，以 RL-Wide160 做定向 fine-tune。
+- **定向 fine-tune**：ProbePattern-v2-iter4（RL-Wide160 起点）把
+  `dev_complex` 477.77 → **481.81**、`dev_ood` 522.24 → **523.14**、
+  `pattern_breaker` 632 → **762**；但 `dev_param` -0.55、
+  `probe_exploit` 仍约 **118.1**、min_norm ~0.951。PB 可训，
+  probe_exploit 需要新特征 / 显式反 probe / specialist + gate。
+  实验产物在 `results/protocol_v5/probe_pattern_v2_20261030/`，
+  未注册、未 promotion。
+- **probe 专项按 3→1→2 试过**：probe-only specialist 与 v2 特征都没有
+  增益；精确规则（first D=5/7 切 AllD）把 probe 拉到 123–129，但
+  `dev_param` -1.9～-4.5、`dev_axelrod` -1.1～-2.7，净收益为负。
+  probe 专项暂停：**不采用 unsafe specialist / `--allow-probe` /
+  预判 gate**，也不为 probe 修改 protocol 或 safety 规则；v5 保持
+  977 configs。
+- **RL-Switch（`rl-switch`）是 v4 legacy dev/test 最佳（top 7）**，
+  但未 promotion；Python + C++ 双权重实现：默认 RL-Wide160，早期
+  mutual-D 后切换 RL-Repair；v4 `test_v7` 488.26/487.51；v5 dev
+  532.37 / 477.57 / 521.73。
 - **GRU-DAgger（`rl-dagger-gru`）是单模型替代**：1 层 GRU（64
-  hidden）+ 2 轮 DAgger；dev_param 548.58 / dev_complex 455.13，
-  两个 seed 与 RL-Switch 持平；test provisional 487.89/487.02；
+  hidden）+ 2 轮 DAgger；v5 dev 532.30 / 477.29 / 522.09；
   Python + C++；未 promotion。详见 `docs/research/dagger-gru.md`。
 - **前最佳 / fallback：RL-Wide160 / RL-Wide / RL-Pattern /
   RL-Repair**，均未 promotion。
-- **最佳纯规则：Triple-v4（`triple-v4`）**：dev_param 538.66 /
-  dev_complex 447.08 / dev_ood 514.41；独立 seed 20261029 复现；
-  test_v7 provisional 473.68；无权重、无 probe；未 promotion。
+- **最佳纯规则：Triple-v4（`triple-v4`）**：v4 legacy dev_param
+  538.66 / dev_complex 447.08 / dev_ood 514.41；v5 dev 518.88 /
+  488.37 / 518.90；v4 `test_v7` provisional 473.68；无权重、无 probe；
+  未 promotion。v5 的 `dev_complex` 高于学习策略，但 `dev_param`
+  明显低约 14 分。
 - RL-Switch 独立 seed 20261029 已复现 test +2.90；Protocol catalog
   suite +0.75；158 bank 持平；level/complexity 高档 tier 小幅提升；
   blue-red 已停用。C++ 双权重已完成 action parity，待接真实接口。
-- 默认评估口径：**Protocol v4**（`dev_param` / `dev_family` /
-  `dev_complex` / `dev_axelrod` / `dev_ood` 选模；test 永久 provisional；
+- 默认评估口径：**Protocol v5**（`dev_param` / `dev_family` /
+  `dev_complex` / `dev_axelrod` / `dev_ood` 选模；`test_v8` 新 final；
   另有 `dev_level0..4` / `dev_complexity0..4` 分级集；2048 人 / dev 30 /
-  test 50）；旧四分布 / blind / v2 / v3 是 legacy。
-- `test_v7` / `test_red` **永久锁定**（`consume_test=false`），CLI 无覆盖
-  开关；所有 test 运行都是 provisional，不写 usage ledger。
+  test 50）；v4 / v3 / 旧四分布 / blind 都是 legacy。
+- `test_v8` / `test_red` **初始锁定**（ADR 0013）：provisional 用
+  `--no-consume`；final 前先在 `configs/splits/protocol_v5/test_policy.json`
+  解禁 `test_v8`，再用 `--acknowledge-once` 写
+  `results/protocol_v5/usage.json`。消费后新候选需要 `test_v9`。
 - **blue-red 已停用（ADR 0011）：** 不再用 red / exploitability 作为
   评估或 promotion 门槛，也不新增 red 任务。
 - **PSRO / red 历史：** `psro` / `psro-br` / `psro-scratch` /
   `psro-scratch-br` / `psro-v4` / `psro-v4-br` 仍注册为历史实验
   候选；dev 与红队数字只用于复现，不参与当前推荐。
 
-### 头部候选（Protocol v4 dev top 7；30×2048 sample）
+### 头部候选（v4 legacy dev top 7；30×2048 sample；v5 待重跑）
 
 | 策略 | 注册名 | 权重 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood | test_v7 prov. |
 |---|---|---|---:|---:|---:|---:|---:|---:|
@@ -126,20 +153,22 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
 0. **Plan 6：Python 评估瓶颈（已完成，2026-10-28）**
    - v5 sample policy 对手已上 GPU，24/24 候分数逐位一致；
    - Axelrod adapter 历史增量维护；`--fast-rules-threshold` 已加；
-   - 严格同序 C++ CPU policy 前向；test_v7 v5 exact 272.77s；
+   - 严格同序 C++ CPU policy 前向；v4 `test_v7` exact 272.77s；
    - `Adv-*` / PSRO meta 保持 CPU；见
      `docs/research/plan6-python-bottleneck.md`。
 1. **比赛提交硬化（若近期提交）**
-   - 在 v4 上复现 RL-Switch / RL-Wide160 / RL-Wide / RL-Pattern /
-     RL-Repair 的 `dev_param` / `dev_family` / `dev_complex` /
-     `dev_axelrod` / `dev_ood`；补跑 `dev_level0..4` /
-     `dev_complexity0..4` 分级诊断；
-   - RL-Switch 已用两个 seed 复现 test +2.64/+2.90；C++ 双权重 +
+   - v5 dev baseline 已跑；下一步先分析 `probe_exploit`（RL-Switch /
+     GRU-DAgger / RL-Wide / RL-Wide160 的 ood min_norm ~0.934）和
+     `pattern_breaker`（RL-Repair 0.790），决定 v5 family gate 或做定向
+     training；补跑 `dev_level0..4` / `dev_complexity0..4` 分级诊断；
+   - RL-Switch 已用两个 seed 在 v4 复现 test +2.64/+2.90；C++ 双权重 +
      开关逻辑已完成 action parity；GRU-DAgger 两个 seed dev 持平，
      C++ 单模型也已完成 parity；接下来接真实比赛接口（不再跑
      test_red，blue-red 已停用）；
-   - RL-Wide160 的 test_v7 provisional 低 0.69，作为单模型 fallback；
-   - `test_v7` 只做 provisional 诊断，不能当作独立 final；
+   - RL-Wide160 的 v4 `test_v7` provisional 低 0.69，作为单模型 fallback；
+   - 选定最终候选后，解禁 `test_v8` 并跑一次 final
+     （`--acknowledge-once`，写 usage ledger）；v4 provisional 数字不能
+     当作 v5 final；
    - 检查 C++ 导出、主权重 checksum、第 1/100 天行为；
    - 只有用户确认后才替换 `weights/rl_policy_weights.json`。
 2. **按全量扫描结果做定向训练（研究首选）**
@@ -147,6 +176,12 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
      加大权重，改做显式 ZD 识别 + expert / portfolio；
    - `periodic_hard` 也已实现但 **No-Go**（test +0.77，PB -41）；
      若继续，应训练 periodic specialist + meta gate；
+   - **probe_exploit 已试 specialist / v2 特征 / 显式规则三条线**：
+     `train_probe_pattern` 把 `pattern_breaker` 提升到 762，但
+     `probe_exploit` 仍约 118；probe-only specialist 和 v2 特征无增益；
+     精确规则可到 123–129 但整体 dev 回退。probe 专项暂停：不采用
+     unsafe specialist / `--allow-probe` / 预判 gate，也不为 probe
+     修改 protocol 或 safety 规则；v5 保持 977 configs；
    - 旧 MLP 蒸馏 **No-Go**（normalization bug；修正后仍受
      pattern_breaker 限制）；GRU + 2 轮 DAgger 已得到单模型
      `rl-dagger-gru`，dev 与 RL-Switch 持平；下一步是外部比赛/
@@ -174,10 +209,10 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
 ## 数据/评估纪律
 
 - 新候选用 `dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` /
-  `dev_ood` 选模；`dev_level0..4` / `dev_complexity0..4` 是分级诊断；
-  test 消费永久锁定。
-- `test_v7` / `test_red` 运行结果标记 `selection_eligible=false`，
-  不写 usage ledger；不要用 test 结果排名或选模。
+  `dev_ood` 选模；`dev_level0..4` / `dev_complexity0..4` 是分级诊断。
+- `test_v8` 初始锁定；provisional 诊断用 `--no-consume`。只在最终候选
+  确定后解禁，再用 `--acknowledge-once` 写 usage ledger；不参与排名、
+  调参或选模。`test_red` 继续锁定。
 - blue-red 已停用；不再要求 red best response，也不把 red 结果当成
   评估或 promotion 证据。
 - `min_family` 跨 family 不可比；看 `min_norm_family` / per-family /
@@ -220,7 +255,14 @@ python3 -m ipd protocol eval --candidates core --tiers dev_param \
 # tests
 python3 -m unittest discover -s tests -t . -v
 
-# 当前 v4 dev 头部 / 前最佳
+# Protocol v5：审计 + dev 选模
+python3 -m ipd protocol audit
+python3 -m ipd protocol eval --candidates all \
+  --tiers dev_param,dev_family,dev_complex,dev_axelrod,dev_ood \
+  --fields 30 --n 2048 --workers 20 --baseline RL-PPO \
+  --out results/protocol_v5/protocol_v5_dev.json
+
+# v4 legacy dev 头部 / 前最佳（只作历史复现）
 python3 -m ipd self-test --candidates rl-wide160,rl-wide,rl-pattern,rl-repair
 python3 -m ipd benchmark --candidates rl-wide160,rl-wide,rl-pattern,rl-repair --fields 20 --workers 20
 python3 -m ipd blind --candidates rl-wide160,rl-wide,rl-pattern,rl-repair --fields 20 --workers 10
@@ -259,9 +301,10 @@ bash results/p2_repeated_calib_20261026/run.sh
 - **P3 cross-play 退化**：所有 blue 互相合作（594–595），Elo/Nash 不可区分；
   必须加入 red/exploiter pool。
 - **E2 CVaR/DRO 无信号**：不要继续盲调 coef/quantile。
-- **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4 用
-  2048 人 / dev 30 fields / test 50 fields。
-- **test 消费永久锁定**：`test_v7` / `test_red` 只做 provisional 诊断，
-  不写 usage ledger，不能用于排名或 final。
-- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / v2 / v3
+- **规模不可混用**：旧表多为 10/20-field blind 或 v3 的 299 人；v4/v5
+  用 2048 人 / dev 30 fields / test 50 fields。
+- **test 消费**：`test_v8` / `test_red` 初始锁定；provisional 用
+  `--no-consume`，final 前先解禁 `test_v8` 再传 `--acknowledge-once`。
+  消费后新候选需要 `test_v9`。
+- **legacy 表不可混用**：`official` / `blind` / `heldout_v2` / v2 / v3 / v4
   只做历史对照。
