@@ -1,0 +1,29 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=train_v5 val_dists=dev_param,dev_family,dev_complex,dev_axelrod,dev_ood fields/iter/dist=3 n=160 iterations=12 safe=True risk=none dirichlet=0 blue_pool=0
+initialised from weights/rl_policy_checkpoint_wide160.json
+using reference-policy KL penalty (coef=0.1)
+initial val avg=534.71 worst=481.23 dev_param=518.58 dev_family=585.98 dev_complex=481.23 dev_axelrod=564.09 dev_ood=523.66
+iter   1 reward= 534.35 pi=-0.0008 v=0.1150 H=0.0971 kl=0.0005 bckl=0.0006 clip=0.006 ev=+0.934 (14.5s+2.7s)
+iter   2 reward= 534.76 pi=-0.0007 v=0.1005 H=0.1046 kl=0.0005 bckl=0.0014 clip=0.004 ev=+0.939 (14.3s+0.2s)
+iter   3 reward= 525.84 pi=-0.0002 v=0.1029 H=0.0970 kl=0.0003 bckl=0.0022 clip=0.002 ev=+0.937 (10.8s+0.1s)
+  new best at iter 4: avg=536.16 worst=485.16
+iter   4 reward= 529.26 pi=-0.0004 v=0.1057 H=0.1036 kl=0.0001 bckl=0.0032 clip=0.001 ev=+0.934 (10.6s+0.1s)
+      train train_v5=529.26 | val avg=536.16 worst=485.16 dev_param=519.17 dev_family=585.96 dev_complex=485.16 dev_axelrod=564.86 dev_ood=525.63
+iter   5 reward= 527.87 pi=-0.0001 v=0.1083 H=0.1023 kl=0.0001 bckl=0.0043 clip=0.001 ev=+0.932 (11.0s+0.1s)
+iter   6 reward= 534.79 pi=-0.0004 v=0.1103 H=0.0956 kl=0.0002 bckl=0.0035 clip=0.002 ev=+0.934 (10.8s+0.1s)
+iter   7 reward= 534.53 pi=-0.0004 v=0.1009 H=0.1015 kl=0.0001 bckl=0.0039 clip=0.000 ev=+0.938 (11.0s+0.1s)
+  new best at iter 8: avg=536.30 worst=485.76
+iter   8 reward= 521.29 pi=-0.0005 v=0.1076 H=0.1163 kl=0.0002 bckl=0.0043 clip=0.001 ev=+0.933 (10.8s+0.1s)
+      train train_v5=521.29 | val avg=536.30 worst=485.76 dev_param=519.73 dev_family=586.00 dev_complex=485.76 dev_axelrod=565.77 dev_ood=524.26
+iter   9 reward= 525.60 pi=-0.0002 v=0.1061 H=0.1061 kl=0.0001 bckl=0.0043 clip=0.000 ev=+0.933 (11.1s+0.1s)
+iter  10 reward= 529.00 pi=-0.0002 v=0.1168 H=0.1009 kl=0.0000 bckl=0.0046 clip=0.000 ev=+0.928 (11.0s+0.2s)
+  saved checkpoint (best iter 8, val avg=536.3016666666666)
+iter  11 reward= 518.77 pi=-0.0005 v=0.1047 H=0.1122 kl=0.0000 bckl=0.0047 clip=0.000 ev=+0.934 (10.9s+0.2s)
+iter  12 reward= 540.56 pi=+0.0000 v=0.1014 H=0.1007 kl=0.0000 bckl=0.0041 clip=0.000 ev=+0.933 (11.0s+0.2s)
+      train train_v5=540.56 | val avg=536.30 worst=484.56 dev_param=519.64 dev_family=585.99 dev_complex=484.56 dev_axelrod=566.67 dev_ood=524.66
+  saved checkpoint (best iter 8, val avg=536.3016666666666)
+best iteration 8 val={'by_dist': {'dev_param': 519.725, 'dev_family': 585.9958333333333, 'dev_complex': 485.75624999999997, 'dev_axelrod': 565.7666666666667, 'dev_ood': 524.2645833333333}, 'avg': 536.3016666666666, 'worst': 485.75624999999997, 'selection': 523.6653124999999}
+written results/protocol_v5/train_v5_finetune_lr1e4_20261030/train_v5_ft_lr1e4_checkpoint.json
+written results/protocol_v5/train_v5_finetune_lr1e4_20261030/train_v5_ft_lr1e4_weights.json (1111666 bytes)
+written results/protocol_v5/train_v5_finetune_lr1e4_20261030/train_v5_ft_lr1e4_history.json
+vs AllC-until-90: C=92 D=8 score=548

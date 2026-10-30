@@ -20,6 +20,7 @@
 | [0011](0011-stop-blue-red-gating.md) | 停止用 blue-red 对战作为评估/promotion 门槛 | Accepted |
 | [0012](0012-unlock-test-v7.md) | 解禁 test_v7 一次性消费；test_red 继续锁定 | Accepted（v4 legacy） |
 | [0013](0013-protocol-v5-resplit.md) | Protocol v5 重划 train/dev/test；新 final test_v8 | Accepted |
+| [0014](0014-promote-full-guard-c.md) | 推荐 RL-FullGuard-C，保留 RL-PPO 主权重 | Accepted |
 
 ## 新 ADR 模板
 

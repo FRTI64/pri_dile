@@ -11,8 +11,8 @@ python3 -m ipd list-policies
 ## 1. 当前候选
 
 > 新候选比较使用 Protocol v5（977 configs + Axelrod，2048/30/50，
-> train/dev/test 已重新划分）。v5 baseline 尚未运行；下表的 v4 top 7
-> 与 v3 数字只作 legacy，提交前必须在 v5 上重跑。
+> train/dev/test 已重新划分）。v5 dev baseline 已运行；旧 v4 top 7
+> 与 v3 数字只作 legacy，不能与 v5 混表。
 
 | 注册名 | 显示名 | 类型 | 权重 / 配置 | 状态 |
 |---|---|---|---|---|
@@ -36,7 +36,13 @@ python3 -m ipd list-policies
 | `rl-pattern` | RL-Pattern | RL | `weights/rl_policy_weights_pattern.json` | v4 dev 前列；pattern_breaker 修复版；未 promotion |
 | `rl-wide` | RL-Wide | RL 128/128 | `weights/rl_policy_weights_wide.json` | v4 dev 前列；complex min_norm 0.973；未 promotion |
 | `rl-wide160` | RL-Wide160 | RL 160/128 | `weights/rl_policy_weights_wide160.json` | v4 dev_complex 454.31；complex/ood min_norm 0.997；未 promotion |
+| `rl-v5-ft` | RL-V5-FT | RL 160/128 | `weights/rl_policy_weights_v5_ft.json` | `train_v5` fine-tune；v5 dev 两 seed 超 RL-Wide160；probe min_norm 0.927；未 promotion |
 | `rl-switch` | RL-Switch | meta（2 RL） | `weights/rl_policy_weights_wide160.json` + `rl_policy_weights_repair.json` | **v4 dev/test 最佳（top 7）；Python + C++；未 promotion** |
+| `rl-probe-guard` | RL-ProbeGuard | RL-V5-FT + 早期 D guard | `weights/rl_policy_weights_v5_ft.json` | 反应式 probe 防护；dev_complex probe 126、min_norm 0.996；test provisional 495.92；`late` 仍 0.977；实验；未 promotion |
+| `rl-defection-guard` | RL-DefectionGuard | RL-V5-FT + late guard | `weights/rl_policy_weights_v5_ft.json` | late 反应式防护（三回合确认 + `D,C,C`）；dev_param 533.13 / min_norm 1.0；probe 仍 0.927；test provisional 496.47；实验；未 promotion |
+| `rl-full-guard` | RL-FullGuard | RL-V5-FT + probe/late guard | `weights/rl_policy_weights_v5_ft.json` | probe `CCC` + late `DCC`，三回合确认；dev 五 tier min_norm 全部 ≥1.0（两 seed），dev_param 533.04/532.43、dev_complex 485.82/487.76；test provisional 496.36/496.40；实验；未 promotion |
+| `rl-v5-ft-complex` | RL-V5-FT-Complex | RL 160/128 | `weights/rl_policy_weights_v5_ft_complex.json` | 第二段 `train_complex` fine-tune；dev_complex 485.95/487.76、test 496.45/496.35；probe/late 仍 0.934/0.981；实验 |
+| `rl-full-guard-c` | RL-FullGuard-C | RL-V5-FT-Complex + guard | `weights/rl_policy_weights_v5_ft_complex.json` | **推荐提交候选（ADR 0014）**；dev 五项 min_norm ≥1.0；dev_complex 487.09/489.36；test_v8 final **496.40 已消费**；Python + C++ parity；已部署到 `frti64_ipd`；主权重保留 RL-PPO |
 | `rl-dagger-gru` | GRU-DAgger | GRU | `weights/rl_dagger_gru_weights.json` | 单模型 RL-Switch 蒸馏；v4 dev 与 RL-Switch 持平；Python + C++；未 promotion |
 | `rl-gate` | RL-Gate | meta（learned gate） | 同上 + `weights/meta_gate_wide160_repair.json` | 实验；阈值 0.9 近中性；**No-Go** |
 | `adv-mlp` | Adv-MLP | MLP + 规则 | base 权重 + `configs/adversarial_policy_config*.json` | 只有 Python |
@@ -58,8 +64,8 @@ python3 -m ipd list-policies
 | `base` / `legacy` | Final/Resp3/Bayes（base+tuned）+ `hybrid` |
 | `classic` | `base` + `harvest45`, `harvest-tuned`, `gap-start` |
 | `suite` | `base` + `harvest45`, `triple-majority`, `triple-v4` |
-| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `rl-wide160`, `rl-switch`, `rl-dagger-gru`, `rl-gate`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `psro-v4`, `psro-v4-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
-| `all` | 全部 33 个注册候选 |
+| `learned` | `neural`, `gru`, `rl`, `rl-hard60`, `rl-repair`, `rl-pattern`, `rl-wide`, `rl-wide160`, `rl-v5-ft`, `rl-v5-ft-complex`, `rl-switch`, `rl-probe-guard`, `rl-defection-guard`, `rl-full-guard`, `rl-full-guard-c`, `rl-dagger-gru`, `rl-gate`, `psro`, `psro-br`, `psro-scratch`, `psro-scratch-br`, `psro-v4`, `psro-v4-br`, `adv-mlp`, `adv-gru`, `adv-rl`, `selfplay` |
+| `all` | 全部 39 个注册候选 |
 
 ## 3. 常用别名
 
@@ -73,7 +79,13 @@ python3 -m ipd list-policies
 | `pattern`, `rl-pb` | `rl-pattern` |
 | `wide-rl`, `rl-128` | `rl-wide` |
 | `wide160`, `rl-160` | `rl-wide160` |
+| `v5-ft`, `train-v5-ft` | `rl-v5-ft` |
 | `switch`, `meta-switch` | `rl-switch` |
+| `probe-guard`, `rl-guard` | `rl-probe-guard` |
+| `defection-guard`, `late-guard` | `rl-defection-guard` |
+| `full-guard`, `guard-all` | `rl-full-guard` |
+| `v5-ft-complex` | `rl-v5-ft-complex` |
+| `full-guard-c` | `rl-full-guard-c` |
 | `dagger-gru`, `gru-dagger`, `switch-gru` | `rl-dagger-gru` |
 | `gate`, `meta-gate` | `rl-gate` |
 | `adv`, `adversarial`, `advmlp` | `adv-mlp` |

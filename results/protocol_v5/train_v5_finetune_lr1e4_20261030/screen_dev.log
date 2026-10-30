@@ -1,0 +1,30 @@
+candidates=['TrainV5-lr1e4-iter8', 'RL-Wide160', 'RL-PPO'] tiers=['dev_param', 'dev_family', 'dev_complex', 'dev_axelrod', 'dev_ood'] fields=30 n=2048 seed=20261027 tasks=150
+progress 7/150 elapsed=41s
+progress 14/150 elapsed=42s
+progress 21/150 elapsed=63s
+progress 28/150 elapsed=64s
+progress 35/150 elapsed=77s
+progress 42/150 elapsed=85s
+progress 49/150 elapsed=86s
+progress 56/150 elapsed=98s
+progress 63/150 elapsed=122s
+progress 70/150 elapsed=123s
+progress 77/150 elapsed=134s
+progress 84/150 elapsed=158s
+progress 91/150 elapsed=170s
+progress 98/150 elapsed=172s
+progress 105/150 elapsed=195s
+progress 112/150 elapsed=206s
+progress 119/150 elapsed=210s
+progress 126/150 elapsed=230s
+progress 133/150 elapsed=240s
+progress 140/150 elapsed=246s
+progress 147/150 elapsed=261s
+progress 150/150 elapsed=261s
+
+Protocol v5 evaluation (30 fields, n=2048)
+  TrainV5-lr1e4-iter8      dev_param=532.18  dev_family=583.14  dev_complex=482.64  dev_axelrod=568.74  dev_ood=523.94
+  RL-Wide160               dev_param=531.66  dev_family=583.08  dev_complex=477.77  dev_axelrod=567.77  dev_ood=522.24
+  RL-PPO                   dev_param=525.99  dev_family=582.55  dev_complex=457.26  dev_axelrod=563.43  dev_ood=513.30
+
+written results/protocol_v5/train_v5_finetune_lr1e4_20261030/screen_dev.json

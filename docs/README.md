@@ -26,9 +26,13 @@
 | 主权重 | `weights/rl_policy_weights.json`（RL-PPO，从零 + hard） |
 | v4 legacy dev/test 最佳 | `rl-switch`（RL-Switch，窄 meta，未 promotion；Python + C++）；单模型替代 `rl-dagger-gru`（GRU-DAgger）；v5 需重跑 |
 | 前最佳 / fallback | `rl-wide160` / `rl-wide` / `rl-pattern` / `rl-repair`；A60 仍为 `rl-hard60` |
+| v5 实验候选 | `rl-v5-ft`（`train_v5` fine-tune；v5 dev 两 seed 超 RL-Wide160；probe min_norm 0.927；未 promotion） |
+| v5 probe 防护 | `rl-probe-guard`（V5-FT + 反应式 guard；dev_complex probe 126 / min_norm 0.996；test provisional 495.92；未 promotion） |
+| v5 gate 候选 | `rl-full-guard`（probe `CCC` + late `DCC`，三回合确认；dev 五 tier min_norm 全部 ≥1.0，dev_param 533.04/532.43；test 496.36/496.40；未 promotion） |
+| v5 推荐提交候选 | `rl-full-guard-c`（ADR 0014；V5-FT-Complex + guard；dev_complex 487.09/489.36，五项 min_norm ≥1.0；test_v8 final **496.40 已消费**；Python + C++；主权重保留 RL-PPO） |
 | 最佳纯规则（v4 legacy） | `triple-v4`（dev_param 538.66 / dev_complex 447.08 / dev_ood 514.41；未 promotion；v5 需重跑） |
-| 测试 | **346 tests OK**（本轮全量运行） |
-| 注册候选 | 33 个（`all` 集合，`python3 -m ipd list-policies`） |
+| 测试 | **357 tests OK**（本轮全量运行） |
+| 注册候选 | 39 个（`all` 集合，`python3 -m ipd list-policies`） |
 | 默认评估 | **Protocol v5**：`dev_param` / `dev_family` / `dev_complex` / `dev_axelrod` / `dev_ood` 选模；`test_v8` held-out final |
 | 规模 | 977 configs；2048 人 / dev 30 / test 50；14 complex + 224 Axelrod + 15 组合 |
 | 分级诊断 | `dev_level0..4` / `dev_complexity0..4`（按思考等级/复杂度） |
@@ -135,6 +139,7 @@
 | [decisions/0002-no-promotion-without-reproduction.md](decisions/0002-no-promotion-without-reproduction.md) | 未独立复现不得替换主权重 |
 | [decisions/0003-anti-exploitation-unsolved.md](decisions/0003-anti-exploitation-unsolved.md) | 不把 red 训练收益当成 anti-exploitation（历史） |
 | [decisions/0011-stop-blue-red-gating.md](decisions/0011-stop-blue-red-gating.md) | **停止用 blue-red 作为评估/promotion 门槛** |
+| [decisions/0014-promote-full-guard-c.md](decisions/0014-promote-full-guard-c.md) | **推荐 RL-FullGuard-C，保留 RL-PPO 主权重** |
 | [decisions/0004-archive-no-go-research.md](decisions/0004-archive-no-go-research.md) | No-Go 实验归档，不删除原始记录 |
 
 ## 4. 阅读路径

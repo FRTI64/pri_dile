@@ -131,6 +131,89 @@
 > 两个 ProbePattern 候选都只是实验产物，未注册、未 promotion；`test_v8`
 > 仍未消费。
 
+### 第三轮：纯 `train_v5` 全量 fine-tune（lr 1e-4）
+
+- 起点：`weights/rl_policy_checkpoint_wide160.json`
+- 训练：12 iter，`--train-dists train_v5`，3 fields/dist × 160，
+  lr 1e-4、bc-kl 0.1；选择 iter8
+- 产物：`results/protocol_v5/train_v5_finetune_lr1e4_20261030/`
+
+| 候选 | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood |
+|---|---:|---:|---:|---:|---:|
+| **TrainV5-lr1e4-iter8（seed 27）** | **532.18** | **583.14** | **482.64** | **568.74** | **523.94** |
+| RL-Wide160（seed 27） | 531.66 | 583.08 | 477.77 | 567.77 | 522.24 |
+| **TrainV5-lr1e4-iter8（seed 28）** | **531.08** | **582.68** | **483.81** | **568.59** | **522.07** |
+| RL-Wide160（seed 28） | 530.59 | 582.62 | 479.01 | 567.56 | 520.49 |
+
+- 两个 dev seed 一致：`dev_param +0.49～0.52`、`dev_complex +4.8～4.9`、
+  `dev_axelrod +1.0`、`dev_ood +1.6～1.7`；
+- `pattern_breaker` 634 → **683**，但 `probe_exploit` 仍约 115，
+  `min_norm` 0.927（低于旧 0.99 门槛）；
+- `test_v8` provisional（`--no-consume`）：**496.37** vs RL-Wide160
+  495.71（+0.66）、RL-PPO 487.83；
+- **实验候选 `rl-v5-ft`，不 promotion；`test_v8` 未消费。**
+
+### 第四轮：RL-V5-FT + 反应式 probe guard（`rl-probe-guard`）
+
+- 基础：`rl-v5-ft`；触发：对手首次 D 在零基 5/7 回合、下一回合继续
+  D，且我方未主动 D；先观察 3 回合 C，对手回 C 则释放，持续 D 则
+  惩罚到 C；不预判、不关 safety。
+- 产物：`results/protocol_v5/probe_guard_20261030/`；报告
+  `docs/research/probe-guard.md`。
+
+| 候选 / seed | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood |
+|---|---:|---:|---:|---:|---:|
+| **RL-ProbeGuard（27）** | 532.07 | 583.13 | **482.79** | 568.58 | 523.77 |
+| RL-V5-FT（27） | **532.18** | **583.14** | 482.64 | **568.74** | **523.94** |
+| **RL-ProbeGuard（29）** | **531.66** | 582.82 | **485.02** | 568.00 | 523.93 |
+| RL-V5-FT（29） | 531.61 | 582.82 | 484.28 | **568.02** | **524.01** |
+
+- probe：**125.89 / 126.20**（seed 27）、**126.03 / 125.95**
+  （seed 29），V5-FT 约 115；probe norm 约 1.016；
+- `dev_complex` min_norm：**0.9959 / 0.9960**（V5-FT 0.9268 / 0.9273）；
+- `dev_param` / `dev_ood` 的 min_norm 约 0.977–0.978，剩余瓶颈是
+  `late`；
+- `test_v8` provisional：**495.92** vs V5-FT 496.37、RL-Wide160
+  495.71、RL-PPO 487.83；test probe 260.53 vs 267.39（V5-FT）；
+- **Go for dev probe gate，No-Go for promotion**；`test_v8` 未消费。
+
+### 第五轮：late / probe+late 防护（`rl-defection-guard` / `rl-full-guard`）
+
+- 基础：`rl-v5-ft`；late 首次 D ≥ 零基 9 时响应 `D,C,C`；
+  `rl-full-guard` 同时保留 probe 的 `C,C,C`；两者都要求连续
+  3 回合 D 确认；
+- 产物：`results/protocol_v5/full_guard_20261030/`；报告
+  `docs/research/defection-guard.md`。
+
+| 候选 / seed | dev_param | dev_family | dev_complex | dev_axelrod | dev_ood |
+|---|---:|---:|---:|---:|---:|
+| **RL-FullGuard（27）** | **533.04** | **583.14** | **485.82** | **568.88** | **524.94** |
+| RL-DefectionGuard（27） | **533.13** | **583.14** | 485.18 | 568.85 | 524.60 |
+| RL-V5-FT（27） | 532.18 | **583.14** | 482.64 | 568.74 | 523.94 |
+| **RL-FullGuard（29）** | **532.43** | 582.82 | **487.76** | **568.14** | **525.09** |
+| RL-V5-FT（29） | 531.61 | 582.82 | 484.28 | 568.02 | 524.01 |
+
+- **RL-FullGuard 两个 seed 的 dev 五项 min_norm 全部 ≥ 1.0**
+  （dev_param / dev_family / dev_complex / dev_ood = 1.0，
+  dev_axelrod 约 1.005）——v5 首个通过旧 `min_norm ≥ 0.99` 的候选；
+- dev_param / dev_complex / dev_ood 两个 seed 均高于 V5-FT；
+  level3 458.65、complexity3 501.18、level4 607.50、complexity4
+  520.34，全部高于 V5-FT；
+- RL-DefectionGuard dev_param 533.13 / min_norm 1.0，但 probe 仍 0.927；
+- `test_v8` provisional：FullGuard **496.36 / 496.40** vs V5-FT
+  496.37 / 496.22（-0.01 / +0.18）；DefectionGuard 496.47（seed 27）；
+- **FullGuard-C**（V5-FT-Complex 基座）：dev_param 532.83 / 532.17、
+  dev_complex **487.09 / 489.36**、dev_ood 525.41 / 525.49，
+  五项 min_norm 全部 ≥ 1.0；test provisional **496.40 / 496.44**
+  （平均 496.42 vs V5-FT 496.30）。当前 test / complex 最好的
+  gate-pass 版本；
+- **test_v8 final（2026-10-30，已消费）**：RL-FullGuard-C **496.40**
+  vs RL-PPO 487.83；usage ledger `results/protocol_v5/usage.json`；
+- C++ 已移植：`cpp/policies/rl_full_guard_policy.hpp`、
+  `cpp/rl_full_guard_weights.hpp`、`tests/test_full_guard_cpp.py`
+  （4 组固定序列 parity 通过）；
+- **推荐提交候选（ADR 0014）**；主权重保留 RL-PPO，不覆盖。
+
 ## 3 → 1 → 2 的 probe 专项结论
 
 按 specialist+gate → 特征 → 显式规则的顺序做了补充实验：

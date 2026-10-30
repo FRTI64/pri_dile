@@ -119,7 +119,7 @@ docs/decisions/      ADR
 
 ## 8. 提交前检查
 
-- [ ] `python3 -m ipd test` 通过（最近完整测试是 346 tests）；
+- [ ] `python3 -m ipd test` 通过（最近完整测试是 357 tests）；
 - [ ] `python3 -m ipd self-test --candidates all` 通过；
 - [ ] `python3 -m ipd protocol audit` 通过；test 结果已写入 usage ledger；
 - [ ] 新候选/命令已注册，文档已更新；

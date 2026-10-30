@@ -16,7 +16,8 @@ test 复用并失去独立性。v5 的目标是提供一套新的 train/dev/test
   405/977 个 config 的 tier 与 v4 不同；
 - **新 final**：`test_v8` 取代 v4 的 `test_v7`；`test_v7` 及全部 v4
   结果冻结为 legacy；
-- `test_v8` 与 `test_red` 初始都锁定，final 前需显式解禁。
+- `test_v8` / `test_red` 初始锁定；`test_v8` 已于 2026-10-30 消费一次，
+  `test_red` 仍锁定。
 
 > **跨版本泄漏警告：** v5 与 v4 使用同一 catalog。v4 的 train/dev
 > config 可能进入 v5 test_v8，反之亦然。因此 `test_v8` 只对“在 v5
@@ -284,10 +285,10 @@ python3 -m ipd protocol eval --candidates all --tiers test_v8 \
    provisional 诊断（blue-red 已停用，ADR 0011）。
 
 `configs/splits/protocol_v5/test_policy.json` 用
-`consume_tiers` 按 tier 控制消费：`test_v8=false`、`test_red=false`；
-`consume_test` 是全局 fallback，仓库内固定为 `false`。v5 初次发布时
-`test_v8` **保持锁定**；需要 final 时才把对应 tier 改为 `true`。
-解禁后消费必须显式传 `--acknowledge-once`，结果写入
+`consume_tiers` 按 tier 控制消费：`test_v8=true`（2026-10-30 已消费
+一次）、`test_red=false`；`consume_test` 是全局 fallback，仓库内固定为
+`false`。v5 初次发布时 `test_v8` 保持锁定；需要 final 时才把对应 tier
+改为 `true`。解禁后消费必须显式传 `--acknowledge-once`，结果写入
 `results/protocol_v5/usage.json`，标记 `usage_consumed=true`、
 `selection_eligible=true`。`--no-consume` 仍可生成
 `*_test_provisional.json` / `*_provisional.json`（不写 ledger），
@@ -310,12 +311,26 @@ policy 缺失或损坏时按 fail closed 处理。`test_v8` 消费后，新候�
   可把 `pattern_breaker` 提到约 762，但 `probe_exploit` 仍约 118；
   probe-only specialist、v2 特征、精确规则都没有净收益。probe 专项暂停：
   **不采用 unsafe specialist / `--allow-probe` / 预判 gate**，也不为
-  probe 修改 protocol 或 safety 规则；v5 保持 977 configs。不要把 v4
-  的 `test_v7` 或 dev 排名直接迁移到 v5。
+  probe 修改 protocol 或 safety 规则；v5 保持 977 configs。2026-10-30
+  又加入**反应式** `rl-probe-guard`：不预判、不关 safety，在观察到
+  第 6/8 回合 probe 后先让 3 回合 C；dev probe 约 126、
+  `dev_complex` min_norm 0.996（两个 seed），test_v8 provisional
+  495.92 vs V5-FT 496.37。随后 `rl-full-guard` 用 probe `C,C,C` +
+  late `D,C,C`，并要求连续 3 回合 D 确认；dev 五项 `min_norm`
+  全部 ≥ 1.0（两个 seed），dev_param 533.04 / 532.43、dev_complex
+  485.82 / 487.76，level / complexity 也全部高于 V5-FT。它是 v5
+  首个通过旧 `min_norm ≥ 0.99` 的候选；test_v8 provisional
+  496.36 / 496.40 vs V5-FT 496.37 / 496.22，尚未 consumption。
+  `rl-full-guard-c` 用 V5-FT-Complex 基座，把 dev_complex 提到
+  487.09 / 489.36、test 提到 496.40 / 496.44，五项 min_norm 仍
+  全部 ≥ 1.0。FullGuard-C 已按 ADR 0014 作为推荐提交候选
+  （test_v8 final 496.40 已消费），主权重保留 RL-PPO。
+  不要把 v4 的 `test_v7` 或 dev 排名直接迁移到 v5。
 - v5 与 v4 共用 catalog，只改变 tier 分配；`test_v8` 对旧 v4 候选不是
   held-out。新候选必须从 v5 `train` 重新训练/选模。
 - Axelrod 完整 Meta 策略较慢；日常可用 `AxelrodMix` / 精选策略，完整 bank
   只在定向分析时使用。
-- `test_v8` / `test_red` 初始都锁定，只做 provisional 诊断；需要 final 时
-  显式修改 policy 并重新审计。消费 `test_v8` 后，新候选需要 `test_v9`。
+- `test_v8` 已于 2026-10-30 消费一次（RL-FullGuard-C 496.40），
+  `test_red` 仍锁定；新候选需要 `test_v9`。provisional 诊断仍用
+  `--no-consume`，不写 ledger。
 - Red-v5 / Red-v6 仍是 P3 legacy artifact；anti-exploitation 未解决。

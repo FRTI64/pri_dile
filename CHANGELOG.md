@@ -26,6 +26,73 @@
 
 ### Added
 
+- **train_v5 定向 fine-tune（实验候选 `rl-v5-ft`）**：从 RL-Wide160
+  出发，仅用 Protocol v5 `train_v5` profile 做 12 iter PPO fine-tune
+  （lr 1e-4、bc-kl 0.1），选择 iter8。两个 dev seed 相对 RL-Wide160：
+  `dev_param +0.49～0.52`、`dev_complex +4.8～4.9`、`dev_axelrod +1.0`、
+  `dev_ood +1.6～1.7`；`pattern_breaker` 634 → 683。
+  `probe_exploit` 仍约 115，`min_norm` 0.927；`test_v8` provisional
+  496.37 vs 495.71（+0.66，`--no-consume`）。**不 promotion、
+  test_v8 未消费**；注册为实验候选 `rl-v5-ft`（`weights/
+  rl_policy_weights_v5_ft.json`）。产物
+  `results/protocol_v5/train_v5_finetune_lr1e4_20261030/`。
+- **RL-ProbeGuard（`rl-probe-guard`）**：在 RL-V5-FT 上加入反应式
+  早期 probe 防护。对手首次 `D` 出现在零基回合 5/7（第 6/8 回合）、
+  下一回合继续 `D`，且我方未主动 `D` 时，先观察 3 回合 `C`；
+  对手回 `C` 则释放，持续 `D` 则惩罚到 `C`。不预判、不关闭 safety。
+  dev seed 27/29：`probe_exploit` 114.8/115.0 → **125.9/126.0**，
+  `dev_complex` min_norm 0.9268/0.9273 → **0.9959/0.9960**；
+  `dev_param` 532.07/531.66，与 V5-FT 基本持平。`test_v8`
+  provisional **495.92** vs V5-FT 496.37（-0.45，噪声内）、
+  RL-Wide160 495.71。剩余 gate 瓶颈为 `late`（约 0.977）。
+  **实验候选，未 promotion；单权重，C++ 待移植**。报告
+  `docs/research/probe-guard.md`、
+  `results/protocol_v5/probe_guard_20261030/`。
+- **RL-DefectionGuard / RL-FullGuard（`rl-defection-guard` /
+  `rl-full-guard`）**：在 RL-V5-FT 上加入 late / probe 反应式防护。
+  late 首次 D ≥ 零基 9 时响应 `D,C,C`（先 D 让 AdaptiveProbe repair，
+  再给 extort/harvest 合作机会）；`rl-full-guard` 同时保留 probe
+  的 `C,C,C`；两者都要求连续 3 回合 D 确认。dev seed 27/29：
+  `rl-full-guard` dev_param **533.04 / 532.43**（V5-FT 532.18 /
+  531.61），dev_family 583.14 / 582.82，dev_complex **485.82 /
+  487.76**（482.64 / 484.28），dev_axelrod 568.88 / 568.14，
+  dev_ood **524.94 / 525.09**（523.94 / 524.01）；五项
+  `min_norm` **全部 ≥ 1.0**，是 v5 首个通过旧 `min_norm ≥ 0.99`
+  门槛的候选。level3 / complexity3 / level4 / complexity4 也全部
+  高于 V5-FT。`test_v8` provisional **496.36 / 496.40** vs V5-FT
+  496.37 / 496.22（-0.01 / +0.18，基本持平），比 RL-Wide160
+  高约 0.65。**未 promotion，`test_v8` 未消费**；单权重，C++ 待移植。
+  报告 `docs/research/defection-guard.md`、
+  `results/protocol_v5/full_guard_20261030/`。
+- **RL-V5-FT-Complex / RL-FullGuard-C（`rl-v5-ft-complex` /
+  `rl-full-guard-c`）**：V5-FT 上追加 `train_complex` 的第二段
+  fine-tune（10 iter，lr 5e-5，iter6）；`rl-full-guard-c` 再套
+  FullGuard 状态机。dev seed 27/29：V5-FT-Complex dev_param
+  532.14 / 531.54、dev_complex 485.95 / 487.76、dev_ood 524.79 /
+  524.84，test provisional 496.45 / 496.35；FullGuard-C dev_param
+  532.83 / 532.17、dev_complex **487.09 / 489.36**、dev_ood
+  **525.41 / 525.49**，五项 min_norm 全部 ≥ 1.0，test provisional
+  **496.40 / 496.44**（两个 seed 平均 496.42 vs V5-FT 496.30）。
+  **未 promotion，`test_v8` 未消费**；单权重，C++ 待移植。产物
+  `results/protocol_v5/v5_ft_complex_20261030/` 与
+  `results/protocol_v5/full_guard_20261030/`。
+- **RL-FullGuard-C C++ 移植 + test_v8 final**：新增
+  `cpp/policies/rl_full_guard_policy.hpp`、
+  `cpp/rl_full_guard_weights.hpp`、`cpp/rl_full_guard_demo.cpp`、
+  `ipd/tools/export_full_guard_cpp.py` 和
+  `tests/test_full_guard_cpp.py`（4 组固定序列 Python/C++ action
+  parity）。解锁 `test_v8` 后用 `--acknowledge-once` 消费一次：
+  **RL-FullGuard-C 496.40** vs RL-PPO 487.83；结果
+  `results/protocol_v5/protocol_v5_full_guard_c_test_final.json`，
+  usage ledger 记录 consumed，`selection_eligible=true`。
+  **ADR 0014：FullGuard-C 为推荐提交候选；主权重
+  `weights/rl_policy_weights.json` 保留 RL-PPO baseline，不覆盖。**
+  已部署到 `/home/frti64/frti64_ipd/rl_full_guard_c.py`（commit
+  `ffd7bce`），该仓库 README 已把 RL-FullGuard-C 标为参赛策略，
+  RL-Switch 转为 fallback。其余 2026-10-30/31 新候选
+  `rl_v5_ft` / `rl_v5_ft_complex` / `rl_probe_guard` /
+  `rl_defection_guard` / `rl_full_guard` 也已导出为独立单文件
+  （commit `80be0bb`），均通过 3 seed × 4 序列 parity。
 - **Protocol v5 dev baseline（33 candidates）**：5 tiers × 30 fields ×
   2048，默认顺序 sample RNG；总 wall **1662.15s**。结果
   `results/protocol_v5/protocol_v5_dev.json`。`dev_param` 第一

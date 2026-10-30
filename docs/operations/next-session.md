@@ -24,8 +24,8 @@
 ## 当前状态
 
 - 最近提交：`git log -1`（GRU-DAgger 单模型蒸馏 + C++）。
-- 最近完整测试：**346 tests OK**；`python3 -m ipd list-policies` 为
-  **33 个注册候选（all 集合）**。
+- 最近完整测试：**357 tests OK**；`python3 -m ipd list-policies` 为
+  **39 个注册候选（all 集合）**。
 - 主权重未替换：`weights/rl_policy_weights.json`，sha256
   `bc582056e09307210aff882c96dda4ad1be41df1dee8216cc167dc7af8e5c0a4`。
 - **v5 dev baseline 已运行**（33 candidates，5 tiers × 30 fields × 2048，
@@ -51,6 +51,32 @@
   probe 专项暂停：**不采用 unsafe specialist / `--allow-probe` /
   预判 gate**，也不为 probe 修改 protocol 或 safety 规则；v5 保持
   977 configs。
+- **RL-V5-FT（`rl-v5-ft`）是新的 v5 实验候选**：RL-Wide160 上纯
+  `train_v5` fine-tune（12 iter，lr 1e-4，iter8）；v5 dev 两个 seed
+  相对 RL-Wide160 dev_param +0.49～0.52、dev_complex +4.8～4.9、
+  dev_ood +1.6～1.7；test_v8 provisional 496.37 vs 495.71；probe
+  min_norm 0.927，**未 promotion**。报告
+  `results/protocol_v5/train_v5_finetune_lr1e4_20261030/`。
+- **RL-ProbeGuard（`rl-probe-guard`）**：在 V5-FT 上加入反应式早期
+  probe 防护（不预判、不关 safety）。dev 两 seed probe 约 126、
+  dev_complex min_norm 0.927→0.996，dev_param 与 V5-FT 持平；
+  test_v8 provisional 495.92 vs V5-FT 496.37。剩余 gate 瓶颈为
+  `late`（约 0.977）；实验候选，未 promotion。报告
+  `docs/research/probe-guard.md`。
+- **RL-DefectionGuard / RL-FullGuard**：`rl-full-guard` 用
+  probe `C,C,C` + late `D,C,C`，三回合确认；dev 五项 min_norm
+  全部 ≥ 1.0（两个 seed），dev_param 533.04 / 532.43、
+  dev_complex 485.82 / 487.76，level / complexity 全部高于
+  V5-FT；test_v8 provisional 496.36 / 496.40 vs V5-FT 496.37 /
+  496.22。**未 promotion，test_v8 未消费**；单权重，C++ 待移植。
+  报告 `docs/research/defection-guard.md`。
+- **RL-V5-FT-Complex / RL-FullGuard-C**：V5-FT 上追加
+  `train_complex` 的第二段 fine-tune；FullGuard-C dev_complex
+  487.09 / 489.36、dev_ood 525.41 / 525.49，五项 min_norm ≥1.0，
+  test provisional 496.40 / 496.44。当前 test / complex 最好的
+  gate-pass 版本；**推荐提交候选（ADR 0014）**；test_v8 final
+  已消费一次：496.40；C++ 已移植并通过固定序列 parity；主权重
+  保留 RL-PPO，不覆盖。
 - **RL-Switch（`rl-switch`）是 v4 legacy dev/test 最佳（top 7）**，
   但未 promotion；Python + C++ 双权重实现：默认 RL-Wide160，早期
   mutual-D 后切换 RL-Repair；v4 `test_v7` 488.26/487.51；v5 dev
@@ -240,7 +266,7 @@ red/PSRO 数字都只作历史存档，不能与新表混用。
 cd /home/frti64/pri_dile
 git status                    # 文档重组提交后应为 clean
 python3 -m ipd test           # 全量测试
-python3 -m ipd list-policies  # 27 candidates
+python3 -m ipd list-policies  # 39 candidates
 python3 -m ipd protocol audit
 python3 -m ipd protocol eval --candidates core --tiers dev_param \
   --fields 1 --n 32 --workers 4

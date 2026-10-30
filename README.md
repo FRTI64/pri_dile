@@ -18,6 +18,41 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   用 DAgger 蒸馏 RL-Switch；dev 两个 seed 与 RL-Switch 持平，
 >   dev_complex **455.13**；v4 test provisional 487.89/487.02（低 0.4，
 >   噪声内）；Python + C++；未 promotion；
+> - **RL-V5-FT**（`rl-v5-ft`）：RL-Wide160 上纯 `train_v5` fine-tune
+>   （12 iter，lr 1e-4，iter8）；v5 dev 两个 seed 相对 RL-Wide160：
+>   dev_param +0.49～0.52、dev_complex +4.8～4.9、dev_ood +1.6～1.7；
+>   test_v8 provisional 496.37 vs 495.71；probe min_norm 0.927，
+>   实验候选，未 promotion；
+> - **RL-ProbeGuard（`rl-probe-guard`）**：在 RL-V5-FT 上加入反应式
+>   早期 probe 防护。对手首次 D 在第 6/8 回合且继续 D、我方未主动 D
+>   时，先让 3 回合 C；对手合作则释放，持续 D 则惩罚到 C。dev 两个
+>   seed：probe 约 126（V5-FT 约 115），dev_complex min_norm
+>   0.927 → 0.996，dev_param 与 V5-FT 持平；test_v8 provisional
+>   495.92 vs V5-FT 496.37、RL-Wide160 495.71。剩余 gate 瓶颈变为
+>   `late`（约 0.977）；**实验候选，未 promotion**；
+> - **RL-DefectionGuard / RL-FullGuard（`rl-defection-guard` /
+>   `rl-full-guard`）**：在 V5-FT 上分别加 late-only 与 probe+late
+>   反应式防护。late 用 `D,C,C`（先 D 让 AdaptiveProbe repair，再给
+>   extort/harvest 合作机会），probe 保持 `C,C,C`，两者都要求连续
+>   3 回合 D 确认。`rl-full-guard` 两个 seed 的 dev 五项 min_norm
+>   **全部 ≥ 1.0**，dev_param +0.86 / +0.82、dev_complex +3.18 /
+>   +3.48、dev_ood +1.00 / +1.08；level / complexity 全部高于
+>   V5-FT。test_v8 provisional **496.36 / 496.40** vs V5-FT
+>   496.37 / 496.22（-0.01 / +0.18，基本持平）。**未 promotion，
+>   `test_v8` 未消费**；
+> - **RL-V5-FT-Complex / RL-FullGuard-C（`rl-v5-ft-complex` /
+>   `rl-full-guard-c`）**：V5-FT 上追加 `train_complex` 的第二段
+>   fine-tune（`dev_complex +3.3/+3.5`、`dev_ood +0.8`、test
+>   +0.08/+0.13），再套 FullGuard 状态机。FullGuard-C 的 dev_complex
+>   **487.09 / 489.36**、dev_ood 525.41 / 525.49，五项 min_norm
+>   全部 ≥ 1.0；test_v8 provisional **496.40 / 496.44**（两个 seed
+>   平均 496.42，V5-FT 496.30）。**`test_v8` final 已消费一次：
+>   RL-FullGuard-C 496.40**（usage ledger 已记录，`selection_eligible=true`）。
+>   C++ 已移植并通过 4 组固定序列 action parity。**按 ADR 0014
+>   作为推荐提交候选；`weights/rl_policy_weights.json` 保留为
+>   RL-PPO baseline，不覆盖**；已部署到
+>   `/home/frti64/frti64_ipd/rl_full_guard_c.py`（commit `ffd7bce`），
+>   其余 2026-10-30/31 新候选部署于 commit `80be0bb`；
 > - 前最佳候选 / fallback：`rl-wide160`（160/128）、`rl-wide`（128/128）、
 >   `rl-pattern`（64/32）、`rl-repair`；A60 仍为 `rl-hard60`；
 > - **最佳纯规则（v4 legacy）**：`triple-v4`（Triple-v4），在
@@ -38,9 +73,10 @@ blind、9 个测试集、158 类对手、冻结 league 和 held-out red。
 >   probe-only specialist、v2 特征、精确规则三条线都未取得净收益；
 >   probe 专项暂停。**不采用 unsafe specialist / `--allow-probe` /
 >   预判 gate**，也不为 probe 修改 protocol 或 safety 规则；v5 保持
->   977 configs；
+>   977 configs。2026-10-30 的反应式 `rl-probe-guard` 是例外：只响应
+>   已观察到的 D、不预判、不关 safety，见上；
 > - v4 的 top 7 dev、`test_v7` 和 v3 的 299/20/40 结果只作 legacy；
-> - **346 tests OK**（本轮全量运行）；注册候选 33 个（`all` 集合）；
+> - **357 tests OK**（本轮全量运行）；注册候选 39 个（`all` 集合）；
 > - **`test_v8` 初始锁定**（ADR 0013）：final 前需显式解禁 policy 并传
 >   `--acknowledge-once`；`test_red` 继续锁定；
 > - **PSRO / red 历史存档**：以下 PSRO 结果只用于复现，不再作为
@@ -140,6 +176,14 @@ python3 -m ipd blind --candidates rl,rl-hard60,rl-repair \
   candidate 通过，本表只作诊断，**不 promotion**。完整结果见
   [results/protocol_v5/README.md](results/protocol_v5/README.md)。
 - 该 baseline 在 977-config catalog 上运行，与当前 manifest 一致。
+- 后续实验候选（同一 v5 dev 口径）：RL-V5-FT dev_param 532.18 /
+  dev_complex 482.64；RL-ProbeGuard 532.07 / 482.79，probe 约 126、
+  `dev_complex` min_norm 0.996；RL-FullGuard 533.04 / 485.82
+  （seed 29：532.43 / 487.76）；RL-FullGuard-C 532.83 / 487.09
+  （seed 29：532.17 / 489.36），五项 min_norm 全部 ≥ 1.0。
+  FullGuard-C 已按 ADR 0014 推荐提交，`test_v8` final 496.40 已消费；
+  其余候选只做 provisional。详见
+  [results/protocol_v5/README.md](results/protocol_v5/README.md)。
 
 **Protocol v4 dev（30 fields × 2048，sample，2026-10-29；legacy）：**
 
@@ -215,6 +259,11 @@ docs/         文档：架构 / 指南 / 参考 / 策略 / 研究 / 运维 / 历
 | Protocol v5 baseline | **已运行**（33 candidates，1662.15s）；RL-Gate dev_param 第一但 min_norm 0.899；旧门槛下无 candidate 通过；v4/v3 为 legacy |
 | **RL-Switch** | **v4 legacy：窄 meta RL-Wide160→RL-Repair；test_v7 488.26/487.51**；未 promotion |
 | **GRU-DAgger** | **单模型 GRU 蒸馏 RL-Switch；dev 两 seed 持平（complex +0.89）；test provisional -0.4；未 promotion** |
+| **RL-V5-FT** | **v5 实验候选**；`train_v5` fine-tune；dev_param +0.5、dev_complex +4.9；test_v8 provisional +0.66；probe 仍 0.927；未 promotion |
+| **RL-ProbeGuard** | **V5-FT + 反应式 probe guard**；dev probe 126、dev_complex min_norm 0.996；test provisional 495.92；`late` 仍 0.977；未 promotion |
+| **RL-DefectionGuard** | **V5-FT + late guard（`D,C,C`）**；dev_param 532.67 / min_norm 1.0；probe 仍 0.927；test provisional 496.23；未 promotion |
+| **RL-FullGuard** | **V5-FT + probe/late guard**；dev 五 tier min_norm 全部 ≥1.0（两 seed），dev_param 533.04 / 532.43、dev_complex 485.82 / 487.76；test provisional 496.36/496.40；未 promotion |
+| **RL-FullGuard-C** | **推荐提交候选（ADR 0014）**；V5-FT-Complex + probe/late guard；dev_complex 487.09 / 489.36、dev_ood 525.41 / 525.49，五项 min_norm ≥1.0；test_v8 final **496.40 已消费**；Python + C++；主权重保留 RL-PPO |
 | **RL-Wide160** | **160/128；dev_complex 454.31、complex min_norm 0.997**；test provisional -0.69；未 promotion |
 | **RL-Wide** | **128/128；dev_complex 452.79、complex min_norm 0.973**；test provisional -0.81；未 promotion |
 | 输入特征 v2 | 85→97，三端 parity 通过；dev_complex +2～4 但 dev_param/test 回退；**No-Go** |

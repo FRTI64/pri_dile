@@ -66,6 +66,135 @@ class RLSwitchPolicy:
         return self.name
 
 
+class ProbeGuardPolicy:
+    """Base policy with a reactive response to early unprovoked defection.
+
+    The guard only fires after the opponent has a confirmed defection streak
+    and the first defection was unprovoked (we had not defected before it):
+
+    * the opponent's first ``D`` happens in an enabled trigger window;
+    * the next ``confirm`` / ``late_confirm`` moves are also ``D``;
+    * our history before that first ``D`` contains only ``C``.
+
+    It then plays a short response sequence: ``response`` for the probe /
+    generic window and ``late_response`` for the late window.  If the opponent
+    plays ``C`` at any point, the guard releases and the base policy resumes.
+    If the opponent keeps defecting, the guard plays ``D`` until the opponent
+    cooperates again.  This separates a one-off probe from a permanently
+    defecting opponent without sacrificing more than a few points against the
+    latter.  The trigger is purely reactive: it never defects before the
+    opponent does and it does not change the base safety rules.
+    """
+
+    def __init__(self, base_weights: str,
+                 seed: int = 20261024, mode: str = "sample",
+                 min_first: int = 1, max_first: int = 7,
+                 exact_first: tuple[int, ...] | None = None,
+                 late_min_first: int | None = None,
+                 observe_rounds: int = 3,
+                 confirm: int = 2,
+                 late_confirm: int = 2,
+                 response: tuple[int, ...] | None = None,
+                 late_response: tuple[int, ...] | None = None,
+                 name: str = "RL-ProbeGuard"):
+        self.base = _load(base_weights, seed, mode)
+        self.mode = mode
+        self.min_first = int(min_first)
+        self.max_first = int(max_first)
+        self.exact_first = (tuple(int(x) for x in exact_first)
+                            if exact_first is not None else None)
+        self.late_min_first = (None if late_min_first is None
+                               else int(late_min_first))
+        self.observe_rounds = max(1, int(observe_rounds))
+        self.confirm = max(1, int(confirm))
+        self.late_confirm = max(1, int(late_confirm))
+        self.response = (tuple(int(x) for x in response)
+                         if response is not None
+                         else (C,) * self.observe_rounds)
+        self.late_response = (tuple(int(x) for x in late_response)
+                              if late_response is not None
+                              else self.response)
+        self.name = name
+        self.state = "base"
+        self.idx = 0
+        self.current: tuple[int, ...] = self.response
+
+    def reset(self) -> None:
+        self.base.reset()
+        self.state = "base"
+        self.idx = 0
+        self.current = self.response
+
+    def set_rounds(self, rounds: int) -> None:
+        fn = getattr(self.base, "set_rounds", None)
+        if callable(fn):
+            fn(rounds)
+
+    def _streak_trigger(self, mine: Sequence[int], theirs: Sequence[int],
+                        n: int, first_ok) -> bool:
+        if len(theirs) < n or len(mine) < n:
+            return False
+        if list(theirs[-n:]) != [D] * n:
+            return False
+        first = len(theirs) - n
+        if D in theirs[:first]:
+            return False
+        if not first_ok(first):
+            return False
+        # No proactive defection: before the opponent's first D we only
+        # cooperated.  The safety rule guarantees this for the base policy.
+        return D not in mine[:first]
+
+    def _triggered(self, mine: Sequence[int], theirs: Sequence[int]) -> bool:
+        if self.exact_first is not None:
+            if self._streak_trigger(
+                    mine, theirs, self.confirm,
+                    lambda first: first in self.exact_first):
+                self.current = self.response
+                return True
+        if self.late_min_first is not None:
+            if self._streak_trigger(
+                    mine, theirs, self.late_confirm,
+                    lambda first: first >= self.late_min_first):
+                self.current = self.late_response
+                return True
+        if self.exact_first is None and self.late_min_first is None:
+            if self._streak_trigger(
+                    mine, theirs, self.confirm,
+                    lambda first: self.min_first <= first <= self.max_first):
+                self.current = self.response
+                return True
+        return False
+
+    def act(self, t: int, mine: list[int], theirs: list[int]) -> int:
+        if self.state == "base":
+            if self._triggered(mine, theirs):
+                self.state = "observe"
+                self.idx = 0
+                return self.current[0]
+            return self.base.act(t, mine, theirs)
+        if self.state == "observe":
+            if theirs[-1] == C:
+                self.state = "base"
+                return self.base.act(t, mine, theirs)
+            self.idx += 1
+            if self.idx < len(self.current):
+                return self.current[self.idx]
+            self.state = "punish"
+            return D
+        # Punish until the opponent cooperates again.
+        if theirs[-1] == C:
+            self.state = "base"
+            return self.base.act(t, mine, theirs)
+        return D
+
+    def observe(self, mine: list[int], theirs: list[int]) -> None:
+        """No internal observation state; histories are passed per action."""
+
+    def __repr__(self) -> str:
+        return self.name
+
+
 GATE_FEATURES = 25
 
 
@@ -191,5 +320,5 @@ class LearnedSwitchPolicy:
         return self.name
 
 
-__all__ = ["RLSwitchPolicy", "LearnedSwitchPolicy", "gate_features",
-           "GATE_FEATURES"]
+__all__ = ["RLSwitchPolicy", "LearnedSwitchPolicy", "ProbeGuardPolicy",
+           "gate_features", "GATE_FEATURES"]

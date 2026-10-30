@@ -1,0 +1,44 @@
+workers 20 (requested=20, cpu=24, ram_available=24.4GB, chunks=1+0x6, field_reuse=auto)
+mode=sample gpu=auto enabled=False (sample mode stays on CPU); gpu candidates=0, cpu candidates=3
+progress fields 1/150 tasks 1/150 tier=dev_param candidate=RL-PPO elapsed=28.0s eta=4170.4s
+progress fields 21/150 tasks 21/150 tier=dev_family candidate=RL-PPO elapsed=43.8s eta=269.2s
+progress fields 31/150 tasks 31/150 tier=dev_param candidate=RL-PPO elapsed=63.9s eta=245.3s
+progress fields 36/150 tasks 36/150 tier=dev_family candidate=RL-PPO elapsed=70.5s eta=223.4s
+progress fields 48/150 tasks 48/150 tier=dev_param candidate=RL-PPO elapsed=76.2s eta=162.0s
+progress fields 50/150 tasks 50/150 tier=dev_family candidate=RL-PPO elapsed=82.5s eta=165.0s
+progress fields 54/150 tasks 54/150 tier=dev_family candidate=RL-PPO elapsed=89.0s eta=158.3s
+progress fields 59/150 tasks 59/150 tier=dev_family candidate=RL-PPO elapsed=96.5s eta=148.9s
+progress fields 61/150 tasks 61/150 tier=dev_complex candidate=RL-PPO elapsed=121.6s eta=177.5s
+progress fields 67/150 tasks 67/150 tier=dev_complex candidate=RL-PPO elapsed=128.2s eta=158.8s
+progress fields 70/150 tasks 70/150 tier=dev_complex candidate=RL-PPO elapsed=133.5s eta=152.5s
+progress fields 76/150 tasks 76/150 tier=dev_complex candidate=RL-PPO elapsed=140.6s eta=136.9s
+progress fields 78/150 tasks 78/150 tier=dev_complex candidate=RL-PPO elapsed=146.5s eta=135.2s
+progress fields 79/150 tasks 79/150 tier=dev_complex candidate=RL-PPO elapsed=155.8s eta=140.0s
+progress fields 81/150 tasks 81/150 tier=dev_complex candidate=RL-PPO elapsed=167.2s eta=142.4s
+progress fields 83/150 tasks 83/150 tier=dev_complex candidate=RL-PPO elapsed=178.8s eta=144.3s
+progress fields 90/150 tasks 90/150 tier=dev_complex candidate=RL-PPO elapsed=185.1s eta=123.4s
+progress fields 95/150 tasks 95/150 tier=dev_axelrod candidate=RL-PPO elapsed=192.8s eta=111.6s
+progress fields 97/150 tasks 97/150 tier=dev_axelrod candidate=RL-PPO elapsed=200.2s eta=109.4s
+progress fields 100/150 tasks 100/150 tier=dev_axelrod candidate=RL-PPO elapsed=214.0s eta=107.0s
+progress fields 102/150 tasks 102/150 tier=dev_axelrod candidate=RL-PPO elapsed=219.9s eta=103.5s
+progress fields 105/150 tasks 105/150 tier=dev_axelrod candidate=RL-PPO elapsed=227.8s eta=97.6s
+progress fields 109/150 tasks 109/150 tier=dev_axelrod candidate=RL-PPO elapsed=233.5s eta=87.8s
+progress fields 112/150 tasks 112/150 tier=dev_axelrod candidate=RL-PPO elapsed=244.1s eta=82.8s
+progress fields 115/150 tasks 115/150 tier=dev_axelrod candidate=RL-PPO elapsed=249.3s eta=75.9s
+progress fields 119/150 tasks 119/150 tier=dev_ood candidate=RL-PPO elapsed=258.2s eta=67.3s
+progress fields 122/150 tasks 122/150 tier=dev_ood candidate=RL-PPO elapsed=266.2s eta=61.1s
+progress fields 125/150 tasks 125/150 tier=dev_ood candidate=RL-PPO elapsed=273.6s eta=54.7s
+progress fields 129/150 tasks 129/150 tier=dev_ood candidate=RL-PPO elapsed=291.0s eta=47.4s
+progress fields 134/150 tasks 134/150 tier=dev_ood candidate=RL-PPO elapsed=296.1s eta=35.4s
+progress fields 136/150 tasks 136/150 tier=dev_ood candidate=RL-PPO elapsed=304.0s eta=31.3s
+progress fields 142/150 tasks 142/150 tier=dev_ood candidate=RL-PPO elapsed=309.6s eta=17.4s
+progress fields 144/150 tasks 144/150 tier=dev_ood candidate=RL-PPO elapsed=314.9s eta=13.1s
+progress fields 148/150 tasks 148/150 tier=dev_ood candidate=RL-PPO elapsed=323.6s eta=4.4s
+progress fields 150/150 tasks 150/150 tier=dev_ood candidate=RL-PPO elapsed=327.2s eta=0.0s
+
+Protocol v5 evaluation (30 fields, n=2048, workers=20)
+  RL-V5-FT             dev_param=532.18  dev_family=583.14  dev_complex=482.64  dev_axelrod=568.74  dev_ood=523.94
+  RL-Wide160           dev_param=531.66  dev_family=583.08  dev_complex=477.77  dev_axelrod=567.77  dev_ood=522.24
+  RL-PPO               dev_param=525.99  dev_family=582.55  dev_complex=457.26  dev_axelrod=563.43  dev_ood=513.30
+
+written results/protocol_v5/protocol_v5_rl_v5_ft_dev.json

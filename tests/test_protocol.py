@@ -251,13 +251,13 @@ class ProtocolTestPolicyTests(unittest.TestCase):
             path.write_text("{not json", encoding="utf-8")
             self.assertFalse(test_consumption_allowed(path))
 
-    def test_repository_policy_locks_test_v8_and_red(self) -> None:
+    def test_repository_policy_consumes_test_v8_and_locks_red(self) -> None:
         policy = load_test_policy()
         self.assertFalse(policy["consume_test"])
-        self.assertFalse(policy["consume_tiers"][TEST_TIER])
+        self.assertTrue(policy["consume_tiers"][TEST_TIER])
         self.assertFalse(policy["consume_tiers"]["test_red"])
-        self.assertFalse(test_consumption_allowed())
-        self.assertFalse(test_consumption_allowed(tier=TEST_TIER))
+        self.assertTrue(test_consumption_allowed())
+        self.assertTrue(test_consumption_allowed(tier=TEST_TIER))
         self.assertFalse(test_consumption_allowed(tier="test_red"))
 
     def test_tier_policy_overrides_global_fallback(self) -> None:

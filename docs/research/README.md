@@ -30,6 +30,12 @@
 | RL-Pattern | [rl-pattern.md](rl-pattern.md) | **实验候选**；`train_v4` + `train_pattern_breaker`；v4 dev 4/5 tier 超 RL-Repair，test_v7 provisional -0.88；未 promotion |
 | RL-Wide | [rl-wide.md](rl-wide.md) | **实验候选**；net2wider 64/32→128/128；dev_param 548.24、dev_complex 452.79、complex min_norm 0.973；test_v7 provisional 485.50；未 promotion |
 | RL-Wide160 | [rl-wide160.md](rl-wide160.md) | **实验候选（当前最均衡）**；160/128；dev_param 548.26、dev_complex 454.31、complex/ood min_norm 0.997；test_v7 485.62；未 promotion |
+| RL-V5-FT | [train-v5-finetune.md](train-v5-finetune.md) | **v5 实验候选**；纯 `train_v5` fine-tune；两 dev seed dev_param +0.49～0.52、dev_complex +4.8～4.9；test_v8 provisional 496.37；probe min_norm 0.927；未 promotion |
+| RL-ProbeGuard | [probe-guard.md](probe-guard.md) | **实验候选**；V5-FT + 反应式早期 probe guard；dev probe 126、dev_complex min_norm 0.996；test provisional 495.92；`late` 仍 0.977；未 promotion |
+| RL-DefectionGuard | [defection-guard.md](defection-guard.md) | **实验候选**；V5-FT + late guard（三回合确认 + `D,C,C`）；dev_param 533.13 / min_norm 1.0；probe 仍 0.927；test provisional 496.47；未 promotion |
+| RL-FullGuard | [defection-guard.md](defection-guard.md) | **gate 候选**；probe `CCC` + late `DCC`，三回合确认；dev 五 tier min_norm 全部 ≥1.0（两 seed），dev_param 533.04/532.43；test provisional 496.36/496.40；未 promotion |
+| RL-V5-FT-Complex | [defection-guard.md](defection-guard.md) | 第二段 `train_complex` fine-tune；dev_complex 485.95/487.76、test 496.45/496.35；probe/late 仍 0.934/0.981；实验基座 |
+| RL-FullGuard-C | [defection-guard.md](defection-guard.md) | **推荐提交候选（ADR 0014）**；FullGuard 状态机 + V5-FT-Complex；dev_complex 487.09/489.36、dev 五项 min_norm ≥1.0；test_v8 final **496.40 已消费**；C++ parity 通过；主权重保留 RL-PPO |
 | 输入特征 v2 | [feature-v2.md](feature-v2.md) | 85→97；Python/GPU/C++ parity 通过；dev_complex +2～4 但 dev_param/test 回退；**No-Go**，未注册 |
 | 全量对手扫描 | [weak-opponents-20261036.md](weak-opponents-20261036.md) | 158 / 977 / 224 对手 + 参考候选；薄弱点：extortion/ZD、periodic/Kamikaze、Gap/FSM、PB 尾部、noisy/Joss |
 | Extort-hard | [extort-hard.md](extort-hard.md) | 新增 `extort_hard` 训练分布；strong/gentle 均未解决 extort 弱点，PB 回退；**No-Go** |

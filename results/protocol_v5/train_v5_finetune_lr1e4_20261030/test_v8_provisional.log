@@ -1,0 +1,34 @@
+WARNING: test_v8 is provisional; this wrapper never writes the usage ledger and never enables selection
+candidates=['TrainV5-lr1e4-iter8', 'RL-Wide160', 'RL-PPO'] tiers=['test_v8'] fields=50 n=2048 seed=20261027 tasks=50
+progress 2/50 elapsed=41s
+progress 4/50 elapsed=42s
+progress 6/50 elapsed=42s
+progress 8/50 elapsed=42s
+progress 10/50 elapsed=42s
+progress 12/50 elapsed=43s
+progress 14/50 elapsed=43s
+progress 16/50 elapsed=43s
+progress 18/50 elapsed=43s
+progress 20/50 elapsed=43s
+progress 22/50 elapsed=78s
+progress 24/50 elapsed=79s
+progress 26/50 elapsed=80s
+progress 28/50 elapsed=81s
+progress 30/50 elapsed=81s
+progress 32/50 elapsed=81s
+progress 34/50 elapsed=81s
+progress 36/50 elapsed=81s
+progress 38/50 elapsed=82s
+progress 40/50 elapsed=82s
+progress 42/50 elapsed=111s
+progress 44/50 elapsed=112s
+progress 46/50 elapsed=113s
+progress 48/50 elapsed=114s
+progress 50/50 elapsed=114s
+
+Protocol v5 evaluation (50 fields, n=2048)
+  TrainV5-lr1e4-iter8      test_v8=496.37
+  RL-Wide160               test_v8=495.71
+  RL-PPO                   test_v8=487.83
+
+written results/protocol_v5/train_v5_finetune_lr1e4_20261030/test_v8_provisional.json

@@ -3,9 +3,9 @@
   "protocol": "protocol_v5",
   "consume_test": false,
   "consume_tiers": {
-    "test_v8": false,
+    "test_v8": true,
     "test_red": false
   },
-  "reason": "Protocol v5 is a fresh split; test_v8 and test_red stay held out until an explicit final unlock",
+  "reason": "test_v8 unlocked for one-time final evaluation of rl-full-guard-c on 2026-10-30; test_red remains locked (ADR 0011)",
   "updated": "2026-10-30"
 }

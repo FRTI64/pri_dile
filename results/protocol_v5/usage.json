@@ -1,0 +1,26 @@
+{
+  "schema": "ipd-protocol-usage-v1",
+  "protocol": "protocol_v5",
+  "catalog_sha256": "c7aab4da622413460f8906a2846398d3e9466ed429ceab25dad197129eacf158",
+  "entries": [
+    {
+      "tier": "test_v8",
+      "candidate": "RL-FullGuard-C",
+      "result": "results/protocol_v5/protocol_v5_full_guard_c_test_final.json",
+      "catalog_sha256": "c7aab4da622413460f8906a2846398d3e9466ed429ceab25dad197129eacf158",
+      "created": "2026-10-30T23:47:14",
+      "contaminated": false,
+      "note": ""
+    },
+    {
+      "tier": "test_v8",
+      "candidate": "RL-PPO",
+      "result": "results/protocol_v5/protocol_v5_full_guard_c_test_final.json",
+      "catalog_sha256": "c7aab4da622413460f8906a2846398d3e9466ed429ceab25dad197129eacf158",
+      "created": "2026-10-30T23:47:14",
+      "contaminated": false,
+      "note": ""
+    }
+  ],
+  "updated": "2026-10-30T23:47:14"
+}

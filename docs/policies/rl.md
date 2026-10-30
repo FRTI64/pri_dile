@@ -3,9 +3,11 @@
 > **状态（2026-10-29）**：本文记录 85 维 PPO 的方法和截至 2026-10-26 的
 > 核心 RL 结果。之后新增了 RL-PPO-Hard60（A60）、RL-Repair（E1c）、
 > RL-Pattern、RL-Wide（128/128）、RL-Wide160（160/128）、
-> RL-Switch（窄 meta）和 GRU-DAgger（单模型蒸馏）；**Protocol v4
-> dev/test 最佳（top 7）是 RL-Switch，GRU-DAgger 是单模型替代；
-> 两者都未 promotion**；RL-Repair 仍是 proven fallback。
+> RL-V5-FT（`train_v5` fine-tune）、RL-Switch（窄 meta）和
+> GRU-DAgger（单模型蒸馏）；**Protocol v4 dev/test 最佳（top 7）是
+> RL-Switch，GRU-DAgger 是单模型替代；两者都未 promotion**；
+> RL-V5-FT 在 v5 dev 两 seed 上超过 RL-Wide160，但 probe min_norm
+> 仍只有 0.927，也未 promotion；RL-Repair 仍是 proven fallback。
 > 下方 5.1/5.2 的 10-field 盲测表只代表当时的基线。当前候选比较见
 > [README.md](../../README.md)、`results/meta_20261039/`、
 > `docs/research/rl-switch.md`、`docs/research/rl-wide160.md`、
@@ -57,6 +59,18 @@ logistic regression 决定剩余回合用 RL-Wide160 或 RL-Repair。
 Python / GPU / C++ 三端 parity 通过。RL-Wide160 上 fine-tune 只带来
 dev_complex +2～4，dev_param / test_v7 回退，未注册候选。详见
 `docs/research/feature-v2.md`。
+
+### RL-V5-FT（2026-10-30，实验候选）
+
+从 RL-Wide160 的 160/128 checkpoint 出发，仅用 Protocol v5 的
+`train_v5` profile 做 12 iter PPO fine-tune（3 fields/dist × 160，
+lr 1e-4、bc-kl 0.1、target-kl 0.02），选择 iter8。两个 dev seed
+相对 RL-Wide160：`dev_param +0.49～0.52`、`dev_complex +4.8～4.9`、
+`dev_axelrod +1.0`、`dev_ood +1.6～1.7`；`pattern_breaker` 634 → 683。
+`test_v8` provisional 496.37 vs 495.71（`--no-consume`）。
+`probe_exploit` 仍约 115，`min_norm` 0.927，因此**未 promotion**；
+报告 `results/protocol_v5/train_v5_finetune_lr1e4_20261030/`。
+注册名 `rl-v5-ft`，部署权重 `weights/rl_policy_weights_v5_ft.json`。
 
 ### RL-Wide160（2026-10-31）
 

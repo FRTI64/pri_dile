@@ -1,0 +1,22 @@
+{
+  "candidates": [
+    {
+      "name": "TrainV5-lr1e4-iter8",
+      "kind": "rl",
+      "weights": "results/protocol_v5/train_v5_finetune_lr1e4_20261030/ckpts/iter_008.json",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Wide160",
+      "kind": "rl",
+      "weights": "weights/rl_policy_weights_wide160.json",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "weights": "weights/rl_policy_weights.json",
+      "mode": "sample"
+    }
+  ]
+}
