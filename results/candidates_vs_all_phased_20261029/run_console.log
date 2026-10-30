@@ -1,0 +1,195 @@
+2026-10-29 21:03:47 INFO    ========================================================================
+2026-10-29 21:03:47 INFO    candidates_vs_all_phased_20261029: START pid=346879 base_seed=20261029 rounds=100 reps=1
+2026-10-29 21:03:47 INFO    routing: GPU=13 candidates, CPU=20 candidates; workers: cpu=20 gpu=8; gpu_shards=8
+2026-10-29 21:03:50 INFO    phase0: 1937 entities built; per-pool counts={'candidate': 33, 'legacy': 158, 'axelrod': 243, 'axelrod_cheating': 1, 'protocol_v4': 977, 'heldout_v2': 74, 'heldout_v3': 83, 'heldout_v4': 83, 'validation': 51, 'final': 86, 'hard': 16, 'hard2': 28, 'periodic': 9, 'robust': 13, 'repair': 15, 'extort': 10, 'policy_weight': 57}
+2026-10-29 21:03:50 INFO    phase1: cached report found, pass=True
+2026-10-29 21:03:50 INFO    phase2: starting provisional parity branch: 13 GPU candidates + 20 CPU candidates x 1937 opponents = 63921 matches
+2026-10-29 21:03:50 INFO    parity-gpu: scheduled 104 shards (0 cached), workers=8, shards_per_candidate=8
+2026-10-29 21:04:17 INFO    parity-gpu: 1/104 (  1.0%) C:neural part 7 rows=242 in 23.0s; elapsed=26.4s eta=2715.4s
+2026-10-29 21:04:24 INFO    parity-gpu: 2/104 (  1.9%) C:neural part 1 rows=242 in 30.1s; elapsed=33.5s eta=1708.2s
+2026-10-29 21:04:24 INFO    parity-gpu: 3/104 (  2.9%) C:neural part 5 rows=242 in 30.9s; elapsed=34.2s eta=1150.2s
+2026-10-29 21:04:25 INFO    parity-gpu: 4/104 (  3.8%) C:neural part 4 rows=242 in 31.0s; elapsed=34.3s eta=857.5s
+2026-10-29 21:04:25 INFO    parity-gpu: 5/104 (  4.8%) C:neural part 3 rows=242 in 31.3s; elapsed=34.6s eta=685.2s
+2026-10-29 21:04:25 INFO    parity-gpu: 6/104 (  5.8%) C:neural part 2 rows=242 in 31.3s; elapsed=34.6s eta=565.8s
+2026-10-29 21:04:26 INFO    parity-gpu: 7/104 (  6.7%) C:neural part 6 rows=242 in 32.1s; elapsed=35.5s eta=491.4s
+2026-10-29 21:04:36 INFO    parity-gpu: 8/104 (  7.7%) C:neural part 0 rows=243 in 41.9s; elapsed=45.3s eta=543.7s
+2026-10-29 21:04:51 INFO    parity-gpu: 9/104 (  8.7%) C:gru part 1 rows=242 in 27.5s; elapsed=61.1s eta=645.5s
+2026-10-29 21:04:54 INFO    parity-gpu: 10/104 (  9.6%) C:gru part 4 rows=242 in 29.1s; elapsed=63.8s eta=599.8s
+2026-10-29 21:04:54 INFO    parity-gpu: 11/104 ( 10.6%) C:gru part 5 rows=242 in 29.3s; elapsed=64.1s eta=541.9s
+2026-10-29 21:04:55 INFO    parity-gpu: 12/104 ( 11.5%) C:gru part 2 rows=242 in 30.0s; elapsed=64.3s eta=492.6s
+2026-10-29 21:04:55 INFO    parity-gpu: 13/104 ( 12.5%) C:gru part 0 rows=243 in 38.2s; elapsed=64.7s eta=453.0s
+2026-10-29 21:04:56 INFO    parity-gpu: 14/104 ( 13.5%) C:gru part 7 rows=242 in 20.3s; elapsed=65.7s eta=422.1s
+2026-10-29 21:04:57 INFO    parity-gpu: 15/104 ( 14.4%) C:gru part 3 rows=242 in 32.1s; elapsed=66.6s eta=395.1s
+2026-10-29 21:04:57 INFO    parity-gpu: 16/104 ( 15.4%) C:gru part 6 rows=242 in 31.0s; elapsed=66.9s eta=367.8s
+2026-10-29 21:05:19 INFO    parity-gpu: 17/104 ( 16.3%) C:rl part 7 rows=242 in 21.9s; elapsed=88.8s eta=454.7s
+2026-10-29 21:05:23 INFO    parity-gpu: 18/104 ( 17.3%) C:rl part 1 rows=242 in 29.0s; elapsed=92.9s eta=443.9s
+2026-10-29 21:05:24 INFO    parity-gpu: 19/104 ( 18.3%) C:rl part 5 rows=242 in 27.5s; elapsed=93.3s eta=417.4s
+2026-10-29 21:05:27 INFO    parity-gpu: 20/104 ( 19.2%) C:rl part 4 rows=242 in 31.4s; elapsed=96.3s eta=404.4s
+2026-10-29 21:05:27 INFO    parity-gpu: 21/104 ( 20.2%) C:rl part 2 rows=242 in 32.3s; elapsed=96.5s eta=381.3s
+2026-10-29 21:05:27 INFO    parity-gpu: 22/104 ( 21.2%) C:rl part 6 rows=242 in 30.2s; elapsed=96.9s eta=361.3s
+2026-10-29 21:05:27 INFO    parity-gpu: 23/104 ( 22.1%) C:rl part 3 rows=242 in 32.7s; elapsed=97.1s eta=342.0s
+2026-10-29 21:05:29 INFO    parity-gpu: 24/104 ( 23.1%) C:rl part 0 rows=243 in 37.3s; elapsed=98.6s eta=328.8s
+2026-10-29 21:05:50 INFO    parity-gpu: 25/104 ( 24.0%) C:rl-hard60 part 1 rows=242 in 26.7s; elapsed=119.8s eta=378.5s
+2026-10-29 21:05:51 INFO    parity-gpu: 26/104 ( 25.0%) C:rl-hard60 part 7 rows=242 in 21.5s; elapsed=120.3s eta=360.8s
+2026-10-29 21:05:54 INFO    parity-gpu: 27/104 ( 26.0%) C:rl-hard60 part 2 rows=242 in 29.8s; elapsed=123.2s eta=351.5s
+2026-10-29 21:05:55 INFO    parity-gpu: 28/104 ( 26.9%) C:rl-hard60 part 4 rows=242 in 28.0s; elapsed=124.5s eta=338.0s
+2026-10-29 21:05:55 INFO    parity-gpu: 29/104 ( 27.9%) C:rl-hard60 part 5 rows=242 in 27.9s; elapsed=124.9s eta=323.1s
+2026-10-29 21:05:56 INFO    parity-gpu: 30/104 ( 28.8%) C:rl-hard60 part 3 rows=242 in 29.8s; elapsed=126.2s eta=311.4s
+2026-10-29 21:05:58 INFO    parity-gpu: 31/104 ( 29.8%) C:rl-hard60 part 0 rows=243 in 38.7s; elapsed=127.7s eta=300.7s
+2026-10-29 21:06:00 INFO    parity-gpu: 32/104 ( 30.8%) C:rl-hard60 part 6 rows=242 in 32.7s; elapsed=130.0s eta=292.6s
+2026-10-29 21:06:18 INFO    parity-gpu: 33/104 ( 31.7%) C:rl-repair part 1 rows=242 in 26.9s; elapsed=147.3s eta=317.0s
+2026-10-29 21:06:22 INFO    parity-gpu: 34/104 ( 32.7%) C:rl-repair part 7 rows=242 in 21.4s; elapsed=151.5s eta=312.0s
+2026-10-29 21:06:24 INFO    parity-gpu: 35/104 ( 33.7%) C:rl-repair part 3 rows=242 in 28.8s; elapsed=153.5s eta=302.6s
+2026-10-29 21:06:25 INFO    parity-gpu: 36/104 ( 34.6%) C:rl-repair part 4 rows=242 in 29.3s; elapsed=154.4s eta=291.6s
+2026-10-29 21:06:26 INFO    parity-gpu: 37/104 ( 35.6%) C:rl-repair part 5 rows=242 in 29.2s; elapsed=155.5s eta=281.6s
+2026-10-29 21:06:27 INFO    parity-gpu: 38/104 ( 36.5%) C:rl-repair part 2 rows=242 in 33.4s; elapsed=156.8s eta=272.3s
+2026-10-29 21:06:30 INFO    parity-gpu: 39/104 ( 37.5%) C:rl-repair part 6 rows=242 in 31.6s; elapsed=159.4s eta=265.7s
+2026-10-29 21:06:32 INFO    parity-gpu: 40/104 ( 38.5%) C:rl-repair part 0 rows=243 in 41.5s; elapsed=161.5s eta=258.4s
+2026-10-29 21:06:49 INFO    parity-gpu: 41/104 ( 39.4%) C:rl-pattern part 1 rows=242 in 26.5s; elapsed=178.3s eta=273.9s
+2026-10-29 21:06:53 INFO    parity-gpu: 42/104 ( 40.4%) C:rl-pattern part 7 rows=242 in 21.0s; elapsed=182.6s eta=269.6s
+2026-10-29 21:06:53 INFO    parity-gpu: 43/104 ( 41.3%) C:rl-pattern part 2 rows=242 in 29.5s; elapsed=183.1s eta=259.7s
+2026-10-29 21:06:55 INFO    parity-gpu: 44/104 ( 42.3%) C:rl-pattern part 4 rows=242 in 29.2s; elapsed=184.9s eta=252.1s
+2026-10-29 21:06:55 INFO    parity-gpu: 45/104 ( 43.3%) C:rl-pattern part 3 rows=242 in 30.4s; elapsed=185.0s eta=242.5s
+2026-10-29 21:06:57 INFO    parity-gpu: 46/104 ( 44.2%) C:rl-pattern part 0 rows=243 in 38.6s; elapsed=186.2s eta=234.8s
+2026-10-29 21:06:59 INFO    parity-gpu: 47/104 ( 45.2%) C:rl-pattern part 5 rows=242 in 32.0s; elapsed=189.0s eta=229.2s
+2026-10-29 21:07:04 INFO    parity-gpu: 48/104 ( 46.2%) C:rl-pattern part 6 rows=242 in 33.9s; elapsed=193.5s eta=225.7s
+2026-10-29 21:07:21 INFO    parity-gpu: 49/104 ( 47.1%) C:rl-wide part 1 rows=242 in 26.8s; elapsed=210.6s eta=236.4s
+2026-10-29 21:07:23 INFO    parity-gpu: 50/104 ( 48.1%) C:rl-wide part 4 rows=242 in 27.5s; elapsed=212.6s eta=229.6s
+2026-10-29 21:07:24 INFO    parity-gpu: 51/104 ( 49.0%) C:rl-wide part 7 rows=242 in 20.1s; elapsed=213.6s eta=222.0s
+2026-10-29 21:07:25 INFO    parity-gpu: 52/104 ( 50.0%) C:rl-wide part 2 rows=242 in 31.1s; elapsed=214.3s eta=214.3s
+2026-10-29 21:07:25 INFO    parity-gpu: 53/104 ( 51.0%) C:rl-wide part 3 rows=242 in 29.4s; elapsed=214.4s eta=206.3s
+2026-10-29 21:07:25 INFO    parity-gpu: 54/104 ( 51.9%) C:rl-wide part 5 rows=242 in 28.6s; elapsed=215.0s eta=199.0s
+2026-10-29 21:07:29 INFO    parity-gpu: 55/104 ( 52.9%) C:rl-wide part 6 rows=242 in 29.7s; elapsed=218.9s eta=195.0s
+2026-10-29 21:07:32 INFO    parity-gpu: 56/104 ( 53.8%) C:rl-wide part 0 rows=243 in 43.7s; elapsed=222.2s eta=190.4s
+2026-10-29 21:07:51 INFO    parity-gpu: 57/104 ( 54.8%) C:rl-wide160 part 1 rows=242 in 28.0s; elapsed=240.8s eta=198.5s
+2026-10-29 21:07:53 INFO    parity-gpu: 58/104 ( 55.8%) C:rl-wide160 part 4 rows=242 in 28.0s; elapsed=242.5s eta=192.4s
+2026-10-29 21:07:54 INFO    parity-gpu: 59/104 ( 56.7%) C:rl-wide160 part 7 rows=242 in 21.5s; elapsed=243.8s eta=185.9s
+2026-10-29 21:07:54 INFO    parity-gpu: 60/104 ( 57.7%) C:rl-wide160 part 5 rows=242 in 29.1s; elapsed=244.2s eta=179.1s
+2026-10-29 21:07:55 INFO    parity-gpu: 61/104 ( 58.7%) C:rl-wide160 part 3 rows=242 in 30.2s; elapsed=244.5s eta=172.4s
+2026-10-29 21:07:56 INFO    parity-gpu: 62/104 ( 59.6%) C:rl-wide160 part 2 rows=242 in 31.6s; elapsed=245.4s eta=166.2s
+2026-10-29 21:07:59 INFO    parity-gpu: 63/104 ( 60.6%) C:rl-wide160 part 0 rows=243 in 38.0s; elapsed=248.8s eta=161.9s
+2026-10-29 21:08:01 INFO    parity-gpu: 64/104 ( 61.5%) C:rl-wide160 part 6 rows=242 in 31.9s; elapsed=251.0s eta=156.9s
+2026-10-29 21:08:20 INFO    parity-gpu: 65/104 ( 62.5%) C:rl-dagger-gru part 1 rows=242 in 27.4s; elapsed=270.1s eta=162.1s
+2026-10-29 21:08:24 INFO    parity-gpu: 66/104 ( 63.5%) C:rl-dagger-gru part 5 rows=242 in 27.9s; elapsed=273.4s eta=157.4s
+2026-10-29 21:08:24 INFO    parity-gpu: 67/104 ( 64.4%) C:rl-dagger-gru part 3 rows=242 in 29.6s; elapsed=274.0s eta=151.3s
+2026-10-29 21:08:24 INFO    parity-gpu: 68/104 ( 65.4%) C:rl-dagger-gru part 7 rows=242 in 22.9s; elapsed=274.0s eta=145.1s
+2026-10-29 21:08:26 INFO    parity-gpu: 69/104 ( 66.3%) C:rl-dagger-gru part 4 rows=242 in 31.0s; elapsed=275.7s eta=139.8s
+2026-10-29 21:08:27 INFO    parity-gpu: 70/104 ( 67.3%) C:rl-dagger-gru part 2 rows=242 in 33.1s; elapsed=277.0s eta=134.6s
+2026-10-29 21:08:29 INFO    parity-gpu: 71/104 ( 68.3%) C:rl-dagger-gru part 0 rows=243 in 38.0s; elapsed=279.0s eta=129.7s
+2026-10-29 21:08:31 INFO    parity-gpu: 72/104 ( 69.2%) C:rl-dagger-gru part 6 rows=242 in 31.9s; elapsed=280.9s eta=124.8s
+2026-10-29 21:08:51 INFO    parity-gpu: 73/104 ( 70.2%) C:psro-br part 1 rows=242 in 27.1s; elapsed=300.7s eta=127.7s
+2026-10-29 21:08:55 INFO    parity-gpu: 74/104 ( 71.2%) C:psro-br part 3 rows=242 in 30.8s; elapsed=304.9s eta=123.6s
+2026-10-29 21:08:55 INFO    parity-gpu: 75/104 ( 72.1%) C:psro-br part 4 rows=242 in 29.2s; elapsed=305.0s eta=117.9s
+2026-10-29 21:08:56 INFO    parity-gpu: 76/104 ( 73.1%) C:psro-br part 5 rows=242 in 28.2s; elapsed=305.4s eta=112.5s
+2026-10-29 21:08:56 INFO    parity-gpu: 77/104 ( 74.0%) C:psro-br part 2 rows=242 in 32.0s; elapsed=306.1s eta=107.3s
+2026-10-29 21:08:57 INFO    parity-gpu: 78/104 ( 75.0%) C:psro-br part 7 rows=242 in 26.1s; elapsed=307.1s eta=102.4s
+2026-10-29 21:09:01 INFO    parity-gpu: 79/104 ( 76.0%) C:psro-br part 6 rows=242 in 31.9s; elapsed=311.0s eta=98.4s
+2026-10-29 21:09:02 INFO    parity-gpu: 80/104 ( 76.9%) C:psro-br part 0 rows=243 in 41.2s; elapsed=311.5s eta=93.5s
+2026-10-29 21:09:25 INFO    parity-gpu: 81/104 ( 77.9%) C:psro-scratch-br part 7 rows=242 in 22.8s; elapsed=334.4s eta=95.0s
+2026-10-29 21:09:25 INFO    parity-gpu: 82/104 ( 78.8%) C:psro-scratch-br part 4 rows=242 in 28.4s; elapsed=334.7s eta=89.8s
+2026-10-29 21:09:25 INFO    parity-gpu: 83/104 ( 79.8%) C:psro-scratch-br part 1 rows=242 in 29.7s; elapsed=334.8s eta=84.7s
+2026-10-29 21:09:26 INFO    parity-gpu: 84/104 ( 80.8%) C:psro-scratch-br part 5 rows=242 in 28.5s; elapsed=335.8s eta=80.0s
+2026-10-29 21:09:26 INFO    parity-gpu: 85/104 ( 81.7%) C:psro-scratch-br part 3 rows=242 in 30.3s; elapsed=335.8s eta=75.1s
+2026-10-29 21:09:27 INFO    parity-gpu: 86/104 ( 82.7%) C:psro-scratch-br part 2 rows=242 in 31.2s; elapsed=336.3s eta=70.4s
+2026-10-29 21:09:32 INFO    parity-gpu: 87/104 ( 83.7%) C:psro-scratch-br part 0 rows=243 in 40.5s; elapsed=341.4s eta=66.7s
+2026-10-29 21:09:34 INFO    parity-gpu: 88/104 ( 84.6%) C:psro-scratch-br part 6 rows=242 in 32.2s; elapsed=343.4s eta=62.4s
+2026-10-29 21:09:53 INFO    parity-gpu: 89/104 ( 85.6%) C:psro-v4-br part 1 rows=242 in 27.4s; elapsed=362.3s eta=61.1s
+2026-10-29 21:09:56 INFO    parity-gpu: 90/104 ( 86.5%) C:psro-v4-br part 5 rows=242 in 29.1s; elapsed=365.5s eta=56.9s
+2026-10-29 21:09:57 INFO    parity-gpu: 91/104 ( 87.5%) C:psro-v4-br part 2 rows=242 in 31.5s; elapsed=366.4s eta=52.3s
+2026-10-29 21:09:57 INFO    parity-gpu: 92/104 ( 88.5%) C:psro-v4-br part 3 rows=242 in 30.8s; elapsed=366.8s eta=47.8s
+2026-10-29 21:09:58 INFO    parity-gpu: 93/104 ( 89.4%) C:psro-v4-br part 7 rows=242 in 23.9s; elapsed=367.3s eta=43.4s
+2026-10-29 21:09:58 INFO    parity-gpu: 94/104 ( 90.4%) C:psro-v4-br part 4 rows=242 in 32.0s; elapsed=367.9s eta=39.1s
+2026-10-29 21:10:03 INFO    parity-gpu: 95/104 ( 91.3%) C:psro-v4-br part 6 rows=242 in 31.1s; elapsed=372.6s eta=35.3s
+2026-10-29 21:10:06 INFO    parity-gpu: 96/104 ( 92.3%) C:psro-v4-br part 0 rows=243 in 40.9s; elapsed=375.5s eta=31.3s
+2026-10-29 21:10:22 INFO    parity-gpu: 97/104 ( 93.3%) C:selfplay part 1 rows=242 in 25.6s; elapsed=391.5s eta=28.3s
+2026-10-29 21:10:24 INFO    parity-gpu: 98/104 ( 94.2%) C:selfplay part 5 rows=242 in 26.0s; elapsed=394.1s eta=24.1s
+2026-10-29 21:10:25 INFO    parity-gpu: 99/104 ( 95.2%) C:selfplay part 2 rows=242 in 28.2s; elapsed=394.7s eta=19.9s
+2026-10-29 21:10:25 INFO    parity-gpu: 100/104 ( 96.2%) C:selfplay part 3 rows=242 in 28.0s; elapsed=395.0s eta=15.8s
+2026-10-29 21:10:25 INFO    parity-gpu: 101/104 ( 97.1%) C:selfplay part 4 rows=242 in 27.5s; elapsed=395.1s eta=11.7s
+2026-10-29 21:10:25 INFO    parity-gpu: 102/104 ( 98.1%) C:selfplay part 7 rows=242 in 19.6s; elapsed=395.2s eta=7.7s
+2026-10-29 21:10:29 INFO    parity-gpu: 103/104 ( 99.0%) C:selfplay part 0 rows=243 in 35.9s; elapsed=398.4s eta=3.9s
+2026-10-29 21:10:29 INFO    parity-gpu: 104/104 (100.0%) C:selfplay part 6 rows=242 in 26.3s; elapsed=399.2s eta=0.0s
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 1/13 C:neural rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 2/13 C:gru rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 3/13 C:rl rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 4/13 C:rl-hard60 rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 5/13 C:rl-repair rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 6/13 C:rl-pattern rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 7/13 C:rl-wide rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 8/13 C:rl-wide160 rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 9/13 C:rl-dagger-gru rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 10/13 C:psro-br rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 11/13 C:psro-scratch-br rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 12/13 C:psro-v4-br rows=1937
+2026-10-29 21:10:30 INFO    parity-gpu: candidate complete 13/13 C:selfplay rows=1937
+2026-10-29 21:10:30 INFO    phase2-gpu: branch complete: {'rows': 25181, 'seconds': 3120.826181680004, 'candidates': 13, 'cached': 0}
+2026-10-29 21:10:30 INFO    parity-cpu: scheduled 20 candidates (0 cached), workers=20
+2026-10-29 21:11:29 INFO    parity-cpu: 1/20 (  5.0%) C:resp3-tuned rows=1937 in 58.1s; elapsed=58.2s eta=1105.3s
+2026-10-29 21:11:29 INFO    parity-cpu: 2/20 ( 10.0%) C:resp3-base rows=1937 in 58.4s; elapsed=58.4s eta=526.0s
+2026-10-29 21:11:30 INFO    parity-cpu: 3/20 ( 15.0%) C:harvest45 rows=1937 in 59.4s; elapsed=59.5s eta=337.0s
+2026-10-29 21:11:32 INFO    parity-cpu: 4/20 ( 20.0%) C:gap-start rows=1937 in 61.1s; elapsed=61.1s eta=244.6s
+2026-10-29 21:11:33 INFO    parity-cpu: 5/20 ( 25.0%) C:psro rows=1937 in 62.5s; elapsed=62.6s eta=187.7s
+2026-10-29 21:11:37 INFO    parity-cpu: 6/20 ( 30.0%) C:triple-majority rows=1937 in 66.7s; elapsed=66.8s eta=155.9s
+2026-10-29 21:11:37 INFO    parity-cpu: 7/20 ( 35.0%) C:final-base rows=1937 in 66.8s; elapsed=66.9s eta=124.2s
+2026-10-29 21:11:37 INFO    parity-cpu: 8/20 ( 40.0%) C:harvest-tuned rows=1937 in 66.9s; elapsed=66.9s eta=100.4s
+2026-10-29 21:11:38 INFO    parity-cpu: 9/20 ( 45.0%) C:final-tuned rows=1937 in 67.1s; elapsed=67.2s eta=82.1s
+2026-10-29 21:11:38 INFO    parity-cpu: 10/20 ( 50.0%) C:hybrid rows=1937 in 67.6s; elapsed=67.7s eta=67.7s
+2026-10-29 21:11:39 INFO    parity-cpu: 11/20 ( 55.0%) C:adv-mlp rows=1937 in 68.4s; elapsed=68.5s eta=56.0s
+2026-10-29 21:11:43 INFO    parity-cpu: 12/20 ( 60.0%) C:bayes-base rows=1937 in 72.0s; elapsed=72.1s eta=48.1s
+2026-10-29 21:11:43 INFO    parity-cpu: 13/20 ( 65.0%) C:bayes-tuned rows=1937 in 72.1s; elapsed=72.2s eta=38.9s
+2026-10-29 21:11:43 INFO    parity-cpu: 14/20 ( 70.0%) C:triple-v4 rows=1937 in 72.2s; elapsed=72.2s eta=31.0s
+2026-10-29 21:11:48 INFO    parity-cpu: 15/20 ( 75.0%) C:psro-scratch rows=1937 in 77.0s; elapsed=77.1s eta=25.7s
+2026-10-29 21:11:48 INFO    parity-cpu: 16/20 ( 80.0%) C:adv-rl rows=1937 in 77.1s; elapsed=77.2s eta=19.3s
+2026-10-29 21:11:48 INFO    parity-cpu: 17/20 ( 85.0%) C:psro-v4 rows=1937 in 77.4s; elapsed=77.5s eta=13.7s
+2026-10-29 21:11:50 INFO    parity-cpu: 18/20 ( 90.0%) C:adv-gru rows=1937 in 79.4s; elapsed=79.5s eta=8.8s
+2026-10-29 21:12:15 INFO    parity-cpu: 19/20 ( 95.0%) C:rl-gate rows=1937 in 104.8s; elapsed=104.9s eta=5.5s
+2026-10-29 21:12:16 INFO    parity-cpu: 20/20 (100.0%) C:rl-switch rows=1937 in 105.0s; elapsed=105.1s eta=0.0s
+2026-10-29 21:12:17 INFO    phase2-cpu: branch complete: {'rows': 38740, 'seconds': 1439.713538863998, 'candidates': 20, 'cached': 0}
+2026-10-29 21:12:17 INFO    merge: writing /home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/parity_long.csv ...
+2026-10-29 21:12:17 INFO    merge: wrote 63921 rows across 33 candidates; devices={'cpu': 38740, 'cuda': 25181}
+2026-10-29 21:12:17 INFO    phase2: complete: rows=63921 status=provisional
+2026-10-29 21:12:17 INFO    phase3: starting authoritative pure-CPU sample branch: 33 candidates x 1937 opponents = 63921 matches; workers=20
+2026-10-29 21:12:17 INFO    cpu-cpu: scheduled 33 candidates (0 cached), workers=20
+2026-10-29 21:13:21 INFO    cpu-cpu: 1/33 (  3.0%) C:harvest45 rows=1937 in 63.7s; elapsed=63.8s eta=2042.1s
+2026-10-29 21:13:21 INFO    cpu-cpu: 2/33 (  6.1%) C:hybrid rows=1937 in 64.0s; elapsed=64.1s eta=993.3s
+2026-10-29 21:13:21 INFO    cpu-cpu: 3/33 (  9.1%) C:resp3-tuned rows=1937 in 64.0s; elapsed=64.1s eta=640.9s
+2026-10-29 21:13:22 INFO    cpu-cpu: 4/33 ( 12.1%) C:final-tuned rows=1937 in 64.1s; elapsed=64.1s eta=465.0s
+2026-10-29 21:13:22 INFO    cpu-cpu: 5/33 ( 15.2%) C:harvest-tuned rows=1937 in 64.1s; elapsed=64.1s eta=359.2s
+2026-10-29 21:13:22 INFO    cpu-cpu: 6/33 ( 18.2%) C:final-base rows=1937 in 64.3s; elapsed=64.4s eta=289.9s
+2026-10-29 21:13:22 INFO    cpu-cpu: 7/33 ( 21.2%) C:resp3-base rows=1937 in 64.8s; elapsed=64.9s eta=241.0s
+2026-10-29 21:13:23 INFO    cpu-cpu: 8/33 ( 24.2%) C:gap-start rows=1937 in 65.6s; elapsed=65.7s eta=205.4s
+2026-10-29 21:13:28 INFO    cpu-cpu: 9/33 ( 27.3%) C:bayes-tuned rows=1937 in 70.8s; elapsed=70.8s eta=188.9s
+2026-10-29 21:13:29 INFO    cpu-cpu: 10/33 ( 30.3%) C:triple-majority rows=1937 in 71.5s; elapsed=71.6s eta=164.7s
+2026-10-29 21:13:30 INFO    cpu-cpu: 11/33 ( 33.3%) C:bayes-base rows=1937 in 72.1s; elapsed=72.2s eta=144.4s
+2026-10-29 21:13:31 INFO    cpu-cpu: 12/33 ( 36.4%) C:triple-v4 rows=1937 in 73.5s; elapsed=73.6s eta=128.7s
+2026-10-29 21:13:33 INFO    cpu-cpu: 13/33 ( 39.4%) C:neural rows=1937 in 75.7s; elapsed=75.8s eta=116.6s
+2026-10-29 21:13:35 INFO    cpu-cpu: 14/33 ( 42.4%) C:rl-pattern rows=1937 in 77.7s; elapsed=77.9s eta=105.7s
+2026-10-29 21:13:36 INFO    cpu-cpu: 15/33 ( 45.5%) C:rl-repair rows=1937 in 78.4s; elapsed=78.5s eta=94.2s
+2026-10-29 21:13:36 INFO    cpu-cpu: 16/33 ( 48.5%) C:rl-hard60 rows=1937 in 79.0s; elapsed=79.1s eta=84.0s
+2026-10-29 21:13:44 INFO    cpu-cpu: 17/33 ( 51.5%) C:gru rows=1937 in 86.6s; elapsed=86.7s eta=81.6s
+2026-10-29 21:13:50 INFO    cpu-cpu: 18/33 ( 54.5%) C:rl rows=1937 in 92.2s; elapsed=92.3s eta=77.0s
+2026-10-29 21:13:59 INFO    cpu-cpu: 19/33 ( 57.6%) C:rl-wide rows=1937 in 101.8s; elapsed=101.9s eta=75.1s
+2026-10-29 21:14:07 INFO    cpu-cpu: 20/33 ( 60.6%) C:rl-wide160 rows=1937 in 109.3s; elapsed=109.4s eta=71.1s
+2026-10-29 21:14:18 INFO    cpu-cpu: 21/33 ( 63.6%) C:psro rows=1937 in 56.5s; elapsed=120.7s eta=69.0s
+2026-10-29 21:14:28 INFO    cpu-cpu: 22/33 ( 66.7%) C:psro-br rows=1937 in 66.0s; elapsed=130.1s eta=65.1s
+2026-10-29 21:14:29 INFO    cpu-cpu: 23/33 ( 69.7%) C:psro-scratch rows=1937 in 66.8s; elapsed=131.2s eta=57.0s
+2026-10-29 21:14:29 INFO    cpu-cpu: 24/33 ( 72.7%) C:psro-scratch-br rows=1937 in 66.9s; elapsed=131.8s eta=49.4s
+2026-10-29 21:14:29 INFO    cpu-cpu: 25/33 ( 75.8%) C:psro-v4 rows=1937 in 66.2s; elapsed=131.9s eta=42.2s
+2026-10-29 21:14:31 INFO    cpu-cpu: 26/33 ( 78.8%) C:adv-mlp rows=1937 in 61.8s; elapsed=133.4s eta=35.9s
+2026-10-29 21:14:33 INFO    cpu-cpu: 27/33 ( 81.8%) C:psro-v4-br rows=1937 in 64.7s; elapsed=135.5s eta=30.1s
+2026-10-29 21:14:34 INFO    cpu-cpu: 28/33 ( 84.8%) C:adv-rl rows=1937 in 63.5s; elapsed=137.1s eta=24.5s
+2026-10-29 21:14:40 INFO    cpu-cpu: 29/33 ( 87.9%) C:adv-gru rows=1937 in 70.7s; elapsed=142.9s eta=19.7s
+2026-10-29 21:14:50 INFO    cpu-cpu: 30/33 ( 90.9%) C:rl-dagger-gru rows=1937 in 88.8s; elapsed=152.9s eta=15.3s
+2026-10-29 21:14:58 INFO    cpu-cpu: 31/33 ( 93.9%) C:rl-gate rows=1937 in 96.8s; elapsed=160.9s eta=10.4s
+2026-10-29 21:14:58 INFO    cpu-cpu: 32/33 ( 97.0%) C:rl-switch rows=1937 in 97.1s; elapsed=160.9s eta=5.0s
+2026-10-29 21:15:03 INFO    cpu-cpu: 33/33 (100.0%) C:selfplay rows=1937 in 89.5s; elapsed=165.3s eta=0.0s
+2026-10-29 21:15:04 INFO    merge: writing /home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/sample_cpu_long.csv ...
+2026-10-29 21:15:04 INFO    merge: wrote 63921 rows across 33 candidates; devices={'cpu': 63921}
+2026-10-29 21:15:04 INFO    phase3: complete: authoritative rows=63921
+2026-10-29 21:15:04 INFO    phase4: loading parity and CPU long CSVs ...
+2026-10-29 21:15:05 INFO    phase4: joined 63921 parity + 63921 CPU rows
+2026-10-29 21:15:05 INFO    phase4: pass=True pairs=63921 failed=0 score_mismatches=0 action_mismatches=0 name_mismatches=0 max_score_diff=0
+2026-10-29 21:15:05 INFO    phase4: complete: pass=True pairs=63921 failed=0
+2026-10-29 21:15:05 INFO    DONE elapsed=678.0s summary=/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/final_summary.json
+2026-10-29 21:15:05 INFO    authoritative_main_data=/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/sample_cpu_long.csv
+2026-10-29 21:15:05 INFO    ========================================================================

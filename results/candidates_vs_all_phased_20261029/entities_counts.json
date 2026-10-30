@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-10-29T21:03:50+0800",
+  "elapsed_seconds": 2.927859798001009,
+  "entities": 1937,
+  "expected_pools": {
+    "axelrod": 243,
+    "axelrod_cheating": 1,
+    "candidate": 33,
+    "extort": 10,
+    "final": 86,
+    "hard": 16,
+    "hard2": 28,
+    "heldout_v2": 74,
+    "heldout_v3": 83,
+    "heldout_v4": 83,
+    "legacy": 158,
+    "periodic": 9,
+    "policy_weight": 57,
+    "protocol_v4": 977,
+    "repair": 15,
+    "robust": 13,
+    "validation": 51
+  },
+  "pools": {
+    "axelrod": 243,
+    "axelrod_cheating": 1,
+    "candidate": 33,
+    "extort": 10,
+    "final": 86,
+    "hard": 16,
+    "hard2": 28,
+    "heldout_v2": 74,
+    "heldout_v3": 83,
+    "heldout_v4": 83,
+    "legacy": 158,
+    "periodic": 9,
+    "policy_weight": 57,
+    "protocol_v4": 977,
+    "repair": 15,
+    "robust": 13,
+    "validation": 51
+  }
+}

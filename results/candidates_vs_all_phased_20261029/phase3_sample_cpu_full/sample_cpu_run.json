@@ -1,0 +1,37 @@
+{
+  "authoritative": true,
+  "base_seed": 20261029,
+  "branch": "cpu",
+  "candidates": 33,
+  "cpu_stats": {
+    "cached": 0,
+    "candidates": 33,
+    "rows": 63921,
+    "seconds": 2458.375087986995
+  },
+  "created_at": "2026-10-29T21:15:04+0800",
+  "devices": {
+    "cpu": 63921
+  },
+  "elapsed_seconds": 166.95168268199996,
+  "entities": 1937,
+  "long_csv": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/sample_cpu_long.csv",
+  "matrix_csv": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/sample_cpu_matrix.csv",
+  "opponent_matrix_csv": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/sample_cpu_opponent_matrix.csv",
+  "pairs_expected": 63921,
+  "pairs_written": 63921,
+  "phase": 3,
+  "reps": 1,
+  "rounds": 100,
+  "settings": {
+    "device": "cpu",
+    "fast_rules": false,
+    "gpu": false,
+    "mode": "sample",
+    "mode_argmax": false,
+    "reps": 1,
+    "rounds": 100,
+    "workers": 20
+  },
+  "status": "authoritative"
+}

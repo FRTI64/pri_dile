@@ -1,0 +1,142 @@
+{
+  "C:adv-gru": {
+    "candidate_key": "C:adv-gru",
+    "completed_at": "2026-10-29T21:11:50+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_adv-gru.csv",
+    "rows": 1937,
+    "seconds": 79.39608522599883
+  },
+  "C:adv-mlp": {
+    "candidate_key": "C:adv-mlp",
+    "completed_at": "2026-10-29T21:11:39+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_adv-mlp.csv",
+    "rows": 1937,
+    "seconds": 68.35182877899933
+  },
+  "C:adv-rl": {
+    "candidate_key": "C:adv-rl",
+    "completed_at": "2026-10-29T21:11:48+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_adv-rl.csv",
+    "rows": 1937,
+    "seconds": 77.08167258399772
+  },
+  "C:bayes-base": {
+    "candidate_key": "C:bayes-base",
+    "completed_at": "2026-10-29T21:11:43+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_bayes-base.csv",
+    "rows": 1937,
+    "seconds": 72.0009247550006
+  },
+  "C:bayes-tuned": {
+    "candidate_key": "C:bayes-tuned",
+    "completed_at": "2026-10-29T21:11:43+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_bayes-tuned.csv",
+    "rows": 1937,
+    "seconds": 72.10339260600085
+  },
+  "C:final-base": {
+    "candidate_key": "C:final-base",
+    "completed_at": "2026-10-29T21:11:37+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_final-base.csv",
+    "rows": 1937,
+    "seconds": 66.76671991699914
+  },
+  "C:final-tuned": {
+    "candidate_key": "C:final-tuned",
+    "completed_at": "2026-10-29T21:11:38+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_final-tuned.csv",
+    "rows": 1937,
+    "seconds": 67.0642180040013
+  },
+  "C:gap-start": {
+    "candidate_key": "C:gap-start",
+    "completed_at": "2026-10-29T21:11:32+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_gap-start.csv",
+    "rows": 1937,
+    "seconds": 61.05570677400101
+  },
+  "C:harvest-tuned": {
+    "candidate_key": "C:harvest-tuned",
+    "completed_at": "2026-10-29T21:11:37+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_harvest-tuned.csv",
+    "rows": 1937,
+    "seconds": 66.85238697299792
+  },
+  "C:harvest45": {
+    "candidate_key": "C:harvest45",
+    "completed_at": "2026-10-29T21:11:30+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_harvest45.csv",
+    "rows": 1937,
+    "seconds": 59.38702378900052
+  },
+  "C:hybrid": {
+    "candidate_key": "C:hybrid",
+    "completed_at": "2026-10-29T21:11:38+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_hybrid.csv",
+    "rows": 1937,
+    "seconds": 67.6269745110003
+  },
+  "C:psro": {
+    "candidate_key": "C:psro",
+    "completed_at": "2026-10-29T21:11:33+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_psro.csv",
+    "rows": 1937,
+    "seconds": 62.47154727100133
+  },
+  "C:psro-scratch": {
+    "candidate_key": "C:psro-scratch",
+    "completed_at": "2026-10-29T21:11:48+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_psro-scratch.csv",
+    "rows": 1937,
+    "seconds": 77.03177408699776
+  },
+  "C:psro-v4": {
+    "candidate_key": "C:psro-v4",
+    "completed_at": "2026-10-29T21:11:48+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_psro-v4.csv",
+    "rows": 1937,
+    "seconds": 77.44278779899832
+  },
+  "C:resp3-base": {
+    "candidate_key": "C:resp3-base",
+    "completed_at": "2026-10-29T21:11:29+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_resp3-base.csv",
+    "rows": 1937,
+    "seconds": 58.35260494199974
+  },
+  "C:resp3-tuned": {
+    "candidate_key": "C:resp3-tuned",
+    "completed_at": "2026-10-29T21:11:29+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_resp3-tuned.csv",
+    "rows": 1937,
+    "seconds": 58.07959501300138
+  },
+  "C:rl-gate": {
+    "candidate_key": "C:rl-gate",
+    "completed_at": "2026-10-29T21:12:15+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_rl-gate.csv",
+    "rows": 1937,
+    "seconds": 104.82503859999997
+  },
+  "C:rl-switch": {
+    "candidate_key": "C:rl-switch",
+    "completed_at": "2026-10-29T21:12:16+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_rl-switch.csv",
+    "rows": 1937,
+    "seconds": 104.95563544500328
+  },
+  "C:triple-majority": {
+    "candidate_key": "C:triple-majority",
+    "completed_at": "2026-10-29T21:11:37+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_triple-majority.csv",
+    "rows": 1937,
+    "seconds": 66.71607582299839
+  },
+  "C:triple-v4": {
+    "candidate_key": "C:triple-v4",
+    "completed_at": "2026-10-29T21:11:43+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase2_parity_full/shards/C_triple-v4.csv",
+    "rows": 1937,
+    "seconds": 72.15154596600041
+  }
+}

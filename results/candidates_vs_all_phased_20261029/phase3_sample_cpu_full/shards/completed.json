@@ -1,0 +1,233 @@
+{
+  "C:adv-gru": {
+    "candidate_key": "C:adv-gru",
+    "completed_at": "2026-10-29T21:14:40+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_adv-gru.csv",
+    "rows": 1937,
+    "seconds": 70.70335889299895
+  },
+  "C:adv-mlp": {
+    "candidate_key": "C:adv-mlp",
+    "completed_at": "2026-10-29T21:14:31+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_adv-mlp.csv",
+    "rows": 1937,
+    "seconds": 61.8304619920018
+  },
+  "C:adv-rl": {
+    "candidate_key": "C:adv-rl",
+    "completed_at": "2026-10-29T21:14:34+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_adv-rl.csv",
+    "rows": 1937,
+    "seconds": 63.50667861200054
+  },
+  "C:bayes-base": {
+    "candidate_key": "C:bayes-base",
+    "completed_at": "2026-10-29T21:13:30+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_bayes-base.csv",
+    "rows": 1937,
+    "seconds": 72.12315324600058
+  },
+  "C:bayes-tuned": {
+    "candidate_key": "C:bayes-tuned",
+    "completed_at": "2026-10-29T21:13:28+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_bayes-tuned.csv",
+    "rows": 1937,
+    "seconds": 70.75708651300374
+  },
+  "C:final-base": {
+    "candidate_key": "C:final-base",
+    "completed_at": "2026-10-29T21:13:22+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_final-base.csv",
+    "rows": 1937,
+    "seconds": 64.3395806510016
+  },
+  "C:final-tuned": {
+    "candidate_key": "C:final-tuned",
+    "completed_at": "2026-10-29T21:13:22+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_final-tuned.csv",
+    "rows": 1937,
+    "seconds": 64.06218601100045
+  },
+  "C:gap-start": {
+    "candidate_key": "C:gap-start",
+    "completed_at": "2026-10-29T21:13:23+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_gap-start.csv",
+    "rows": 1937,
+    "seconds": 65.61324932899879
+  },
+  "C:gru": {
+    "candidate_key": "C:gru",
+    "completed_at": "2026-10-29T21:13:44+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_gru.csv",
+    "rows": 1937,
+    "seconds": 86.57039157300096
+  },
+  "C:harvest-tuned": {
+    "candidate_key": "C:harvest-tuned",
+    "completed_at": "2026-10-29T21:13:22+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_harvest-tuned.csv",
+    "rows": 1937,
+    "seconds": 64.05300238799828
+  },
+  "C:harvest45": {
+    "candidate_key": "C:harvest45",
+    "completed_at": "2026-10-29T21:13:21+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_harvest45.csv",
+    "rows": 1937,
+    "seconds": 63.72357570999884
+  },
+  "C:hybrid": {
+    "candidate_key": "C:hybrid",
+    "completed_at": "2026-10-29T21:13:21+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_hybrid.csv",
+    "rows": 1937,
+    "seconds": 63.9916753710022
+  },
+  "C:neural": {
+    "candidate_key": "C:neural",
+    "completed_at": "2026-10-29T21:13:33+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_neural.csv",
+    "rows": 1937,
+    "seconds": 75.71739340799832
+  },
+  "C:psro": {
+    "candidate_key": "C:psro",
+    "completed_at": "2026-10-29T21:14:18+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_psro.csv",
+    "rows": 1937,
+    "seconds": 56.51966865199938
+  },
+  "C:psro-br": {
+    "candidate_key": "C:psro-br",
+    "completed_at": "2026-10-29T21:14:28+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_psro-br.csv",
+    "rows": 1937,
+    "seconds": 65.99536120800622
+  },
+  "C:psro-scratch": {
+    "candidate_key": "C:psro-scratch",
+    "completed_at": "2026-10-29T21:14:29+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_psro-scratch.csv",
+    "rows": 1937,
+    "seconds": 66.79321868700208
+  },
+  "C:psro-scratch-br": {
+    "candidate_key": "C:psro-scratch-br",
+    "completed_at": "2026-10-29T21:14:29+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_psro-scratch-br.csv",
+    "rows": 1937,
+    "seconds": 66.88636104199395
+  },
+  "C:psro-v4": {
+    "candidate_key": "C:psro-v4",
+    "completed_at": "2026-10-29T21:14:29+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_psro-v4.csv",
+    "rows": 1937,
+    "seconds": 66.1578408849964
+  },
+  "C:psro-v4-br": {
+    "candidate_key": "C:psro-v4-br",
+    "completed_at": "2026-10-29T21:14:33+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_psro-v4-br.csv",
+    "rows": 1937,
+    "seconds": 64.66069475399854
+  },
+  "C:resp3-base": {
+    "candidate_key": "C:resp3-base",
+    "completed_at": "2026-10-29T21:13:22+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_resp3-base.csv",
+    "rows": 1937,
+    "seconds": 64.79744136800218
+  },
+  "C:resp3-tuned": {
+    "candidate_key": "C:resp3-tuned",
+    "completed_at": "2026-10-29T21:13:21+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_resp3-tuned.csv",
+    "rows": 1937,
+    "seconds": 64.00133701899904
+  },
+  "C:rl": {
+    "candidate_key": "C:rl",
+    "completed_at": "2026-10-29T21:13:50+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl.csv",
+    "rows": 1937,
+    "seconds": 92.24397672199848
+  },
+  "C:rl-dagger-gru": {
+    "candidate_key": "C:rl-dagger-gru",
+    "completed_at": "2026-10-29T21:14:50+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-dagger-gru.csv",
+    "rows": 1937,
+    "seconds": 88.81342250599846
+  },
+  "C:rl-gate": {
+    "candidate_key": "C:rl-gate",
+    "completed_at": "2026-10-29T21:14:58+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-gate.csv",
+    "rows": 1937,
+    "seconds": 96.79140804100462
+  },
+  "C:rl-hard60": {
+    "candidate_key": "C:rl-hard60",
+    "completed_at": "2026-10-29T21:13:36+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-hard60.csv",
+    "rows": 1937,
+    "seconds": 78.96328408899717
+  },
+  "C:rl-pattern": {
+    "candidate_key": "C:rl-pattern",
+    "completed_at": "2026-10-29T21:13:35+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-pattern.csv",
+    "rows": 1937,
+    "seconds": 77.74576114999581
+  },
+  "C:rl-repair": {
+    "candidate_key": "C:rl-repair",
+    "completed_at": "2026-10-29T21:13:36+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-repair.csv",
+    "rows": 1937,
+    "seconds": 78.3683555849966
+  },
+  "C:rl-switch": {
+    "candidate_key": "C:rl-switch",
+    "completed_at": "2026-10-29T21:14:58+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-switch.csv",
+    "rows": 1937,
+    "seconds": 97.09737711500202
+  },
+  "C:rl-wide": {
+    "candidate_key": "C:rl-wide",
+    "completed_at": "2026-10-29T21:13:59+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-wide.csv",
+    "rows": 1937,
+    "seconds": 101.76864344500063
+  },
+  "C:rl-wide160": {
+    "candidate_key": "C:rl-wide160",
+    "completed_at": "2026-10-29T21:14:07+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_rl-wide160.csv",
+    "rows": 1937,
+    "seconds": 109.31752310399679
+  },
+  "C:selfplay": {
+    "candidate_key": "C:selfplay",
+    "completed_at": "2026-10-29T21:15:03+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_selfplay.csv",
+    "rows": 1937,
+    "seconds": 89.4770985340001
+  },
+  "C:triple-majority": {
+    "candidate_key": "C:triple-majority",
+    "completed_at": "2026-10-29T21:13:29+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_triple-majority.csv",
+    "rows": 1937,
+    "seconds": 71.50565091700264
+  },
+  "C:triple-v4": {
+    "candidate_key": "C:triple-v4",
+    "completed_at": "2026-10-29T21:13:31+0800",
+    "path": "/home/frti64/pri_dile/results/candidates_vs_all_phased_20261029/phase3_sample_cpu_full/shards/C_triple-v4.csv",
+    "rows": 1937,
+    "seconds": 73.47886946699873
+  }
+}
