@@ -1,0 +1,29 @@
+candidates=['RL-PPO-retrained', 'RL-PPO'] tiers=['dev_param', 'dev_family', 'dev_complex', 'dev_axelrod', 'dev_ood'] fields=30 n=2048 seed=20261027 tasks=150
+progress 7/150 elapsed=19s
+progress 14/150 elapsed=19s
+progress 21/150 elapsed=20s
+progress 28/150 elapsed=20s
+progress 35/150 elapsed=22s
+progress 42/150 elapsed=24s
+progress 49/150 elapsed=24s
+progress 56/150 elapsed=31s
+progress 63/150 elapsed=36s
+progress 70/150 elapsed=37s
+progress 77/150 elapsed=42s
+progress 84/150 elapsed=47s
+progress 91/150 elapsed=52s
+progress 98/150 elapsed=53s
+progress 105/150 elapsed=59s
+progress 112/150 elapsed=65s
+progress 119/150 elapsed=66s
+progress 126/150 elapsed=69s
+progress 133/150 elapsed=74s
+progress 140/150 elapsed=76s
+progress 147/150 elapsed=78s
+progress 150/150 elapsed=78s
+
+Protocol v5 evaluation (30 fields, n=2048)
+  RL-PPO-retrained         dev_param=523.49  dev_family=582.29  dev_complex=454.32  dev_axelrod=560.89  dev_ood=511.01
+  RL-PPO                   dev_param=525.99  dev_family=582.55  dev_complex=457.26  dev_axelrod=563.43  dev_ood=513.30
+
+written results/retrain_20261030/protocol_v5_dev_retrained.json

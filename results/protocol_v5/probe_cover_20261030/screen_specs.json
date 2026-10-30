@@ -1,0 +1,6 @@
+{"candidates": [
+  {"name": "ProbeCover-iter1", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_cover_20261030/ckpts/iter_001.json"},
+  {"name": "ProbeCover-iter2", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_cover_20261030/ckpts/iter_002.json"},
+  {"name": "ProbeCover-iter4", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_cover_20261030/ckpts/iter_004.json"},
+  {"name": "ProbeCover-iter8", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_cover_20261030/ckpts/iter_008.json"}
+]}

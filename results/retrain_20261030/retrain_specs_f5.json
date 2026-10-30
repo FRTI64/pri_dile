@@ -1,0 +1,16 @@
+{
+  "candidates": [
+    {
+      "name": "RL-PPO-retrained-f5",
+      "kind": "rl",
+      "weights": "results/retrain_20261030/rl_policy_weights_retrained_f5.json",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "weights": "weights/rl_policy_weights.json",
+      "mode": "sample"
+    }
+  ]
+}

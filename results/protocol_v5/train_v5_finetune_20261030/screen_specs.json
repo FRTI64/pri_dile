@@ -1,0 +1,40 @@
+{
+  "candidates": [
+    {
+      "name": "TrainV5-ft-iter4",
+      "kind": "rl",
+      "weights": "results/protocol_v5/train_v5_finetune_20261030/ckpts/iter_004.json",
+      "mode": "sample"
+    },
+    {
+      "name": "TrainV5-ft-iter8",
+      "kind": "rl",
+      "weights": "results/protocol_v5/train_v5_finetune_20261030/ckpts/iter_008.json",
+      "mode": "sample"
+    },
+    {
+      "name": "TrainV5-ft-iter12",
+      "kind": "rl",
+      "weights": "results/protocol_v5/train_v5_finetune_20261030/ckpts/iter_012.json",
+      "mode": "sample"
+    },
+    {
+      "name": "TrainV5-ft-iter16",
+      "kind": "rl",
+      "weights": "results/protocol_v5/train_v5_finetune_20261030/ckpts/iter_016.json",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-Wide160",
+      "kind": "rl",
+      "weights": "weights/rl_policy_weights_wide160.json",
+      "mode": "sample"
+    },
+    {
+      "name": "RL-PPO",
+      "kind": "rl",
+      "weights": "weights/rl_policy_weights.json",
+      "mode": "sample"
+    }
+  ]
+}

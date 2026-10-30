@@ -1,0 +1,28 @@
+device: cuda (NVIDIA GeForce RTX 5090 Laptop GPU)
+train_dists=train_probe_alld val_dists=dev_complex fields/iter/dist=2 n=128 iterations=8 safe=False risk=none dirichlet=0 blue_pool=0
+initialised from weights/rl_policy_checkpoint_wide160.json
+using reference-policy KL penalty (coef=0.02)
+initial val avg=425.56 worst=425.56 dev_complex=425.56
+iter   1 reward= 255.81 pi=-0.0011 v=0.5784 H=0.1395 kl=0.0008 bckl=0.0009 clip=0.010 ev=+0.704 (7.8s+1.8s)
+      train train_probe_alld=255.81 | val avg=424.59 worst=424.59 dev_complex=424.59
+iter   2 reward= 269.62 pi=+0.0000 v=0.3693 H=0.1263 kl=0.0004 bckl=0.0010 clip=0.004 ev=+0.802 (8.4s+0.1s)
+      train train_probe_alld=269.62 | val avg=424.78 worst=424.78 dev_complex=424.78
+  new best at iter 3: avg=427.74 worst=427.74
+iter   3 reward= 272.83 pi=-0.0014 v=0.2316 H=0.1239 kl=0.0006 bckl=0.0024 clip=0.004 ev=+0.851 (8.2s+0.1s)
+      train train_probe_alld=272.83 | val avg=427.74 worst=427.74 dev_complex=427.74
+iter   4 reward= 297.83 pi=+0.0013 v=0.2035 H=0.1280 kl=0.0005 bckl=0.0039 clip=0.006 ev=+0.864 (8.5s+0.1s)
+      train train_probe_alld=297.83 | val avg=423.71 worst=423.71 dev_complex=423.71
+iter   5 reward= 309.54 pi=+0.0032 v=0.1837 H=0.1299 kl=0.0004 bckl=0.0063 clip=0.005 ev=+0.875 (8.3s+0.1s)
+      train train_probe_alld=309.54 | val avg=424.25 worst=424.25 dev_complex=424.25
+iter   6 reward= 302.36 pi=-0.0057 v=0.1632 H=0.1294 kl=0.0001 bckl=0.0086 clip=0.000 ev=+0.879 (8.4s+0.1s)
+      train train_probe_alld=302.36 | val avg=424.47 worst=424.47 dev_complex=424.47
+iter   7 reward= 315.93 pi=+0.0025 v=0.1572 H=0.1250 kl=0.0001 bckl=0.0095 clip=0.000 ev=+0.884 (8.4s+0.1s)
+      train train_probe_alld=315.93 | val avg=423.60 worst=423.60 dev_complex=423.60
+iter   8 reward= 345.88 pi=+0.0033 v=0.1517 H=0.1219 kl=0.0000 bckl=0.0116 clip=0.000 ev=+0.889 (8.3s+0.1s)
+      train train_probe_alld=345.88 | val avg=422.73 worst=422.73 dev_complex=422.73
+  saved checkpoint (best iter 3, val avg=427.74072265625)
+best iteration 3 val={'by_dist': {'dev_complex': 427.74072265625}, 'avg': 427.74072265625, 'worst': 427.74072265625, 'selection': 427.74072265625}
+written results/protocol_v5/probe_alld_unsafe_20261030/probe_alld_unsafe_ac.json
+written results/protocol_v5/probe_alld_unsafe_20261030/probe_alld_unsafe_weights.json (1111429 bytes)
+written results/protocol_v5/probe_alld_unsafe_20261030/probe_alld_unsafe_history.json
+vs AllC-until-90: C=11 D=89 score=866

@@ -1,0 +1,6 @@
+{"candidates": [
+  {"name": "ProbePure-iter1", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_pure_20261030/ckpts/iter_001.json"},
+  {"name": "ProbePure-iter2", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_pure_20261030/ckpts/iter_002.json"},
+  {"name": "ProbePure-iter4", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_pure_20261030/ckpts/iter_004.json"},
+  {"name": "ProbePure-iter8", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_pure_20261030/ckpts/iter_008.json"}
+]}

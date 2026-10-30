@@ -1,0 +1,33 @@
+candidates=['TrainV5-ft-iter4', 'TrainV5-ft-iter8', 'TrainV5-ft-iter12', 'TrainV5-ft-iter16', 'RL-Wide160', 'RL-PPO'] tiers=['dev_param', 'dev_family', 'dev_complex', 'dev_axelrod', 'dev_ood'] fields=30 n=2048 seed=20261027 tasks=150
+progress 7/150 elapsed=103s
+progress 14/150 elapsed=103s
+progress 21/150 elapsed=184s
+progress 28/150 elapsed=186s
+progress 35/150 elapsed=198s
+progress 42/150 elapsed=266s
+progress 49/150 elapsed=269s
+progress 56/150 elapsed=279s
+progress 63/150 elapsed=362s
+progress 70/150 elapsed=367s
+progress 77/150 elapsed=375s
+progress 84/150 elapsed=462s
+progress 91/150 elapsed=474s
+progress 98/150 elapsed=482s
+progress 105/150 elapsed=559s
+progress 112/150 elapsed=568s
+progress 119/150 elapsed=579s
+progress 126/150 elapsed=650s
+progress 133/150 elapsed=658s
+progress 140/150 elapsed=670s
+progress 147/150 elapsed=731s
+progress 150/150 elapsed=732s
+
+Protocol v5 evaluation (30 fields, n=2048)
+  TrainV5-ft-iter4         dev_param=532.15  dev_family=583.04  dev_complex=477.66  dev_axelrod=568.00  dev_ood=522.30
+  TrainV5-ft-iter8         dev_param=531.95  dev_family=583.07  dev_complex=478.98  dev_axelrod=568.20  dev_ood=522.66
+  TrainV5-ft-iter12        dev_param=532.18  dev_family=583.02  dev_complex=478.18  dev_axelrod=568.19  dev_ood=522.37
+  TrainV5-ft-iter16        dev_param=532.13  dev_family=583.03  dev_complex=478.41  dev_axelrod=568.26  dev_ood=522.50
+  RL-Wide160               dev_param=531.66  dev_family=583.08  dev_complex=477.77  dev_axelrod=567.77  dev_ood=522.24
+  RL-PPO                   dev_param=525.99  dev_family=582.55  dev_complex=457.26  dev_axelrod=563.43  dev_ood=513.30
+
+written results/protocol_v5/train_v5_finetune_20261030/screen_dev.json

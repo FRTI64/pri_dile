@@ -1,0 +1,6 @@
+{"candidates": [
+  {"name": "ProbeAlldU-iter3", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_alld_unsafe_20261030/ckpts/iter_003.json"},
+  {"name": "ProbeAlldU-iter4", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_alld_unsafe_20261030/ckpts/iter_004.json"},
+  {"name": "ProbeAlldU-iter6", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_alld_unsafe_20261030/ckpts/iter_006.json"},
+  {"name": "ProbeAlldU-iter8", "kind": "rl", "mode": "sample", "weights": "results/protocol_v5/probe_alld_unsafe_20261030/ckpts/iter_008.json"}
+]}
