@@ -11,7 +11,8 @@ from pathlib import Path
 
 from ipd.core.opponents.axelrod_bank import (
     axelrod_by_name, axelrod_cheating_by_name, axelrod_cheating_specs,
-    axelrod_specs, sample_axelrod_cheating_field, sample_axelrod_field,
+    axelrod_specs, require_axelrod, sample_axelrod_cheating_field,
+    sample_axelrod_field,
 )
 from ipd.core.simulator import C, D, TFT
 from ipd.evaluation.benchmark import main as benchmark_main
@@ -61,6 +62,145 @@ class AxelrodBankTests(unittest.TestCase):
         second = run_match(TFT(), opponent, rounds=20)
         self.assertEqual(second.mine, first.mine)
         self.assertEqual(second.theirs, first.theirs)
+
+    def test_adapter_uses_pri_dile_matrix(self):
+        import axelrod as axl
+
+        spec = axelrod_by_name(include_long_run=True)["TitForTat"]
+        opponent = spec.factory(random.Random(1))
+        opponent.reset()
+        game = opponent._player.match_attributes["game"]
+        self.assertEqual(game.RPST(), (6, 1, 0, 10))
+        self.assertEqual(game.score((axl.Action.C, axl.Action.C)), (6, 6))
+        self.assertEqual(game.score((axl.Action.C, axl.Action.D)), (0, 10))
+        self.assertEqual(game.score((axl.Action.D, axl.Action.C)), (10, 0))
+        self.assertEqual(game.score((axl.Action.D, axl.Action.D)), (1, 1))
+
+    def test_default_interaction_scores_use_pri_dile_matrix(self):
+        import axelrod as axl
+        from axelrod import interaction_utils
+
+        self.assertEqual(
+            interaction_utils.compute_scores(
+                [(axl.Action.C, axl.Action.C)]),
+            [(6, 6)],
+        )
+        self.assertEqual(
+            interaction_utils.compute_final_score(
+                [(axl.Action.C, axl.Action.C),
+                 (axl.Action.D, axl.Action.C)]),
+            (16, 6),
+        )
+
+    def test_zero_determinant_players_are_valid_for_pri_dile(self):
+        names = [spec.name for spec in axelrod_specs(include_long_run=True)
+                 if spec.name.startswith("ZD")]
+        self.assertTrue(names)
+        bank = axelrod_by_name(include_long_run=True)
+        for name in names:
+            opponent = bank[name].factory(random.Random(5))
+            result = run_match(TFT(), opponent, rounds=20)
+            self.assertEqual(len(result.theirs), 20, name)
+            self.assertTrue(set(result.theirs) <= {C, D}, name)
+            # ZDMem2 is a pattern-based Gambler rather than an LRPlayer, so
+            # only the linear-relation players expose a four-vector.
+            four = getattr(opponent._player, "_four_vector", None)
+            if four is not None:
+                self.assertTrue(all(0.0 <= float(p) <= 1.0
+                                    for p in four.values()), name)
+
+    def test_threshold_helpers_follow_matrix_principles(self):
+        from ipd.core.opponents.axelrod_legacy import (
+            _graaskamp_threshold, _one_round_swing, _rowsam_thresholds,
+            _scale_for_r, _tranquilizer_difference_scale,
+            _tranquilizer_thresholds, _two_round_swing,
+        )
+
+        self.assertEqual(_scale_for_r(3), 1.0)
+        self.assertEqual(_scale_for_r(6), 2.0)
+        self.assertEqual(_two_round_swing(5, 0), 10.0)
+        self.assertEqual(_two_round_swing(10, 0), 20.0)
+        self.assertEqual(_one_round_swing(5, 0), 5.0)
+        self.assertEqual(_one_round_swing(10, 0), 10.0)
+
+        self.assertEqual(_graaskamp_threshold(10, 3), 23.0)
+        self.assertEqual(_graaskamp_threshold(10, 6), 46.0)
+        self.assertEqual(_graaskamp_threshold(100, 3), 293.0)
+        self.assertEqual(_graaskamp_threshold(100, 6), 586.0)
+
+        self.assertEqual(_rowsam_thresholds(3, 1), (1.0, 1.5, 2.0, 2.5))
+        self.assertEqual(_rowsam_thresholds(6, 1), (1.0, 2.25, 3.5, 4.75))
+
+        self.assertEqual(_tranquilizer_thresholds(3, 1), (1.75, 2.25))
+        self.assertEqual(_tranquilizer_thresholds(6, 1), (2.875, 4.125))
+        self.assertEqual(_tranquilizer_difference_scale(5, 0), 100.0)
+        self.assertEqual(_tranquilizer_difference_scale(10, 0), 200.0)
+
+    def test_stalker_thresholds_follow_matrix(self):
+        import axelrod as axl
+        from axelrod.strategies.stalker import Stalker
+
+        require_axelrod()
+
+        class _Opponent:
+            def __init__(self, history):
+                self.history = history
+
+        def action(game):
+            player = Stalker()
+            player.set_seed(1)
+            player.set_match_attributes(length=100, game=game, noise=0)
+            player._history = axl.History()
+            opponent = _Opponent(axl.History())
+            for _ in range(4):
+                player._history.append(axl.Action.C, axl.Action.C)
+                opponent.history.append(axl.Action.C, axl.Action.C)
+            # Score the last round so the average is exactly 2.5.
+            player.current_score = 10.0 - game.RPST()[0]
+            return player.strategy(opponent)
+
+        self.assertEqual(action(axl.Game(r=6, s=0, t=10, p=1)),
+                         axl.Action.D)
+        self.assertEqual(action(axl.Game()), axl.Action.C)
+
+    def test_rowsam_thresholds_follow_matrix(self):
+        import axelrod as axl
+        from axelrod.strategies.axelrod_second import SecondByRowsam
+
+        require_axelrod()
+
+        class _Opponent:
+            def __init__(self, history):
+                self.history = history
+
+        def action(game):
+            player = SecondByRowsam()
+            player.set_seed(1)
+            player.set_match_attributes(length=100, game=game, noise=0)
+            player._history = axl.History()
+            opponent = _Opponent(axl.History())
+            for _ in range(5):
+                player._history.append(axl.Action.C, axl.Action.C)
+                opponent.history.append(axl.Action.C, axl.Action.C)
+            # Turn 6, average score exactly 3.0.
+            player.current_score = 18.0 - game.RPST()[0]
+            return player.strategy(opponent)
+
+        self.assertEqual(action(axl.Game(r=6, s=0, t=10, p=1)),
+                         axl.Action.D)
+        self.assertEqual(action(axl.Game()), axl.Action.C)
+
+    def test_meta_memory_one_team_uses_pri_dile_matrix(self):
+        spec = axelrod_by_name(include_long_run=True)["MetaMajorityMemoryOne"]
+        opponent = spec.factory(random.Random(5))
+        result = run_match(TFT(), opponent, rounds=3)
+        self.assertEqual(len(result.theirs), 3)
+        for member in opponent._player.team:
+            four = getattr(member, "_four_vector", None)
+            if four is not None:
+                self.assertTrue(all(0.0 <= float(p) <= 1.0
+                                    for p in four.values()),
+                                member.name)
 
     def test_stochastic_adapter_is_reproducible(self):
         spec = axelrod_by_name(include_long_run=True)["Random"]
@@ -188,6 +328,17 @@ class AxelrodBankTests(unittest.TestCase):
         result = run_match(TFT(), opponent, rounds=3)
         self.assertEqual(len(result.theirs), 3)
         self.assertTrue(set(result.theirs) <= {C, D})
+
+    def test_all_long_running_players_initialize(self):
+        fast = {spec.name for spec in axelrod_specs(include_long_run=False)}
+        for spec in axelrod_specs(include_long_run=True):
+            if spec.name in fast:
+                continue
+            opponent = spec.factory(random.Random(11))
+            opponent.reset()
+            self.assertEqual(
+                opponent._player.match_attributes["game"].RPST(),
+                (6, 1, 0, 10), spec.name)
 
 
 if __name__ == "__main__":

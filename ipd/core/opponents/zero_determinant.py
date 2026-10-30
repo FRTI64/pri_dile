@@ -1,9 +1,7 @@
 """Zero-determinant extortion and generous opponents."""
 from __future__ import annotations
 
-from ..primitives import C, D, Strategy
-
-R, S, T, P = 6, 0, 10, 1
+from ..primitives import C, D, R, S, T, P, Strategy
 
 
 class ExtortZD(Strategy):

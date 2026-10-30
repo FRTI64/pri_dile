@@ -247,8 +247,9 @@ bash results/p2_repeated_calib_20261026/run.sh
 
 - **Axelrod 完整 243 很慢**：19 个 `long_run_time`（主要是 Meta）主导
   100 回合耗时；日常用 `axelrod-fast`（224）。
-- **Axelrod 内部 3/0/5/1，外部 6/0/10/1**：不要为了统一改内部矩阵，ZD
-  四向量会越界。
+- **Axelrod 内部与外部统一 6/0/10/1**：adapter 传入项目矩阵；ZD 的
+  `phi` 会自动降到可行范围，斜率/基线不变；6 组历史阈值已按策略原理
+  用 `T-S`、`R`、`P` 重写。
 - **Darwin genome 是类变量**：跨对局/重复/worker 顺序相关；604 只是机制
   检查，不进入正式排名。
 - **Axelrod cheating 不是完整旧版家族**：4.14.0 只有 Darwin；

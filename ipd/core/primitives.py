@@ -6,11 +6,15 @@ import random
 C = 0
 D = 1
 
+# Canonical pri_dile prisoner's dilemma matrix, in Press-Dyson notation:
+#   T=10 (temptation), R=6 (reward), P=1 (punishment), S=0 (sucker).
+R, S, T, P = 6, 0, 10, 1
+
 
 def payoff(me: int, them: int) -> int:
     if me == C:
-        return 6 if them == C else 0
-    return 10 if them == C else 1
+        return R if them == C else S
+    return T if them == C else P
 
 
 class Strategy:
@@ -31,4 +35,4 @@ class Strategy:
         return self.name
 
 
-__all__ = ["C", "D", "payoff", "Strategy"]
+__all__ = ["C", "D", "R", "S", "T", "P", "payoff", "Strategy"]

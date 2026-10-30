@@ -34,9 +34,23 @@ Axelrod 恢复这些类，需要先补适配器，不能假设它们能直接跑
   `ipd/evaluation/common.py::run_match` 和 `ipd/core/simulator.py::play_match`
   已加可选 hook。
 - 随机策略通过派生 seed 调用 `set_seed`，同一 adapter 的 `reset()` 可复现。
-- 内部收益矩阵使用 Axelrod 标准 **3/0/5/1**：零行列式策略的四向量按该矩阵
-  校准，直接用本项目的 6/0/10/1 会产生负概率。实际对局得分仍由
-  `ipd/core/simulator.py` 的 **6/0/10/1** 计算。
+- 内部收益矩阵使用本项目 **6/0/10/1**：通过 `match_attributes["game"]`
+  传给所有 Axelrod 策略。零行列式（ZD）策略的默认 `phi` 在新矩阵下可能
+  让四向量越界，adapter 会把 `phi` 限制到最大可行值，保持斜率 `s` 和
+  基线 `l` 不变。少数历史策略调用 `compute_final_score` 时没有显式传入
+  game，adapter 也把该默认回退改成 6/0/10/1。
+- `ipd/core/opponents/axelrod_legacy.py` 按各策略原理重写 6 组历史阈值：
+  - `FirstByTidemanAndChieruzzi`：分差阈值 `2*(T-S)`（旧 10，新 20）。
+  - `SecondByGraaskampKatzen`：检查点阈值 `rounds*R - 7*(R/3)`，保留
+    7 分容差占 R 的比例（旧 23/53/...，新 46/106/...）。
+  - `SecondByTidemanAndChieruzzi`：`score_to_beat_inc = T-S`（旧 5，新 10）。
+  - `SecondByRowsam`：分数/回合带宽取 `[P,R]` 的四分位（旧
+    1.0/1.5/2.0/2.5，新 1.0/2.25/3.5/4.75）。
+  - `SecondByTranquilizer`：平均分带取 `[P,R]` 的 3/8 和 5/8（旧
+    1.75/2.25，新 2.875/4.125）；分差除数取 `20*(T-S)`（旧 100，新 200）。
+  - `Stalker`：固定 `1/2` 改用 `very_bad_score/wish_score`（新 1/3.5）。
+  默认 3/0/5/1 下这些公式逐项还原原值，行为不变。
+- 实际对局得分同样由 `ipd/core/simulator.py` 的 **6/0/10/1** 计算。
 
 ## 3. 命令
 
@@ -120,24 +134,29 @@ python3 -m ipd matchup --candidates final-tuned \
    发布包中，且需要 harness 级 peek/改写支持；不要把它们写进“已支持”。
 3. **Darwin 是跨对局/顺序相关的**：`genome` 是类变量，重复运行、
    worker 调度和对手顺序都会影响结果；不要把单次 604 当作稳定强度。
-4. **内部用标准 3/0/5/1，外部用 6/0/10/1**：这是有意为之；若有人改成
-   6/0/10/1，ZD 策略会因四向量越界而失败。
+4. **内部和外部统一用 6/0/10/1**：adapter 给所有 Axelrod 策略传入项目
+   矩阵；ZD 的 `phi` 会自动降到可行范围，斜率/基线不变。默认 3/0/5/1
+   下该调整是 no-op。
 5. **可选依赖较重**：Axelrod 会带入 torch/scipy/pandas/dask；默认安装仍
    零第三方依赖，只有显式使用 Axelrod 集时才需要。
 6. **版本固定为 4.14.0**：243/224/1 的数量和测试断言都按该版本写死；升级
    Axelrod 前先跑 `tests/test_axelrod_opponents.py` 并重新确认 cheating 类
    是否可适配。
+7. **历史 Axelrod 分数不可直接比较**：内部矩阵从 3/0/5/1 改为 6/0/10/1
+   后，旧 run 的 `dev_axelrod` / `matchup_axelrod` 数值需要重跑。6 个
+   写死分数阈值的策略已按矩阵重标定；在默认 3/0/5/1 下仍保持原行为。
 
 ## 7. 验证
 
 ```bash
 python3 -m ipd test
-# 最近完整测试是 v3 的 204 tests；v4 改动后未运行
+# 最近完整测试：342 tests OK
 ```
 
-新增测试：`tests/test_axelrod_opponents.py`，覆盖 243/224/1 数量、
-`Darwin` 排除/单独集合、适配器对局与 reset、随机种子、
-`set_rounds`、采样、benchmark CLI、matchup worker。
+`tests/test_axelrod_opponents.py` 覆盖 243/224/1 数量、`Darwin`
+排除/单独集合、适配器对局与 reset、随机种子、`set_rounds`、采样、
+benchmark CLI、matchup worker，以及 6/0/10/1 内部矩阵、ZD 四向量和
+历史阈值重标定。
 
 ## 8. 后续可选工作
 

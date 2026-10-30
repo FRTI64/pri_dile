@@ -5,10 +5,12 @@ small :class:`ipd.core.primitives.Strategy` protocol.  This module bridges the
 two interfaces lazily: importing :mod:`ipd` never imports Axelrod, and the
 optional dependency is only required when an Axelrod opponent bank is used.
 
-Axelrod's own standard payoff matrix (3/0/5/1) is used for the strategy's
-internal calculations.  This matters for the zero-determinant strategies,
-whose four-vectors are calibrated for that matrix.  The actual match score is
-still computed by :mod:`ipd.core.simulator` with pri_dile's 6/0/10/1 matrix.
+The adapter passes pri_dile's 6/0/10/1 matrix to every Axelrod player through
+``match_attributes["game"]``.  Most strategies use it directly; the
+zero-determinant family needs its four-vector's enforcement strength
+recalibrated because Axelrod's shipped defaults assume 3/0/5/1 (see
+``_install_lr_adaptation``).  Match scores are still computed by
+:mod:`ipd.core.simulator` with the same 6/0/10/1 matrix.
 """
 from __future__ import annotations
 
@@ -16,10 +18,95 @@ import functools
 import random
 from typing import Any
 
-from ..primitives import C, D, Strategy
+from ..primitives import C, D, R, S, T, P, Strategy
+from .axelrod_legacy import install_threshold_adaptation
 from .spec import TypeSpec
 
 _AXL: Any = None
+
+
+def _install_lr_adaptation(axl: Any) -> None:
+    """Recalibrate Axelrod's linear-relation players for pri_dile's matrix.
+
+    Axelrod's ZD strategies derive a memory-one four-vector from the game
+    matrix and a strength parameter ``phi``.  Their shipped ``phi`` values are
+    tuned for the default 3/0/5/1 game; with 6/0/10/1 several of them produce a
+    negative (or >1) probability and ``MemoryOnePlayer.set_four_vector``
+    rejects the player.  The slope ``s`` and baseline ``l`` still define the
+    intended ZD relation, so only ``phi`` is capped at the largest value that
+    keeps the four-vector in [0, 1].  For the default game this is a no-op.
+    """
+    from axelrod.strategies.zero_determinant import LRPlayer
+
+    if getattr(LRPlayer, "_pri_dile_adapted", False):
+        return
+
+    upstream = LRPlayer.receive_match_attributes
+
+    def receive_match_attributes(self):
+        if self.l is None or self.phi is None:
+            return upstream(self)
+        R, P, S, T = self.match_attributes["game"].RPST()
+        l = float(self.l)
+        phi = float(self.phi)
+        s = float(self.s)
+        s_min = -min((T - l) / (l - S), (l - S) / (T - l))
+        if (l < P) or (l > R) or (s > 1) or (s < s_min):
+            raise ValueError("invalid linear-relation parameters")
+        # p_i = c_i + d_i * phi.  Find the largest phi that keeps every
+        # probability in [0, 1], then use the original phi if it fits.
+        c = (1.0, 1.0, 0.0, 0.0)
+        d = (
+            -(1.0 - s) * (R - l),
+            -(s * (l - S) + (T - l)),
+            (l - S) + s * (T - l),
+            (1.0 - s) * (l - P),
+        )
+        max_phi = float("inf")
+        for ci, di in zip(c, d):
+            if di > 0.0:
+                max_phi = min(max_phi, (1.0 - ci) / di)
+            elif di < 0.0:
+                max_phi = min(max_phi, -ci / di)
+            elif not (0.0 <= ci <= 1.0):
+                raise ValueError("infeasible four-vector")
+        effective_phi = min(phi, max_phi) if max_phi >= 0.0 else 0.0
+        self.set_four_vector([
+            min(1.0, max(0.0, ci + di * effective_phi))
+            for ci, di in zip(c, d)
+        ])
+
+    LRPlayer.receive_match_attributes = receive_match_attributes
+    LRPlayer._pri_dile_adapted = True
+
+
+def _install_interaction_adaptation(axl: Any) -> None:
+    """Make Axelrod's default score helpers use pri_dile's matrix.
+
+    A few historical strategies call ``compute_final_score`` without passing
+    the match game explicitly; that helper falls back to ``Game()`` (3/0/5/1).
+    Route the fallback through the same 6/0/10/1 game object used by the
+    adapter so those strategies do not silently read the old matrix.
+    """
+    from axelrod import interaction_utils
+
+    if getattr(interaction_utils, "_pri_dile_adapted", False):
+        return
+
+    upstream = interaction_utils.compute_scores
+
+    def compute_scores(interactions, game=None):
+        if game is None:
+            game = _pri_dile_game(axl)
+        return upstream(interactions, game)
+
+    interaction_utils.compute_scores = compute_scores
+    interaction_utils._pri_dile_adapted = True
+
+
+def _pri_dile_game(axl: Any):
+    """Return the Axelrod game object for pri_dile's canonical matrix."""
+    return axl.Game(r=R, s=S, t=T, p=P)
 
 
 def _load_axelrod():
@@ -35,6 +122,9 @@ def _load_axelrod():
             "install with `pip install -e \".[axelrod]\"` or "
             "`pip install -r requirements-axelrod.txt`."
         ) from exc
+    _install_lr_adaptation(axl)
+    _install_interaction_adaptation(axl)
+    install_threshold_adaptation(axl)
     _AXL = axl
     return axl
 
@@ -120,9 +210,11 @@ class AxelrodOpponent(Strategy):
 
     def reset(self) -> None:
         axl = _load_axelrod()
-        # ZD four-vectors assume Axelrod's standard 3/0/5/1 game.  The actual
-        # match score is still computed by pri_dile's simulator.
-        self._game = axl.Game()
+        # Every strategy sees the project's 6/0/10/1 matrix.  ZD players are
+        # recalibrated by _install_lr_adaptation so their four-vectors remain
+        # valid; the match score is computed by the same matrix in the
+        # simulator.
+        self._game = _pri_dile_game(axl)
         self._player = self.player_cls()
         self._player.set_seed(self._seed)
         self._player.set_match_attributes(

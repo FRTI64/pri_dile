@@ -234,6 +234,15 @@
 
 ### Changed
 
+- **Axelrod 对手改用项目 6/0/10/1 矩阵**：adapter 通过
+  `match_attributes["game"]` 向所有 Axelrod 策略传入 6/0/10/1；ZD 策略的
+  `phi` 在四向量越界时自动降到最大可行值，斜率 `s` 和基线 `l` 不变。
+  `ipd/core/opponents/axelrod_legacy.py` 另按各策略原理重写 6 组历史阈值：
+  Tideman/Chieruzzi 用 `2*(T-S)` 和 `T-S`，GraaskampKatzen 用
+  `rounds*R - 7*(R/3)`，Rowsam 用 `[P,R]` 四分位，Tranquilizer 用
+  `[P,R]` 的 3/8/5/8 与 `20*(T-S)`，Stalker 用 `very_bad_score/wish_score`。
+  默认 3/0/5/1 下逐项还原原值，行为不变。新增回归测试，244 个
+  普通/cheating 策略均可运行。旧 Axelrod run 的分数不可直接比较，需重跑。
 - **停止使用 blue-red 对战作为评估/promotion 门槛**（ADR 0011）：
   `dev_red` / `test_red` / exploitability / PSRO anti-exploitation
   结果只作历史存档；不新增 red 任务。候选比较继续使用 Protocol v4
